@@ -135,7 +135,8 @@ SOURCES += \
     src/package/sgs-skillcards.cpp \
     src/package/sgs-generals.cpp \
     src/package/standard-generals.cpp \
-    src/package/test.cpp
+    src/package/test.cpp \
+    src/package/alabastan.cpp
 HEADERS += \
         src/client/aux-skills.h \
         src/client/client.h \
@@ -255,7 +256,8 @@ HEADERS += \
     src/package/god.h \
     src/package/standard-generals.h \
     src/package/sgs-skillcards.h \
-    src/package/test.h
+    src/package/test.h \
+    src/package/alabastan.h
 
 FORMS += \
         src/dialog/cardoverview.ui \

@@ -14,6 +14,7 @@ config = {
         "Disaster",
 
         "Standard",
+        "Alabastan",
         "Wind",
         "God",
         "Sgs",

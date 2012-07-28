@@ -59,8 +59,8 @@ return {
 	["qun"] = "群",
 	["pirate"] = "海贼",
 	["government"] = "世界政府",
+	["noble"] = "贵族",
 	["citizen"] = "平民",
-	["other"] = "其他",
 
 	["#Murder"] = "%to【%arg】死亡，凶手是 %from",
 	["#Suicide"] = "%to【%arg】自杀身亡",
