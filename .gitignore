@@ -6,7 +6,7 @@ object_script*
 *.pro.user
 sanguosha.qm
 config.ini
-swig/sanguosha_wrap.cxx
+swig/qpirate_wrap.cxx
 records/*
 users.db
 doc/*.html
