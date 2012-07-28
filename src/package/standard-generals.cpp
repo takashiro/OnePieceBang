@@ -12,14 +12,11 @@ public:
 
         if(damage.nature == DamageStruct::Thunder){
             player->getRoom()->sendLog("#TriggerSkill", player, objectName());
-
-            if(damage.damage < 3){
-                return true;
-            }else{
-                damage.damage = 1;
-                damage.nature = DamageStruct::Normal;
-                data = QVariant::fromValue(damage);
-            }
+            return true;
+        }else if(damage.nature == DamageStruct::Fire){
+            player->getRoom()->sendLog("#TriggerSkill", player, objectName());
+            damage.damage++;
+            data = QVariant::fromValue(damage);
         }
 
         return false;
