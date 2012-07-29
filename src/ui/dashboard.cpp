@@ -115,14 +115,16 @@ void Dashboard::createRight(){
     ready_item->setPos(2, 43);
     ready_item->hide();
 
-    chain_icon = new Pixmap("image/system/chain.png");
+    chain_icon = new Pixmap;
+    chain_icon->load("image/system/chain.png");
     chain_icon->setParentItem(right);
     chain_icon->setPos(small_avatar->pos());
     chain_icon->moveBy(-25 ,-45);
     chain_icon->hide();
     chain_icon->setZValue(1.0);
 
-    back_icon = new Pixmap("image/system/big-back.png");
+    back_icon = new Pixmap;
+    back_icon->load("image/system/big-back.png");
     back_icon->setParentItem(right);
     back_icon->setPos(59, 105);
     back_icon->setZValue(1.0);
