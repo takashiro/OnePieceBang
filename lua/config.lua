@@ -6,7 +6,7 @@ config = {
 	version = "20120405",
 	version_name = "踏青版",
 	mod_name = "official",
-	kingdoms = { "wei", "shu", "wu", "qun", "god", "pirate", "government", "citizen", "other"},
+	kingdoms = { "wei", "shu", "wu", "qun", "god", "pirate", "government", "citizen", "noble"},
 	package_names = {
 	"StandardCard",
         "StandardExCard",
@@ -15,10 +15,8 @@ config = {
 
         "Standard",
         "Alabastan",
-        "Wind",
-        "God",
-        "Sgs",
-        "Test";
+        "Test",
+        "Sgs","Wind","God", --三国杀，用于测试和参考
 	},
 
 	scene_names = {
