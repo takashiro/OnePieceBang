@@ -78,8 +78,11 @@ public:
     }
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-        player->setFaceUp(true);
-        return true;
+        DamageStruct damage = data.value<DamageStruct>();
+        if(damage.from != NULL && damage.from->faceUp()){
+            return true;
+        }
+        return false;
     }
 };
 
@@ -88,7 +91,7 @@ FleurCard::FleurCard(){
 }
 
 bool FleurCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
-    return targets.length() < 2 && !to_select->isKongcheng();
+    return targets.length() < 2;
 }
 
 bool FleurCard::targetsFeasible(const QList<const Player *> &targets, const Player *Self) const{
@@ -97,6 +100,17 @@ bool FleurCard::targetsFeasible(const QList<const Player *> &targets, const Play
 
 void FleurCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
     room->throwCard(this);
+
+    if(targets.length() < 2){
+        return;
+    }
+
+    targets.at(0)->drawCards(1);
+    targets.at(1)->drawCards(1);
+
+    if(targets.at(0)->isKongcheng() || targets.at(1)->isKongcheng()){
+        return;
+    }
 
     DamageStruct damage;
     if(targets.at(0)->pindian(targets.at(1), "fleur")){
@@ -141,6 +155,7 @@ public:
         CardEffectStruct effect = data.value<CardEffectStruct>();
         if(effect.card != NULL && effect.card->inherits("BusterCall")){
             player->getRoom()->sendLog("#TriggerSkill", player, objectName());
+            player->drawCards(1);
             return true;
         }
 
