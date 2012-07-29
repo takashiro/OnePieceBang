@@ -88,7 +88,7 @@ void ConfigDialog::on_resetBgButton_clicked()
 {
     ui->bgPathLineEdit->clear();
 
-    QString filename = "backdrop/sea.jpg";
+    QString filename = "backdrop/thousandsunny.jpg";
     Config.BackgroundImage = filename;
     Config.setValue("BackgroundImage", filename);
 
