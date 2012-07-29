@@ -414,7 +414,7 @@ void MainWindow::on_actionAbout_triggered()
     const char *time = __TIME__;
     content.append(tr("Compilation time: %1 %2 <br/>").arg(date).arg(time));
 
-    QString project_url = "http://code.google.com/p/qpirate";
+    QString project_url = "http://github.com/takashiro/QPirate";
     content.append(tr("Source code: <a href='%1' style = \"color:#0072c1; \">%1</a> <br/>").arg(project_url));
 
     QString forum_url = "http://inu.3-a.net";
