@@ -46,20 +46,28 @@ public:
         events << Damaged;
     }
 
-    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-        if(player->isKongcheng() || !player->askForSkillInvoke(objectName())){
-            return false;
-        }
+    virtual bool triggerable(const ServerPlayer *) const{
+        return true;
+    }
 
-        Room *room = player->getRoom();
-        const Card *card = room->askForCard(player, ".black", objectName());
-        if(card == NULL){
-            return false;
-        }
+    virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
+        Room *room = target->getRoom();
+        foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){
+            if(player->isKongcheng()){
+                continue;
+            }
 
-        DamageStruct damage = data.value<DamageStruct>();
-        damage.from->turnOver();
-        damage.to->turnOver();
+            const Card *card = room->askForCard(player, ".black", "#AntiWarPrompt");
+            if(card == NULL){
+                continue;
+            }
+            room->sendLog("#InvokeSkill", player, objectName());
+            room->throwCard(card);
+
+            DamageStruct damage = data.value<DamageStruct>();
+            damage.from->turnOver();
+            damage.to->turnOver();
+        }
 
         return false;
     }
