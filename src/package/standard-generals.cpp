@@ -1,4 +1,5 @@
 #include "standard-generals.h"
+#include "client.h"
 
 class Insulator: public TriggerSkill{
 public:
@@ -174,7 +175,28 @@ public:
 
     virtual bool viewFilter(const CardItem *to_select) const{
         const Card *card = to_select->getCard();
-        return !to_select->isEquipped() && card->getSuit() != Card::Club && (card->getTypeId() == Card::Basic || card->getTypeId() == Card::Equip);
+        if(to_select->isEquipped() || card->getSuit() == Card::Club || (card->getTypeId() != Card::Basic && card->getTypeId() != Card::Equip)){
+            return false;
+        }
+        switch(card->getSuit()){
+        case Card::Spade:
+            if(Self->containsTrick("lighting")){
+                return false;
+            }
+            break;
+        case Card::Heart:
+            if(Self->containsTrick("rain")){
+                return false;
+            }
+            break;
+        case Card::Diamond:
+            if(Self->containsTrick("tornado")){
+                return false;
+            }
+            break;
+        default:;
+        }
+        return true;
     }
 
     virtual const Card *viewAs(CardItem *card_item) const{
@@ -182,12 +204,21 @@ public:
         Card *card = NULL;
         switch(sub->getSuit()){
         case Card::Spade:
+            if(Self->containsTrick("lighting")){
+                return NULL;
+            }
             card = new Lightning(sub->getSuit(), sub->getNumber());
             break;
         case Card::Heart:
+            if(Self->containsTrick("rain")){
+                return NULL;
+            }
             card = new Rain(sub->getSuit(), sub->getNumber());
             break;
         case Card::Diamond:
+            if(Self->containsTrick("tornado")){
+                return NULL;
+            }
             card = new Tornado(sub->getSuit(), sub->getNumber());
         default:;
         }

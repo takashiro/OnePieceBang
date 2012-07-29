@@ -1003,34 +1003,14 @@ void Dashboard::onCardItemClicked(){
 void Dashboard::updatePending(){
     foreach(CardItem *c, m_handCards){
         if(!c->isSelected() || pendings.isEmpty()){
-            bool c_enabled = view_as_skill->viewFilter(pendings, c);
-            if(!view_as_skill->inherits("ResponseSkill")){
-                QList<CardItem *> cards;
-                cards.append(pendings);
-                cards.append(c);
-                const Card *view_as = view_as_skill->viewAs(cards);
-                if(Self != NULL && view_as != NULL && !view_as->isAvailable(Self)){
-                    c_enabled = false;
-                }
-            }
-            c->setEnabled(c_enabled);
+            c->setEnabled(view_as_skill->viewFilter(pendings, c));
         }
     }
 
     foreach(CardItem **equip_ptr, equips){
         CardItem *equip = *equip_ptr;
         if(equip && !equip->isMarked()){
-            bool e_markable = view_as_skill->viewFilter(pendings, equip);
-            if(!view_as_skill->inherits("ResponseSkill")){
-                QList<CardItem *> cards;
-                cards.append(pendings);
-                cards.append(equip);
-                const Card *view_as = view_as_skill->viewAs(cards);
-                if(Self != NULL && view_as != NULL && !view_as->isAvailable(Self)){
-                    e_markable = false;
-                }
-            }
-            equip->setMarkable(e_markable);
+            equip->setMarkable(view_as_skill->viewFilter(pendings, equip));
         }
     }
 
