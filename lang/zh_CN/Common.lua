@@ -6,6 +6,10 @@ return {
 	["heart"] = "红桃",
 	["diamond"] = "方块",
 	["no_suit"] = "无色",
+
+	["red"] = "红色",
+	["black"] = "黑色",
+
 	["basic"] = "基本牌",
 	["trick"] = "锦囊牌",
 	["equip"] = "装备牌",

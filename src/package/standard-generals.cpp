@@ -223,13 +223,11 @@ public:
         default:;
         }
 
-        if(card){
+        if(card != NULL){
             card->setSkillName(objectName());
             card->addSubcard(sub);
-            return card;
-        }else{
-            return NULL;
         }
+        return card;
     }
 };
 
@@ -381,6 +379,7 @@ public:
         const Card *sub = card_item->getCard();
         GodSalvation *card = new GodSalvation(sub->getSuit(), sub->getNumber());
         card->addSubcard(sub);
+        card->setSkillName(objectName());
         return card;
     }
 };
@@ -421,14 +420,91 @@ public:
     }
 
     virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
-        return pattern == "slash";
+        return pattern == "slash" || pattern.contains("peach");
     }
 
     virtual const Card *viewAs(CardItem *card_item) const{
         const Card *sub = card_item->getCard();
-        FireSlash *slash = new FireSlash(sub->getSuit(), sub->getNumber());
-        slash->addSubcard(sub);
-        return slash;
+        Card *card = NULL;
+        if(sub->inherits("Jink")){
+            card = new FireSlash(sub->getSuit(), sub->getNumber());
+        }else if(sub->inherits("Slash") && sub->isRed()){
+            card = new Peach(sub->getSuit(), sub->getNumber());
+        }
+
+        if(card != NULL){
+            card->addSubcard(sub);
+            card->setSkillName(objectName());
+        }
+
+        return card;
+    }
+};
+
+class Dream: public TriggerSkill{
+public:
+    Dream(): TriggerSkill("dream"){
+        events << PhaseChange;
+        frequency = Frequent;
+    }
+
+    virtual bool triggerable(const ServerPlayer *target) const{
+        return TriggerSkill::triggerable(target) && target->getPhase() == Player::NotActive;
+    }
+
+    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+        QString color;
+        Room *room = player->getRoom();
+        JudgeStruct judge;
+        judge.reason = objectName();
+        judge.who = player;
+        judge.good = true;
+
+        while(player->askForSkillInvoke(objectName())){
+            color = room->askForChoice(player, objectName(), "red+black");            
+            if(color == "red"){
+                room->sendLog("#DreamRed", player);
+                judge.pattern = QRegExp("(.*):(heart|diamond):(.*)");
+            }else{
+                room->sendLog("#DreamBlack", player);
+                judge.pattern = QRegExp("(.*):(spade|club):(.*)");
+            }
+
+            room->judge(judge);
+            if(judge.isGood()){
+                room->obtainCard(player, judge.card->getId());
+            }else{
+                break;
+            }
+        }
+
+        return false;
+    }
+};
+
+class Will: public TriggerSkill{
+public:
+    Will(): TriggerSkill("will"){
+        events << Dying;
+        frequency = Wake;
+    }
+
+    virtual bool triggerable(const ServerPlayer *target) const{
+        return TriggerSkill::triggerable(target) && target->getMark("@willwaked") <= 0;
+    }
+
+    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+        Room *room = player->getRoom();
+
+        RecoverStruct recover;
+        recover.who = player;
+        room->recover(player, recover);
+
+        room->setPlayerProperty(player, "maxhp", player->getMaxHp() + 1);
+        room->setPlayerProperty(player, "kingdom", "government");
+        player->gainMark("@willwaked");
+
+        return false;
     }
 };
 
@@ -466,4 +542,8 @@ void StandardPackage::addGenerals()
 
     General *baki = new General(this, "baki", "pirate", 3);
     baki->addSkill(new Divided);
+
+    General *cobi = new General(this, "cobi", "citizen", 3);
+    cobi->addSkill(new Dream);
+    cobi->addSkill(new Will);
 }
