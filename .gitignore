@@ -19,3 +19,4 @@ etc/customScenes/custom_scenario.txt
 *.dylib
 QSanguosha.exe
 *.db
+doc/references/
