@@ -91,7 +91,7 @@ public:
     void showAllCards(ServerPlayer *player, ServerPlayer *to = NULL);
 
     void sendLog(const LogMessage &log);
-    void sendLog(const QString type, ServerPlayer *from, const QString &arg);
+    void sendLog(const QString type, ServerPlayer *from = NULL, const QString &arg = QString());
    
     // Ask a player to send a server request and returns the client response. Call is blocking until client 
     // replies or server times out, whichever is earlier.
