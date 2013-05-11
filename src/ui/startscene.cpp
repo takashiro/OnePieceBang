@@ -11,7 +11,7 @@ StartScene::StartScene()
 {
     // game logo
     logo = new Pixmap("image/logo/logo.png", true);
-    logo->moveBy(0, -Config.Rect.height()/4);
+    logo->moveBy(-Config.Rect.width() / 4, -Config.Rect.height() / 3);
     addItem(logo);
 
     //the website URL
