@@ -316,13 +316,13 @@ end
 local lianli_slash_skill={name="lianli-slash"}
 table.insert(sgs.ai_skills, lianli_slash_skill)
 lianli_slash_skill.getTurnUseCard = function(self)
-	local slash = sgs.QPirate:cloneCard("slash", sgs.Card_NoSuit, 0)
+	local slash = sgs.Bang:cloneCard("slash", sgs.Card_NoSuit, 0)
 	if self.player:getMark("@tied")>0 and slash:isAvailable(self.player) then return sgs.Card_Parse("@LianliSlashCard=.") end
 end
 
 sgs.ai_skill_use_func.LianliSlashCard = function(card, use, self)
 	if self.player:hasUsed("LianliSlashCard") and not sgs.lianlislash then return end
-	local slash = sgs.QPirate:cloneCard("slash", sgs.Card_NoSuit, 0)
+	local slash = sgs.Bang:cloneCard("slash", sgs.Card_NoSuit, 0)
 	self:useBasicCard(slash, use)
 	if use.card then use.card = card end
 end
@@ -370,7 +370,7 @@ function guihan_skill.getTurnUseCard(self)
 	for index = #cards, 1, -1 do
 		if self:getUseValue(cards[index]) >= 6 then break end
 		if cards[index]:isRed() then
-			if #red_cards == 0 or (#red_cards == 1 and cards[index]:getSuit() == sgs.QPirate:getCard(red_cards[1]):getSuit()) then
+			if #red_cards == 0 or (#red_cards == 1 and cards[index]:getSuit() == sgs.Bang:getCard(red_cards[1]):getSuit()) then
 				table.insert(red_cards, cards[index]:getId())
 				table.remove(cards, index)
 			end
@@ -429,7 +429,7 @@ function sgs.ai_skill_choice.shenjun(self, choices)
 		end
 		gender = (male < #self.enemies - male)
 	else
-		gender = (sgs.QPirate:getSkill("shenjun"):getDefaultChoice(self.player) == "male")	
+		gender = (sgs.Bang:getSkill("shenjun"):getDefaultChoice(self.player) == "male")	
 	end
 	if self.player:getSeat() < self.room:alivePlayerCount()/2 then gender = not gender end
 	if gender then return "male" else return "female" end
@@ -524,7 +524,7 @@ end
 
 sgs.ai_skill_use_func.LexueCard = function(card, use, self)
 	if self.player:hasFlag("lexue") then
-		local lexuesrc = sgs.QPirate:getCard(self.player:getMark("lexue"))
+		local lexuesrc = sgs.Bang:getCard(self.player:getMark("lexue"))
 		local cards = sgs.QList2Table(self.player:getHandcards())
 		self:sortByUseValue(cards, true)
 		for _, hcard in ipairs(cards) do
@@ -655,7 +655,7 @@ sgs.ai_skill_use_func.YisheAskCard=function(card,use,self)
 	if not zhanglu or not self:isFriend(zhanglu) then return end
 	cards = sgs.QList2Table(cards)
 	for _, pcard in ipairs(cards) do
-		if not sgs.QPirate:getCard(pcard):inherits("Shit") then
+		if not sgs.Bang:getCard(pcard):inherits("Shit") then
 			use.card = card
 			return
 		end

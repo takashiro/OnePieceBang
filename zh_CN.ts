@@ -1748,10 +1748,8 @@
         <translation>启动服务器</translation>
     </message>
     <message>
-        <location filename="src/dialog/mainwindow.ui" line="14"/>
-        <location filename="src/dialog/mainwindow.cpp" line="153"/>
         <source>QPirate</source>
-        <translation>海贼杀</translation>
+        <translation type="obsolete">海贼杀</translation>
     </message>
     <message>
         <location filename="src/dialog/mainwindow.ui" line="83"/>
@@ -1771,7 +1769,7 @@
     <message>
         <location filename="src/dialog/mainwindow.ui" line="142"/>
         <source>General overview</source>
-        <translation>武将一览</translation>
+        <translation>人物一览</translation>
     </message>
     <message>
         <location filename="src/dialog/mainwindow.ui" line="155"/>
@@ -1961,6 +1959,12 @@
         <translation></translation>
     </message>
     <message>
+        <location filename="src/dialog/mainwindow.ui" line="14"/>
+        <location filename="src/dialog/mainwindow.cpp" line="153"/>
+        <source>OnePieceBang</source>
+        <translation>海贼杀</translation>
+    </message>
+    <message>
         <location filename="src/dialog/mainwindow.ui" line="246"/>
         <source>Surrender</source>
         <translation>投降</translation>
@@ -2140,7 +2144,8 @@
     </message>
     <message>
         <location filename="src/dialog/mainwindow.cpp" line="423"/>
-        <source>About QPirate</source>
+        <source>About OnePieceBang</source>
+        <oldsource>About QPirate</oldsource>
         <translation>关于海贼杀</translation>
     </message>
     <message>
@@ -2501,12 +2506,12 @@
 <context>
     <name>Photo</name>
     <message>
-        <location filename="src/ui/photo.cpp" line="478"/>
+        <location filename="src/ui/photo.cpp" line="481"/>
         <source>%1 / %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/ui/photo.cpp" line="580"/>
+        <location filename="src/ui/photo.cpp" line="583"/>
         <source>Multiple</source>
         <translation>多个牌堆</translation>
     </message>
@@ -2665,59 +2670,59 @@
 <context>
     <name>Room</name>
     <message>
-        <location filename="src/server/room.cpp" line="1626"/>
+        <location filename="src/server/room.cpp" line="1625"/>
         <source>disconnected</source>
         <translation>断开</translation>
     </message>
     <message>
-        <location filename="src/server/room.cpp" line="1881"/>
+        <location filename="src/server/room.cpp" line="1880"/>
         <source>Computer %1</source>
         <translation>电脑 %1</translation>
     </message>
     <message>
-        <location filename="src/server/room.cpp" line="1648"/>
-        <location filename="src/server/room.cpp" line="1954"/>
+        <location filename="src/server/room.cpp" line="1647"/>
+        <location filename="src/server/room.cpp" line="1953"/>
         <location filename="src/server/room.cpp" line="4027"/>
         <source>Contestant</source>
         <translation>选手</translation>
     </message>
     <message>
-        <location filename="src/server/room.cpp" line="1649"/>
+        <location filename="src/server/room.cpp" line="1648"/>
         <source>&lt;font color=#000000&gt;Player &lt;b&gt;%1&lt;/b&gt; left the game&lt;/font&gt;</source>
         <translation>&lt;font color=#000000&gt;玩家 %1 离开了游戏&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="src/server/room.cpp" line="1859"/>
+        <location filename="src/server/room.cpp" line="1858"/>
         <source>%1: %2 is not invokable</source>
         <translation>%1: 不可调用的方法名 %2</translation>
     </message>
     <message>
-        <location filename="src/server/room.cpp" line="1885"/>
+        <location filename="src/server/room.cpp" line="1884"/>
         <source>Hello, I&apos;m a robot</source>
         <translation>大家好，我是一个机器人</translation>
     </message>
     <message>
-        <location filename="src/server/room.cpp" line="1953"/>
+        <location filename="src/server/room.cpp" line="1952"/>
         <source>&lt;font color=#EEB422&gt;Player &lt;b&gt;%1&lt;/b&gt; joined the game&lt;/font&gt;</source>
         <translation>&lt;font color=#EEB422&gt;玩家 &lt;b&gt;%1&lt;/b&gt; 加入了游戏&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="src/server/room.cpp" line="2345"/>
+        <location filename="src/server/room.cpp" line="2344"/>
         <source>Unable to parse player</source>
         <translation>不可分析的玩家</translation>
     </message>
     <message>
-        <location filename="src/server/room.cpp" line="2349"/>
+        <location filename="src/server/room.cpp" line="2348"/>
         <source>Server is not waiting for reply from %1</source>
         <translation>服务正在等待 %1 的响应</translation>
     </message>
     <message>
-        <location filename="src/server/room.cpp" line="2353"/>
+        <location filename="src/server/room.cpp" line="2352"/>
         <source>Reply command should be %1 instead of %2</source>
         <translation>应答指令应为 %1 而不是 %2</translation>
     </message>
     <message>
-        <location filename="src/server/room.cpp" line="2358"/>
+        <location filename="src/server/room.cpp" line="2357"/>
         <source>Reply serial should be %1 instead of %2</source>
         <translation>玩家序号应为 %1 而不是 %2</translation>
     </message>
@@ -2752,9 +2757,8 @@
         <translation>聊天请在此输入 ...</translation>
     </message>
     <message>
-        <location filename="src/ui/roomscene.cpp" line="336"/>
         <source>QPirate</source>
-        <translation>海贼杀</translation>
+        <translation type="obsolete">海贼杀</translation>
     </message>
     <message>
         <location filename="src/ui/roomscene.cpp" line="1736"/>
@@ -2853,6 +2857,11 @@
         <location filename="src/ui/roomscene.cpp" line="185"/>
         <source>Change general ...</source>
         <translation>修改武将 ...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/roomscene.cpp" line="336"/>
+        <source>OnePieceBang</source>
+        <translation>海贼杀</translation>
     </message>
     <message>
         <location filename="src/ui/roomscene.cpp" line="967"/>

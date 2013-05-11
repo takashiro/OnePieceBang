@@ -19,6 +19,7 @@
 #include <QPushButton>
 #include <QMenu>
 #include <QGraphicsDropShadowEffect>
+#include <QBitmap>
 
 #include "pixmapanimation.h"
 
@@ -35,7 +36,7 @@ Photo::Photo(): player(NULL),
                 order_item(NULL), hide_avatar(false)
 {
     setAcceptHoverEvents(true);
-    translate(-S_NORMAL_PHOTO_WIDTH / 2, -S_NORMAL_PHOTO_HEIGHT / 2);
+    //translate(-S_NORMAL_PHOTO_WIDTH / 2, -S_NORMAL_PHOTO_HEIGHT / 2);
 
     chain_icon = QPixmap("image/system/chain.png");
 
@@ -50,8 +51,8 @@ Photo::Photo(): player(NULL),
     widget->setPos(S_NORMAL_PHOTO_WIDTH, 0);
 
     frame_item = new QGraphicsPixmapItem(this);
-    frame_item->setPos(-6, -6);
-    frame_item->setZValue(-1.0);
+    frame_item->setPos(-2, -2);
+    frame_item->setZValue(-2.0);
     
     skill_name_item = new QGraphicsSimpleTextItem(this);
     skill_name_item->setBrush(Qt::white);
@@ -67,7 +68,7 @@ Photo::Photo(): player(NULL),
     emotion_item = new QGraphicsPixmapItem(this);
     emotion_item->moveBy(10, 0);
 
-    avatar_area = new QGraphicsRectItem(6, 26, 120, 50, this);
+    avatar_area = new QGraphicsRectItem(5, 5, S_NORMAL_PHOTO_WIDTH, S_NORMAL_PHOTO_HEIGHT, this);
     avatar_area->setPen(Qt::NoPen);
 
     back_icon = QPixmap("image/generals/small/faceturned.png");
@@ -170,7 +171,7 @@ void Photo::tremble(){
 }
 
 void Photo::showSkillName(const QString &skill_name){
-    skill_name_item->setText(QPirate->translate(skill_name));
+    skill_name_item->setText(Bang->translate(skill_name));
     skill_name_item->show();
 
     QTimer::singleShot(1500, this, SLOT(hideSkillName()));
@@ -229,7 +230,7 @@ void Photo::hideAvatar(){
 }
 
 void Photo::showCard(int card_id){
-    const Card *card = QPirate->getCard(card_id);
+    const Card *card = Bang->getCard(card_id);
 
     CardItem *card_item = new CardItem(card);
     scene()->addItem(card_item);
@@ -245,21 +246,23 @@ void Photo::updateAvatar(){
     if(player){
         const General *general = player->getAvatarGeneral();
         avatar_area->setToolTip(general->getSkillDescription());
-        bool success = avatar.load(general->getPixmapPath("small"));
+        bool success = QFile::exists(general->getPixmapPath("card"));
+        if(success){
+            success = avatar.load(general->getPixmapPath("card"));
+            avatar = avatar.copy(45, 30, S_NORMAL_PHOTO_WIDTH, S_NORMAL_PHOTO_HEIGHT);
+        }
         _m_kingdomIcon.load(player->getKingdomIcon());
-        _m_kindomColorMaskIcon.load(player->getKingdomFrame());
+        _m_kindomColorMaskIcon = QPixmap(20, S_NORMAL_PHOTO_HEIGHT);
+        _m_kindomColorMaskIcon.fill(QColor(0, 0, 0, 0));
+
+        QPainter painter(&pixmap);
+        painter.setPen(Qt::white);
+        painter.setFont(Config.SmallFont);
+        painter.drawText(0, 0, _m_kindomColorMaskIcon.width(), _m_kindomColorMaskIcon.height(), Qt::AlignCenter, Bang->translate(player->getGeneralName()));
 
         if(!success){
             QPixmap pixmap(General::SmallIconSize);
             pixmap.fill(Qt::black);
-            QPainter painter(&pixmap);
-
-            painter.setPen(Qt::white);
-            painter.setFont(Config.SmallFont);
-            painter.drawText(0, 0, pixmap.width(), pixmap.height(),
-                             Qt::AlignCenter,
-                             QPirate->translate(player->getGeneralName()));
-
             avatar = pixmap;
         }
 
@@ -292,7 +295,7 @@ void Photo::updateSmallAvatar(){
             painter.setPen(Qt::white);
             painter.drawText(0, 0, pixmap.width(), pixmap.height(),
                              Qt::AlignCenter,
-                             QPirate->translate(player->getGeneral2Name()));
+                             Bang->translate(player->getGeneral2Name()));
 
             small_avatar = pixmap;
         }
@@ -355,7 +358,7 @@ void Photo::installDelayedTrick(CardItem *trick){
     item->setPixmap(QPixmap(player->topDelayedTrick()->getIconPath()));
     QString tooltip;
     if(player->topDelayedTrick()->isVirtualCard())
-        tooltip=QPirate->getCard((player->topDelayedTrick()->getSubcards()).at(0))->getDescription();
+        tooltip=Bang->getCard((player->topDelayedTrick()->getSubcards()).at(0))->getDescription();
     else
         tooltip=player->topDelayedTrick()->getDescription();
     item->setToolTip(tooltip);
@@ -406,7 +409,7 @@ QList<CardItem*> Photo::removeCardItems(const QList<int> &card_ids, Player::Plac
             m_takenOffCards.removeAt(index);
             if (card_item->getId() == Card::S_UNKNOWN_CARD_ID)
             {
-                const Card* card = QPirate->getCard(card_id);
+                const Card* card = Bang->getCard(card_id);
                 card_item->setCard(card);
             }
             result.append(card_item);
@@ -446,8 +449,8 @@ bool Photo::_addCardItems(QList<CardItem*> &card_items, Player::Place place)
 }
 
 void Photo::drawMagatama(QPainter *painter, int index, const QPixmap &pixmap){
-    const int step = pixmap.width();
-    painter->drawPixmap(54 + index * step, 73, pixmap);
+    const int step = pixmap.height();
+    painter->drawPixmap(S_NORMAL_PHOTO_WIDTH - pixmap.width() - 2, S_NORMAL_PHOTO_HEIGHT - pixmap.height() - index * step, pixmap);
 }
 
 void Photo::drawHp(QPainter *painter){
@@ -556,7 +559,7 @@ void Photo::updatePile(const QString &pile_name){
         if(!pile.isEmpty()){
             button_widget->show();
             active++;
-            button->setText(QString("%1 (%2)").arg(QPirate->translate(pile_name)).arg(pile.length()));
+            button->setText(QString("%1 (%2)").arg(Bang->translate(pile_name)).arg(pile.length()));
         }
 
         QMenu *menu = button->menu();
@@ -565,7 +568,7 @@ void Photo::updatePile(const QString &pile_name){
 
         QList<const Card *> cards;
         foreach(int card_id, pile){
-            const Card *card = QPirate->getCard(card_id);
+            const Card *card = Bang->getCard(card_id);
             if (card != NULL) cards << card;
         }
 
@@ -573,7 +576,7 @@ void Photo::updatePile(const QString &pile_name){
         foreach(const Card *card, cards){            
             menu->addAction(card->getSuitIcon(),
                             QString("%1 (%2)").arg(card->getFullName())
-                            .arg(QPirate->translate(pile_name)));
+                            .arg(Bang->translate(pile_name)));
         }
         menu->addSeparator();
     }
@@ -589,18 +592,20 @@ void Photo::updatePile(const QString &pile_name){
 }
 
 void Photo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
-    painter->setPen(Qt::white); 
+    painter->setPen(Qt::white);
     QRect avatarRect = avatar_area->boundingRect().toRect();
     static QPixmap wait_frame("image/system/wait-frame.png");    
-    if(_m_kindomColorMaskIcon.isNull())    
+    if(_m_kindomColorMaskIcon.isNull())
         painter->drawPixmap(avatarRect, wait_frame);
     if (!hide_avatar)
     {        
         // avatar related
         painter->drawPixmap(avatarRect, avatar);
         painter->drawPixmap(small_avatar_area->boundingRect().toRect(), small_avatar);
-        if(!_m_kindomColorMaskIcon.isNull())    
-            painter->drawPixmap(avatarRect, _m_kindomColorMaskIcon);
+        if(!_m_kindomColorMaskIcon.isNull()){
+            QRect kingdom_mask_rect(0, 0, _m_kindomColorMaskIcon.width(), S_NORMAL_PHOTO_HEIGHT / 2);
+            painter->drawPixmap(kingdom_mask_rect, _m_kindomColorMaskIcon);
+        }
     }
     if (player != NULL && player->isAlive())
     {
@@ -617,19 +622,24 @@ void Photo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     painter->drawPixmap(QRect(0, 0, S_SHADOW_INCLUSIVE_PHOTO_WIDTH, S_SHADOW_INCLUSIVE_PHOTO_HEIGHT), _m_mainFrame);
     if (!hide_avatar)
     {
-        painter->drawPixmap(QRect(10, 3, 22, 22), _m_kingdomIcon);
+        painter->drawPixmap(QRect(0, 0, 36, 36), _m_kingdomIcon);
     }
 
-    if (player == NULL) return;    
-    painter->drawText(QRect(28, 12, 72, 14), player->screenName(), QTextOption(Qt::AlignHCenter));
+    if (player == NULL) return;
+
+    QPixmap screen_name_mask(S_NORMAL_PHOTO_WIDTH - 35, 16);
+    screen_name_mask.fill(QColor(0, 0, 0, 125));
+    painter->drawPixmap(QRect(28, 6, 72, 14), screen_name_mask);
+    painter->drawText(QRect(28, 6, 72, 14), player->screenName(), QTextOption(Qt::AlignHCenter));
+
     drawHp(painter);
     int n = player->getHandcardNum();
     if (n > 0) {
-        painter->drawPixmap(QRect(6, 68, 18, 18), _m_handCardIcon);
+        painter->drawPixmap(QRect(0, 68, 18, 18), _m_handCardIcon);
         QFont hpFont("Arial");
         hpFont.setBold(true);
         painter->setFont(hpFont);
-        painter->drawText(QRect(6, 68, 18, 18), QString::number(n), QTextOption(Qt::AlignCenter));
+        painter->drawText(QRect(0, 68, 18, 18), QString::number(n), QTextOption(Qt::AlignCenter));
         hpFont.setBold(false);
         painter->setFont(hpFont);
     }
@@ -655,7 +665,7 @@ void Photo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         QRectF stateArea(0, avatarRect.top(), 24, 15);
         stateArea.moveRight(avatarRect.right());
         painter->fillRect(stateArea, Qt::gray);
-        painter->drawText(stateArea, QPirate->translate(state_str));
+        painter->drawText(stateArea, Bang->translate(state_str));
     }    
 
     if(player->getPhase() != Player::NotActive){

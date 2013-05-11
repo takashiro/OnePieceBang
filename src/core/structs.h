@@ -3,12 +3,12 @@
 
 class Room;
 class TriggerSkill;
-class ServerPlayer;
 class Card;
 class Slash;
 class GameRule;
 
 #include "player.h"
+#include "serverplayer.h"
 
 #include <QVariant>
 #include <json/json.h>
@@ -259,6 +259,8 @@ enum TriggerEvent{
     CardDrawing,
     CardDrawnDone,
 
+    TargetSelecting,
+    TargetSelected,
     CardEffect,
     CardEffected,
     CardFinished,

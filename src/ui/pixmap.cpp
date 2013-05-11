@@ -49,7 +49,7 @@ bool Pixmap::_load(const QString &filename, QSize size, bool useNewSize, bool ce
         if(center_as_origin)
         {
             resetTransform();
-            this->translate(-_m_width / 2, -_m_height / 2);
+            //this->scaled(-_m_width / 2, -_m_height / 2);
         }
         else
             this->prepareGeometryChange();
@@ -68,7 +68,7 @@ Pixmap::Pixmap(bool center_as_origin)
     if(center_as_origin)
     {
         resetTransform();
-        this->translate(-pixmap.width() / 2, -pixmap.height()/2);
+        //this->scaled(-pixmap.width() / 2, -pixmap.height()/2);
     }
     _m_width = _m_height = 0;
 }

@@ -85,7 +85,7 @@ CardItem::~CardItem()
 void CardItem::changeGeneral(const QString &general_name){
     setObjectName(general_name);
 
-    const General *general = QPirate->getGeneral(general_name);
+    const General *general = Bang->getGeneral(general_name);
     if(general){
         load(general->getPixmapPath("card"));
         setToolTip(general->getSkillDescription());

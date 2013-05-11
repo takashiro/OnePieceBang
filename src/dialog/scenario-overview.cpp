@@ -28,10 +28,10 @@ ScenarioOverview::ScenarioOverview(QWidget *parent)
 
     setLayout(layout);
 
-    QStringList names = QPirate->getScenarioNames();
+    QStringList names = Bang->getScenarioNames();
     names << "Hulaopass" << "Basara" << "Hegemony" << "MiniScene";
     foreach(QString name, names){
-        QString text = QPirate->translate(name);
+        QString text = Bang->translate(name);
         QListWidgetItem *item = new QListWidgetItem(text, list);
         item->setData(Qt::UserRole, name);
     }

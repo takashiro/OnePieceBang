@@ -44,7 +44,7 @@ public:
     }
 
     virtual bool triggerable(const ServerPlayer *target) const{
-        return TriggerSkill::triggerable(target) && target->getPhase() == Player::NotActive;
+        return TriggerSkill::triggerable(target) && target->getPhase() == Player::Finish;
     }
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
@@ -56,7 +56,7 @@ public:
         const Card *card = room->askForCard(player, ".S", "thunderbot-invoke", QVariant(), NonTrigger);
 
         if(card){
-            room->throwCard(card);
+            room->throwCard(card, player);
 
             DamageStruct damage;
             damage.from = player;
@@ -112,15 +112,100 @@ public:
     }
 };
 
+class DarkWater: public TriggerSkill{
+public:
+    DarkWater(): TriggerSkill("darkwater"){
+        events << Predamaged << TargetSelected;
+        frequency = Compulsory;
+    }
+
+    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+        if(event == Predamaged){
+            DamageStruct damage = data.value<DamageStruct>();
+            if(damage.nature == DamageStruct::Normal){
+                player->getRoom()->sendLog("#TriggerSkill", player, objectName());
+                damage.damage++;
+                data = QVariant::fromValue(damage);
+            }
+        }else{
+            CardUseStruct use = data.value<CardUseStruct>();
+            if(use.card->isRed() && player->askForSkillInvoke(objectName())){
+                RecoverStruct recover;
+                recover.card = use.card;
+                recover.who = player;
+                player->getRoom()->recover(player, recover);
+            }
+        }
+        return false;
+    }
+};
+
+class BlackHole: public TriggerSkill{
+public:
+    BlackHole(): TriggerSkill("blackhole"){
+        events << CardEffect << SlashMissed;
+        frequency = Compulsory;
+    }
+
+    virtual bool triggerable(const ServerPlayer *target) const{
+        Room *room = target->getRoom();
+        foreach(ServerPlayer *player, room->findPlayersBySkillName("darkwater")){
+            if(player->getPhase() != Player::NotActive){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
+        Room *room = target->getRoom();
+
+        const Card *card = NULL;
+        if(event == CardEffect){
+            CardEffectStruct effect = data.value<CardEffectStruct>();
+            card = effect.card;
+
+            if(card && card->isRed() && card->getTypeId() == Card::Basic){
+                ServerPlayer *player = room->findPlayerBySkillName("blackhole");
+                room->sendLog("#TriggerSkill", player, "blackhole");
+                return true;
+            }
+
+        }else if(event == SlashMissed){
+            SlashEffectStruct effect = data.value<SlashEffectStruct>();
+            if(effect.from->hasSkill("blackhole") && effect.from->getPhase() != Player::NotActive && effect.jink->isRed()){
+                room->sendLog("#TriggerSkill", effect.from, "blackhole");
+                const Card *jink = NULL;
+                forever{
+                    QString prompt = "slash-jink:" + effect.from->getGeneralName();
+                    jink = room->askForCard(effect.to, "jink", prompt, QVariant(), CardUsed);
+                    if(jink == NULL){
+                        room->slashResult(effect, NULL);
+                        return true;
+                    }else if(jink->isBlack()){
+                        break;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+};
+
 TestPackage::TestPackage():Package("Test")
 {
     General *law = new General(this, "law", "pirate", 4);
     law->addSkill(new OperatingRoom);
     addMetaObject<OperatingRoomCard>();
 
-    General *enil = new General(this, "enil", "other", 4);
+    General *enil = new General(this, "enil", "citizen", 4);
     enil->addSkill(new GodThunder);
     enil->addSkill(new ThunderBot);
+
+    General *blackbear = new General(this, "blackbear", "pirate", 3);
+    blackbear->addSkill(new DarkWater);
+    blackbear->addSkill(new BlackHole);
 }
 
 ADD_PACKAGE(Test)

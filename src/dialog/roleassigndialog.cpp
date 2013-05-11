@@ -22,12 +22,12 @@ RoleAssignDialog::RoleAssignDialog(QWidget *parent)
     list->setFlow(QListView::TopToBottom);
     list->setMovement(QListView::Static);
 
-    QStringList role_list = QPirate->getRoleList(ServerInfo.GameMode);
+    QStringList role_list = Bang->getRoleList(ServerInfo.GameMode);
 
     if(Config.FreeAssignSelf){
         QString text = QString("%1[%2]")
                        .arg(Self->screenName())
-                       .arg(QPirate->translate("lord"));
+                       .arg(Bang->translate("lord"));
 
         QListWidgetItem *item = new QListWidgetItem(text, list);
         item->setData(Qt::UserRole, Self->objectName());
@@ -41,7 +41,7 @@ RoleAssignDialog::RoleAssignDialog(QWidget *parent)
             const ClientPlayer *player = players.at(i);
             QString text = QString("%1[%2]")
                            .arg(player->screenName())
-                           .arg(QPirate->translate(role));
+                           .arg(Bang->translate(role));
 
             QListWidgetItem *item = new QListWidgetItem(text, list);
             item->setData(Qt::UserRole, player->objectName());
@@ -92,7 +92,7 @@ RoleAssignDialog::RoleAssignDialog(QWidget *parent)
 }
 
 void RoleAssignDialog::accept(){
-    QStringList role_list = QPirate->getRoleList(ServerInfo.GameMode);
+    QStringList role_list = Bang->getRoleList(ServerInfo.GameMode);
     QStringList real_list;
 
     QList<QString> names;
@@ -142,7 +142,7 @@ void RoleAssignDialog::updateRole(int index){
     QString name = list->currentItem()->data(Qt::UserRole).toString();
     QString role = role_combobox->itemData(index).toString();
     ClientPlayer *player = ClientInstance->getPlayer(name);
-    QString text = QString("%1[%2]").arg(player->screenName()).arg(QPirate->translate(role));
+    QString text = QString("%1[%2]").arg(player->screenName()).arg(Bang->translate(role));
     list->currentItem()->setText(text);
     role_mapping[name] = role;
 }

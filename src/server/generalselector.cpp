@@ -13,7 +13,7 @@ GeneralSelector *GeneralSelector::GetInstance(){
         //@todo: this setParent is illegitimate in QT and is equivalent to calling
         // setParent(NULL). So taking it off at the moment until we figure out
         // a way to do it.
-        //Selector->setParent(QPirate);
+        //Selector->setParent(Bang);
     }
 
     return Selector;
@@ -30,7 +30,7 @@ GeneralSelector::GeneralSelector()
 QString GeneralSelector::selectFirst(ServerPlayer *player, const QStringList &candidates){
     QString role = player->getRole();
     int seat = player->getSeat();
-    int player_count = QPirate->getPlayerCount(player->getRoom()->getMode());
+    int player_count = Bang->getPlayerCount(player->getRoom()->getMode());
     int index = seat;
     if(player_count < 8 && seat == player_count)
         index = 8;
@@ -118,8 +118,8 @@ QString GeneralSelector::selectHighest(const QHash<QString, int> &table, const Q
 }
 
 static bool CompareByMaxHp(const QString &a, const QString &b){
-    const General *g1 = QPirate->getGeneral(a);
-    const General *g2 = QPirate->getGeneral(b);
+    const General *g1 = Bang->getGeneral(a);
+    const General *g2 = Bang->getGeneral(b);
 
     return g1->getMaxHp() < g2->getMaxHp();
 }
@@ -159,7 +159,7 @@ void GeneralSelector::loadFirstGeneralTable(){
 }
 
 void GeneralSelector::loadFirstGeneralTable(const QString &role){
-    QStringList prefix = QPirate->getLords();
+    QStringList prefix = Bang->getLords();
     prefix << QString();
     foreach(QString lord, prefix){
         QFile file(QString("etc/%1%2%3.txt").arg(lord).arg((lord.isEmpty()?"":"_")).arg(role));

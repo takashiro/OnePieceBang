@@ -33,7 +33,7 @@ void ClientLogBox::appendLog(
         foreach(QString to, tos)
             to_list << ClientInstance->getPlayerName(to);
         to = to_list.join(",");
-        arg = QPirate->translate(arg);
+        arg = Bang->translate(arg);
 
         to = bold(to, Qt::red);
     }
@@ -43,7 +43,7 @@ void ClientLogBox::appendLog(
     if(type.startsWith("$")){
         QString log_name;
         foreach(QString one_card, card_str.split("+")){
-            const Card *card = QPirate->getCard(one_card.toInt());
+            const Card *card = Bang->getCard(one_card.toInt());
             if(log_name.isEmpty())
                 log_name = card->getLogName();
             else
@@ -51,7 +51,7 @@ void ClientLogBox::appendLog(
         }
         log_name = bold(log_name, Qt::yellow);
 
-        log = QPirate->translate(type);
+        log = Bang->translate(type);
         log.replace("%from", from);
         log.replace("%to", to);
         log.replace("%card", log_name);
@@ -75,13 +75,13 @@ void ClientLogBox::appendLog(
         card_name = bold(card_name, Qt::yellow);
 
         if(card->isVirtualCard()){
-            QString skill_name = QPirate->translate(card->getSkillName());
+            QString skill_name = Bang->translate(card->getSkillName());
             skill_name = bold(skill_name, Qt::yellow);
 
             QList<int> card_ids = card->getSubcards();
             QStringList subcard_list;
             foreach(int card_id, card_ids){
-                const Card *subcard = QPirate->getCard(card_id);
+                const Card *subcard = Bang->getCard(card_id);
                 subcard_list << bold(subcard->getLogName(), Qt::yellow);
             }
 
@@ -92,7 +92,7 @@ void ClientLogBox::appendLog(
                     log = tr("%from use skill [%1]").arg(skill_name);
                 else{
                     if(card->inherits("DummyCard"))
-                        skill_name = bold(QPirate->translate("free-discard"), Qt::yellow);
+                        skill_name = bold(Bang->translate("free-discard"), Qt::yellow);
                     log = tr("%from use skill [%1], and the cost is %2").arg(skill_name).arg(subcard_str);
                 }
             }else{
@@ -115,18 +115,18 @@ void ClientLogBox::appendLog(
 
 
     }else
-        log = QPirate->translate(type);
+        log = Bang->translate(type);
 
     log.replace("%from", from);
     log.replace("%to", to);
 
     if(!arg2.isEmpty()){
-        arg2 = bold(QPirate->translate(arg2), Qt::yellow);
+        arg2 = bold(Bang->translate(arg2), Qt::yellow);
         log.replace("%arg2", arg2);
     }
 
     if(!arg.isEmpty()){
-        arg = bold(QPirate->translate(arg), Qt::yellow);
+        arg = bold(Bang->translate(arg), Qt::yellow);
         log.replace("%arg", arg);
     }
 

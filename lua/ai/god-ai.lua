@@ -246,7 +246,7 @@ smallyeyan_skill.getTurnUseCard=function(self)
 	end
 	self.yeyanchained = (chained > 1)
 	if target_num > 2 or (target_num > 1 and self.yeyanchained) or
-	(#self.enemies + 1 == self.room:alivePlayerCount() and self.room:alivePlayerCount() < sgs.QPirate:getPlayerCount(self.room:getMode())) then
+	(#self.enemies + 1 == self.room:alivePlayerCount() and self.room:alivePlayerCount() < sgs.Bang:getPlayerCount(self.room:getMode())) then
 		return sgs.Card_Parse("@SmallYeyanCard=.")
 	end
 end
@@ -465,7 +465,7 @@ sgs.ai_use_priority.SmallYeyanCard = 2.3
 sgs.ai_skill_askforag.qixing = function(self, card_ids)
 	local cards = {}
 	for _, card_id in ipairs(card_ids) do
-		table.insert(cards, sgs.QPirate:getCard(card_id))
+		table.insert(cards, sgs.Bang:getCard(card_id))
 	end
 	self:sortByCardNeed(cards)
 	if self.player:getPhase() == sgs.Player_Draw then

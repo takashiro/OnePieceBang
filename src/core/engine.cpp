@@ -18,7 +18,7 @@
 #include <QDir>
 #include <QApplication>
 
-Engine *QPirate = NULL;
+Engine *Bang = NULL;
 
 void Engine::addPackage(const QString &name){
     Package *pack = PackageAdder::packages()[name];
@@ -42,7 +42,7 @@ static inline QVariant GetConfigFromLuaState(lua_State *L, const char *key){
 
 Engine::Engine()
 {
-    QPirate = this;
+    Bang = this;
 
     lua = CreateLuaState();
     DoLuaScript(lua, "lua/config.lua");
@@ -55,7 +55,7 @@ Engine::Engine()
     foreach(QString name, scene_names)
         addScenario(name);
 
-    DoLuaScript(lua, "lua/qpirate.lua");
+    DoLuaScript(lua, "lua/bang.lua");
 
     // available game modes
     modes["02p"] = tr("2 players");
@@ -336,7 +336,7 @@ QColor Engine::getKingdomColor(const QString &kingdom) const{
     static QMap<QString, QColor> color_map;
     if(color_map.isEmpty()){
         foreach(QString k, getKingdoms()){
-            QString color_str = GetConfigFromLuaState(lua,  ("color_" + k).toAscii()).toString();
+            QString color_str = GetConfigFromLuaState(lua,  QString("color_" + k).toLatin1()).toString();
             QRegExp rx("#?([0-9A-F]{2})([0-9A-F]{2})([0-9A-F]{2})");
             if(rx.exactMatch(color_str)){
                 QStringList results = rx.capturedTexts();
@@ -384,7 +384,7 @@ QString Engine::getSetupString() const{
     setup_items << server_name
             << Config.GameMode
             << QString::number(timeout)
-            << QPirate->getBanPackages().join("+")
+            << Bang->getBanPackages().join("+")
             << flags;
 
     return setup_items.join(":");
@@ -487,7 +487,7 @@ QStringList Engine::getRoleList(const QString &mode) const{
     QStringList role_list;
     for(int i=0; roles[i] != '\0'; i++){
         QString role;
-        switch(roles[i].toAscii()){
+        switch(roles[i].toLatin1()){
         case 'Z': role = "lord"; break;
         case 'C': role = "loyalist"; break;
         case 'N': role = "renegade"; break;

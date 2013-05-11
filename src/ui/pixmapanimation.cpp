@@ -2,10 +2,12 @@
 #include <QPainter>
 #include <QPixmapCache>
 #include <QDir>
+#include <QGraphicsScene>
 
 PixmapAnimation::PixmapAnimation(QGraphicsScene *scene) :
-    QGraphicsItem(0,scene)
+    QGraphicsItem()
 {
+
 }
 
 void PixmapAnimation::advance(int phase)

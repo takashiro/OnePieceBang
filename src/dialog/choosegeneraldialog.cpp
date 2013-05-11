@@ -60,7 +60,7 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
             lord_name = general_name;
             continue;
         }
-        const General *general = QPirate->getGeneral(general_name);
+        const General *general = Bang->getGeneral(general_name);
         generals << general;
     }
 
@@ -75,7 +75,7 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
 
     foreach(const General *general, generals){
         QString icon_path = general->getPixmapPath(category);
-        QString caption = QPirate->translate(general->objectName());
+        QString caption = Bang->translate(general->objectName());
         OptionButton *button = new OptionButton(icon_path, caption);
         button->setToolTip(general->getSkillDescription());
         button->setIconSize(icon_size);
@@ -118,7 +118,7 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
 
         if(lord_name.size())
         {
-            const General * lord = QPirate->getGeneral(lord_name);
+            const General * lord = Bang->getGeneral(lord_name);
 
             QLabel *label = new QLabel;
             //label->setCaption(tr("Lord's general"));
@@ -135,7 +135,7 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
 
         if(lord_name.size())
         {
-            const General * lord = QPirate->getGeneral(lord_name);
+            const General * lord = Bang->getGeneral(lord_name);
 
             QLabel *label = new QLabel;
             //label->setCaption(tr("Lord's general"));
@@ -171,9 +171,9 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
     dialog_layout->addLayout(layout);
 
     // role prompt
-    QLabel *role_label = new QLabel(tr("Your role is %1").arg(QPirate->translate(Self->getRole())));
+    QLabel *role_label = new QLabel(tr("Your role is %1").arg(Bang->translate(Self->getRole())));
     if(lord_name.size())role_label->setText(tr("The lord has chosen %1. %2")
-                                            .arg(QPirate->translate(lord_name))
+                                            .arg(Bang->translate(lord_name))
                                             .arg(role_label->text()));
     dialog_layout->addWidget(role_label);
 
@@ -238,13 +238,13 @@ FreeChooseDialog::FreeChooseDialog(QWidget *parent, bool pair_choose)
     group = new QButtonGroup(this);
     group->setExclusive(! pair_choose);
 
-    QList<const General *> all_generals = QPirate->findChildren<const General *>();
+    QList<const General *> all_generals = Bang->findChildren<const General *>();
     QMap<QString, QList<const General*> > map;
     foreach(const General *general, all_generals){
         map[general->getKingdom()] << general;
     }
 
-    QStringList kingdoms = QPirate->getKingdoms();
+    QStringList kingdoms = Bang->getKingdoms();
 
     foreach(QString kingdom, kingdoms){
         QList<const General *> generals = map[kingdom];
@@ -253,7 +253,7 @@ FreeChooseDialog::FreeChooseDialog(QWidget *parent, bool pair_choose)
             QWidget *tab = createTab(generals);
             tab_widget->addTab(tab,
                                QIcon(QString("image/kingdom/icon/%1.png").arg(kingdom)),
-                               QPirate->translate(kingdom));
+                               Bang->translate(kingdom));
         }
     }
 
@@ -321,8 +321,8 @@ QWidget *FreeChooseDialog::createTab(const QList<const General *> &generals){
             continue;
 
         QString text = QString("%1[%2]")
-                       .arg(QPirate->translate(general_name))
-                       .arg(QPirate->translate(general->getPackage()));
+                       .arg(Bang->translate(general_name))
+                       .arg(Bang->translate(general->getPackage()));
 
         QAbstractButton *button;
         if(pair_choose)

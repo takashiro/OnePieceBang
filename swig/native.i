@@ -42,7 +42,7 @@ static int AddTranslationEntry(lua_State *lua){
 	const char *key = luaL_checkstring(lua, 1);
 	const char *value = luaL_checkstring(lua, 2);
 
-	QPirate->addTranslationEntry(key, value);
+	Bang->addTranslationEntry(key, value);
 
 	return 0;    
 }

@@ -175,7 +175,7 @@ public:
             log.type = "#SkillNullify";
             log.from = player;
             log.arg = avoid_skill;
-            log.arg2 = "savage_assault";
+            log.arg2 = "buster_call";
             player->getRoom()->sendLog(log);
 
             return true;

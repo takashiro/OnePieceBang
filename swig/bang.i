@@ -497,6 +497,8 @@ enum TriggerEvent{
     CardDrawing,
     CardDrawnDone,
 
+    TargetSelecting,
+    TargetSelected,
     CardEffect,
     CardEffected,
     CardFinished,
@@ -698,7 +700,7 @@ public:
 	int correctDistance(const Player *from, const Player *to) const;
 };
 
-extern Engine *QPirate;
+extern Engine *Bang;
 
 class Skill : public QObject
 {

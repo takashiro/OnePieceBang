@@ -25,16 +25,16 @@ ConnectionDialog::ConnectionDialog(QWidget *parent) :
 
     ui->connectButton->setFocus();
 
-    const General *avatar_general = QPirate->getGeneral(Config.UserAvatar);
+    const General *avatar_general = Bang->getGeneral(Config.UserAvatar);
     if(avatar_general){
         QPixmap avatar(avatar_general->getPixmapPath("big"));
         ui->avatarPixmap->setPixmap(avatar);
     }
 
-    QList<const General*> generals = QPirate->findChildren<const General*>();
+    QList<const General*> generals = Bang->findChildren<const General*>();
     foreach(const General *general, generals){
         QIcon icon(general->getPixmapPath("big"));
-        QString text = QPirate->translate(general->objectName());
+        QString text = Bang->translate(general->objectName());
         QListWidgetItem *item = new QListWidgetItem(icon, text, ui->avatarList);
         item->setData(Qt::UserRole, general->objectName());
     }
@@ -91,7 +91,7 @@ void ConnectionDialog::on_changeAvatarButton_clicked()
 void ConnectionDialog::on_avatarList_itemDoubleClicked(QListWidgetItem* item)
 {
     QString general_name = item->data(Qt::UserRole).toString();
-    const General *general = QPirate->getGeneral(general_name);
+    const General *general = Bang->getGeneral(general_name);
     if(general){
         QPixmap avatar(general->getPixmapPath("big"));
         ui->avatarPixmap->setPixmap(avatar);

@@ -21,7 +21,7 @@ void Slash::setNature(DamageStruct::Nature nature){
 }
 
 bool Slash::IsAvailable(const Player *player){
-    if(player->hasFlag("tianyi_failed") || player->hasFlag("xianzhen_failed"))
+    if(player->hasFlag("slash_forbidden"))
         return false;
 
     return player->hasWeapon("crossbow") || player->canSlashWithoutCrossbow();
@@ -105,14 +105,19 @@ QString Peach::getEffectPath(bool ) const{
     return Card::getEffectPath();
 }
 
+void Peach::onUse(Room *room, const CardUseStruct &card_use) const{
+    CardUseStruct use = card_use;
+    if(use.to.isEmpty()){
+        use.to << use.from;
+    }
+    BasicCard::onUse(room, use);
+}
+
 void Peach::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
     room->throwCard(this);
 
-    if(targets.isEmpty())
-        room->cardEffect(this, source, source);
-    else
-        foreach(ServerPlayer *tmp, targets)
-            room->cardEffect(this, source, tmp);
+    foreach(ServerPlayer *tmp, targets)
+        room->cardEffect(this, source, tmp);
 }
 
 void Peach::onEffect(const CardEffectStruct &effect) const{
@@ -547,12 +552,12 @@ void GodSalvation::onEffect(const CardEffectStruct &effect) const{
 BusterCall::BusterCall(Suit suit, int number)
     :AOE(suit, number)
 {
-    setObjectName("savage_assault");
+    setObjectName("buster_call");
 }
 
 void BusterCall::onEffect(const CardEffectStruct &effect) const{
     Room *room = effect.to->getRoom();
-    const Card *slash = room->askForCard(effect.to, "slash", "savage-assault-slash:" + effect.from->objectName());
+    const Card *slash = room->askForCard(effect.to, "slash", "buster-call-slash:" + effect.from->objectName());
     if(slash)
         room->setEmotion(effect.to, "killer");
     else{
@@ -597,6 +602,14 @@ void HaouHaki::onEffect(const CardEffectStruct &effect) const{
     }
 }
 
+void SingleTargetTrick::onUse(Room *room, const CardUseStruct &card_use) const{
+    CardUseStruct use = card_use;
+    if(use.to.isEmpty()){
+        use.to << use.from;
+    }
+    TrickCard::onUse(room, use);
+}
+
 void SingleTargetTrick::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
     room->throwCard(this);
 
@@ -608,10 +621,6 @@ void SingleTargetTrick::use(Room *room, ServerPlayer *source, const QList<Server
             effect.to = tmp;
             room->cardEffect(effect);
         }
-    }
-    else{
-        effect.to = source;
-        room->cardEffect(effect);
     }
 }
 
@@ -934,17 +943,13 @@ Rain::Rain(Suit suit, int number):Disaster(suit, number){
 
 void Rain::takeEffect(ServerPlayer *target) const{
     Room *room = target->getRoom();
-
-    RecoverStruct recover;
-    recover.card = this;
-    recover.recover = 3;
-    room->recover(target, recover);
+    room->acquireSkill(target, "raineffect", false);
 }
 
 Tornado::Tornado(Suit suit, int number):Disaster(suit, number){
     setObjectName("tornado");
 
-    judge.pattern = QRegExp("(.*):(club):([2-9])");
+    judge.pattern = QRegExp("(.*):(diamond):([2-9])");
     judge.good = false;
     judge.reason = objectName();
 }
@@ -1033,6 +1038,57 @@ public:
             correct += to->getDefensiveHorse()->getCorrect();
 
         return correct;
+    }
+};
+
+class RainEffect: public FilterSkill{
+public:
+    RainEffect():FilterSkill("raineffect"){
+
+    }
+
+    virtual bool viewFilter(const CardItem *to_select) const{
+        return to_select->getCard()->getSuit() == Card::Heart;
+    }
+
+    virtual const Card *viewAs(CardItem *card_item) const{
+        const Card *card = card_item->getCard();
+        Card *new_card = Card::Clone(card);
+        if(new_card) {
+            new_card->setSuit(Card::Spade);
+            new_card->setSkillName(objectName());
+            return new_card;
+        }else
+            return card;
+    }
+};
+
+class RainEffectEx: public TriggerSkill{
+public:
+    RainEffectEx():TriggerSkill("#raineffect-extra"){
+        frequency = Compulsory;
+        events << FinishJudge << PhaseChange;
+    }
+
+    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+        if(event == FinishJudge){
+            JudgeStar judge = data.value<JudgeStar>();
+            if(judge->card->getSuit() == Card::Heart){
+                Card *new_card = Card::Clone(judge->card);
+                new_card->setSuit(Card::Spade);
+                new_card->setSkillName("rain");
+                judge->card = new_card;
+
+                player->getRoom()->sendLog("#RainEffectRetrialResult", player);
+            }
+        }else if(event == PhaseChange){
+            if(player->getPhase() == Player::NotActive){
+                Room *room = player->getRoom();
+                room->detachSkillFromPlayer(player, "raineffect");
+            }
+        }
+
+        return false;
     }
 };
 
@@ -1183,7 +1239,8 @@ StandardCardPackage::StandardCardPackage()
     foreach(Card *card, cards)
         card->setParent(this);
 
-    skills << new SpearSkill << new AxeViewAsSkill;
+    skills << new SpearSkill << new AxeViewAsSkill << new RainEffect << new RainEffectEx;
+    related_skills.insertMulti("raineffect", "#raineffect-extra");
 }
 
 StandardExCardPackage::StandardExCardPackage()

@@ -11,7 +11,7 @@ sgs.ai_judgestring =
 local function getIdToCard(self, cards)
 	local tocard = {}
 	for _, card_id in ipairs(cards) do
-		local card = sgs.QPirate:getCard(card_id)
+		local card = sgs.Bang:getCard(card_id)
 		table.insert(tocard, card)
 	end
 	return tocard

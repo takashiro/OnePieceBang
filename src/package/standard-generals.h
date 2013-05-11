@@ -9,6 +9,19 @@
 #include "engine.h"
 #include "maneuvering.h"
 
+class RubberPistolCard: public SkillCard{
+    Q_OBJECT
+
+public:
+    Q_INVOKABLE RubberPistolCard();
+    virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
+    virtual bool targetsFeasible(const QList<const Player *> &targets, const Player *Self) const;
+    virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const;
+
+private:
+    Slash *slash;
+};
+
 class OuKiCard: public SkillCard{
     Q_OBJECT
 
@@ -26,11 +39,13 @@ public:
     virtual void onEffect(const CardEffectStruct &effect) const;
 };
 
-class TripleSwordsCard: public SkillCard{
+class SixSwordCard: public SkillCard{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE TripleSwordsCard();
+    Q_INVOKABLE SixSwordCard();
+    virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
+    virtual bool targetsFeasible(const QList<const Player *> &targets, const Player *Self) const;
     virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &) const;
 };
 

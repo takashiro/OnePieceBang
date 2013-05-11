@@ -20,7 +20,9 @@
 #include <QLabel>
 #include <QRadioButton>
 #include <QApplication>
-#include <QHttp>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QAction>
 
 static QLayout *HLay(QWidget *left, QWidget *right){
@@ -91,7 +93,7 @@ QWidget *ServerDialog::createPackageTab(){
     extension_group = new QButtonGroup;
     extension_group->setExclusive(false);
 
-    QStringList extensions = QPirate->getExtensions();
+    QStringList extensions = Bang->getExtensions();
     QSet<QString> ban_packages = Config.BanPackages.toSet();
 
     QGroupBox *box1 = new QGroupBox(tr("General package"));
@@ -105,14 +107,14 @@ QWidget *ServerDialog::createPackageTab(){
     int i = 0, j = 0;
     int row = 0, column = 0;
     foreach(QString extension, extensions){
-        const Package *package = QPirate->findChild<const Package *>(extension);
+        const Package *package = Bang->findChild<const Package *>(extension);
         if(package == NULL)
             continue;
 
         bool forbid_package = Config.value("ForbidPackages").toString().contains(extension);
         QCheckBox *checkbox = new QCheckBox;
         checkbox->setObjectName(extension);
-        checkbox->setText(QPirate->translate(extension));
+        checkbox->setText(Bang->translate(extension));
         checkbox->setChecked(!ban_packages.contains(extension) && !forbid_package);
         checkbox->setEnabled(!forbid_package);
 
@@ -357,7 +359,7 @@ BanlistDialog::BanlistDialog(QWidget *parent, bool view)
         //vlay->addLayout(hlayout);
         apage->setLayout(vlay);
 
-        tab->addTab(apage,QPirate->translate(item));
+        tab->addTab(apage,Bang->translate(item));
     }
 
     QWidget *apage = new QWidget;
@@ -378,7 +380,7 @@ BanlistDialog::BanlistDialog(QWidget *parent, bool view)
     QVBoxLayout *vlay = new QVBoxLayout;
     vlay->addWidget(list);
     apage->setLayout(vlay);
-    tab->addTab(apage,QPirate->translate("Pairs"));
+    tab->addTab(apage,Bang->translate("Pairs"));
     lists << list;
 
     QPushButton *add = new QPushButton(tr("Add ..."));
@@ -418,15 +420,15 @@ BanlistDialog::BanlistDialog(QWidget *parent, bool view)
 
 void BanlistDialog::addGeneral(const QString &name){
     if(list->objectName() == "Pairs"){
-        QString text = QString(tr("Banned for all: %1")).arg(QPirate->translate(name));
+        QString text = QString(tr("Banned for all: %1")).arg(Bang->translate(name));
         QListWidgetItem *item = new QListWidgetItem(text);
         item->setData(Qt::UserRole, QVariant::fromValue(name));
         list->addItem(item);
     }
     else{
-        const General *general = QPirate->getGeneral(name);
+        const General *general = Bang->getGeneral(name);
         QIcon icon(general->getPixmapPath("tiny"));
-        QString text = QPirate->translate(name);
+        QString text = Bang->translate(name);
         QListWidgetItem *item = new QListWidgetItem(icon, text, list);
         item->setSizeHint(QSize(60,60));
         item->setData(Qt::UserRole, name);
@@ -434,15 +436,15 @@ void BanlistDialog::addGeneral(const QString &name){
 }
 
 void BanlistDialog::add2ndGeneral(const QString &name){
-    QString text = QString(tr("Banned for second general: %1")).arg(QPirate->translate(name));
+    QString text = QString(tr("Banned for second general: %1")).arg(Bang->translate(name));
     QListWidgetItem *item = new QListWidgetItem(text);
     item->setData(Qt::UserRole, QVariant::fromValue(QString("+%1").arg(name)));
     list->addItem(item);
 }
 
 void BanlistDialog::addPair(const QString &first, const QString &second){
-    QString trfirst = QPirate->translate(first);
-    QString trsecond = QPirate->translate(second);
+    QString trfirst = Bang->translate(first);
+    QString trsecond = Bang->translate(second);
     QListWidgetItem *item = new QListWidgetItem(QString("%1 + %2").arg(trfirst, trsecond));
     item->setData(Qt::UserRole, QVariant::fromValue(QString("%1+%2").arg(first, second)));
     list->addItem(item);
@@ -553,7 +555,7 @@ QGroupBox *ServerDialog::createGameModeBox(){
 
     {
         // normal modes
-        QMap<QString, QString> modes = QPirate->getAvailableModes();
+        QMap<QString, QString> modes = Bang->getAvailableModes();
         QMapIterator<QString, QString> itor(modes);
         while(itor.hasNext()){
             itor.next();
@@ -584,10 +586,10 @@ QGroupBox *ServerDialog::createGameModeBox(){
         mode_group->addButton(scenario_button);
 
         scenario_combobox = new QComboBox;
-        QStringList names = QPirate->getScenarioNames();
+        QStringList names = Bang->getScenarioNames();
         foreach(QString name, names){
-            QString scenario_name = QPirate->translate(name);
-            const Scenario *scenario = QPirate->getScenario(name);
+            QString scenario_name = Bang->translate(name);
+            const Scenario *scenario = Bang->getScenario(name);
             int count = scenario->getPlayerCount();
             QString text = tr("%1 (%2 persons)").arg(scenario_name).arg(count);
             scenario_combobox->addItem(text, name);
@@ -613,8 +615,8 @@ QGroupBox *ServerDialog::createGameModeBox(){
             QString name = QString::number(i);
             name = name.rightJustified(2,'0');
             name = name.prepend("_mini_");
-            QString scenario_name = QPirate->translate(name);
-            const Scenario *scenario = QPirate->getScenario(name);
+            QString scenario_name = Bang->translate(name);
+            const Scenario *scenario = Bang->getScenario(name);
             int count = scenario->getPlayerCount();
             QString text = tr("%1 (%2 persons)").arg(scenario_name).arg(count);
             mini_scene_combobox->addItem(text, name);
@@ -689,29 +691,27 @@ QLayout *ServerDialog::createButtonLayout(){
 }
 
 void ServerDialog::onDetectButtonClicked(){
-    QString host = "www.net.cn";
-    QString path = "/static/customercare/yourIP.asp";
-    QHttp *http = new QHttp(this);
-    http->setHost(host);
-
-    connect(http, SIGNAL(done(bool)), this, SLOT(onHttpDone(bool)));
-    http->get(path);
+    static QUrl url("http://www.net.cn/static/customercare/yourIP.asp");
+    QNetworkAccessManager *access_manager = new QNetworkAccessManager(this);
+    QNetworkRequest request(url);
+    QNetworkReply *reply = access_manager->get(request);
+    connect(reply, SIGNAL(finished()), this, SLOT(onHttpDone()));
 }
 
-void ServerDialog::onHttpDone(bool error){
-    QHttp *http = qobject_cast<QHttp *>(sender());
+void ServerDialog::onHttpDone(){
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
 
-    if(error){
-        QMessageBox::warning(this, tr("Warning"), http->errorString());
+    if(reply->error() != QNetworkReply::NoError){
+        QMessageBox::warning(this, tr("Warning"), reply->errorString());
     }else{
         QRegExp rx("(\\d+\\.\\d+\\.\\d+\\.\\d+)");
-        int index = rx.indexIn(http->readAll());
+        int index = rx.indexIn(reply->readAll());
         if(index != -1){
             QString addr = rx.capturedTexts().at(0);
             address_edit->setText(addr);
         }
 
-        http->deleteLater();
+        reply->deleteLater();
     }
 }
 
@@ -751,7 +751,7 @@ Select3v3GeneralDialog::Select3v3GeneralDialog(QDialog *parent)
 }
 
 void Select3v3GeneralDialog::fillTabWidget(){
-    QList<const Package *> packages = QPirate->findChildren<const Package *>();
+    QList<const Package *> packages = Bang->findChildren<const Package *>();
     foreach(const Package *package, packages){
         switch(package->getType()){
         case Package::GeneralPack:
@@ -762,7 +762,7 @@ void Select3v3GeneralDialog::fillTabWidget(){
                 list->setDragDropMode(QListView::NoDragDrop);
                 fillListWidget(list, package);
 
-                tab_widget->addTab(list, QPirate->translate(package->objectName()));
+                tab_widget->addTab(list, Bang->translate(package->objectName()));
             }
         default:
             break;
@@ -929,7 +929,7 @@ bool ServerDialog::config(){
     foreach(QAbstractButton *checkbox, checkboxes){
         if(!checkbox->isChecked()){
             QString package_name = checkbox->objectName();
-            QPirate->addBanPackage(package_name);
+            Bang->addBanPackage(package_name);
             ban_packages.insert(package_name);
         }
     }
@@ -952,7 +952,7 @@ Server::Server(QObject *parent)
     server->setParent(this);
 
     //synchronize ServerInfo on the server side to avoid ambiguous usage of Config and ServerInfo
-    ServerInfo.parse(QPirate->getSetupString());
+    ServerInfo.parse(Bang->getSetupString());
 
     createNewRoom();
 
@@ -1000,15 +1000,15 @@ void Server::processNewConnection(ClientSocket *socket){
     }
 
     connect(socket, SIGNAL(disconnected()), this, SLOT(cleanup()));
-    socket->send("checkVersion " + QPirate->getVersion());
-    socket->send("setup " + QPirate->getSetupString());
+    socket->send("checkVersion " + Bang->getVersion());
+    socket->send("setup " + Bang->getSetupString());
     emit server_message(tr("%1 connected").arg(socket->peerName()));
 
     connect(socket, SIGNAL(message_got(char*)), this, SLOT(processRequest(char*)));
 }
 
 static inline QString ConvertFromBase64(const QString &base64){
-    QByteArray data = QByteArray::fromBase64(base64.toAscii());
+    QByteArray data = QByteArray::fromBase64(base64.toLatin1());
     return QString::fromUtf8(data);
 }
 

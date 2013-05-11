@@ -108,13 +108,13 @@ function SmartAI:searchForAnaleptic(use,enemy,slash)
 
 	if self.player:getPhase() == sgs.Player_Play then
 		if self.player:hasFlag("lexue") then
-			local lexuesrc = sgs.QPirate:getCard(self.player:getMark("lexue"))
+			local lexuesrc = sgs.Bang:getCard(self.player:getMark("lexue"))
 			if lexuesrc:inherits("Analeptic") then
 				local cards = sgs.QList2Table(self.player:getHandcards())
 				self:sortByUseValue(cards, true)
 				for _, hcard in ipairs(cards) do
 					if hcard:getSuit() == lexuesrc:getSuit() then
-						local lexue = sgs.QPirate:cloneCard("analeptic", lexuesrc:getSuit(), lexuesrc:getNumber())
+						local lexue = sgs.Bang:cloneCard("analeptic", lexuesrc:getSuit(), lexuesrc:getNumber())
 						lexue:addSubcard(hcard:getId())
 						lexue:setSkillName("lexue")
 						if self:getUseValue(lexuesrc) > self:getUseValue(hcard) then
@@ -398,7 +398,7 @@ sgs.ai_cardshow.fire_attack = function(self, requestor)
 		end
 	end
 	if self.player:hasSkill("hongyan") and result:getSuit() == sgs.Card_Spade then
-		result = sgs.QPirate:cloneCard(result:objectName(), sgs.Card_Heart, result:getNumber())
+		result = sgs.Bang:cloneCard(result:objectName(), sgs.Card_Heart, result:getNumber())
 		result:setSkillName("hongyan")
 	end
 

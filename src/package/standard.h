@@ -43,14 +43,14 @@ private:
 class EquipCard:public Card{
     Q_OBJECT
 
-    Q_ENUMS(Location);
+    Q_ENUMS(Location)
 
 public:
     enum Location {
         WeaponLocation,
         ArmorLocation,
         DefensiveHorseLocation,
-        OffensiveHorseLocation,
+        OffensiveHorseLocation
     };
 
     EquipCard(Suit suit, int number):Card(suit, number, true), skill(NULL){}
@@ -134,6 +134,7 @@ public:
     virtual QString getSubtype() const;
 
     virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
+    virtual void onUse(Room *room, const CardUseStruct &card_use) const;
     virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const;
 };
 
@@ -345,6 +346,7 @@ public:
     Q_INVOKABLE Peach(Card::Suit suit, int number);
     virtual QString getSubtype() const;
     virtual QString getEffectPath(bool is_male) const;
+    virtual void onUse(Room *room, const CardUseStruct &card_use) const;
     virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const;
     virtual void onEffect(const CardEffectStruct &effect) const;
     virtual bool isAvailable(const Player *player) const;

@@ -16,7 +16,7 @@ IndicatorItem::IndicatorItem(const QPointF &start, const QPointF &real_finish, P
     halo->setColor(Qt::white);
 
     //setGraphicsEffect(halo);
-    color = QPirate->getKingdomColor(player->getKingdom());
+    color = Bang->getKingdomColor(player->getKingdom());
     width = player->isLord() ? 4 : 3;
 }
 

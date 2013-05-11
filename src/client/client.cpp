@@ -207,7 +207,7 @@ void Client::signup(){
         QString signup_str = QString("%1 %2:%3").arg(command).arg(base64).arg(Config.UserAvatar);
         QString password = Config.Password;
         if(!password.isEmpty()){
-            password = QCryptographicHash::hash(password.toAscii(), QCryptographicHash::Md5).toHex();
+            password = QCryptographicHash::hash(password.toLatin1(), QCryptographicHash::Md5).toHex();
             signup_str.append(":" + password);
         }
         request(signup_str);
@@ -278,7 +278,7 @@ void Client::disconnectFromHost(){
 typedef char buffer_t[1024];
 
 void Client::processServerPacket(const QString &cmd){
-    processServerPacket(cmd.toAscii().data());
+    processServerPacket(cmd.toLatin1().data());
 }
 
 void Client::processServerPacket(char *cmd){
@@ -372,7 +372,7 @@ void Client::addPlayer(const QString &player_info){
     QStringList texts = player_info.split(":");
     QString name = texts.at(0);
     QString base64 = texts.at(1);
-    QByteArray data = QByteArray::fromBase64(base64.toAscii());
+    QByteArray data = QByteArray::fromBase64(base64.toLatin1());
     QString screen_name = QString::fromUtf8(data);
     QString avatar = texts.at(2);
 
@@ -401,7 +401,7 @@ void Client::removePlayer(const QString &player_name){
 
 bool Client::_loseSingleCard(int card_id, CardsMoveStruct move)
 {    
-    const Card *card = QPirate->getCard(card_id);
+    const Card *card = Bang->getCard(card_id);
     if(move.from)
         move.from->removeCard(card, move.from_place);
     else
@@ -418,7 +418,7 @@ bool Client::_loseSingleCard(int card_id, CardsMoveStruct move)
 
 bool Client::_getSingleCard(int card_id, CardsMoveStruct move)
 {
-    const Card *card = QPirate->getCard(card_id);
+    const Card *card = Bang->getCard(card_id);
     if(move.to)
         move.to->addCard(card, move.to_place);
     else
@@ -485,7 +485,7 @@ void Client::onPlayerChooseGeneral(const QString &item_name){
     setStatus(Client::NotActive);
     if(!item_name.isEmpty()){
         replyToServer(S_COMMAND_CHOOSE_GENERAL, toJsonString(item_name));        
-        QPirate->playAudio("choose-item");
+        Bang->playAudio("choose-item");
     }
 
 }
@@ -587,7 +587,7 @@ void Client::startInXs(const QString &left_seconds){
         lines_doc->setHtml(QString());
 
     emit start_in_xs();
-    if(seconds == 0 && QPirate->getScenario(ServerInfo.GameMode) == NULL){
+    if(seconds == 0 && Bang->getScenario(ServerInfo.GameMode) == NULL){
         emit avatars_hiden();
     }
 }
@@ -622,7 +622,7 @@ void Client::arrangeSeats(const QString &seats_str){
 
 void Client::notifyRoleChange(const QString &new_role){
     if(!new_role.isEmpty()){
-        QString prompt_str = tr("Your role is %1").arg(QPirate->translate(new_role));
+        QString prompt_str = tr("Your role is %1").arg(Bang->translate(new_role));
         if(new_role != "lord")
             prompt_str += tr("\n wait for the lord player choosing general, please");
         lines_doc->setHtml(prompt_str);
@@ -705,13 +705,13 @@ QString Client::getPlayerName(const QString &str){
     if(rx.exactMatch(str)){
         ClientPlayer *player = getPlayer(str);
         general_name = player->getGeneralName();
-        general_name = QPirate->translate(general_name);
+        general_name = Bang->translate(general_name);
         if(ServerInfo.EnableSame || player->getGeneralName() == "anjiang")
             general_name = QString("%1[%2]").arg(general_name).arg(player->getSeat());
         return general_name;
 
     }else
-        return QPirate->translate(str);
+        return Bang->translate(str);
 }
 
 QString Client::getPattern() const{
@@ -731,7 +731,7 @@ void Client::onPlayerInvokeSkill(bool invoke){
 }
 
 void Client::setPromptList(const QStringList &texts){
-    QString prompt = QPirate->translate(texts.at(0));
+    QString prompt = Bang->translate(texts.at(0));
     if(texts.length() >= 2)
         prompt.replace("%src", getPlayerName(texts.at(1)));
 
@@ -739,12 +739,12 @@ void Client::setPromptList(const QStringList &texts){
         prompt.replace("%dest", getPlayerName(texts.at(2)));
 
     if(texts.length() >= 4){
-        QString arg = QPirate->translate(texts.at(3));
+        QString arg = Bang->translate(texts.at(3));
         prompt.replace("%arg", arg);
     }
 
     if(texts.length() >= 5){
-        QString arg2 = QPirate->translate(texts.at(4));
+        QString arg2 = Bang->translate(texts.at(4));
         prompt.replace("%2arg", arg2);
     }
 
@@ -776,7 +776,7 @@ void Client::_askForCardOrUseCard(const Json::Value &cardUsage){
     QRegExp rx("^@@?(\\w+)(-card)?$");
     if(rx.exactMatch(card_pattern)){
         QString skill_name = rx.capturedTexts().at(1);
-        const Skill *skill = QPirate->getSkill(skill_name);
+        const Skill *skill = Bang->getSkill(skill_name);
         if(skill){
             QString text = prompt_doc->toHtml();
             text.append(tr("<br/> <b>Notice</b>: %1<br/>").arg(skill->getDescription()));
@@ -807,11 +807,11 @@ void Client::askForSkillInvoke(const Json::Value &arg){
         
     QString text;
     if(data.isEmpty())
-        text = tr("Do you want to invoke skill [%1] ?").arg(QPirate->translate(skill_name));
+        text = tr("Do you want to invoke skill [%1] ?").arg(Bang->translate(skill_name));
     else
-        text = QPirate->translate(QString("%1:%2").arg(skill_name).arg(data));
+        text = Bang->translate(QString("%1:%2").arg(skill_name).arg(data));
 
-    const Skill *skill = QPirate->getSkill(skill_name);
+    const Skill *skill = Bang->getSkill(skill_name);
     if(skill){
         text.append(tr("<br/> <b>Notice</b>: %1<br/>").arg(skill->getDescription()));
     }
@@ -832,7 +832,7 @@ void Client::askForSurrender(const Json::Value &initiator){
 
     QString text = tr("%1 initiated a vote for disadvataged side to claim "
                         "capitulation. Click \"OK\" to surrender or \"Cancel\" to resist.")
-                            .arg(QPirate->translate(toQString(initiator)));
+                            .arg(Bang->translate(toQString(initiator)));
     text.append(tr("<br/> <b>Noitce</b>: if all people on your side decides to surrender. "
                    "You'll lose this game."));
     skill_name = "surrender";
@@ -851,7 +851,7 @@ void Client::playSkillEffect(const QString &play_str){
     QString skill_name = words.at(1);
     int index = words.at(2).toInt();
 
-    QPirate->playSkillEffect(skill_name, index);
+    Bang->playSkillEffect(skill_name, index);
 }
 
 void Client::askForNullification(const Json::Value &arg){
@@ -865,7 +865,7 @@ void Client::askForNullification(const Json::Value &arg){
 
     if (!target_player || !target_player->getGeneral()) return;
 
-    const Card *trick_card = QPirate->findChild<const Card *>(trick_name);
+    const Card *trick_card = Bang->findChild<const Card *>(trick_name);
     ClientPlayer *source = NULL;
     if(source_name != Json::Value::null)
         source = getPlayer(source_name.asCString());
@@ -894,7 +894,7 @@ void Client::askForNullification(const Json::Value &arg){
 }
 
 void Client::playAudio(const QString &name){
-    QPirate->playAudio(name);
+    Bang->playAudio(name);
 }
 
 void Client::playCardEffect(const QString &play_str){
@@ -906,13 +906,13 @@ void Client::playCardEffect(const QString &play_str){
         QString card_name = texts.at(1);
         bool is_male = texts.at(2) == "M";
 
-        QPirate->playCardEffect(card_name, is_male);
+        Bang->playCardEffect(card_name, is_male);
     }else if(rx2.exactMatch(play_str)){
         QStringList texts = rx2.capturedTexts();
         QString card_name = texts.at(1);
         bool is_male = texts.at(3) == "M";
 
-        QPirate->playCardEffect("@" + card_name, is_male);
+        Bang->playCardEffect("@" + card_name, is_male);
     }
 }
 
@@ -938,9 +938,9 @@ void Client::trust(){
     request("trust .");
 
     if(Self->getState() == "trust")
-        QPirate->playAudio("untrust");
+        Bang->playAudio("untrust");
     else
-        QPirate->playAudio("trust");
+        Bang->playAudio("trust");
 
     setStatus(NotActive);
 }
@@ -1021,13 +1021,13 @@ void Client::setLines(const QString &filename){
     QRegExp rx(".+/(\\w+\\d?).ogg");
     if(rx.exactMatch(filename)){
         QString skill_name = rx.capturedTexts().at(1);
-        skill_line = QPirate->translate("$" + skill_name);
+        skill_line = Bang->translate("$" + skill_name);
 
         QChar last_char = skill_name[skill_name.length()-1];
         if(last_char.isDigit())
             skill_name.chop(1);
 
-        skill_title = QPirate->translate(skill_name);
+        skill_title = Bang->translate(skill_name);
 
         updatePileNum();
     }
@@ -1083,7 +1083,7 @@ void Client::setCardFlag(const QString &pattern_str){
     QString object = texts.at(1);
     QString card_str = texts.at(2);
 
-    QPirate->getCard(card_str.toInt())->setFlags(object);
+    Bang->getCard(card_str.toInt())->setFlags(object);
 }
 
 void Client::updatePileNum(){
@@ -1173,20 +1173,20 @@ void Client::killPlayer(const QString &player_name){
 
     if(!Self->hasFlag("marshalling")){
         QString general_name = player->getGeneralName();
-        QString last_word = QPirate->translate(QString("~%1").arg(general_name));
+        QString last_word = Bang->translate(QString("~%1").arg(general_name));
         if(last_word.startsWith("~")){
             QStringList origin_generals = general_name.split("_");
             if(origin_generals.length()>1)
-                last_word = QPirate->translate(("~") +  origin_generals.at(1));
+                last_word = Bang->translate(("~") +  origin_generals.at(1));
         }
 
         if(last_word.startsWith("~") && general_name.endsWith("f")){
             QString origin_general = general_name;
             origin_general.chop(1);
-            if(QPirate->getGeneral(origin_general))
-                last_word = QPirate->translate(("~") + origin_general);
+            if(Bang->getGeneral(origin_general))
+                last_word = Bang->translate(("~") + origin_general);
         }
-        skill_title = tr("%1[dead]").arg(QPirate->translate(general_name));
+        skill_title = tr("%1[dead]").arg(Bang->translate(general_name));
         skill_line = last_word;
 
         updatePileNum();
@@ -1237,7 +1237,7 @@ void Client::askForSuit(const Json::Value &){
 }
 
 void Client::askForKingdom(const Json::Value&){
-    QStringList kingdoms = QPirate->getKingdoms();
+    QStringList kingdoms = Bang->getKingdoms();
     kingdoms.removeOne("god"); // god kingdom does not really exist
     emit kingdoms_got(kingdoms);
     setStatus(ExecDialog);
@@ -1347,7 +1347,7 @@ void Client::takeAG(const QString &take_str){
     QString taker_name = words.at(1);
     int card_id = words.at(2).toInt();
 
-    const Card *card = QPirate->getCard(card_id);
+    const Card *card = Bang->getCard(card_id);
     if(taker_name != "."){
         ClientPlayer *taker = getPlayer(taker_name);
         taker->addCard(card, Player::Hand);
@@ -1373,7 +1373,7 @@ void Client::askForSinglePeach(const Json::Value &arg){
         prompt_doc->setHtml(tr("You are dying, please provide %1 peach(es)(or analeptic) to save yourself").arg(peaches));
         card_pattern = "peach+analeptic";
     }else{
-        QString dying_general = QPirate->translate(dying->getGeneralName());
+        QString dying_general = Bang->translate(dying->getGeneralName());
         prompt_doc->setHtml(tr("%1 is dying, please provide %2 peach(es) to save him").arg(dying_general).arg(peaches));
         card_pattern = "peach";
     }
@@ -1385,7 +1385,7 @@ void Client::askForSinglePeach(const Json::Value &arg){
 
 void Client::askForCardShow(const Json::Value &requestor){
     if (!requestor.isString()) return;
-    QString name = QPirate->translate(toQString(requestor));
+    QString name = Bang->translate(toQString(requestor));
     prompt_doc->setHtml(tr("%1 request you to show one hand card").arg(name));
 
     card_pattern = ".";
@@ -1412,7 +1412,7 @@ QList<const ClientPlayer*> Client::getPlayers() const{
 void Client::clearTurnTag(){
     switch(Self->getPhase()){
     case Player::Start:{
-            QPirate->playAudio("your-turn");
+            Bang->playAudio("your-turn");
             QApplication::alert(QApplication::focusWidget());
             break;
     }
@@ -1443,7 +1443,7 @@ void Client::showCard(const Json::Value &show_str){
 
     ClientPlayer *player = getPlayer(player_name);
     if(player != Self)
-        player->addKnownHandCard(QPirate->getCard(card_id));
+        player->addKnownHandCard(Bang->getCard(card_id));
 
     emit card_shown(player_name, card_id);
 }
@@ -1590,7 +1590,7 @@ void Client::speak(const QString &speak_data){
     QString who = words.at(0);
     QString base64 = words.at(1);
 
-    QByteArray data = QByteArray::fromBase64(base64.toAscii());
+    QByteArray data = QByteArray::fromBase64(base64.toLatin1());
     QString text = QString::fromUtf8(data);
     emit text_spoken(text);
 
@@ -1605,7 +1605,7 @@ void Client::speak(const QString &speak_data){
     QString title;
     if(from){
         title = from->getGeneralName();
-        title = QPirate->translate(title);
+        title = Bang->translate(title);
         title.append(QString("(%1)").arg(from->screenName()));
     }
 
@@ -1681,7 +1681,7 @@ void Client::setScreenName(const QString &set_str){
     QStringList words = set_str.split(":");
     ClientPlayer *player = getPlayer(words.first());
     QString base64 = words.at(1);
-    QString screen_name = QString::fromUtf8(QByteArray::fromBase64(base64.toAscii()));
+    QString screen_name = QString::fromUtf8(QByteArray::fromBase64(base64.toLatin1()));
     player->setScreenName(screen_name);
 }
 
@@ -1721,8 +1721,8 @@ void Client::transfigure(const QString &transfigure_tr){
     QStringList generals = transfigure_tr.split(":");
 
     if(generals.length() >= 2){
-        const General *furui = QPirate->getGeneral(generals.first());
-        const General *atarashi = QPirate->getGeneral(generals.last());
+        const General *furui = Bang->getGeneral(generals.first());
+        const General *atarashi = Bang->getGeneral(generals.last());
 
         if(furui)foreach(const Skill *skill, furui->getVisibleSkills()){
             emit skill_detached(skill->objectName());

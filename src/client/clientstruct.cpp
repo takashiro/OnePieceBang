@@ -44,13 +44,13 @@ bool ServerInfoStruct::parse(const QString &str){
     QStringList texts = rx.capturedTexts();
 
     QString server_name = texts.at(1);
-    Name = QString::fromUtf8(QByteArray::fromBase64(server_name.toAscii()));
+    Name = QString::fromUtf8(QByteArray::fromBase64(server_name.toLatin1()));
 
     GameMode = texts.at(2);
     OperationTimeout = texts.at(3).toInt();
 
     QStringList ban_packages = texts.at(4).split("+");
-    QList<const Package *> packages = QPirate->findChildren<const Package *>();
+    QList<const Package *> packages = Bang->findChildren<const Package *>();
     foreach(const Package *package, packages){
         if(package->inherits("Scenario"))
             continue;
@@ -133,8 +133,8 @@ ServerInfoWidget::ServerInfoWidget(bool show_lack)
 void ServerInfoWidget::fill(const ServerInfoStruct &info, const QString &address){
     name_label->setText(info.Name);
     address_label->setText(address);
-    game_mode_label->setText(QPirate->getModeName(info.GameMode));
-    int player_count = QPirate->getPlayerCount(info.GameMode);
+    game_mode_label->setText(Bang->getModeName(info.GameMode));
+    int player_count = Bang->getPlayerCount(info.GameMode);
     player_count_label->setText(QString::number(player_count));
     port_label->setText(QString::number(Config.ServerPort));
     two_general_label->setText(info.Enable2ndGeneral ? tr("Enabled") : tr("Disabled"));
@@ -172,7 +172,7 @@ void ServerInfoWidget::fill(const ServerInfoStruct &info, const QString &address
         if(!checked)
             extension.remove("!");
 
-        QString package_name = QPirate->translate(extension);
+        QString package_name = Bang->translate(extension);
         QCheckBox *checkbox = new QCheckBox(package_name);
         checkbox->setChecked(checked);
 

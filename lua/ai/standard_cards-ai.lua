@@ -7,7 +7,7 @@ local function hasExplicitRebel(room)
 end
 
 function SmartAI:slashProhibit(card,enemy)
-	card = card or sgs.QPirate:cloneCard("slash", sgs.Card_NoSuit, 0)
+	card = card or sgs.Bang:cloneCard("slash", sgs.Card_NoSuit, 0)
 	for _, askill in sgs.qlist(enemy:getVisibleSkillList()) do
 		local filter = sgs.ai_slash_prohibit[askill:objectName()]
 		if filter and type(filter) == "function" and filter(self, enemy, card) then return true end
@@ -80,7 +80,7 @@ end
 
 function SmartAI:slashIsAvailable(player)
 	player = player or self.player
-	local slash = self:getCard("Slash", player) or sgs.QPirate:cloneCard("slash", sgs.Card_NoSuit, 0)
+	local slash = self:getCard("Slash", player) or sgs.Bang:cloneCard("slash", sgs.Card_NoSuit, 0)
 	assert(slash)
 	return slash:isAvailable(player)
 end
@@ -236,7 +236,7 @@ sgs.ai_skill_use.slash = function(self, prompt)
 end
 
 sgs.ai_skill_playerchosen.zero_card_as_slash = function(self, targets)
-	local slash = sgs.QPirate:cloneCard("slash", sgs.Card_NoSuit, 0)
+	local slash = sgs.Bang:cloneCard("slash", sgs.Card_NoSuit, 0)
 	local targetlist=sgs.QList2Table(targets)
 	self:sort(targetlist, "defense")
 	for _, target in ipairs(targetlist) do
@@ -660,7 +660,7 @@ sgs.ai_use_priority.SavageAssault = 3.5
 sgs.ai_skill_cardask.aoe = function(self, data, pattern, target, target2, name)
 	if sgs.ai_skill_cardask.nullfilter(self, data, pattern, target) then return "." end
 	if not self:damageIsEffective(nil, nil, target) then return "." end
-	local aoe = sgs.QPirate:cloneCard(name, sgs.Card_NoSuit, 0)
+	local aoe = sgs.Bang:cloneCard(name, sgs.Card_NoSuit, 0)
 	local menghuo = self.room:findPlayerBySkillName("huoshou")
 	if self.player:hasSkill("wuyan") then return "." end
 	if target:hasSkill("wuyan") and not (menghuo and aoe:inherits("SavageAssault")) then return "." end
@@ -668,12 +668,12 @@ sgs.ai_skill_cardask.aoe = function(self, data, pattern, target, target2, name)
 		(self.player:getHp()>1 or self:getAllPeachNum()>0) and not self.player:containsTrick("indulgence") then return "." end
 end
 
-sgs.ai_skill_cardask["savage-assault-slash"] = function(self, data, pattern, target, target2)
-	return sgs.ai_skill_cardask.aoe(self, data, pattern, target, target2, "savage_assault")
+sgs.ai_skill_cardask["buster-call-slash"] = function(self, data, pattern, target, target2)
+	return sgs.ai_skill_cardask.aoe(self, data, pattern, target, target2, "buster_call")
 end
 
 sgs.ai_skill_cardask["archery-attack-jink"] = function(self, data, pattern, target)
-	return sgs.ai_skill_cardask.aoe(self, data, pattern, target, target2, "archery_attack")
+	return sgs.ai_skill_cardask.aoe(self, data, pattern, target, target2, "haou_haki")
 end
 
 sgs.ai_keep_value.Nullification = 3

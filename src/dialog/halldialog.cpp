@@ -127,7 +127,7 @@ void HallDialog::room(int room_id, int joined, const QString &setup_string){
     item = new QTableWidgetItem(info.Name);
     table->setItem(room_row, 1, item);
 
-    int total = QPirate->getPlayerCount(info.GameMode);
+    int total = Bang->getPlayerCount(info.GameMode);
     item = new QTableWidgetItem(QString("%1/%2").arg(joined).arg(total));
     table->setItem(room_row, 2, item);
 

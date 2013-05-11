@@ -116,10 +116,10 @@ SceneRule::SceneRule(QObject *parent) : GameRule(parent) {
 
     events << CardEffect << Predamaged << Damaged;
 
-    if(!QPirate->getSkill("#scene_dst_effect")) {
+    if(!Bang->getSkill("#scene_dst_effect")) {
         QList<const Skill *> skillList;
         skillList << new SceneDistanceEffect("#scene_dst_effect");
-        QPirate->addSkills(skillList);
+        Bang->addSkills(skillList);
     }
 }
 
@@ -366,7 +366,7 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
                             int card = room->askForPindian(p, room->getLord(), p, "scene_31_eff")->getId();
                             int indexToInsert = cardList.length();
                             foreach(int c, cardList)
-                                if(QPirate->getCard(c)->getNumber() < QPirate->getCard(card)->getNumber()) {
+                                if(Bang->getCard(c)->getNumber() < Bang->getCard(card)->getNumber()) {
                                     indexToInsert = cardList.indexOf(c);
                                     break;
                                 }

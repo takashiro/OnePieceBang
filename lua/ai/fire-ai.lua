@@ -410,7 +410,7 @@ luanji_skill.getTurnUseCard=function(self)
 		local luanji_card = {}
 		local first_suit, first_number, first_id = first_card:getSuitString(), first_card:getNumberString(), first_card:getId()
 		local second_suit, second_number, second_id = second_card:getSuitString(), second_card:getNumberString(), second_card:getId()
-		local card_str = ("archery_attack:luanji[%s:%s]=%d+%d"):format(first_suit, first_number, first_id, second_id)
+		local card_str = ("haou_haki:luanji[%s:%s]=%d+%d"):format(first_suit, first_number, first_id, second_id)
 		local archeryattack = sgs.Card_Parse(card_str)
 		assert(archeryattack)
 		return archeryattack

@@ -18,8 +18,8 @@ stmt:exec()
 for row in stmt:rows() do
 	local player = {}
 	player.username = row.username
-	player.general = sgs.QPirate:translate(row.general)
-	player.role = sgs.QPirate:translate(row.role)
+	player.general = sgs.Bang:translate(row.general)
+	player.role = sgs.Bang:translate(row.role)
 	player.alive = row.alive == "true"
 	player.score = row.score
 	
@@ -27,7 +27,7 @@ for row in stmt:rows() do
 	if row.victims then
 		victims = row.victims:split("+")
 		for i=1, #victims do
-			victims[i] = sgs.QPirate:translate(victims[i])
+			victims[i] = sgs.Bang:translate(victims[i])
 		end
 		
 		victims = table.concat(victims, ",")
@@ -62,7 +62,7 @@ mesgt = {
   headers = {
     from = ("%s %s"):format(user, from),
     to = table.concat(tos, ","),
-    subject = "QQPirate",
+    subject = "QBang",
   },
   body = {
 	 [1] = {

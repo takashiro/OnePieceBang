@@ -438,7 +438,7 @@ askForCard <pattern>:<prompt>
 	说明具体的出牌原因
 
 	出杀
-	. 南蛮出杀：	@savage-assault-slash:<from>, <from> 为南蛮入侵的使用者
+	. 南蛮出杀：	@buster-call-slash:<from>, <from> 为南蛮入侵的使用者
 	. 决斗出杀：	@duel-slash:<from>, <from> 为决斗的敌对方(不一定是决斗的发起者)
 	. 激将出杀：	@jijiang-slash:<from>, <from> 为激将的发起者（一般是刘备）
 

@@ -166,8 +166,8 @@ sgs.ai_skill_cardask["@guidao-card"]=function(self, data)
 				return "@GuidaoCard[" .. cards[1]:getSuitString() .. ":" .. cards[1]:getNumberString() .."]=" .. cards[1]:getId()
 			end
 		end
-	elseif self:needRetrial(judge) or self:getUseValue(judge.card) > self:getUseValue(sgs.QPirate:getCard(card_id)) then
-		local card = sgs.QPirate:getCard(card_id)
+	elseif self:needRetrial(judge) or self:getUseValue(judge.card) > self:getUseValue(sgs.Bang:getCard(card_id)) then
+		local card = sgs.Bang:getCard(card_id)
 		return "@GuidaoCard[" .. card:getSuitString() .. ":" .. card:getNumberString() .. "]=" .. card_id
 	end
 	
@@ -283,7 +283,7 @@ sgs.ai_chaofeng.zhangjiao = 4
 sgs.ai_skill_askforag.buqu = function(self, card_ids)
 	for i, card_id in ipairs(card_ids) do
 		for j, card_id2 in ipairs(card_ids) do
-			if i ~= j and sgs.QPirate:getCard(card_id):getNumber() == sgs.QPirate:getCard(card_id2):getNumber() then
+			if i ~= j and sgs.Bang:getCard(card_id):getNumber() == sgs.Bang:getCard(card_id2):getNumber() then
 				return card_id
 			end
 		end
@@ -384,7 +384,7 @@ table.insert(sgs.ai_choicemade_filter.cardUsed, guhuo_filter)
 sgs.ai_skill_choice.guhuo = function(self, choices)
 	local yuji = self.room:findPlayerBySkillName("guhuo")
 	local guhuoname = self.room:getTag("GuhuoType"):toString()
-	local guhuocard = sgs.QPirate:cloneCard(guhuoname, sgs.Card_NoSuit, 0)
+	local guhuocard = sgs.Bang:cloneCard(guhuoname, sgs.Card_NoSuit, 0)
 	local guhuotype = guhuocard:className()
 	if guhuotype and self:getRestCardsNum(guhuotype) == 0 and self.player:getHp() > 0 then return "question" end
 	if guhuotype and (guhuotype == "Shit" or guhuotype == "AmazingGrace" or (guhuotype:match("Slash") and not self:isEquip("Crossbow",yuji))) then return "noquestion" end
@@ -437,9 +437,9 @@ guhuo_skill.getTurnUseCard=function(self)
 	local slash_str = self:getGuhuoCard("Slash", self.player, true) or self:getGuhuoCard("Analeptic", self.player, true)
 	if slash_str and self:slashIsAvailable() and (self.player:canSlashWithoutCrossbow() or self:isEquip("Crossbow")) then return sgs.Card_Parse(slash_str) end
 
-	local guhuo = "peach|ex_nihilo|snatch|amazing_grace|archery_attack|fire_attack"
+	local guhuo = "peach|ex_nihilo|snatch|amazing_grace|haou_haki|fire_attack"
 	local guhuos = guhuo:split("|")
-	for _, package in ipairs(sgs.QPirate:getBanPackages()) do
+	for _, package in ipairs(sgs.Bang:getBanPackages()) do
 		if package == "maneuvering" then
 			table.remove(guhuos, #guhuos)
 			break
@@ -447,7 +447,7 @@ guhuo_skill.getTurnUseCard=function(self)
 	end
 	for i=1, #guhuos do
 		local forbiden = guhuos[i]
-		forbid = sgs.QPirate:cloneCard(forbiden, sgs.Card_NoSuit, 0)
+		forbid = sgs.Bang:cloneCard(forbiden, sgs.Card_NoSuit, 0)
 		if self.player:isLocked(forbid) then table.remove(forbiden, #guhuos) end
 	end
 
@@ -459,7 +459,7 @@ guhuo_skill.getTurnUseCard=function(self)
 		or card:inherits("Disaster") then
 			for i=1, 10 do
 				local newguhuo = guhuos[math.random(1,#guhuos)]
-				local guhuocard = sgs.QPirate:cloneCard(newguhuo, card:getSuit(), card:getNumber())
+				local guhuocard = sgs.Bang:cloneCard(newguhuo, card:getSuit(), card:getNumber())
 				if self:getRestCardsNum(guhuocard:className()) == 0 then return end
 				local dummyuse = {isDummy = true}
 				if newguhuo == "peach" then self:useBasicCard(guhuocard,dummyuse,false) else self:useTrickCard(guhuocard,dummyuse) end
@@ -475,7 +475,7 @@ end
 sgs.ai_skill_use_func.GuhuoCard=function(card,use,self)
 	local userstring=card:toString()
 	userstring=(userstring:split(":"))[3]
-	local guhuocard=sgs.QPirate:cloneCard(userstring, card:getSuit(), card:getNumber())
+	local guhuocard=sgs.Bang:cloneCard(userstring, card:getSuit(), card:getNumber())
 	if guhuocard:getTypeId() == sgs.Card_Basic then self:useBasicCard(guhuocard,use,false) else assert(guhuocard) self:useTrickCard(guhuocard,use) end
 	if not use.card then return end
 	use.card=card

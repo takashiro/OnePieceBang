@@ -24,7 +24,6 @@ public:
         m_cardsDisplayRegion = QRect(0, 0, width, height);
         m_numCardsVisible = width / CardItem::S_NORMAL_CARD_WIDTH + 1;
         resetTransform();
-        translate(-width / 2, -height / 2);
     }
     inline void setNumCardsVisible(int num) { m_numCardsVisible = num; }
     inline int getNumCardsVisible() { return m_numCardsVisible; }

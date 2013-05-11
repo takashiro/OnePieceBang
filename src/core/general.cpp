@@ -87,9 +87,9 @@ QList<const Skill *> General::getVisibleSkillList() const{
             skills << skill;
     }
 
-    foreach(QString skill_name, extra_set){
-        const Skill *skill = QPirate->getSkill(skill_name);
-        if(skill->isVisible())
+    foreach(const QString &skill_name, extra_set){
+        const Skill *skill = Bang->getSkill(skill_name);
+        if(skill && skill->isVisible())
             skills << skill;
     }
 
@@ -104,7 +104,7 @@ QSet<const Skill *> General::getVisibleSkills() const{
     }
 
     foreach(QString skill_name, extra_set){
-        const Skill *skill = QPirate->getSkill(skill_name);
+        const Skill *skill = Bang->getSkill(skill_name);
         if(skill->isVisible())
             skills << skill;
     }
@@ -116,7 +116,7 @@ QSet<const TriggerSkill *> General::getTriggerSkills() const{
     QSet<const TriggerSkill *> skills = findChildren<const TriggerSkill *>().toSet();
 
     foreach(QString skill_name, extra_set){
-        const TriggerSkill *skill = QPirate->getTriggerSkill(skill_name);
+        const TriggerSkill *skill = Bang->getTriggerSkill(skill_name);
         if(skill)
             skills << skill;
     }
@@ -144,7 +144,7 @@ QString General::getSkillDescription() const{
     QString description;
 
     foreach(const Skill *skill, getVisibleSkillList()){
-        QString skill_name = QPirate->translate(skill->objectName());
+        QString skill_name = Bang->translate(skill->objectName());
         QString desc = skill->getDescription();
         desc.replace("\n", "<br/>");
         description.append(QString("<b>%1</b>: %2 <br/> <br/>").arg(skill_name).arg(desc));
@@ -164,10 +164,10 @@ void General::lastWord() const{
     if(!file.open(QIODevice::ReadOnly) && objectName().endsWith("f")){
         QString origin_general = objectName();
         origin_general.chop(1);
-        if(QPirate->getGeneral(origin_general))
+        if(Bang->getGeneral(origin_general))
             filename = QString("audio/death/%1.ogg").arg(origin_general);
     }
-    QPirate->playEffect(filename);
+    Bang->playEffect(filename);
 }
 
 QSize General::BigIconSize(94, 96);

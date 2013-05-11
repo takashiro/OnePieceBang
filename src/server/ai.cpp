@@ -47,8 +47,8 @@ AI::Relation AI::GetRelationHegemony(const ServerPlayer *a, const ServerPlayer *
                 b->getGeneralName() :
                 b->getRoom()->getTag(b->objectName()).toStringList().first();
 
-    const QString aKingdom = QPirate->getGeneral(aName)->getKingdom();
-    const QString bKingdom = QPirate->getGeneral(bName)->getKingdom();
+    const QString aKingdom = Bang->getGeneral(aName)->getKingdom();
+    const QString bKingdom = Bang->getGeneral(bName)->getKingdom();
 
 
     qDebug() << aKingdom << bKingdom <<aShown << bShown;
@@ -222,7 +222,7 @@ bool TrustAI::askForSkillInvoke(const QString &, const QVariant &){
 }
 
 QString TrustAI::askForChoice(const QString &skill_name, const QString &choice){
-    const Skill *skill = QPirate->getSkill(skill_name);
+    const Skill *skill = Bang->getSkill(skill_name);
     if(skill){
         QString default_choice = skill->getDefaultChoice(self);
         if(choice.contains(default_choice))
@@ -400,8 +400,8 @@ QString LuaAI::askForUseCard(const QString &pattern, const QString &prompt){
     lua_State *L = room->getLuaState();
 
     pushCallback(L, __FUNCTION__);
-    lua_pushstring(L, pattern.toAscii());
-    lua_pushstring(L, prompt.toAscii());
+    lua_pushstring(L, pattern.toLatin1());
+    lua_pushstring(L, prompt.toLatin1());
 
     int error = lua_pcall(L, 3, 1, 0);
     const char *result = lua_tostring(L, -1);
@@ -420,7 +420,7 @@ QList<int> LuaAI::askForDiscard(const QString &reason, int discard_num, bool opt
     lua_State *L = room->getLuaState();
 
     pushCallback(L, __FUNCTION__);
-    lua_pushstring(L, reason.toAscii());
+    lua_pushstring(L, reason.toLatin1());
     lua_pushinteger(L, discard_num);
     lua_pushboolean(L, optional);
     lua_pushboolean(L, include_equip);
@@ -462,8 +462,8 @@ QString LuaAI::askForChoice(const QString &skill_name, const QString &choices){
     lua_State *L = room->getLuaState();
 
     pushCallback(L, __FUNCTION__);
-    lua_pushstring(L, skill_name.toAscii());
-    lua_pushstring(L, choices.toAscii());
+    lua_pushstring(L, skill_name.toLatin1());
+    lua_pushstring(L, choices.toLatin1());
 
     int error = lua_pcall(L, 3, 1, 0);
     const char *result = lua_tostring(L, -1);
@@ -482,7 +482,7 @@ int LuaAI::askForAG(const QList<int> &card_ids, bool refusable, const QString &r
     pushCallback(L, __FUNCTION__);
     pushQIntList(L, card_ids);
     lua_pushboolean(L, refusable);
-    lua_pushstring(L, reason.toAscii());
+    lua_pushstring(L, reason.toLatin1());
 
     int error = lua_pcall(L, 4, 1, 0);
     if(error){

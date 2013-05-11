@@ -89,7 +89,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
     QStringList cards= setup.split(",", QString::SkipEmptyParts);
     foreach(QString id,cards)
     {
-        room->moveCardTo(QPirate->getCard(id.toInt()),NULL,Player::DrawPile,true);
+        room->moveCardTo(Bang->getCard(id.toInt()),NULL,Player::DrawPile,true);
         room->broadcastInvoke("addHistory","pushPile");
     }
 
@@ -109,7 +109,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
             {
                 QStringList available,all,existed;
                 existed = existedGenerals();
-                all = QPirate->getRandomGenerals(QPirate->getGeneralCount());
+                all = Bang->getRandomGenerals(Bang->getGeneralCount());
                 qShuffle(all);
                 for(int i=0;i<5;i++)
                 {
@@ -136,7 +136,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
             {
                 QStringList available,all,existed;
                 existed = existedGenerals();
-                all = QPirate->getRandomGenerals(QPirate->getGeneralCount());
+                all = Bang->getRandomGenerals(Bang->getGeneralCount());
                 qShuffle(all);
                 for(int i=0;i<5;i++)
                 {
@@ -181,7 +181,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
             bool ok;
             equip.toInt(&ok);
             if(!ok)room->installEquip(sp,equip);
-            else room->moveCardTo(QPirate->getCard(equip.toInt()),sp,Player::Equip);
+            else room->moveCardTo(Bang->getCard(equip.toInt()),sp,Player::Equip);
         }
 
         str = this->players.at(i)["judge"];
@@ -190,7 +190,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
             QStringList judges = str.split(",");
             foreach(QString judge,judges)
             {
-                room->moveCardTo(QPirate->getCard(judge.toInt()),sp,Player::Judging);
+                room->moveCardTo(Bang->getCard(judge.toInt()),sp,Player::Judging);
             }
         }
 

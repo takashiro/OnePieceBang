@@ -255,7 +255,11 @@ void Dashboard::setPlayer(const ClientPlayer *player){
 void Dashboard::updateAvatar(){
     const General *general = Self->getAvatarGeneral();
     avatar->setToolTip(general->getSkillDescription());
-    if(!avatar->load(general->getPixmapPath("big"))){
+    bool success = QFile::exists(general->getPixmapPath("big"));
+    if(success){
+        success = avatar->load(general->getPixmapPath("big"));
+    }
+    if(!success){
         QPixmap pixmap(General::BigIconSize);
         pixmap.fill(Qt::black);
 
@@ -265,7 +269,7 @@ void Dashboard::updateAvatar(){
         painter.setFont(Config.SmallFont);
         painter.drawText(0, 0, pixmap.width(), pixmap.height(),
                          Qt::AlignCenter,
-                         QPirate->translate(Self->getGeneralName()));
+                         Bang->translate(Self->getGeneralName()));
 
         avatar->setPixmap(pixmap);
     }
@@ -283,7 +287,10 @@ void Dashboard::updateSmallAvatar(){
     const General *general2 = Self->getGeneral2();
     if(general2){
         small_avatar->setToolTip(general2->getSkillDescription());
-        bool success = small_avatar->load(general2->getPixmapPath("tiny"));
+        bool success = QFile::exists(general2->getPixmapPath("tiny"));
+        if(success){
+            success = small_avatar->load(general2->getPixmapPath("tiny"));
+        }
 
         if(!success){
             QPixmap pixmap(General::TinyIconSize);
@@ -294,7 +301,7 @@ void Dashboard::updateSmallAvatar(){
             painter.setPen(Qt::white);
             painter.drawText(0, 0, pixmap.width(), pixmap.height(),
                              Qt::AlignCenter,
-                             QPirate->translate(Self->getGeneral2Name()));
+                             Bang->translate(Self->getGeneral2Name()));
 
             small_avatar->setPixmap(pixmap);
         }
@@ -406,7 +413,7 @@ void Dashboard::_installDelayedTrick(CardItem *card){
     item->setPixmap(QPixmap(trick->getIconPath()));
     QString tooltip;
     if(trick->isVirtualCard())
-        tooltip=QPirate->getCard((trick->getSubcards()).at(0))->getDescription();
+        tooltip=Bang->getCard((trick->getSubcards()).at(0))->getDescription();
     else
         tooltip=trick->getDescription();
     item->setToolTip(tooltip);
@@ -813,7 +820,7 @@ QList<CardItem*> Dashboard::removeCardItems(const QList<int> &card_ids, Player::
             m_takenOffCards.removeAt(index);
             if (card_item->getId() == Card::S_UNKNOWN_CARD_ID)
             {
-                const Card* card = QPirate->getCard(card_id);
+                const Card* card = Bang->getCard(card_id);
                 card_item->setCard(card);
             }
             card_item->setOpacity(1.0);

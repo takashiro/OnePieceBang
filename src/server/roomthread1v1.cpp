@@ -18,7 +18,7 @@ void RoomThread1v1::run(){
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
     QSet<QString> banset = Config.value("Banlist/1v1").toStringList().toSet();
-    general_names = QPirate->getRandomGenerals(10, banset);
+    general_names = Bang->getRandomGenerals(10, banset);
 
     QStringList known_list = general_names.mid(0, 6);
     unknown_list = general_names.mid(6, 4);

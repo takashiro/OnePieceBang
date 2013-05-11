@@ -18,7 +18,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
     if(!bg_path.startsWith(":"))
         ui->bgPathLineEdit->setText(bg_path);
 
-    ui->bgMusicPathLineEdit->setText(Config.value("BackgroundMusic", "audio/system/background.ogg").toString());
+    ui->bgMusicPathLineEdit->setText(Config.value("BackgroundMusic", "audio/system/bg_playing.ogg").toString());
 
     ui->enableEffectCheckBox->setChecked(Config.EnableEffects);
     ui->enableLastWordCheckBox->setChecked(Config.EnableLastWord);
@@ -68,7 +68,7 @@ ConfigDialog::~ConfigDialog()
 
 void ConfigDialog::on_browseBgButton_clicked()
 {
-    QString location = QDesktopServices::storageLocation(QDesktopServices::PicturesLocation);
+    QString location = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
     QString filename = QFileDialog::getOpenFileName(this,
                                                     tr("Select a background image"),
                                                     location,
@@ -142,7 +142,7 @@ void ConfigDialog::saveConfig()
 
 void ConfigDialog::on_browseBgMusicButton_clicked()
 {
-    QString location = QDesktopServices::storageLocation(QDesktopServices::MusicLocation);
+    QString location = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
     QString filename = QFileDialog::getOpenFileName(this,
                                                     tr("Select a background music"),
                                                     location,
@@ -155,7 +155,7 @@ void ConfigDialog::on_browseBgMusicButton_clicked()
 
 void ConfigDialog::on_resetBgMusicButton_clicked()
 {
-    QString default_music = "audio/system/background.ogg";
+    QString default_music = "audio/system/bg_playing.ogg";
     Config.setValue("BackgroundMusic", default_music);
     ui->bgMusicPathLineEdit->setText(default_music);
 }

@@ -19,7 +19,7 @@ namespace QSanProtocol
         }
         inline Json::Value toJsonString(const QString& s)
         {            
-            return Json::Value(s.toAscii().constData());
+            return Json::Value(s.toLocal8Bit().constData());
         }
         Json::Value toJsonArray(const QString& s1, const QString& s2);
         Json::Value toJsonArray(const QString& s1, const Json::Value& s2);

@@ -1,6 +1,7 @@
 #include "window.h"
 #include "settings.h"
 #include "button.h"
+#include "audio.h"
 
 #include <QPainter>
 #include <QGraphicsRotation>
@@ -109,7 +110,7 @@ void Window::addCloseButton(const QString &label)
 
 void Window::shift(){
     resetTransform();
-    translate(-size.width()/2, -size.height()/2);
+    //translate(-size.width()/2, -size.height()/2);
 }
 
 void Window::keepWhenDisappear(){

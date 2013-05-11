@@ -10,7 +10,7 @@ math.randomseed(os.time())
 -- SmartAI is the base class for all other specialized AI classes
 SmartAI = class "SmartAI"
 
-version = "QQPirate AI 20120405 (V0.8 Stable)"
+version = "QBang AI 20120405 (V0.8 Stable)"
 --- this function is only function that exposed to the host program
 --- and it clones an AI instance by general name
 -- @param player The ServerPlayer object that want to create the AI object
@@ -251,9 +251,9 @@ function SmartAI:getUseValue(card)
 	if card:inherits("GuhuoCard") then
 		local userstring = card:toString()
 		userstring = (userstring:split(":"))[3]
-		local guhuocard = sgs.QPirate:cloneCard(userstring, card:getSuit(), card:getNumber())
+		local guhuocard = sgs.Bang:cloneCard(userstring, card:getSuit(), card:getNumber())
 		local usevalue = self:getUseValue(guhuocard,player) + #self.enemies*0.3
-		if sgs.QPirate:getCard(card:getSubcards():first()):objectName() == userstring and card:getSuit() == sgs.Card_Heart then usevalue = usevalue + 3 end
+		if sgs.Bang:getCard(card:getSubcards():first()):objectName() == userstring and card:getSuit() == sgs.Card_Heart then usevalue = usevalue + 3 end
 		return usevalue
 	end
 
@@ -384,7 +384,7 @@ function SmartAI:getDynamicUsePriority(card)
 		end
 
 		if use_card:getSkillName() == "wusheng" and
-			sgs.QPirate:getCard(use_card:getEffectiveId()):inherits("GaleShell") and
+			sgs.Bang:getCard(use_card:getEffectiveId()):inherits("GaleShell") and
 			self:isEquip("GaleShell") then
 			value = value + 10
 		end
@@ -1649,7 +1649,7 @@ function SmartAI:filterEvent(event, player, data)
 		local move = data:toCardMove()
 		local from = move.from
 		local place = move.from_place
-		local card = sgs.QPirate:getCard(move.card_id)
+		local card = sgs.Bang:getCard(move.card_id)
 		if sgs.ai_snat_disma_effect then
 			sgs.ai_snat_disma_effect = false
 			local intention = 70
@@ -1695,7 +1695,7 @@ function SmartAI:askForSkillInvoke(skill_name, data)
 	elseif type(invoke) == "function" then
 		return invoke(self, data)
 	else
-		local skill = sgs.QPirate:getSkill(skill_name)
+		local skill = sgs.Bang:getSkill(skill_name)
 		return skill and skill:getFrequency() == sgs.Skill_Frequent
 	end
 end
@@ -1707,7 +1707,7 @@ function SmartAI:askForChoice(skill_name, choices)
 	elseif type(choice) == "function" then
 		return choice(self, choices)
 	else
-		local skill = sgs.QPirate:getSkill(skill_name)
+		local skill = sgs.Bang:getSkill(skill_name)
 		if skill and choices:match(skill:getDefaultChoice(self.player)) then
 			return skill:getDefaultChoice(self.player)
 		else
@@ -2127,14 +2127,14 @@ function SmartAI:askForAG(card_ids, refusable, reason)
 			if #card_ids == 1 then return -1 end
 		end
 		for _, card_id in ipairs(card_ids) do
-			if not sgs.QPirate:getCard(card_id):inherits("Shit") then return card_id end
+			if not sgs.Bang:getCard(card_id):inherits("Shit") then return card_id end
 		end
 		return -1
 	end
 	local ids = card_ids
 	local cards = {}
 	for _, id in ipairs(ids) do
-		table.insert(cards, sgs.QPirate:getCard(id))
+		table.insert(cards, sgs.Bang:getCard(id))
 	end
 	for _, card in ipairs(cards) do
 		if card:inherits("Peach") then return card:getEffectiveId() end
@@ -2379,12 +2379,12 @@ function SmartAI:getCardNeedPlayer(cards)
 				local card_id = self:getCardRandomly(self.player, "h")
 				if friend:hasSkill("manjuan") and #self.friends_noself > 1 then
 				else
-					return sgs.QPirate:getCard(card_id), friend
+					return sgs.Bang:getCard(card_id), friend
 				end
 			end
 			for _,enemy in ipairs(self.enemies) do
 				if enemy:hasSkill("manjuan") then
-					return sgs.QPirate:getCard(card_id), enemy
+					return sgs.Bang:getCard(card_id), enemy
 				end
 			end
 		end
@@ -2463,7 +2463,7 @@ function SmartAI:getCardNeedPlayer(cards)
 				local dummy_use = {isDummy = true}
 				self:useSkillCard(sgs.Card_Parse("@ZhibaCard=."), dummy_use)
 				if dummy_use.card then
-					local subcard = sgs.QPirate:getCard(dummy_use.card:getEffectiveId())
+					local subcard = sgs.Bang:getCard(dummy_use.card:getEffectiveId())
 					if self:getUseValue(subcard) < 6 and #self.friends > 1 then
 						for _, player in ipairs(friends) do
 							if player:getKingdom() == "wu" and not self:needKongcheng(player) then
@@ -2541,7 +2541,7 @@ function SmartAI:askForYiji(card_ids)
 
 	local cards = {}
 	for _, card_id in ipairs(card_ids) do
-		table.insert(cards, sgs.QPirate:getCard(card_id))
+		table.insert(cards, sgs.Bang:getCard(card_id))
 	end
 	
 	local card, friend = self:getCardNeedPlayer(cards)
@@ -2551,7 +2551,7 @@ function SmartAI:askForYiji(card_ids)
 		for _, afriend in ipairs(self.friends) do
 			if not (self:needKongcheng(afriend) or afriend:hasSkill("manjuan")) then
 				for _, acard_id in ipairs(card_ids) do
-					if not sgs.QPirate:getCard(acard_id):inherits("Shit") then return afriend, acard_id end
+					if not sgs.Bang:getCard(acard_id):inherits("Shit") then return afriend, acard_id end
 				end
 			end
 		end
@@ -2609,7 +2609,7 @@ end
 
 function SmartAI:askForSinglePeach(dying)
 	local card_str
-	local forbid = sgs.QPirate:cloneCard("peach", sgs.Card_NoSuit, 0)
+	local forbid = sgs.Bang:cloneCard("peach", sgs.Card_NoSuit, 0)
 	if self.player:isLocked(forbid) or dying:isLocked(forbid) then return "." end
 	if self:isFriend(dying) then
 		if self:needDeath(dying) then return "." end
@@ -2619,7 +2619,7 @@ function SmartAI:askForSinglePeach(dying)
 			local same = false
 			for i, card_id in sgs.qlist(buqu) do
 				for j, card_id2 in sgs.qlist(buqu) do
-					if i ~= j and sgs.QPirate:getCard(card_id):getNumber() == sgs.QPirate:getCard(card_id2):getNumber() then
+					if i ~= j and sgs.Bang:getCard(card_id):getNumber() == sgs.Bang:getCard(card_id2):getNumber() then
 						same = true
 						break
 					end
@@ -3279,7 +3279,7 @@ function SmartAI:getCardsFromDiscardPile(class_name)
 	sgs.discard_pile = self.room:getDiscardPile()
 	local cards = {}
 	for _, card_id in sgs.qlist(sgs.discard_pile) do
-		local card = sgs.QPirate:getCard(card_id)
+		local card = sgs.Bang:getCard(card_id)
 		if card:inherits(class_name) then table.insert(cards, card) end
 	end
 	
@@ -3290,7 +3290,7 @@ function SmartAI:getCardsFromDrawPile(class_name)
 	sgs.discard_pile = self.room:getDrawPile()
 	local cards = {}
 	for _, card_id in sgs.qlist(sgs.discard_pile) do
-		local card = sgs.QPirate:getCard(card_id)
+		local card = sgs.Bang:getCard(card_id)
 		if card:inherits(class_name) then table.insert(cards, card) end
 	end
 	
@@ -3300,8 +3300,8 @@ end
 function SmartAI:getCardsFromGame(class_name)
 	local ban = sgs.GetConfig("BanPackages", "")
 	local cards = {}
-	for i=1, sgs.QPirate:getCardCount() do
-		local card = sgs.QPirate:getCard(i-1)
+	for i=1, sgs.Bang:getCardCount() do
+		local card = sgs.Bang:getCard(i-1)
 		if card:inherits(class_name) and not ban:match(card:getPackage()) then table.insert(cards, card) end
 	end
 	
@@ -3314,12 +3314,12 @@ function SmartAI:getRestCardsNum(class_name)
 	local totalnum = 0
 	local discardnum = 0
 	local card
-	for i=1, sgs.QPirate:getCardCount() do
-		card = sgs.QPirate:getCard(i-1)
+	for i=1, sgs.Bang:getCardCount() do
+		card = sgs.Bang:getCard(i-1)
 		if card:inherits(class_name) and not ban:match(card:getPackage()) then totalnum = totalnum+1 end
 	end
 	for _, card_id in sgs.qlist(sgs.discard_pile) do
-		card = sgs.QPirate:getCard(card_id)
+		card = sgs.Bang:getCard(card_id)
 		if card:inherits(class_name) then discardnum = discardnum +1 end
 	end
 	return totalnum - discardnum
@@ -3369,7 +3369,7 @@ function SmartAI:hasSkill(skill)
 		skill_name = skill.name
 	end
 
-	local real_skill = sgs.QPirate:getSkill(skill_name)
+	local real_skill = sgs.Bang:getSkill(skill_name)
 	if real_skill and real_skill:isLordSkill() then
 		return self.player:hasLordSkill(skill_name)
 	else
@@ -3433,7 +3433,7 @@ function SmartAI:useSkillCard(card,use)
 	local shit = 0
 	if #subcards > 0 then
 		for _, card in ipairs(subcards) do
-			if sgs.QPirate:getCard(card):inherits("Shit") then shit = shit + 1 end
+			if sgs.Bang:getCard(card):inherits("Shit") then shit = shit + 1 end
 		end
 	end
 	if shit - self.player:getHp() > self:getAllPeachNum() then use.card = nil end
@@ -3924,7 +3924,7 @@ local loaded = "standard|standard_cards|maneuvering|sp"
 
 local files = table.concat(sgs.GetFileNames("lua/ai"), " ")
 
-for _, aextension in ipairs(sgs.QPirate:getExtensions()) do
+for _, aextension in ipairs(sgs.Bang:getExtensions()) do
 	if not loaded:match(aextension) and files:match(string.lower(aextension)) then
 		dofile("lua/ai/" .. string.lower(aextension) .. "-ai.lua")
 	end
@@ -3933,7 +3933,7 @@ end
 dofile "lua/ai/sp-ai.lua"
 dofile "lua/ai/special3v3-ai.lua"
 
-for _, ascenario in ipairs(sgs.QPirate:getScenarioNames()) do
+for _, ascenario in ipairs(sgs.Bang:getScenarioNames()) do
 	if not loaded:match(ascenario) and files:match(string.lower(ascenario)) then
 		dofile("lua/ai/" .. string.lower(ascenario) .. "-ai.lua")
 	end

@@ -454,7 +454,7 @@ void AvatarRectItem::toCenter(QGraphicsScene *scene){
 }
 
 void AvatarRectItem::setKingdom(const QString &kingdom){
-    QColor color = QPirate->getKingdomColor(kingdom);
+    QColor color = Bang->getKingdomColor(kingdom);
     name_box->setBrush(color);
 }
 
@@ -485,7 +485,7 @@ CardScene::CardScene()
 
     resetPhoto();
 
-    QGraphicsItemGroup *magatama_group = new QGraphicsItemGroup(NULL, this);
+    QGraphicsItemGroup *magatama_group = new QGraphicsItemGroup(NULL);
 
     int i;
     for(i=0; i<10; i++){
@@ -713,7 +713,7 @@ void CardScene::resetPhoto(){
 }
 
 void CardScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
-    QGraphicsItem *item = itemAt(event->scenePos());
+    QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
     if(item){
         if(item->parentItem() == skill_box){
             QGraphicsScene::contextMenuEvent(event);
@@ -916,10 +916,10 @@ QGroupBox *CardEditor::createTextItemBox(const QString &text, const QFont &font,
 QLayout *CardEditor::createGeneralLayout(){
     kingdom_combobox = new QComboBox;
     lord_checkbox = new QCheckBox(tr("Lord"));
-    QStringList kingdom_names = QPirate->getKingdoms();
+    QStringList kingdom_names = Bang->getKingdoms();
     foreach(QString kingdom, kingdom_names){
         QIcon icon(QString("image/kingdom/icon/%1.png").arg(kingdom));
-        kingdom_combobox->addItem(icon, QPirate->translate(kingdom), kingdom);
+        kingdom_combobox->addItem(icon, Bang->translate(kingdom), kingdom);
     }
 
     QSpinBox *hp_spinbox = new QSpinBox;
@@ -994,7 +994,7 @@ QWidget *CardEditor::createSkillBox(){
     for(i=0; i<4; i++){
         QString suit_name = Card::Suit2String(suits[i]);
         QIcon suit_icon(QString("image/system/suit/%1.png").arg(suit_name));
-        suit_combobox->addItem(suit_icon, QPirate->translate(suit_name), suit_name);
+        suit_combobox->addItem(suit_icon, Bang->translate(suit_name), suit_name);
     }
     layout->addRow(tr("Insert suit"), suit_combobox);
 

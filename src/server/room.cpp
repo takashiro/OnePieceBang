@@ -29,7 +29,7 @@ using namespace QSanProtocol;
 using namespace QSanProtocol::Utils;
 
 Room::Room(QObject *parent, const QString &mode)
-    :QThread(parent), mode(mode), current(NULL), pile1(QPirate->getRandomCards()),
+    :QThread(parent), mode(mode), current(NULL), pile1(Bang->getRandomCards()),
     draw_pile(&pile1), discard_pile(&pile2),
     game_started(false), game_finished(false), L(NULL), thread(NULL),
     thread_3v3(NULL), sem(new QSemaphore), _m_semRaceRequest(0), _m_semRoomMutex(1),
@@ -37,14 +37,14 @@ Room::Room(QObject *parent, const QString &mode)
     m_surrenderRequestReceived(false), _virtual(false)
 {       
     _m_lastMovementId = 0;
-    player_count = QPirate->getPlayerCount(mode);
-    scenario = QPirate->getScenario(mode);
+    player_count = Bang->getPlayerCount(mode);
+    scenario = Bang->getScenario(mode);
 
     initCallbacks();
 
     L = CreateLuaState();
     QStringList scripts;
-    scripts << "lua/qpirate.lua" << "lua/ai/smart-ai.lua";
+    scripts << "lua/bang.lua" << "lua/ai/smart-ai.lua";
     DoLuaScripts(L, scripts);
 }
 
@@ -177,8 +177,8 @@ void Room::enterDying(ServerPlayer *player, DamageStruct *reason){
     }
     broadcastInvoke("playAudio", sos_filename);
 
-    QList<ServerPlayer *> savers;
-    ServerPlayer *current = getCurrent();
+    QList<ServerPlayer *> savers = getAllPlayers();
+    /*ServerPlayer *current = getCurrent();
     if(current->hasSkill("wansha") && current->isAlive()){
         playSkillEffect("wansha");
 
@@ -197,8 +197,7 @@ void Room::enterDying(ServerPlayer *player, DamageStruct *reason){
 
         sendLog(log);
 
-    }else
-        savers = getAllPlayers();
+    }else*/
 
     DyingStruct dying;
     dying.who = player;
@@ -315,7 +314,7 @@ void Room::killPlayer(ServerPlayer *victim, DamageStruct *reason){
                 if(Config.EnableHegemony){
                     QString role = player->getKingdom();
                     if(role == "god")
-                        role = QPirate->getGeneral(getTag(player->objectName()).toStringList().at(0))->getKingdom();
+                        role = Bang->getGeneral(getTag(player->objectName()).toStringList().at(0))->getKingdom();
                     role = BasaraMode::getMappedRole(role);
                     broadcast(QString("#%1 role %2").arg(player->objectName()).arg(role));
                 }
@@ -499,9 +498,9 @@ void Room::detachSkillFromPlayer(ServerPlayer *player, const QString &skill_name
     broadcastInvoke("detachSkill",
         QString("%1:%2").arg(player->objectName()).arg(skill_name));
 
-    const Skill *skill = QPirate->getSkill(skill_name);
+    const Skill *skill = Bang->getSkill(skill_name);
     if(skill && skill->isVisible()){
-        foreach(const Skill *skill, QPirate->getRelatedSkills(skill_name))
+        foreach(const Skill *skill, Bang->getRelatedSkills(skill_name))
             detachSkillFromPlayer(player, skill->objectName());
 
         LogMessage log;
@@ -781,7 +780,7 @@ QString Room::askForChoice(ServerPlayer *player, const QString &skill_name, cons
         if (!success || !clientReply.isString())
         {            
             answer = ".";
-            const Skill *skill = QPirate->getSkill(skill_name);
+            const Skill *skill = Bang->getSkill(skill_name);
             if(skill)
                 return skill->getDefaultChoice(player);
         }
@@ -800,7 +799,7 @@ void Room::obtainCard(ServerPlayer *target, const Card *card, bool unhide){
 }
 
 void Room::obtainCard(ServerPlayer *target, int card_id, bool unhide){
-    moveCardTo(QPirate->getCard(card_id), target, Player::Hand, unhide);
+    moveCardTo(Bang->getCard(card_id), target, Player::Hand, unhide);
 }
 
 bool Room::isCanceled(const CardEffectStruct &effect){
@@ -996,7 +995,7 @@ const Card *Room::askForCard(ServerPlayer *player, const QString &pattern, const
 
     if(card){
         if(card->getTypeId() != Card::Skill){
-            const CardPattern *card_pattern = QPirate->getPattern(pattern);
+            const CardPattern *card_pattern = Bang->getPattern(pattern);
             if(card_pattern == NULL || card_pattern->willThrow())
                 throwCard(card);
         }else if(card->willThrow())
@@ -1243,7 +1242,7 @@ void Room::setCardFlag(const Card *card, const QString &flag, ServerPlayer *who)
 void Room::setCardFlag(int card_id, const QString &flag, ServerPlayer *who){
     if(flag.isEmpty()) return;
 
-    QPirate->getCard(card_id)->setFlags(flag);
+    Bang->getCard(card_id)->setFlags(flag);
 
     QString pattern = QString::number(card_id) + ":" + flag;
     if(who)
@@ -1260,7 +1259,7 @@ void Room::clearCardFlag(const Card *card, ServerPlayer *who){
 }
 
 void Room::clearCardFlag(int card_id, ServerPlayer *who){
-    QPirate->getCard(card_id)->clearFlags();
+    Bang->getCard(card_id)->clearFlags();
 
     QString pattern = QString::number(card_id) + ":.";
     if(who)
@@ -1392,7 +1391,7 @@ void Room::installEquip(ServerPlayer *player, const QString &equip_name){
     if(card_id == -1)
         return;
 
-    moveCardTo(QPirate->getCard(card_id), player, Player::Equip, true);
+    moveCardTo(Bang->getCard(card_id), player, Player::Equip, true);
 }
 
 void Room::resetAI(ServerPlayer *player){
@@ -1495,7 +1494,7 @@ void Room::reverseFor3v3(const Card *card, ServerPlayer *player, QList<ServerPla
 }
 
 const ProhibitSkill *Room::isProhibited(const Player *from, const Player *to, const Card *card) const{
-    return QPirate->isProhibited(from, to, card);
+    return Bang->isProhibited(from, to, card);
 }
 
 int Room::drawCard(){
@@ -1510,7 +1509,7 @@ const Card *Room::peek(){
         swapPile();
 
     int card_id = draw_pile->first();
-    return QPirate->getCard(card_id);
+    return Bang->getCard(card_id);
 }
 
 void Room::prepareForStart(){
@@ -1582,7 +1581,7 @@ void Room::prepareForStart(){
                 QList<ServerPlayer *> all_players = m_players;
                 all_players.removeOne(player_self);
                 int n = all_players.count(), i;
-                QStringList roles = QPirate->getRoleList(mode);
+                QStringList roles = Bang->getRoleList(mode);
                 roles.removeOne(role);
                 qShuffle(roles);
 
@@ -1812,7 +1811,7 @@ bool Room::processRequestSurrender(ServerPlayer *player, const QSanProtocol::QSa
 void Room::processClientPacket(const QString &request){
     QSanGeneralPacket packet;
     //@todo: remove this thing after the new protocol is fully deployed
-    if (packet.parse(request.toAscii().constData()))
+    if (packet.parse(request.toLatin1().constData()))
     {    
         ServerPlayer *player = qobject_cast<ServerPlayer*>(sender());
         if (packet.getPacketType() == S_CLIENT_REPLY)
@@ -1879,7 +1878,7 @@ void Room::addRobotCommand(ServerPlayer *player, const QString &){
     m_players << robot;
 
     const QString robot_name = tr("Computer %1").arg(QChar('A' + n));
-    const QString robot_avatar = QPirate->getRandomGeneralName();
+    const QString robot_avatar = Bang->getRandomGeneralName();
     signup(robot, robot_name, robot_avatar, true);
 
     QString greeting = tr("Hello, I'm a robot").toUtf8().toBase64();
@@ -1977,11 +1976,11 @@ void Room::assignGeneralsForPlayers(const QList<ServerPlayer *> &to_assign){
 
     const int max_choice = (Config.EnableHegemony && Config.Enable2ndGeneral) ? 5
         : Config.value("MaxChoice", 5).toInt();
-    const int total = QPirate->getGeneralCount();
+    const int total = Bang->getGeneralCount();
     const int max_available = (total-existed.size()) / to_assign.length();
     const int choice_count = qMin(max_choice, max_available);
 
-    QStringList choices = QPirate->getRandomGenerals(total-existed.size(), existed);
+    QStringList choices = Bang->getRandomGenerals(total-existed.size(), existed);
 
     if(Config.EnableHegemony)
     {
@@ -1996,7 +1995,7 @@ void Room::assignGeneralsForPlayers(const QList<ServerPlayer *> &to_assign){
                 //keep legal generals
                 foreach(QString name, old_list)
                 {
-                    if(QPirate->getGeneral(name)->getKingdom()
+                    if(Bang->getGeneral(name)->getKingdom()
                         != sp->getGeneral()->getKingdom()
                         || sp->findReasonable(old_list,true)
                         == name)
@@ -2041,14 +2040,14 @@ void Room::chooseGenerals(){
         QStringList lord_list;
         ServerPlayer *the_lord = getLord();
         if(Config.EnableSame)
-            lord_list = QPirate->getRandomGenerals(Config.value("MaxChoice", 5).toInt());
+            lord_list = Bang->getRandomGenerals(Config.value("MaxChoice", 5).toInt());
         else if(the_lord->getState() == "robot")
             if(qrand()%100 < nonlord_prob)
-                lord_list = QPirate->getRandomGenerals(1);
+                lord_list = Bang->getRandomGenerals(1);
             else
-                lord_list = QPirate->getLords();
+                lord_list = Bang->getLords();
         else
-            lord_list = QPirate->getRandomLords();
+            lord_list = Bang->getRandomLords();
         QString general = askForGeneral(the_lord, lord_list);
         the_lord->setGeneralName(general);
         if (!Config.EnableBasara)
@@ -2154,8 +2153,8 @@ void Room::run(){
         ServerPlayer *lord = m_players.first();
         setPlayerProperty(lord, "general", "shenlvbu1");
 
-        const Package *stdpack = QPirate->findChild<const Package *>("standard");
-        const Package *windpack = QPirate->findChild<const Package *>("wind");
+        const Package *stdpack = Bang->findChild<const Package *>("standard");
+        const Package *windpack = Bang->findChild<const Package *>("wind");
 
         QList<const General *> generals = stdpack->findChildren<const General *>();
         generals << windpack->findChildren<const General *>();
@@ -2189,7 +2188,7 @@ void Room::run(){
 void Room::assignRoles(){
     int n = m_players.count(), i;
 
-    QStringList roles = QPirate->getRoleList(mode);
+    QStringList roles = Bang->getRoleList(mode);
     qShuffle(roles);
 
     for(i = 0; i < n; i++){
@@ -2259,7 +2258,7 @@ int Room::getCardFromPile(const QString &card_pattern){
     if(card_pattern.startsWith("@")){
         if(card_pattern == "@duanliang"){
             foreach(int card_id, *draw_pile){
-                const Card *card = QPirate->getCard(card_id);
+                const Card *card = Bang->getCard(card_id);
                 if(card->isBlack() && (card->inherits("BasicCard") || card->inherits("EquipCard")))
                     return card_id;
             }
@@ -2267,7 +2266,7 @@ int Room::getCardFromPile(const QString &card_pattern){
     }else{
         QString card_name = card_pattern;
         foreach(int card_id, *draw_pile){
-            const Card *card = QPirate->getCard(card_id);
+            const Card *card = Bang->getCard(card_id);
             if(card->objectName() == card_name)
                 return card_id;
         }
@@ -2288,7 +2287,7 @@ QString Room::_chooseDefaultGeneral(ServerPlayer* player) const
             if (player->getGeneral() != NULL) // choosing first general
             {
                 if (name == player->getGeneralName()) continue;
-                if (QPirate->getGeneral(name)->getKingdom()
+                if (Bang->getGeneral(name)->getKingdom()
                     == player->getGeneral()->getKingdom())
                     return name;
             }
@@ -2297,8 +2296,8 @@ QString Room::_chooseDefaultGeneral(ServerPlayer* player) const
                 foreach(QString other,player->getSelected()) // choosing second general
                 {
                     if(name == other) continue;
-                    if(QPirate->getGeneral(name)->getKingdom()
-                        == QPirate->getGeneral(other)->getKingdom())
+                    if(Bang->getGeneral(name)->getKingdom()
+                        == Bang->getGeneral(other)->getKingdom())
                         return name;
                 }
             }
@@ -2316,7 +2315,7 @@ QString Room::_chooseDefaultGeneral(ServerPlayer* player) const
 
 bool Room::_setPlayerGeneral(ServerPlayer* player, const QString& generalName, bool isFirst)
 {
-    const General* general = QPirate->getGeneral(generalName);
+    const General* general = Bang->getGeneral(generalName);
     if (general == NULL) return false;
     else if (!Config.FreeChoose && !player->getSelected().contains(generalName))
         return false;
@@ -2499,6 +2498,7 @@ bool Room::cardEffect(const CardEffectStruct &effect){
         return false;
 
     QVariant data = QVariant::fromValue(effect);
+
     bool broken = false;
     if(effect.from)
         broken = thread->trigger(CardEffect, effect.from, data);
@@ -2752,7 +2752,7 @@ void Room::drawCards(QList<ServerPlayer*> players, int n, const QString &reason)
         for(int i = 0; i < n; i++){
             int card_id = drawCard();
             card_ids << card_id;
-            const Card *card = QPirate->getCard(card_id);
+            const Card *card = Bang->getCard(card_id);
             player->getRoom()->setCardFlag(card, reason);
 
             QVariant data = QVariant::fromValue(card_id);
@@ -2822,7 +2822,7 @@ void Room::throwCard(const Card *card, ServerPlayer *who){
 }
 
 void Room::throwCard(int card_id, ServerPlayer *who){
-    throwCard(QPirate->getCard(card_id), who);
+    throwCard(Bang->getCard(card_id), who);
 }
 
 RoomThread *Room::getThread() const{
@@ -2918,7 +2918,7 @@ void Room::moveCardsAtomic(QList<CardsMoveStruct> cards_moves, bool forceMoveVis
         for (int j = 0; j < cards_move.card_ids.size(); j++)
         {              
             int card_id = cards_move.card_ids[j];
-            const Card *card = QPirate->getCard(card_id);
+            const Card *card = Bang->getCard(card_id);
             
             if (cards_move.from) // Hand/Equip/Judge
             {
@@ -2945,7 +2945,7 @@ void Room::moveCardsAtomic(QList<CardsMoveStruct> cards_moves, bool forceMoveVis
         for (int j = 0; j < cards_move.card_ids.size(); j++)
         {
             int card_id = cards_move.card_ids[j];
-            const Card *card = QPirate->getCard(card_id);
+            const Card *card = Bang->getCard(card_id);
             if(cards_move.to) // Hand/Equip/Judge
             {                
                 cards_move.to->addCard(card, cards_move.to_place);
@@ -3099,7 +3099,7 @@ void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool forceMoveVisible,
             }
 
             int card_id = cards_move.card_ids[j];
-            const Card *card = QPirate->getCard(card_id);
+            const Card *card = Bang->getCard(card_id);
             
             if (cards_move.from) // Hand/Equip/Judge
             {
@@ -3171,7 +3171,7 @@ void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool forceMoveVisible,
         for (int j = 0; j < cards_move.card_ids.size(); j++)
         {
             int card_id = cards_move.card_ids[j];
-            const Card *card = QPirate->getCard(card_id);
+            const Card *card = Bang->getCard(card_id);
             if(cards_move.to) // Hand/Equip/Judge
             {                
                 cards_move.to->addCard(card, cards_move.to_place);
@@ -3199,7 +3199,7 @@ void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool forceMoveVisible,
                 QVariant data = QVariant::fromValue(move_star);
                 thread->trigger(CardGotOnePiece, (ServerPlayer*)cards_move.to, data);
             }
-            QPirate->getCard(card_id)->onMove(moves[j]);
+            Bang->getCard(card_id)->onMove(moves[j]);
         }
         if (cards_move.to && (cards_move.to_place == Player::Hand || cards_move.to_place == Player::Equip)){
             moveOneTimeStruct.card_ids.append(cards_move.card_ids);
@@ -3282,7 +3282,7 @@ void Room::acquireSkill(ServerPlayer *player, const Skill *skill, bool open){
             broadcastInvoke("acquireSkill", acquire_str);
         }
 
-        foreach(const Skill *related_skill, QPirate->getRelatedSkills(skill_name)){
+        foreach(const Skill *related_skill, Bang->getRelatedSkills(skill_name)){
             if(!related_skill->isVisible())
                 acquireSkill(player, related_skill);
         }
@@ -3290,7 +3290,7 @@ void Room::acquireSkill(ServerPlayer *player, const Skill *skill, bool open){
 }
 
 void Room::acquireSkill(ServerPlayer *player, const QString &skill_name, bool open){
-    const Skill *skill = QPirate->getSkill(skill_name);
+    const Skill *skill = Bang->getSkill(skill_name);
     if(skill)
         acquireSkill(player, skill, open);
 }
@@ -3594,7 +3594,7 @@ void Room::doGongxin(ServerPlayer *shenlvmeng, ServerPlayer *target){
     if(result == "discard")
         throwCard(card_id, target);
     else
-        moveCardTo(QPirate->getCard(card_id), NULL, Player::DrawPile, true);    
+        moveCardTo(Bang->getCard(card_id), NULL, Player::DrawPile, true);    
 }
 
 const Card *Room::askForPindian(ServerPlayer *player, ServerPlayer *from, ServerPlayer *to, const QString &reason)
@@ -3615,11 +3615,11 @@ const Card *Room::askForPindian(ServerPlayer *player, ServerPlayer *from, Server
     Json::Value clientReply = player->getClientReply();    
     if(!success || !clientReply.isString()){
         int card_id = player->getRandomHandCardId();
-        return QPirate->getCard(card_id);
+        return Bang->getCard(card_id);
     }else{        
         const Card *card = Card::Parse(toQString(clientReply));
         if(card->isVirtualCard()){
-            const Card *real_card = QPirate->getCard(card->getEffectiveId());
+            const Card *real_card = Bang->getCard(card->getEffectiveId());
             delete card;
             return real_card;
         }else
@@ -3837,7 +3837,7 @@ void Room::fillAG(const QList<int> &card_ids, ServerPlayer *who){
 
 void Room::takeAG(ServerPlayer *player, int card_id){
     if(player){
-        player->addCard(QPirate->getCard(card_id), Player::Hand);
+        player->addCard(Bang->getCard(card_id), Player::Hand);
         setCardMapping(card_id, player, Player::Hand);
         broadcastInvoke("takeAG", QString("%1:%2").arg(player->objectName()).arg(card_id));
         CardMoveStruct move;
@@ -3930,7 +3930,7 @@ bool Room::askForYiji(ServerPlayer *guojia, QList<int> &cards){
         ServerPlayer *who = ai->askForYiji(cards, card_id);
         if(who){
             cards.removeOne(card_id);
-            moveCardTo(QPirate->getCard(card_id), who, Player::Hand, false);
+            moveCardTo(Bang->getCard(card_id), who, Player::Hand, false);
             return true;
         }else
             return false;

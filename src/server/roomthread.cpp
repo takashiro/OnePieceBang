@@ -84,7 +84,7 @@ bool JudgeStructPattern::match(const Player *player, const Card *card) const{
 
         return QRegExp(pattern).exactMatch(card_str);
     }else{
-        const CardPattern *card_pattern = QPirate->getPattern(pattern);
+        const CardPattern *card_pattern = Bang->getPattern(pattern);
         return card_pattern && card_pattern->match(player, card);
     }
 }
@@ -430,7 +430,7 @@ void RoomThread::addTriggerSkill(const TriggerSkill *skill){
     }
 
     if(skill->isVisible()){
-        foreach(const Skill *skill, QPirate->getRelatedSkills(skill->objectName())){
+        foreach(const Skill *skill, Bang->getRelatedSkills(skill->objectName())){
             const TriggerSkill *trigger_skill = qobject_cast<const TriggerSkill *>(skill);
             addTriggerSkill(trigger_skill);
         }

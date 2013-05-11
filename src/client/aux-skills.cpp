@@ -55,7 +55,7 @@ ResponseSkill::ResponseSkill()
 }
 
 void ResponseSkill::setPattern(const QString &pattern){
-    this->pattern = QPirate->getPattern(pattern);
+    this->pattern = Bang->getPattern(pattern);
 }
 
 bool ResponseSkill::matchPattern(const Player *player, const Card *card) const{

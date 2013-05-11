@@ -17,8 +17,8 @@ RoomThread3v3::RoomThread3v3(Room *room)
 QStringList RoomThread3v3::getGeneralsWithoutExtension() const{
     QList<const General *> generals;
 
-    const Package *stdpack = QPirate->findChild<const Package *>("standard");
-    const Package *windpack = QPirate->findChild<const Package *>("wind");
+    const Package *stdpack = Bang->findChild<const Package *>("standard");
+    const Package *windpack = Bang->findChild<const Package *>("wind");
 
     generals << stdpack->findChildren<const General *>()
              << windpack->findChildren<const General *>();
@@ -32,16 +32,16 @@ QStringList RoomThread3v3::getGeneralsWithoutExtension() const{
             itor.remove();
     }
 
-    generals.removeOne(QPirate->getGeneral("yuji"));
+    generals.removeOne(Bang->getGeneral("yuji"));
 
     if(Config.value("3v3/UsingNewMode", false).toBool()){
           QStringList list_remove, list_add;
           list_remove << "zhangjiao" << "caoren" << "lvmeng" << "xiahoudun" << "weiyan";
           list_add << "sunjian" << "menghuo" << "xuhuang" << "pangde" << "zhugejin";
           foreach(QString general_name, list_remove)
-              generals.removeOne(QPirate->getGeneral(general_name));
+              generals.removeOne(Bang->getGeneral(general_name));
           foreach(QString general_name, list_add)
-              generals << QPirate->getGeneral(general_name);
+              generals << Bang->getGeneral(general_name);
     }
 
     QStringList general_names;

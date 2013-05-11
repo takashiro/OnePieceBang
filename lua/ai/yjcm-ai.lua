@@ -433,7 +433,7 @@ end
 sgs.ai_skill_choice.mingce = function(self, choices)
 	local chengong = self.room:findPlayerBySkillName("mingce")
 	if chengong and not self:isFriend(chengong) then return "draw" end
-	local slash = sgs.QPirate:cloneCard("slash", sgs.Card_NoSuit, 0)
+	local slash = sgs.Bang:cloneCard("slash", sgs.Card_NoSuit, 0)
 	if self.player:getHandcardNum()<=2 then return "draw" end
 	if self.player:getHp()<=1 then return "draw" end
 	for _, enemy in ipairs(self.enemies) do

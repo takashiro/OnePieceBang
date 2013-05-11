@@ -33,7 +33,7 @@ class FitView : public QGraphicsView
 public:
     FitView(QGraphicsScene *scene) : QGraphicsView(scene) {
         setSceneRect(Config.Rect);
-        setRenderHints(QPainter::TextAntialiasing | QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+        setRenderHints(QPainter::TextAntialiasing | QPainter::Antialiasing);
     }
 
     virtual void resizeEvent(QResizeEvent *event) {
@@ -150,7 +150,7 @@ void MainWindow::on_actionExit_triggered()
 {
     QMessageBox::StandardButton result;
     result = QMessageBox::question(this,
-                                   tr("QPirate"),
+                                   tr("OnePieceBang"),
                                    tr("Are you sure to exit?"),
                                    QMessageBox::Ok | QMessageBox::Cancel);
     if(result == QMessageBox::Ok){
@@ -186,14 +186,14 @@ void MainWindow::on_actionStart_Server_triggered()
 }
 
 void MainWindow::checkVersion(const QString &server_version, const QString &server_mod){
-    QString client_mod = QPirate->getMODName();
+    QString client_mod = Bang->getMODName();
     if(client_mod != server_mod){
         QMessageBox::warning(this, tr("Warning"), tr("Client MOD name is not same as the server!"));
         return;
     }
 
     Client *client = qobject_cast<Client *>(sender());
-    QString client_version = QPirate->getVersionNumber();
+    QString client_version = Bang->getVersionNumber();
 
     if(server_version == client_version){
         client->signup();
@@ -209,7 +209,7 @@ void MainWindow::checkVersion(const QString &server_version, const QString &serv
 
     client->disconnectFromHost();
 
-    static QString link = "http://code.google.com/p/qpirate/downloads/list";
+    static QString link = "http://code.google.com/p/onepiecebang/downloads/list";
     QString text = tr("Server version is %1, client version is %2 <br/>").arg(server_version).arg(client_version);
     if(server_version > client_version)
         text.append(tr("Your client version is older than the server's, please update it <br/>"));
@@ -229,7 +229,7 @@ void MainWindow::startConnection(){
 
 void MainWindow::on_actionReplay_triggered()
 {
-    QString location = QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+    QString location = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     QString last_dir = Config.value("LastReplayDir").toString();
     if(!last_dir.isEmpty())
         location = last_dir;
@@ -356,7 +356,7 @@ void MainWindow::startGameInAnotherInstance(){
 void MainWindow::on_actionGeneral_Overview_triggered()
 {
     GeneralOverview *overview = new GeneralOverview(this);
-    static QList<const General *> generals = QPirate->findChildren<const General *>();
+    static QList<const General *> generals = Bang->findChildren<const General *>();
     overview->fillGenerals(generals);
     overview->show();
 }
@@ -406,21 +406,21 @@ void MainWindow::on_actionAbout_triggered()
 #endif
 
     content.append(tr("Current version: %1 %2 (%3)<br/>")
-                   .arg(QPirate->getVersion())
+                   .arg(Bang->getVersion())
                    .arg(config)
-                   .arg(QPirate->getVersionName()));
+                   .arg(Bang->getVersionName()));
 
     const char *date = __DATE__;
     const char *time = __TIME__;
     content.append(tr("Compilation time: %1 %2 <br/>").arg(date).arg(time));
 
-    QString project_url = "http://github.com/takashiro/QPirate";
+    QString project_url = "http://github.com/takashiro/OnePieceBang";
     content.append(tr("Source code: <a href='%1' style = \"color:#0072c1; \">%1</a> <br/>").arg(project_url));
 
     QString forum_url = "http://inu.3-a.net";
     content.append(tr("Forum: <a href='%1' style = \"color:#0072c1; \">%1</a> <br/>").arg(forum_url));
 
-    Window *window = new Window(tr("About QPirate"), QSize(420, 450));
+    Window *window = new Window(tr("About OnePieceBang"), QSize(420, 450));
     scene->addItem(window);
     window->setZValue(9.0);
 
@@ -665,7 +665,7 @@ MeleeDialog::MeleeDialog(QWidget *parent)
     layout->addWidget(server_log);
     setLayout(layout);
 
-    setGeneral(Config.value("MeleeGeneral", "zhangliao").toString());
+    setGeneral(Config.value("MeleeGeneral", "luffy").toString());
 }
 
 QGroupBox *MeleeDialog::createGeneralBox(){
@@ -703,47 +703,41 @@ QGroupBox *MeleeDialog::createGeneralBox(){
     return box;
 }
 
-class RoomItem: public Pixmap{
-public:
-    RoomItem(Room *room){
-        load("image/system/frog/playing.png");
+RoomItem::RoomItem(Room *room){
+    load("image/system/frog/playing.png");
 
-        const qreal radius = 50;
-        const qreal pi = 3.1415926;
+    const qreal radius = 50;
+    const qreal pi = 3.1415926;
 
-        QList<const ServerPlayer *> players = room->findChildren<const ServerPlayer *>();
-        int n = players.length();
-        qreal angle = 2 * pi / n;
+    QList<const ServerPlayer *> players = room->findChildren<const ServerPlayer *>();
+    int n = players.length();
+    qreal angle = 2 * pi / n;
 
-        foreach(const ServerPlayer *player, players){
-            qreal theta = (player->getSeat() -1) * angle;
-            qreal x = radius * cos(theta) + 5;
-            qreal y = radius * sin(theta) + 5;
+    foreach(const ServerPlayer *player, players){
+        qreal theta = (player->getSeat() -1) * angle;
+        qreal x = radius * cos(theta) + 5;
+        qreal y = radius * sin(theta) + 5;
 
-            qreal role_x = (radius + 30) * cos(theta) + 5;
-            qreal role_y = (radius + 30) * sin(theta) + 5;
+        qreal role_x = (radius + 30) * cos(theta) + 5;
+        qreal role_y = (radius + 30) * sin(theta) + 5;
 
-            QGraphicsPixmapItem *avatar = new QGraphicsPixmapItem(this);
-            avatar->setPixmap(QPixmap(player->getGeneral()->getPixmapPath("tiny")));
-            avatar->setPos(x, y);
+        QGraphicsPixmapItem *avatar = new QGraphicsPixmapItem(this);
+        avatar->setPixmap(QPixmap(player->getGeneral()->getPixmapPath("tiny")));
+        avatar->setPos(x, y);
 
-            QGraphicsPixmapItem *role = new QGraphicsPixmapItem(this);
-            role->setPixmap(QString("image/system/roles/small-%1.png").arg(player->getRole()));
-            role->setPos(role_x, role_y);
-        }
-
-        setFlag(ItemIsMovable);
+        QGraphicsPixmapItem *role = new QGraphicsPixmapItem(this);
+        role->setPixmap(QString("image/system/roles/small-%1.png").arg(player->getRole()));
+        role->setPos(role_x, role_y);
     }
 
-    virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *){
-        foreach(QGraphicsItem *item, childItems()){
-            item->setVisible(! item->isVisible());
-        }
-    }
-};
+    setFlag(ItemIsMovable);
+}
 
-typedef RoomItem *RoomItemStar;
-Q_DECLARE_METATYPE(RoomItemStar);
+void RoomItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *){
+    foreach(QGraphicsItem *item, childItems()){
+        item->setVisible(! item->isVisible());
+    }
+}
 
 void MeleeDialog::startTest(){
     foreach(RoomItemStar room_item, room_items){
@@ -791,9 +785,9 @@ void MeleeDialog::onGameOver(const QString &winner){
     foreach(const ServerPlayer *p, players){
         bool won = winner.contains(p->getRole()) || winner.contains(p->objectName());
         if(won)
-            winners << QPirate->translate(p->getGeneralName());
+            winners << Bang->translate(p->getGeneralName());
         else
-            losers << QPirate->translate(p->getGeneralName());
+            losers << Bang->translate(p->getGeneralName());
 
         if(p->getGeneralName() == to_test){
 
@@ -871,7 +865,7 @@ void MeleeDialog::selectGeneral(){
 }
 
 void MeleeDialog::setGeneral(const QString &general_name){
-    const General *general = QPirate->getGeneral(general_name);
+    const General *general = Bang->getGeneral(general_name);
 
     if(general){
         avatar_button->setIcon(QIcon(general->getPixmapPath("card")));

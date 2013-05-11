@@ -4,9 +4,9 @@ ui_*
 Makefile*
 object_script*
 *.pro.user
-sanguosha.qm
+OnePieceBang.qm
 config.ini
-swig/qpirate_wrap.cxx
+swig/bang_wrap.cxx
 records/*
 users.db
 doc/*.html
@@ -14,9 +14,9 @@ swig/*.bat
 .DS_Store
 liblua5.1.dylib
 font/font.ttf
-QSanguosha.pro.user*
+OnePieceBang.pro.user*
 etc/customScenes/custom_scenario.txt
 *.dylib
-QSanguosha.exe
+OnePieceBang.exe
 *.db
 doc/references/

@@ -5,7 +5,7 @@ sgs.ai_skill_choice.RevealGeneral = function(self, choices)
 	local players = {}
 	for _, general in ipairs(generals) do
 		local player = sgs.ServerPlayer(self.room)
-		player:setGeneral(sgs.QPirate:getGeneral(general))
+		player:setGeneral(sgs.Bang:getGeneral(general))
 		table.insert(players, player)
 	end
 	

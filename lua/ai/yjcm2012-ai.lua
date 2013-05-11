@@ -329,17 +329,17 @@ qice_skill.getTurnUseCard=function(self)
 	local cards = self.player:getHandcards()
 	local allcard = {}
 	cards = sgs.QList2Table(cards)
-	local aoename = "savage_assault|archery_attack"
+	local aoename = "buster_call|haou_haki"
 	local aoenames = aoename:split("|")
 	local aoe
 	local i
 	local good, bad = 0, 0
 	local caocao = self.room:findPlayerBySkillName("jianxiong") 
-	local qicetrick = "savage_assault|archery_attack|ex_nihilo|god_salvation"
+	local qicetrick = "buster_call|haou_haki|ex_nihilo|god_salvation"
 	local qicetricks = qicetrick:split("|")
 	for i=1, #qicetricks do
 		local forbiden = qicetricks[i]
-		forbid = sgs.QPirate:cloneCard(forbiden, sgs.Card_NoSuit, 0)
+		forbid = sgs.Bang:cloneCard(forbiden, sgs.Card_NoSuit, 0)
 		if self.player:isLocked(forbid) then return end
 	end
 	if  self.player:hasUsed("QiceCard") then return end
@@ -366,7 +366,7 @@ qice_skill.getTurnUseCard=function(self)
 	if self.player:getHandcardNum() < 3 then
 		for i=1, #aoenames do
 			local newqice = aoenames[i]
-			aoe = sgs.QPirate:cloneCard(newqice, sgs.Card_NoSuit, 0)
+			aoe = sgs.Bang:cloneCard(newqice, sgs.Card_NoSuit, 0)
 			if self:getAoeValue(aoe) > -5 then
 				local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. newqice)
 				return parsed_card
@@ -385,7 +385,7 @@ qice_skill.getTurnUseCard=function(self)
 	if self.player:getHandcardNum() == 3 then
 		for i=1, #aoenames do
 			local newqice = aoenames[i]
-			aoe = sgs.QPirate:cloneCard(newqice, sgs.Card_NoSuit, 0)
+			aoe = sgs.Bang:cloneCard(newqice, sgs.Card_NoSuit, 0)
 			if self:getAoeValue(aoe) > 0 then
 				local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. newqice)
 				return parsed_card
@@ -402,7 +402,7 @@ qice_skill.getTurnUseCard=function(self)
 	end
 	for i=1, #aoenames do
 		local newqice = aoenames[i]
-		aoe = sgs.QPirate:cloneCard(newqice, sgs.Card_NoSuit, 0)
+		aoe = sgs.Bang:cloneCard(newqice, sgs.Card_NoSuit, 0)
 		if self:getAoeValue(aoe) > -5 and caocao and self:isFriend(caocao) and caocao:getHp()>1  and not caocao:containsTrick("indulgence") then
 			local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. newqice)
 			return parsed_card
@@ -421,7 +421,7 @@ end
 sgs.ai_skill_use_func.QiceCard=function(card,use,self)
 	local userstring=card:toString()
 	userstring=(userstring:split(":"))[3]
-	local qicecard=sgs.QPirate:cloneCard(userstring, card:getSuit(), card:getNumber())
+	local qicecard=sgs.Bang:cloneCard(userstring, card:getSuit(), card:getNumber())
 	self:useTrickCard(qicecard,use) 
 	if not use.card then return end
 	use.card=card

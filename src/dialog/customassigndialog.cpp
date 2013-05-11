@@ -52,9 +52,9 @@ CustomAssignDialog::CustomAssignDialog(QWidget *parent)
 
         QString player = (i == 0 ? "Player" : "AI");
         QString text = i == 0 ?
-                    QString("%1[%2]").arg(QPirate->translate(player)).arg(tr("Unknown"))
+                    QString("%1[%2]").arg(Bang->translate(player)).arg(tr("Unknown"))
                     : QString("%1%2[%3]")
-                    .arg(QPirate->translate(player))
+                    .arg(Bang->translate(player))
                     .arg(QString::number(i))
                     .arg(tr("Unknown"));
         if(i != 0)
@@ -81,7 +81,7 @@ CustomAssignDialog::CustomAssignDialog(QWidget *parent)
     list->setCurrentItem(item_map[0]);
 
     player_draw = new QSpinBox();
-    player_draw->setRange(0, QPirate->getCardCount());
+    player_draw->setRange(0, Bang->getCardCount());
     player_draw->setValue(4);
     player_draw->setEnabled(true);
 
@@ -101,7 +101,7 @@ CustomAssignDialog::CustomAssignDialog(QWidget *parent)
     QList<QFileInfo> file_info(dir->entryInfoList(filter));
     foreach(QFileInfo file, file_info){
         QString mark_name = file.fileName().split(".").first();
-        QString mark_translate = QPirate->translate(mark_name);
+        QString mark_translate = Bang->translate(mark_name);
         if(!mark_translate.startsWith("@")){
             marks_combobox->addItem(mark_translate, mark_name);
             QLabel *mark_icon = new QLabel(mark_translate);
@@ -178,8 +178,8 @@ CustomAssignDialog::CustomAssignDialog(QWidget *parent)
     choose_nationality = new QCheckBox(tr("Customize Nationality"));
     nationalities = new QComboBox;
     int index = 0;
-    foreach(QString kingdom, QPirate->getKingdoms()){
-        nationalities->addItem(QIcon(QString("image/kingdom/icon/%1.png").arg(kingdom)), QPirate->translate(kingdom), kingdom);
+    foreach(QString kingdom, Bang->getKingdoms()){
+        nationalities->addItem(QIcon(QString("image/kingdom/icon/%1.png").arg(kingdom)), Bang->translate(kingdom), kingdom);
         kingdom_index[kingdom] = index;
         index ++;
     }
@@ -416,8 +416,8 @@ void CustomAssignDialog::exchangePlayersInfo(QListWidgetItem *first, QListWidget
 }
 
 QString CustomAssignDialog::setListText(QString name, QString role, int index){
-    QString text = is_random_roles ? QString("[%1]").arg(QPirate->translate(role)) :
-                      QString("%1[%2]").arg(QPirate->translate(name)).arg(QPirate->translate(role));
+    QString text = is_random_roles ? QString("[%1]").arg(Bang->translate(role)) :
+                      QString("%1[%2]").arg(Bang->translate(name)).arg(Bang->translate(role));
 
     if(index >= 0)
         list->item(index)->setText(text);
@@ -455,9 +455,9 @@ void CustomAssignDialog::doEquipCardAssign(){
 
 void CustomAssignDialog::getEquipCard(int card_id){
     QString name = list->currentItem()->data(Qt::UserRole).toString();
-    QString card_type = QPirate->getCard(card_id)->getSubtype();
+    QString card_type = Bang->getCard(card_id)->getSubtype();
     foreach(int id, player_equips[name]){
-        if(card_type == QPirate->getCard(id)->getSubtype()){
+        if(card_type == Bang->getCard(id)->getSubtype()){
             emit card_addin(id);
             player_equips[name].removeOne(id);
             break;
@@ -514,9 +514,9 @@ void CustomAssignDialog::doJudgeCardAssign(){
 
 void CustomAssignDialog::getJudgeCard(int card_id){
     QString name = list->currentItem()->data(Qt::UserRole).toString();
-    QString card_name = QPirate->getCard(card_id)->objectName();
+    QString card_name = Bang->getCard(card_id)->objectName();
     foreach(int id, player_judges[name]){
-        if(QPirate->getCard(id)->objectName() == card_name){
+        if(Bang->getCard(id)->objectName() == card_name){
             emit card_addin(id);
             player_judges[name].removeOne(id);
             break;
@@ -600,36 +600,36 @@ void CustomAssignDialog::updatePlayerInfo(QString name)
         removeJudgeButton->setEnabled(true);
 
     foreach(int equip_id, player_equips[name]){
-        const Card* card = QPirate->getCard(equip_id);
-        QString card_name = QPirate->translate(card->objectName());
+        const Card* card = Bang->getCard(equip_id);
+        QString card_name = Bang->translate(card->objectName());
         QIcon suit_icon = QIcon(QString("image/system/suit/%1.png").arg(card->getSuitString()));
         QString point = card->getNumberString();
 
-        QString card_info = point + "  " + card_name + "\t\t" + QPirate->translate(card->getSubtype());
+        QString card_info = point + "  " + card_name + "\t\t" + Bang->translate(card->getSubtype());
         QListWidgetItem *name_item = new QListWidgetItem(card_info, equip_list);
         name_item->setIcon(suit_icon);
         name_item->setData(Qt::UserRole, card->getId());
     }
 
     foreach(int hand_id, player_handcards[name]){
-        const Card* card = QPirate->getCard(hand_id);
-        QString card_name = QPirate->translate(card->objectName());
+        const Card* card = Bang->getCard(hand_id);
+        QString card_name = Bang->translate(card->objectName());
         QIcon suit_icon = QIcon(QString("image/system/suit/%1.png").arg(card->getSuitString()));
         QString point = card->getNumberString();
 
-        QString card_info = point + "  " + card_name + "\t\t" + QPirate->translate(card->getSubtype());
+        QString card_info = point + "  " + card_name + "\t\t" + Bang->translate(card->getSubtype());
         QListWidgetItem *name_item = new QListWidgetItem(card_info, hand_list);
         name_item->setIcon(suit_icon);
         name_item->setData(Qt::UserRole, card->getId());
     }
 
     foreach(int judge_id, player_judges[name]){
-        const Card* card = QPirate->getCard(judge_id);
-        QString card_name = QPirate->translate(card->objectName());
+        const Card* card = Bang->getCard(judge_id);
+        QString card_name = Bang->translate(card->objectName());
         QIcon suit_icon = QIcon(QString("image/system/suit/%1.png").arg(card->getSuitString()));
         QString point = card->getNumberString();
 
-        QString card_info = point + "  " + card_name + "\t\t" + QPirate->translate(card->getSubtype());
+        QString card_info = point + "  " + card_name + "\t\t" + Bang->translate(card->getSubtype());
         QListWidgetItem *name_item = new QListWidgetItem(card_info, judge_list);
         name_item->setIcon(suit_icon);
         name_item->setData(Qt::UserRole, card->getId());
@@ -675,12 +675,12 @@ void CustomAssignDialog::updatePileInfo(int row){
         removePileButton->setEnabled(true);
 
     foreach(int card_id, set_pile){
-        const Card* card = QPirate->getCard(card_id);
-        QString card_name = QPirate->translate(card->objectName());
+        const Card* card = Bang->getCard(card_id);
+        QString card_name = Bang->translate(card->objectName());
         QIcon suit_icon = QIcon(QString("image/system/suit/%1.png").arg(card->getSuitString()));
         QString point = card->getNumberString();
 
-        QString card_info = point + "  " + card_name + "\t\t" + QPirate->translate(card->getSubtype());
+        QString card_info = point + "  " + card_name + "\t\t" + Bang->translate(card->getSubtype());
         QListWidgetItem *name_item = new QListWidgetItem(card_info, pile_list);
         name_item->setIcon(suit_icon);
         name_item->setData(Qt::UserRole, card->getId());
@@ -899,7 +899,7 @@ void CustomAssignDialog::setMoveButtonAvaliable(bool toggled){
 void CustomAssignDialog::accept(){
     if(save("etc/customScenes/custom_scenario.txt"))
     {
-        const Scenario * scene = QPirate->getScenario("custom_scenario");
+        const Scenario * scene = Bang->getScenario("custom_scenario");
         MiniSceneRule *rule = qobject_cast<MiniSceneRule*>(scene->getRule());
 
         rule->loadSetting("etc/customScenes/custom_scenario.txt");
@@ -921,13 +921,13 @@ void CustomAssignDialog::clearGeneral2(){
 
 void CustomAssignDialog::getChosenGeneral(QString name){
     if(choose_general2){
-        const General *general2 = QPirate->getGeneral(name);
+        const General *general2 = Bang->getGeneral(name);
         general_label2->setPixmap(QPixmap(general2->getPixmapPath("tiny")));
         if(list->currentItem())
             general2_mapping[list->currentItem()->data(Qt::UserRole).toString()] = name;
     }
     else{
-        const General *general = QPirate->getGeneral(name);
+        const General *general = Bang->getGeneral(name);
         general_label->setPixmap(QPixmap(general->getPixmapPath("tiny")));
         if(list->currentItem())
             general_mapping[list->currentItem()->data(Qt::UserRole).toString()] = name;
@@ -1010,7 +1010,7 @@ void CustomAssignDialog::on_list_itemSelectionChanged(QListWidgetItem *current){
     QString player_name = current->data(Qt::UserRole).toString();
     if(!general_mapping.value(player_name, "").isEmpty()){
         general_label->setPixmap(QPixmap
-                                 (QString(QPirate->getGeneral(general_mapping.value(player_name))->getPixmapPath("tiny"))));
+                                 (QString(Bang->getGeneral(general_mapping.value(player_name))->getPixmapPath("tiny"))));
     }
     else
         general_label->setPixmap(QPixmap(QString("image/system/disabled.png")));
@@ -1018,7 +1018,7 @@ void CustomAssignDialog::on_list_itemSelectionChanged(QListWidgetItem *current){
 
     if(!general2_mapping.value(player_name, "").isEmpty())
         general_label2->setPixmap(QPixmap
-                                  (QString(QPirate->getGeneral(general2_mapping.value(player_name))->getPixmapPath("tiny"))));
+                                  (QString(Bang->getGeneral(general2_mapping.value(player_name))->getPixmapPath("tiny"))));
     else
         general_label2->setPixmap(QPixmap(QString("image/system/disabled.png")));
 
@@ -1266,8 +1266,8 @@ void CustomAssignDialog::load()
                 bool ok;
                 int num = id.toInt(&ok);
                 if(!ok){
-                    for(int i = 0; i < QPirate->getCardCount(); i++){
-                        if(QPirate->getCard(i)->objectName() == id){
+                    for(int i = 0; i < Bang->getCardCount(); i++){
+                        if(Bang->getCard(i)->objectName() == id){
                             player_handcards[name].prepend(i);
                             break;
                         }
@@ -1284,8 +1284,8 @@ void CustomAssignDialog::load()
                 bool ok;
                 int num = id.toInt(&ok);
                 if(!ok){
-                    for(int i = 0; i < QPirate->getCardCount(); i++){
-                        if(QPirate->getCard(i)->objectName() == id){
+                    for(int i = 0; i < Bang->getCardCount(); i++){
+                        if(Bang->getCard(i)->objectName() == id){
                             player_equips[name].prepend(i);
                             break;
                         }
@@ -1302,8 +1302,8 @@ void CustomAssignDialog::load()
                 bool ok;
                 int num = id.toInt(&ok);
                 if(!ok){
-                    for(int i = 0; i < QPirate->getCardCount(); i++){
-                        if(QPirate->getCard(i)->objectName() == id){
+                    for(int i = 0; i < Bang->getCardCount(); i++){
+                        if(Bang->getCard(i)->objectName() == id){
                             player_judges[name].prepend(i);
                             break;
                         }
@@ -1410,7 +1410,7 @@ bool CustomAssignDialog::save(QString path)
 
         if(free_choose_general[name])line.append("general:select ");
         else if(general_mapping[name].isEmpty()){
-            QMessageBox::warning(this, tr("Warning"), tr("%1's general cannot be empty").arg(QPirate->translate(name)));
+            QMessageBox::warning(this, tr("Warning"), tr("%1's general cannot be empty").arg(Bang->translate(name)));
             return false;
         }
         else
@@ -1420,7 +1420,7 @@ bool CustomAssignDialog::save(QString path)
         else if(!general2_mapping[name].isEmpty())line.append(QString("general2:%1 ").arg(general2_mapping[name]));
 
         if(role_mapping[name] == "unknown"){
-            QMessageBox::warning(this, tr("Warning"), tr("%1's role cannot be unknown").arg(QPirate->translate(name)));
+            QMessageBox::warning(this, tr("Warning"), tr("%1's role cannot be unknown").arg(Bang->translate(name)));
             return false;
         }
         line.append(QString("role:%1 ").arg(role_mapping[name]));
@@ -1521,13 +1521,13 @@ GeneralAssignDialog::GeneralAssignDialog(QWidget *parent, bool can_ban)
     group = new QButtonGroup(this);
     group->setExclusive(true);
 
-    QList<const General *> all_generals = QPirate->findChildren<const General *>();
+    QList<const General *> all_generals = Bang->findChildren<const General *>();
     QMap<QString, QList<const General*> > map;
     foreach(const General *general, all_generals){
         map[general->getKingdom()] << general;
     }
 
-    QStringList kingdoms = QPirate->getKingdoms();
+    QStringList kingdoms = Bang->getKingdoms();
 
     foreach(QString kingdom, kingdoms){
         QList<const General *> generals = map[kingdom];
@@ -1536,7 +1536,7 @@ GeneralAssignDialog::GeneralAssignDialog(QWidget *parent, bool can_ban)
             QWidget *tab = createTab(generals);
             tab_widget->addTab(tab,
                                QIcon(QString("image/kingdom/icon/%1.png").arg(kingdom)),
-                               QPirate->translate(kingdom));
+                               Bang->translate(kingdom));
         }
     }
 
@@ -1583,8 +1583,8 @@ QWidget *GeneralAssignDialog::createTab(const QList<const General *> &generals){
             continue;
 
         QString text = QString("%1[%2]")
-                       .arg(QPirate->translate(general_name))
-                       .arg(QPirate->translate(general->getPackage()));
+                       .arg(Bang->translate(general_name))
+                       .arg(Bang->translate(general->getPackage()));
 
         QAbstractButton *button;
         button = new QRadioButton(text);
@@ -1649,11 +1649,11 @@ CardAssignDialog::CardAssignDialog(QWidget *parent, QString card_type, QString c
 }
 
 void CardAssignDialog::addCard(const Card *card){
-    QString name = QPirate->translate(card->objectName());
+    QString name = Bang->translate(card->objectName());
     QIcon suit_icon = QIcon(QString("image/system/suit/%1.png").arg(card->getSuitString()));
     QString point = card->getNumberString();
 
-    QString card_info = point + "  " + name + "\t\t" + QPirate->translate(card->getSubtype());
+    QString card_info = point + "  " + name + "\t\t" + Bang->translate(card->getSubtype());
     QListWidgetItem *name_item = new QListWidgetItem(card_info, card_list);
     name_item->setIcon(suit_icon);
     name_item->setData(Qt::UserRole, card->getId());
@@ -1678,14 +1678,14 @@ void CardAssignDialog::updateExcluded(int card_id){
 void CardAssignDialog::updateCardList(){
     card_list->clear();
 
-    int i, n = QPirate->getCardCount();
+    int i, n = Bang->getCardCount();
     QList<const Card *> reasonable_cards;
     if(!card_type.isEmpty() || !class_name.isEmpty()){
         for(i=0; i<n ;i++){
             if(excluded_card.contains(i))
                 continue;
 
-            const Card *card = QPirate->getCard(i);
+            const Card *card = Bang->getCard(i);
             if(card->getType() == card_type || card->inherits(class_name.toStdString().c_str()))
                 reasonable_cards << card;
         }
@@ -1695,7 +1695,7 @@ void CardAssignDialog::updateCardList(){
             if(excluded_card.contains(i))
                 continue;
 
-            const Card *card = QPirate->getCard(i);
+            const Card *card = Bang->getCard(i);
             reasonable_cards << card;
         }
     }
@@ -1724,7 +1724,7 @@ SkillAssignDialog::SkillAssignDialog(QDialog *parent, QString player_name, QStri
                                "the rest of the special circumstances, "
                                "please see the translation of documents in the lang directory."));
 
-    QCompleter *completer = new QCompleter(QPirate->getSkillNames(), input_skill);
+    QCompleter *completer = new QCompleter(Bang->getSkillNames(), input_skill);
     input_skill->setCompleter(completer);
 
     QPushButton *add_skill = new QPushButton(tr("Add Skill"));
@@ -1742,7 +1742,7 @@ SkillAssignDialog::SkillAssignDialog(QDialog *parent, QString player_name, QStri
     updateSkillList();
 
     QVBoxLayout *vlayout = new QVBoxLayout;
-    vlayout->addWidget(new QLabel(QPirate->translate(player_name)));
+    vlayout->addWidget(new QLabel(Bang->translate(player_name)));
     vlayout->addWidget(skill_list);
     layout->addLayout(vlayout);
     QVBoxLayout *sided_lay = new QVBoxLayout;
@@ -1768,7 +1768,7 @@ void SkillAssignDialog::changeSkillInfo(){
     QString skill_name = skill_list->currentItem()->data(Qt::UserRole).toString();
     skill_info->clear();
 
-    skill_info->setText(QPirate->translate(":" + skill_name));
+    skill_info->setText(Bang->translate(":" + skill_name));
 }
 
 void SkillAssignDialog::selectSkill(){
@@ -1790,12 +1790,12 @@ void SkillAssignDialog::getSkillFromGeneral(QString general_name){
     select_dialog->setWindowTitle(tr("Skill Chosen"));
     QVBoxLayout *layout = new QVBoxLayout;
 
-    const General *general = QPirate->getGeneral(general_name);
+    const General *general = Bang->getGeneral(general_name);
     foreach(const Skill *skill, general->getVisibleSkillList()){
         QCommandLinkButton *button = new QCommandLinkButton;
         button->setObjectName(skill->objectName());
-        button->setText(QPirate->translate(skill->objectName()));
-        button->setToolTip(QPirate->translate(":" + skill->objectName()));
+        button->setText(Bang->translate(skill->objectName()));
+        button->setToolTip(Bang->translate(":" + skill->objectName()));
 
         connect(button, SIGNAL(clicked()), select_dialog, SLOT(accept()));
         connect(button, SIGNAL(clicked()), this, SLOT(addSkill()));
@@ -1812,7 +1812,7 @@ void SkillAssignDialog::addSkill(){
     if(name == "inline_add"){
         name = input_skill->text();
 
-        const Skill *skill = QPirate->getSkill(name);
+        const Skill *skill = Bang->getSkill(name);
         if(skill == NULL){
             QMessageBox::warning(this, tr("Warning"), tr("There is no skill that internal name is %1").arg(name));
             return;
@@ -1834,8 +1834,8 @@ void SkillAssignDialog::updateSkillList(){
     skill_info->clear();
 
     foreach(QString skill_name, update_skills){
-        if(QPirate->getSkill(skill_name) != NULL){
-            QListWidgetItem *item = new QListWidgetItem(QPirate->translate(skill_name));
+        if(Bang->getSkill(skill_name) != NULL){
+            QListWidgetItem *item = new QListWidgetItem(Bang->translate(skill_name));
             item->setData(Qt::UserRole, skill_name);
             skill_list->addItem(item);
         }

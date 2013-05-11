@@ -101,8 +101,8 @@ public:
 };
 
 static bool CompareBySuit(int card1, int card2){
-    const Card *c1 = QPirate->getCard(card1);
-    const Card *c2 = QPirate->getCard(card2);
+    const Card *c1 = Bang->getCard(card1);
+    const Card *c2 = Bang->getCard(card2);
 
     int a = static_cast<int>(c1->getSuit());
     int b = static_cast<int>(c2->getSuit());
@@ -136,11 +136,11 @@ public:
             room->takeAG(shenlvmeng, card_id);
 
             // throw the rest cards that matches the same suit
-            const Card *card = QPirate->getCard(card_id);
+            const Card *card = Bang->getCard(card_id);
             Card::Suit suit = card->getSuit();
             QMutableListIterator<int> itor(card_ids);
             while(itor.hasNext()){
-                const Card *c = QPirate->getCard(itor.next());
+                const Card *c = Bang->getCard(itor.next());
                 if(c->getSuit() == suit){
                     itor.remove();
 
@@ -1064,13 +1064,13 @@ public:
                 player->drawCards(1);
             }
         }else if(event == AskForRetrial){
-            const TriggerSkill *guicai = QPirate->getTriggerSkill("guicai");
+            const TriggerSkill *guicai = Bang->getTriggerSkill("guicai");
             if(guicai && !player->isKongcheng() && player->askForSkillInvoke("jilve", data)){
                 player->loseMark("@bear");
                 guicai->trigger(event, player, data);
             }
         }else if(event == Damaged){
-            const TriggerSkill *fangzhu = QPirate->getTriggerSkill("fangzhu");
+            const TriggerSkill *fangzhu = Bang->getTriggerSkill("fangzhu");
             if(fangzhu && player->askForSkillInvoke("jilve", data)){
                 player->loseMark("@bear");
                 fangzhu->trigger(event, player, data);

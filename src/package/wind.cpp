@@ -142,7 +142,7 @@ public:
         if(card){
             // the only difference for Guicai & Guidao
             const Card* oldJudge = judge->card;
-            judge->card = QPirate->getCard(card->getEffectiveId());
+            judge->card = Bang->getCard(card->getEffectiveId());
             CardsMoveStruct move(QList<int>(), NULL, Player::DiscardPile);
             move.card_ids.append(card->getEffectiveId());
             QList<CardsMoveStruct> moves;
@@ -497,7 +497,7 @@ public:
 
                 QSet<int> numbers;
                 foreach(int card_id, buqunew){
-                    const Card *card = QPirate->getCard(card_id);
+                    const Card *card = Bang->getCard(card_id);
                     int number = card->getNumber();
 
                     if(numbers.contains(number)){
@@ -524,7 +524,7 @@ public:
 
             QSet<int> numbers;
             foreach(int card_id, buqu){
-                const Card *card = QPirate->getCard(card_id);
+                const Card *card = Bang->getCard(card_id);
                 int number = card->getNumber();
 
                 if(numbers.contains(number)){
@@ -555,7 +555,7 @@ public:
                     room->sendLog(log);
 
                     foreach(int card_id, buqu){
-                        const Card *card = QPirate->getCard(card_id);
+                        const Card *card = Bang->getCard(card_id);
                         if(card->getNumber() == number){
                             LogMessage log;
                             log.type = "$BuquDuplicateItem";
@@ -754,7 +754,7 @@ bool GuhuoCard::guhuo(ServerPlayer* yuji, const QString& message) const{
             room->setEmotion(player, ".");
 
     }else{
-        const Card *card = QPirate->getCard(subcards.first());
+        const Card *card = Bang->getCard(subcards.first());
         bool real;
         if(user_string == "peach+analeptic")
             real = card->objectName() == "peach" || card->objectName() == "analeptic";
@@ -791,7 +791,7 @@ GuhuoDialog *GuhuoDialog::GetInstance(const QString &object, bool left, bool rig
 
 GuhuoDialog::GuhuoDialog(const QString &object, bool left, bool right):object_name(object)
 {
-    setWindowTitle(QPirate->translate(object));
+    setWindowTitle(Bang->translate(object));
     group = new QButtonGroup(this);
 
     QHBoxLayout *layout = new QHBoxLayout;
@@ -826,14 +826,14 @@ void GuhuoDialog::selectCard(QAbstractButton *button){
 
 QGroupBox *GuhuoDialog::createLeft(){
     QGroupBox *box = new QGroupBox;
-    box->setTitle(QPirate->translate("basic"));
+    box->setTitle(Bang->translate("basic"));
 
     QVBoxLayout *layout = new QVBoxLayout;
 
-    QList<const Card *> cards = QPirate->findChildren<const Card *>();
+    QList<const Card *> cards = Bang->findChildren<const Card *>();
     foreach(const Card *card, cards){
         if(card->getTypeId() == Card::Basic && !map.contains(card->objectName())){
-            Card *c = QPirate->cloneCard(card->objectName(), Card::NoSuit, 0);
+            Card *c = Bang->cloneCard(card->objectName(), Card::NoSuit, 0);
             c->setParent(this);
 
             layout->addWidget(createButton(c));
@@ -847,20 +847,20 @@ QGroupBox *GuhuoDialog::createLeft(){
 }
 
 QGroupBox *GuhuoDialog::createRight(){
-    QGroupBox *box = new QGroupBox(QPirate->translate("ndtrick"));
+    QGroupBox *box = new QGroupBox(Bang->translate("ndtrick"));
     QHBoxLayout *layout = new QHBoxLayout;
 
-    QGroupBox *box1 = new QGroupBox(QPirate->translate("single_target"));
+    QGroupBox *box1 = new QGroupBox(Bang->translate("single_target"));
     QVBoxLayout *layout1 = new QVBoxLayout;
 
-    QGroupBox *box2 = new QGroupBox(QPirate->translate("multiple_targets"));
+    QGroupBox *box2 = new QGroupBox(Bang->translate("multiple_targets"));
     QVBoxLayout *layout2 = new QVBoxLayout;
 
 
-    QList<const Card *> cards = QPirate->findChildren<const Card *>();
+    QList<const Card *> cards = Bang->findChildren<const Card *>();
     foreach(const Card *card, cards){
         if(card->isNDTrick() && !map.contains(card->objectName())){
-            Card *c = QPirate->cloneCard(card->objectName(), Card::NoSuit, 0);
+            Card *c = Bang->cloneCard(card->objectName(), Card::NoSuit, 0);
             c->setSkillName(object_name);
             c->setParent(this);
 
@@ -882,7 +882,7 @@ QGroupBox *GuhuoDialog::createRight(){
 }
 
 QAbstractButton *GuhuoDialog::createButton(const Card *card){
-    QCommandLinkButton *button = new QCommandLinkButton(QPirate->translate(card->objectName()));
+    QCommandLinkButton *button = new QCommandLinkButton(Bang->translate(card->objectName()));
     button->setObjectName(card->objectName());
     button->setToolTip(card->getDescription());
 
@@ -924,8 +924,8 @@ const Card *GuhuoCard::validate(const CardUseStruct *card_use) const{
     room->sendLog(log);
 
     if(guhuo(card_use->from, log.toString())){
-        const Card *card = QPirate->getCard(subcards.first());
-        Card *use_card = QPirate->cloneCard(user_string, card->getSuit(), card->getNumber());
+        const Card *card = Bang->getCard(subcards.first());
+        Card *use_card = Bang->cloneCard(user_string, card->getSuit(), card->getNumber());
         use_card->setSkillName("guhuo");
         use_card->addSubcard(this);
         room->throwCard(this);
@@ -955,8 +955,8 @@ const Card *GuhuoCard::validateInResposing(ServerPlayer *yuji, bool *continuable
     room->sendLog(log);
 
     if (guhuo(yuji,log.toString())){
-        const Card *card = QPirate->getCard(subcards.first());
-        Card *use_card = QPirate->cloneCard(to_guhuo, card->getSuit(), card->getNumber());
+        const Card *card = Bang->getCard(subcards.first());
+        Card *use_card = Bang->cloneCard(to_guhuo, card->getSuit(), card->getNumber());
         use_card->setSkillName("guhuo");
         return use_card;
     }else

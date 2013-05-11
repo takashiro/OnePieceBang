@@ -1,4 +1,4 @@
--- This is the start script of QQPirate
+-- This is the start script of QBang
 
 package.path = package.path .. ";./lua/lib/?.lua"
 package.cpath = package.cpath .. ";./lua/clib/?.dll"
@@ -33,16 +33,16 @@ function load_extensions(just_require)
 			local module_name = "extensions." .. name
 			local loaded = require(module_name)
 			
-			sgs.QPirate:addPackage(loaded.extension)
+			sgs.Bang:addPackage(loaded.extension)
 		end
 	end
 end
 
 load_extensions()
 
-local done_loading = sgs.QPirate:property("DoneLoading"):toBool()
+local done_loading = sgs.Bang:property("DoneLoading"):toBool()
 if not done_loading then
 	load_translations()
 	done_loading = sgs.QVariant(true)
-	sgs.QPirate:setProperty("DoneLoading", done_loading)
+	sgs.Bang:setProperty("DoneLoading", done_loading)
 end

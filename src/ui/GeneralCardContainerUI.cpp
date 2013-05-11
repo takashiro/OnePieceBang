@@ -15,7 +15,7 @@ QList<CardItem*> PlayerCardContainer::_createCards(QList<int> card_ids)
 
 CardItem* PlayerCardContainer::_createCard(int card_id)
 {
-    const Card* card = QPirate->getCard(card_id);
+    const Card* card = Bang->getCard(card_id);
     CardItem *item = new CardItem(card);
     item->setOpacity(0.0);
     item->setParentItem(this);

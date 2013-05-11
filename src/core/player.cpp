@@ -7,7 +7,7 @@
 
 Player::Player(QObject *parent)
     :QObject(parent), owner(false), ready(false), general(NULL), general2(NULL),
-    hp(-1), max_hp(-1), state("online"), seat(0), alive(true),
+    hp(-1), max_hp(-1), state("online"), seat(0), alive(true), gender(General::Neuter),
     phase(NotActive),
     weapon(NULL), armor(NULL), defensive_horse(NULL), offensive_horse(NULL),
     face_up(true), chained(false), player_statistics(new StatisticsStruct())
@@ -82,10 +82,32 @@ bool Player::isWounded() const{
 }
 
 General::Gender Player::getGender() const{
-    if(general)
-        return general->getGender();
-    else
-        return General::Neuter;
+    return gender;
+}
+
+void Player::setGender(General::Gender gender){
+    this->gender = gender;
+}
+
+QString Player::getGenderString() const{
+    switch(gender){
+    case General::Male:
+        return "male";
+    case General::Female:
+        return "female";
+    case General::Neuter:default:
+        return "neuter";
+    }
+}
+
+void Player::setGenderString(QString gender){
+    static QMap<QString, General::Gender> gender_map;
+    if(gender_map.isEmpty()){
+        gender_map.insert("male", General::Male);
+        gender_map.insert("female", General::Female);
+        gender_map.insert("neuter", General::Neuter);
+    }
+    this->gender = gender_map.value(gender);
 }
 
 int Player::getSeat() const{
@@ -169,7 +191,7 @@ int Player::distanceTo(const Player *other) const{
     int left = aliveCount() - right;
     int distance = qMin(left, right);
 
-    distance += QPirate->correctDistance(this, other);
+    distance += Bang->correctDistance(this, other);
 
     // keep the distance >=1
     if(distance < 1)
@@ -182,15 +204,18 @@ void Player::setGeneral(const General *new_general){
     if(this->general != new_general){
         this->general = new_general;
 
-        if(new_general && kingdom.isEmpty())
-            setKingdom(new_general->getKingdom());
+        if(new_general){
+            setGender(new_general->getGender());
+            if(kingdom.isEmpty())
+                setKingdom(new_general->getKingdom());
+        }
 
         emit general_changed();
     }
 }
 
 void Player::setGeneralName(const QString &general_name){
-    const General *new_general = QPirate->getGeneral(general_name);
+    const General *new_general = Bang->getGeneral(general_name);
     setGeneral(new_general);
 }
 
@@ -202,7 +227,7 @@ QString Player::getGeneralName() const{
 }
 
 void Player::setGeneral2Name(const QString &general_name){
-    const General *new_general = QPirate->getGeneral(general_name);
+    const General *new_general = Bang->getGeneral(general_name);
     if(general2 != new_general){
         general2 = new_general;
 
@@ -262,7 +287,7 @@ const General *Player::getAvatarGeneral() const{
     QString general_name = property("avatar").toString();
     if(general_name.isEmpty())
         return NULL;
-    return QPirate->getGeneral(general_name);
+    return Bang->getGeneral(general_name);
 }
 
 const General *Player::getGeneral() const{
@@ -660,7 +685,7 @@ QSet<const TriggerSkill *> Player::getTriggerSkills() const{
         skills += general2->getTriggerSkills();
 
     foreach(QString skill_name, acquired_skills){
-        const TriggerSkill *skill = QPirate->getTriggerSkill(skill_name);
+        const TriggerSkill *skill = Bang->getTriggerSkill(skill_name);
         if(skill)
             skills << skill;
     }
@@ -681,7 +706,7 @@ QList<const Skill *> Player::getVisibleSkillList() const{
         skills << general2->getVisibleSkillList();
 
     foreach(QString skill_name, acquired_skills){
-        const Skill *skill = QPirate->getSkill(skill_name);
+        const Skill *skill = Bang->getSkill(skill_name);
         if(skill->isVisible())
             skills << skill;
     }
@@ -694,20 +719,14 @@ QSet<QString> Player::getAcquiredSkills() const{
 }
 
 bool Player::isProhibited(const Player *to, const Card *card) const{
-    return QPirate->isProhibited(this, to, card);
+    return Bang->isProhibited(this, to, card);
 }
 
 bool Player::canSlashWithoutCrossbow() const{
     if(hasSkill("paoxiao"))
         return true;
 
-    int slash_count = getSlashCount();
-    int valid_slash_count = 1;
-    if(hasFlag("tianyi_success"))
-        valid_slash_count++;
-    if(hasFlag("jiangchi_invoke"))
-        valid_slash_count++;
-    return slash_count < valid_slash_count;
+    return getSlashCount() < 1 + this->getMark("#@slash_extra_count");
 }
 
 void Player::jilei(const QString &type){
@@ -729,7 +748,7 @@ bool Player::isJilei(const Card *card) const{
             return false;
 
         foreach(int card_id, card->getSubcards()){
-            const Card *c = QPirate->getCard(card_id);
+            const Card *c = Bang->getCard(card_id);
             foreach(QString pattern, jilei_set.toList()){
                 ExpPattern p(pattern);
                 if(p.match(this,c) && !hasEquip(c)) return true;
@@ -744,7 +763,7 @@ bool Player::isJilei(const Card *card) const{
             }
         else{
             foreach(int card_id, card->getSubcards()){
-                const Card *c = QPirate->getCard(card_id);
+                const Card *c = Bang->getCard(card_id);
                 foreach(QString pattern, jilei_set.toList()){
                     ExpPattern p(pattern);
                     if(p.match(this,card) && !hasEquip(c)) return true;

@@ -138,7 +138,7 @@ sgs.ai_skill_invoke.zuixiang = true
 sgs.ai_skill_askforag.manjuan = function(self, card_ids)
 	local cards = {}
 	for _, card_id in ipairs(card_ids) do
-		table.insert(cards, sgs.QPirate:getCard(card_id))
+		table.insert(cards, sgs.Bang:getCard(card_id))
 	end
 	for _, card in ipairs(cards) do
 		if card:inherits("ExNihilo") then return card:getEffectiveId() end

@@ -24,7 +24,7 @@ void RoleComboboxItem::mousePressEvent(QGraphicsSceneMouseEvent *event){
 
 RoleCombobox::RoleCombobox(Photo *photo):QObject(photo)
 {
-    int index = QPirate->getRoleIndex();
+    int index = Bang->getRoleIndex();
     QSize size(S_ROLE_COMBO_BOX_WIDTH, S_ROLE_COMBO_BOX_HEIGHT);
     items << new RoleComboboxItem("unknown", 0, size)
           << new RoleComboboxItem("loyalist", index, size)
@@ -94,7 +94,7 @@ void RoleCombobox::onItemClicked(){
 void RoleCombobox::fix(const QString &role){
     // create the only one
     QSize size(S_ROLE_COMBO_BOX_WIDTH, S_ROLE_COMBO_BOX_HEIGHT);
-    RoleComboboxItem *fixed = new RoleComboboxItem(role, QPirate->getRoleIndex(), size);
+    RoleComboboxItem *fixed = new RoleComboboxItem(role, Bang->getRoleIndex(), size);
     fixed->setPos(QPointF(_m_posX, _m_posY));
     hide();
     fixed->show();

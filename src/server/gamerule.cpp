@@ -172,7 +172,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
     // Handle global events
     if (player == NULL)
     {      
-        if (event == GameStart) {
+        if(event == GameStart){
             foreach (ServerPlayer* player, room->getPlayers())
             {
                 if(player->getGeneral()->getKingdom() == "god" && player->getGeneralName() != "anjiang"){
@@ -207,7 +207,18 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
     case PhaseChange: onPhaseChange(player); break;
     case CardUsed: {
             if(data.canConvert<CardUseStruct>()){
+                RoomThread *thread = room->getThread();
                 CardUseStruct card_use = data.value<CardUseStruct>();
+
+                if(thread->trigger(TargetSelecting, card_use.from, data)){
+                    break;
+                }
+
+                foreach(ServerPlayer *target, card_use.to){
+                    thread->trigger(TargetSelected, target, data);
+                }
+
+                card_use = data.value<CardUseStruct>();
                 const Card *card = card_use.card;
 
                 card_use.from->playCardEffect(card);
@@ -239,9 +250,6 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 
     case HpLost:{
             int lose = data.toInt();
-
-            if(room->getCurrent()->hasSkill("jueqing"))
-                return true;
 
             LogMessage log;
             log.type = "#LoseHp";
@@ -425,9 +433,6 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
                 damage.damage++;
             }
 
-            if(effect.to->hasSkill("jueqing") || effect.to->getGeneralName() == "zhangchunhua")
-                damage.damage++;
-
             damage.from = effect.from;
             damage.to = effect.to;
             damage.nature = effect.nature;
@@ -501,7 +506,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
             int card_id = room->drawCard();
 
             JudgeStar judge = data.value<JudgeStar>();
-            judge->card = QPirate->getCard(card_id);
+            judge->card = Bang->getCard(card_id);
             room->moveCardTo(judge->card, NULL, Player::DiscardPile);
 
             LogMessage log;
@@ -852,7 +857,7 @@ void BasaraMode::playerShowed(ServerPlayer *player) const{
             kingdom_roles[p->getKingdom()]++;
         }
 
-        if(kingdom_roles[QPirate->getGeneral(names.first())->getKingdom()] >= 2
+        if(kingdom_roles[Bang->getGeneral(names.first())->getKingdom()] >= 2
                 && player->getGeneralName() == "anjiang")
             return;
     }

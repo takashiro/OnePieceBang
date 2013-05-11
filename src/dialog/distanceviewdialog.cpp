@@ -26,7 +26,7 @@ struct DistanceViewDialogUI{
         min = new QLineEdit;
         in_attack = new QLineEdit;
 
-        QList<const DistanceSkill *> skills = QPirate->getDistanceSkills();
+        QList<const DistanceSkill *> skills = Bang->getDistanceSkills();
         foreach(const DistanceSkill *skill, skills){
             QLineEdit *distance_edit = new QLineEdit;
             distance_edit->setObjectName(skill->objectName());
@@ -75,7 +75,7 @@ DistanceViewDialog::DistanceViewDialog(QWidget *parent) :
 
     QFormLayout *box_layout = new QFormLayout;
     foreach(QLineEdit *edit, ui->distance_edits){
-        box_layout->addRow(QPirate->translate(edit->objectName()), edit);
+        box_layout->addRow(Bang->translate(edit->objectName()), edit);
     }
 
     box->setLayout(box_layout);
@@ -131,7 +131,7 @@ void DistanceViewDialog::showDistance()
                      );
 
     foreach(QLineEdit *edit, ui->distance_edits){
-        const Skill *skill = QPirate->getSkill(edit->objectName());
+        const Skill *skill = Bang->getSkill(edit->objectName());
         const DistanceSkill *distance_skill = qobject_cast<const DistanceSkill *>(skill);
         int correct = distance_skill->getCorrect(from, to);
 

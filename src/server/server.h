@@ -123,7 +123,7 @@ private:
 private slots:
     void onOkButtonClicked();
     void onDetectButtonClicked();
-    void onHttpDone(bool error);
+    void onHttpDone();
     void select3v3Generals();
     void edit1v1Banlist();
     void updateButtonEnablility(QAbstractButton* button);

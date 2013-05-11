@@ -206,7 +206,7 @@ bool LuaProhibitSkill::isProhibited(const Player *from, const Player *to, const 
 	if(is_prohibited == 0)
 		return false;
 
-	lua_State *L = QPirate->getLuaState();
+	lua_State *L = Bang->getLuaState();
 
 	lua_rawgeti(L, LUA_REGISTRYINDEX, is_prohibited);
 
@@ -230,7 +230,7 @@ int LuaDistanceSkill::getCorrect(const Player *from, const Player *to) const{
 	if(correct_func == 0)
 		return 0;
 
-	lua_State *L = QPirate->getLuaState();
+	lua_State *L = Bang->getLuaState();
 
 	lua_rawgeti(L, LUA_REGISTRYINDEX, correct_func);
 
@@ -254,7 +254,7 @@ bool LuaFilterSkill::viewFilter(const CardItem *to_select) const{
 	if(view_filter == 0)
 		return false;
 
-	lua_State *L = QPirate->getLuaState();
+	lua_State *L = Bang->getLuaState();
 
 	lua_rawgeti(L, LUA_REGISTRYINDEX, view_filter);
 
@@ -276,7 +276,7 @@ const Card *LuaFilterSkill::viewAs(CardItem *card_item) const{
 	if(view_as == 0)
 		return false;
 
-	lua_State *L = QPirate->getLuaState();
+	lua_State *L = Bang->getLuaState();
 
 	lua_rawgeti(L, LUA_REGISTRYINDEX, view_as);
 
@@ -311,7 +311,7 @@ bool LuaViewAsSkill::viewFilter(const QList<CardItem *> &selected, const CardIte
 	if(view_filter == 0)
 		return false;
 
-	lua_State *L = QPirate->getLuaState();
+	lua_State *L = Bang->getLuaState();
 
 	lua_rawgeti(L, LUA_REGISTRYINDEX, view_filter);
 
@@ -343,7 +343,7 @@ const Card *LuaViewAsSkill::viewAs(const QList<CardItem *> &cards) const{
 	if(view_as == 0)
 		return NULL;
 
-	lua_State *L = QPirate->getLuaState();
+	lua_State *L = Bang->getLuaState();
 
 	lua_rawgeti(L, LUA_REGISTRYINDEX, view_as);
 
@@ -377,7 +377,7 @@ bool LuaViewAsSkill::isEnabledAtPlay(const Player *player) const{
 	if(enabled_at_play == 0)
 		return ViewAsSkill::isEnabledAtPlay(player);
 
-	lua_State *L = QPirate->getLuaState();
+	lua_State *L = Bang->getLuaState();
 
 	// the callback
 	lua_rawgeti(L, LUA_REGISTRYINDEX, enabled_at_play);
@@ -401,7 +401,7 @@ bool LuaViewAsSkill::isEnabledAtResponse(const Player *player, const QString &pa
 	if(enabled_at_response == 0)
 		return ViewAsSkill::isEnabledAtResponse(player, pattern);
 
-	lua_State *L = QPirate->getLuaState();
+	lua_State *L = Bang->getLuaState();
 
 	// the callback
 	lua_rawgeti(L, LUA_REGISTRYINDEX, enabled_at_response);
@@ -427,7 +427,7 @@ bool LuaViewAsSkill::isEnabledAtNullification(const Player *player) const{
 	if(enabled_at_nullification == 0)
 		return false;
 
-	lua_State *L = QPirate->getLuaState();
+	lua_State *L = Bang->getLuaState();
 
 	// the callback
 	lua_rawgeti(L, LUA_REGISTRYINDEX, enabled_at_nullification);
@@ -457,7 +457,7 @@ bool LuaSkillCard::targetFilter(const QList<const Player *> &targets, const Play
 	if(filter == 0)
 		return SkillCard::targetFilter(targets, to_select, self);
 
-	lua_State *L = QPirate->getLuaState();
+	lua_State *L = Bang->getLuaState();
 	
 	// the callback
 	lua_rawgeti(L, LUA_REGISTRYINDEX, filter);	
@@ -489,7 +489,7 @@ bool LuaSkillCard::targetsFeasible(const QList<const Player *> &targets, const P
 	if(feasible == 0)
 		return SkillCard::targetsFeasible(targets, self);
 
-	lua_State *L = QPirate->getLuaState();
+	lua_State *L = Bang->getLuaState();
 	
 	// the callback
 	lua_rawgeti(L, LUA_REGISTRYINDEX, feasible);	
@@ -520,7 +520,7 @@ void LuaSkillCard::use(Room *room, ServerPlayer *source, const QList<ServerPlaye
 	if(on_use == 0)
 		return SkillCard::use(room, source, targets);
 
-	lua_State *L = QPirate->getLuaState();
+	lua_State *L = Bang->getLuaState();
 	
 	// the callback
 	lua_rawgeti(L, LUA_REGISTRYINDEX, on_use);
@@ -550,7 +550,7 @@ void LuaSkillCard::onEffect(const CardEffectStruct &effect) const{
 	if(on_effect == 0)
 		return SkillCard::onEffect(effect);
 
-	lua_State *L = QPirate->getLuaState();
+	lua_State *L = Bang->getLuaState();
 	
 	// the callback
 	lua_rawgeti(L, LUA_REGISTRYINDEX, on_effect);

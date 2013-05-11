@@ -206,7 +206,7 @@ QIcon Card::getSuitIcon() const{
 QString Card::getFullName(bool include_suit) const{
     QString name = getName();
     if(include_suit){
-        QString suit_name = QPirate->translate(getSuitString());
+        QString suit_name = Bang->translate(getSuitString());
         return QString("%1%2 %3").arg(suit_name).arg(getNumberString()).arg(name);
     }else
         return QString("%1 %2").arg(getNumberString()).arg(name);
@@ -228,7 +228,7 @@ QString Card::getLogName() const{
 }
 
 QString Card::getName() const{
-    return QPirate->translate(objectName());
+    return Bang->translate(objectName());
 }
 
 QString Card::getSkillName() const{
@@ -240,7 +240,7 @@ void Card::setSkillName(const QString &name){
 }
 
 QString Card::getDescription() const{
-    QString desc = QPirate->translate(":" + objectName());
+    QString desc = Bang->translate(":" + objectName());
     desc.replace("\n", "<br/>");
     return tr("<b>[%1]</b> %2").arg(getName()).arg(desc);
 }
@@ -319,7 +319,7 @@ const Card *Card::Parse(const QString &str){
         if(subcard_str != ".")
            subcard_ids = subcard_str.split("+");
 
-        SkillCard *card = QPirate->cloneSkillCard(card_name);
+        SkillCard *card = Bang->cloneSkillCard(card_name);
 
         if(card == NULL)
             return NULL;
@@ -396,7 +396,7 @@ const Card *Card::Parse(const QString &str){
         else
             number = number_string.toInt();
 
-        Card *card = QPirate->cloneCard(name, suit, number);
+        Card *card = Bang->cloneCard(name, suit, number);
         if(card == NULL)
             return NULL;
 
@@ -409,7 +409,7 @@ const Card *Card::Parse(const QString &str){
         bool ok;
         int card_id = str.toInt(&ok);
         if(ok)
-            return QPirate->getCard(card_id);
+            return Bang->getCard(card_id);
         else
             return NULL;
     }

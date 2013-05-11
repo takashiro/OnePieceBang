@@ -15,7 +15,7 @@ if sgs.GetConfig("EnableHegemony", false) then
 		local players = {}
 		for _, general in ipairs(generals) do
 			local player = sgs.ServerPlayer(self.room)
-			player:setGeneral(sgs.QPirate:getGeneral(general))
+			player:setGeneral(sgs.Bang:getGeneral(general))
 			table.insert(players, player)
 		end
 		
@@ -88,7 +88,7 @@ if sgs.GetConfig("EnableHegemony", false) then
 		local names = self.room:getTag(self.player:objectName()):toStringList()
 
 		if #names == 0 then return self.player:getKingdom() end
-		local kingdom = sgs.QPirate:getGeneral(names[1]):getKingdom()
+		local kingdom = sgs.Bang:getGeneral(names[1]):getKingdom()
 		return kingdom
 	end
 

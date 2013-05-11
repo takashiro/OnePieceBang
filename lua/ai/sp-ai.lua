@@ -1,7 +1,7 @@
 sgs.weapon_range.SPMoonSpear = 3
 
 sgs.ai_skill_invoke.sp_moonspear = function(self, data)
-	local slash = sgs.QPirate:cloneCard("slash", sgs.Card_NoSuit, 0)
+	local slash = sgs.Bang:cloneCard("slash", sgs.Card_NoSuit, 0)
 	for _, target in ipairs(self.enemies) do
 		if self.player:canSlash(target) and not self:slashProhibit(slash ,target) then
 		return true
@@ -47,7 +47,7 @@ sgs.ai_skill_invoke.jilei = function(self, data)
 end	
 
 sgs.ai_skill_choice.jilei = function(self, choices)
-	local tmptrick = sgs.QPirate:cloneCard("ex_nihilo", sgs.Card_NoSuit, 0)
+	local tmptrick = sgs.Bang:cloneCard("ex_nihilo", sgs.Card_NoSuit, 0)
 	if (self:isEquip("Crossbow",self.jilei_source) and self.jilei_source:inMyAttackRange(self.player)) or
 		 self.jilei_source:isJilei(tmptrick) then
 		return "basic"

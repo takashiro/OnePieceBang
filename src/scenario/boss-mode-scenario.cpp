@@ -269,7 +269,7 @@ public:
         Room *room = player->getRoom();
         qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
-        QStringList all_generals = QPirate->getLimitedGeneralNames();
+        QStringList all_generals = Bang->getLimitedGeneralNames();
         QList<ServerPlayer *> players = room->getAllPlayers();
         foreach(ServerPlayer *player, players){
             all_generals.removeOne(player->getGeneralName());
@@ -289,7 +289,7 @@ public:
 
         QStringList all_skills;
         foreach(QString one, all_generals){
-            const General *general = QPirate->getGeneral(one);
+            const General *general = Bang->getGeneral(one);
             QList<const Skill *> skills = general->findChildren<const Skill *>();
             foreach(const Skill *skill, skills){
                 if(!skill->isLordSkill()){
@@ -317,7 +317,7 @@ public:
     bool hasSameSkill(Room *room, QString skill_name) const{
         foreach(ServerPlayer *player, room->getAllPlayers()){
             QList<const Skill *> skills = player->getVisibleSkillList();
-            const Skill *skill = QPirate->getSkill(skill_name);
+            const Skill *skill = Bang->getSkill(skill_name);
             if(skills.contains(skill))
                 return true;
         }
@@ -326,7 +326,7 @@ public:
     }
 
     void removeLordSkill(ServerPlayer *player) const{
-        const General *lord = QPirate->getGeneral(player->getGeneralName());
+        const General *lord = Bang->getGeneral(player->getGeneralName());
         QList<const Skill *> lord_skills = lord->findChildren<const Skill *>();
         foreach(const Skill *skill, lord_skills){
             if(skill->isLordSkill())

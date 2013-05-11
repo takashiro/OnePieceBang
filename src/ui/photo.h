@@ -51,8 +51,8 @@ public:
     virtual QRectF boundingRect() const;
     static const int S_NORMAL_PHOTO_WIDTH = 130;
     static const int S_NORMAL_PHOTO_HEIGHT = 150;
-    static const int S_SHADOW_INCLUSIVE_PHOTO_WIDTH = 139;
-    static const int S_SHADOW_INCLUSIVE_PHOTO_HEIGHT = 155;
+    static const int S_SHADOW_INCLUSIVE_PHOTO_WIDTH = 140;
+    static const int S_SHADOW_INCLUSIVE_PHOTO_HEIGHT = 162;
 public slots:
     void updateAvatar();    
     void updateSmallAvatar();

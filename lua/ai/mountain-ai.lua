@@ -4,7 +4,7 @@ local function card_for_qiaobian(self, who, return_prompt)
 		local judges = who:getJudgingArea()
 		if not judges:isEmpty() then
 			for _, judge in sgs.qlist(judges) do
-				card = sgs.QPirate:getCard(judge:getEffectiveId())
+				card = sgs.Bang:getCard(judge:getEffectiveId())
 				for _, enemy in ipairs(self.enemies) do
 					if not enemy:containsTrick(judge:objectName()) and not self.room:isProhibited(self.player, enemy, judge) then
 						target = enemy
@@ -38,7 +38,7 @@ local function card_for_qiaobian(self, who, return_prompt)
 	else
 		if not who:hasEquip() or (who:getCards("e"):length() == 1 and who:getArmor() and who:getArmor():inherits("GaleShell")) then return end
 		local card_id = self:askForCardChosen(who, "e", "snatch")
-		if card_id >= 0 and who:hasEquip(sgs.QPirate:getCard(card_id)) then card = sgs.QPirate:getCard(card_id) end
+		if card_id >= 0 and who:hasEquip(sgs.Bang:getCard(card_id)) then card = sgs.Bang:getCard(card_id) end
 		local targets = {}
 		if card then
 			for _, friend in ipairs(self.friends) do
@@ -176,8 +176,8 @@ jixi_skill.getTurnUseCard = function(self)
 		self.player:getPile("field"):length()<= self.room:getAlivePlayers():length()/2) then
 		return
 	end
-	local snatch=sgs.QPirate:getCard(self.player:getPile("field"):first())
-	snatch=sgs.QPirate:cloneCard("snatch", snatch:getSuit(), snatch:getNumber())
+	local snatch=sgs.Bang:getCard(self.player:getPile("field"):first())
+	snatch=sgs.Bang:cloneCard("snatch", snatch:getSuit(), snatch:getNumber())
 	local use={isDummy=true}
 	self:useCardSnatch(snatch,use)
 	if use.card then return sgs.Card_Parse("@JixiCard=.") end
@@ -193,8 +193,8 @@ sgs.ai_skill_askforag.jixi = function(self, card_ids)
 end
 
 sgs.ai_skill_playerchosen.jixi = function(self, targets)
-	local snatch = sgs.QPirate:getCard(self.jixi)
-	snatch = sgs.QPirate:cloneCard("snatch", snatch:getSuit(), snatch:getNumber())
+	local snatch = sgs.Bang:getCard(self.jixi)
+	snatch = sgs.Bang:cloneCard("snatch", snatch:getSuit(), snatch:getNumber())
 	local choices = {}
 	for _, target in sgs.qlist(targets) do
 		if self:isEnemy(target) and not target:getCards("he"):isEmpty()
@@ -437,7 +437,7 @@ end
 
 function sgs.ai_card_intention.ZhibaCard(card, from, tos, source)
 	assert(#tos == 1)
-	local number = sgs.QPirate:getCard(card:getSubcards():first()):getNumber()
+	local number = sgs.Bang:getCard(card:getSubcards():first()):getNumber()
 	if number < 6 then sgs.updateIntention(from, tos[1], -60)
 	elseif number > 8 then sgs.updateIntention(from, tos[1], 60) end
 end 
@@ -505,7 +505,7 @@ sgs.ai_skill_askforag.guzheng = function(self, card_ids)
 	local who = self.room:getCurrent()
 	local cards = {}
 	for _, card_id in ipairs(card_ids) do
-		table.insert(cards, sgs.QPirate:getCard(card_id))
+		table.insert(cards, sgs.Bang:getCard(card_id))
 	end
 
 	if self:isFriend(who) then

@@ -20,7 +20,7 @@ IrregularButton::IrregularButton(const QString &name)
     QBitmap mask_bitmap(MakePath(name, "mask"));
     mask = QRegion(mask_bitmap);
 
-    setAcceptsHoverEvents(true);
+    setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::LeftButton);
 }
 

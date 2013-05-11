@@ -115,7 +115,7 @@ void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *){
 #ifdef AUDIO_SUPPORT
 
     if(!mute)
-        QPirate->playAudio("button-hover");
+        Bang->playAudio("button-hover");
 
 #endif
 
@@ -130,7 +130,7 @@ void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *){
 #ifdef AUDIO_SUPPORT
 
     if(!mute)
-        QPirate->playAudio("button-down");
+        Bang->playAudio("button-down");
 
 #endif
 

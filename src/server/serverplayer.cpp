@@ -44,7 +44,7 @@ void ServerPlayer::playCardEffect(const Card *card) const{
         playCardEffect(card->objectName());
 
     QString skill_name = card->getSkillName();
-    const Skill *skill = QPirate->getSkill(skill_name);
+    const Skill *skill = Bang->getSkill(skill_name);
     if(skill == NULL)
         return;
 
@@ -255,7 +255,7 @@ QString ServerPlayer::findReasonable(const QStringList &generals, bool no_unreas
             {
                 if(getGeneral())
                     if((getGeneral()->getKingdom()
-                            != QPirate->getGeneral(name)->getKingdom()))
+                            != Bang->getGeneral(name)->getKingdom()))
                         continue;
             }
         }
@@ -465,7 +465,7 @@ bool ServerPlayer::hasNullification() const{
     }
     if(hasFlag("lexue")){
         int card_id = getMark("lexue");
-        const Card *card = QPirate->getCard(card_id);
+        const Card *card = Bang->getCard(card_id);
         if(card->objectName() == "nullification"){
             foreach(const Card *c, handcards + getEquips()){
                 if(c->objectName() == "nullification" || c->getSuit() == card->getSuit())
@@ -534,7 +534,7 @@ bool ServerPlayer::pindian(ServerPlayer *target, const QString &reason, const Ca
         card1 = room->askForPindian(this, this, target, reason);
     else if(card1->isVirtualCard()){
         int card_id = card1->getEffectiveId();
-        card1 = QPirate->getCard(card_id);
+        card1 = Bang->getCard(card_id);
     }
 
     const Card *card2 = room->askForPindian(target, this, target, reason);
@@ -881,7 +881,7 @@ void ServerPlayer::addToPile(const QString &pile_name, const Card *card, bool op
 void ServerPlayer::addToPile(const QString &pile_name, int card_id, bool open){
     piles[pile_name] << card_id;
 
-    room->moveCardTo(QPirate->getCard(card_id), this, Player::Special, open);
+    room->moveCardTo(Bang->getCard(card_id), this, Player::Special, open);
 }
 
 void ServerPlayer::addToPile(const QString &pile_name, QList<int> card_ids, bool open){

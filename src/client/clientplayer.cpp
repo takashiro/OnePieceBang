@@ -96,7 +96,7 @@ void ClientPlayer::setCards(const QList<int> &card_ids){
     known_cards.clear();
 
     foreach(int card_id, card_ids){
-        known_cards << QPirate->getCard(card_id);
+        known_cards << Bang->getCard(card_id);
     }
 }
 

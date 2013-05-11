@@ -1,4 +1,4 @@
-#include <QtGui/QApplication>
+#include <QApplication>
 
 #include <QCoreApplication>
 #include <QTranslator>
@@ -14,10 +14,7 @@
 
 int main(int argc, char *argv[])
 {    
-    if(argc > 1 && strcmp(argv[1], "-server") == 0)
-        new QCoreApplication(argc, argv);
-    else
-        new QApplication(argc, argv);
+    QApplication a(argc, argv);
 
 #ifdef Q_OS_MAC
 #ifdef QT_NO_DEBUG
@@ -32,12 +29,12 @@ int main(int argc, char *argv[])
 
     QTranslator qt_translator, translator;
     qt_translator.load("qt_zh_CN.qm");
-    translator.load("qpirate.qm");
+    translator.load("zh_CN.qm");
 
     qApp->installTranslator(&qt_translator);
     qApp->installTranslator(&translator);
 
-    QPirate = new Engine;
+    Bang = new Engine;
     Config.init();
     BanPair::loadBanPairs();
 
@@ -53,7 +50,7 @@ int main(int argc, char *argv[])
         return qApp->exec();
     }
 
-    QFile file("qpirate.qss");
+    QFile file("bang.qss");
     if(file.open(QIODevice::ReadOnly)){
         QTextStream stream(&file);
         qApp->setStyleSheet(stream.readAll());
@@ -65,10 +62,10 @@ int main(int argc, char *argv[])
 
 #endif
 
-    MainWindow *main_window = new MainWindow;
+    MainWindow main_window;
 
-    QPirate->setParent(main_window);
-    main_window->show();
+    Bang->setParent(&main_window);
+    main_window.show();
 
     foreach(QString arg, qApp->arguments()){
         if(arg.startsWith("-connect:")){
@@ -76,7 +73,7 @@ int main(int argc, char *argv[])
             Config.HostAddress = arg;
             Config.setValue("HostAddress", arg);
 
-            main_window->startConnection();
+            main_window.startConnection();
 
             break;
         }

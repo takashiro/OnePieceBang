@@ -39,7 +39,7 @@ class Player : public QObject
     Q_PROPERTY(bool owner READ isOwner WRITE setOwner)
     Q_PROPERTY(bool ready READ isReady WRITE setReady)
     Q_PROPERTY(int atk READ getAttackRange)
-    Q_PROPERTY(General::Gender gender READ getGender)
+    Q_PROPERTY(QString gender READ getGenderString WRITE setGenderString)
 
     Q_PROPERTY(bool kongcheng READ isKongcheng)
     Q_PROPERTY(bool nude READ isNude)
@@ -67,7 +67,11 @@ public:
     void setMaxHp(int max_hp);
     int getLostHp() const;
     bool isWounded() const;
+
     General::Gender getGender() const;
+    void setGender(General::Gender gender);
+    QString getGenderString() const;
+    void setGenderString(QString gender);
 
     bool isOwner() const;
     void setOwner(bool owner);
@@ -230,6 +234,7 @@ private:
     QString state;
     int seat;
     bool alive;
+    General::Gender gender;
 
     Phase phase;
     const Weapon *weapon;

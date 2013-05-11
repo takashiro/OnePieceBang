@@ -4,6 +4,7 @@
 #include "engine.h"
 #include "connectiondialog.h"
 #include "configdialog.h"
+#include "pixmap.h"
 
 #include <QMainWindow>
 #include <QSettings>
@@ -73,6 +74,17 @@ private:
     int room_count;
     QList<RoomItem*> room_items;
 };
+
+class RoomItem: public Pixmap{
+    Q_OBJECT
+
+public:
+    RoomItem(Room *room);
+    virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *);
+};
+
+typedef RoomItem *RoomItemStar;
+Q_DECLARE_METATYPE(RoomItemStar)
 
 class AcknowledgementScene : public QGraphicsScene
 {

@@ -1,10 +1,10 @@
 # -------------------------------------------------
 # Project created by QtCreator 2010-06-13T04:26:52
 # -------------------------------------------------
-TARGET = QPirate
-QT += network sql declarative
+TARGET = OnePieceBang
+QT += core gui widgets network sql declarative axcontainer
 TEMPLATE = app
-CONFIG += warn_on audio
+CONFIG += warn_off audio exceptions
 
 # If you want to enable joystick support, please uncomment the following line:
 # CONFIG += joystick
@@ -129,14 +129,16 @@ SOURCES += \
         src/jsoncpp/src/json_reader.cpp \
         src/jsoncpp/src/json_internalmap.inl \
         src/jsoncpp/src/json_internalarray.inl \
-        swig/qpirate_wrap.cxx \
+        swig/bang_wrap.cxx \
     src/package/wind.cpp \
     src/package/god.cpp \
     src/package/sgs-skillcards.cpp \
     src/package/sgs-generals.cpp \
     src/package/standard-generals.cpp \
     src/package/test.cpp \
-    src/package/alabastan.cpp
+    src/package/alabastan.cpp \
+    src/package/thrillerbark.cpp \
+    src/package/water7.cpp
 HEADERS += \
         src/client/aux-skills.h \
         src/client/client.h \
@@ -257,7 +259,9 @@ HEADERS += \
     src/package/standard-generals.h \
     src/package/sgs-skillcards.h \
     src/package/test.h \
-    src/package/alabastan.h
+    src/package/alabastan.h \
+    src/package/thrillerbark.h \
+    src/package/water7.h
 
 FORMS += \
         src/dialog/cardoverview.ui \
@@ -311,10 +315,10 @@ CONFIG(chatvoice){
         }
 }
 
-TRANSLATIONS += qpirate.ts
+TRANSLATIONS += zh_CN.ts
 
 OTHER_FILES += \
-        qpirate.qss \
+        bang.qss \
         acknowledgement/main.qml \
         acknowledgement/list.png \
         acknowledgement/back.png

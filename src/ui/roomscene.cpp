@@ -104,7 +104,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
     RoomSceneInstance = this;
     _m_last_front_item = NULL;
     _m_last_front_ZValue = 0;
-    int player_count = QPirate->getPlayerCount(ServerInfo.GameMode);
+    int player_count = Bang->getPlayerCount(ServerInfo.GameMode);
 
     room_layout = GetRoomLayout();
 
@@ -333,7 +333,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
     }
 
     {
-        prompt_box = new Window(tr("QPirate"), QSize(480, 200));
+        prompt_box = new Window(tr("OnePieceBang"), QSize(480, 200));
         prompt_box->setOpacity(0);
         prompt_box->setFlag(QGraphicsItem::ItemIsMovable);
         prompt_box->shift();
@@ -367,7 +367,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
     }
 
 #ifdef AUDIO_SUPPORT
-    memory = new QSharedMemory("QPirate", this);
+    memory = new QSharedMemory("OnePieceBang", this);
 #endif
 
     timer_id = 0;
@@ -400,7 +400,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
     m_rolesBoxBackground.load("image/system/state.png");
     m_rolesBox = new QGraphicsPixmapItem;
     addItem(m_rolesBox);    
-    QString roles = QPirate->getRoles(ServerInfo.GameMode);
+    QString roles = Bang->getRoles(ServerInfo.GameMode);
     m_pileCardNumInfoTextBox = addText("");    
     m_pileCardNumInfoTextBox->setParentItem(m_rolesBox);
     m_pileCardNumInfoTextBox->setDocument(ClientInstance->getLinesDoc());
@@ -416,12 +416,12 @@ RoomScene::RoomScene(QMainWindow *main_window)
 
         add_robot = new Button(tr("Add a robot"));
         add_robot->setParentItem(control_panel);
-        add_robot->translate(-add_robot->boundingRect().width() / 2, -add_robot->boundingRect().height() / 2);
+        //add_robot->translate(-add_robot->boundingRect().width() / 2, -add_robot->boundingRect().height() / 2);
         add_robot->setPos(0, -add_robot->boundingRect().height() - 10);
 
         fill_robots = new Button(tr("Fill robots"));
         fill_robots->setParentItem(control_panel);
-        fill_robots->translate(-fill_robots->boundingRect().width() / 2, -fill_robots->boundingRect().height() / 2);
+        //fill_robots->translate(-fill_robots->boundingRect().width() / 2, -fill_robots->boundingRect().height() / 2);
         add_robot->setPos(0, add_robot->boundingRect().height() + 10);
 
         connect(add_robot, SIGNAL(clicked()), ClientInstance, SLOT(addRobot()));
@@ -767,7 +767,7 @@ void RoomScene::addPlayer(ClientPlayer *player){
             name2photo[player->objectName()] = photo;
 
             if(!Self->hasFlag("marshalling"))
-                QPirate->playAudio("add-player");
+                Bang->playAudio("add-player");
 
             return;
         }
@@ -780,7 +780,7 @@ void RoomScene::removePlayer(const QString &player_name){
         photo->setPlayer(NULL);
         name2photo.remove(player_name);
 
-        QPirate->playAudio("remove-player");
+        Bang->playAudio("remove-player");
     }
 }
 
@@ -950,7 +950,7 @@ void RoomScene::keyReleaseEvent(QKeyEvent *event){
 void RoomScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
     QGraphicsScene::contextMenuEvent(event);
 
-    QGraphicsItem *item = itemAt(event->scenePos());
+    QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
     if(!item)
         return;
 
@@ -981,7 +981,7 @@ void RoomScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
         QSet<QString> skill_names = player->getAcquiredSkills();
         QList<const Skill *> skills;
         foreach(QString skill_name, skill_names){
-            const Skill *skill = QPirate->getSkill(skill_name);
+            const Skill *skill = Bang->getSkill(skill_name);
             if(skill && !skill->inherits("WeaponSkill") && !skill->inherits("ArmorSkill"))
                 skills << skill;
         }
@@ -990,14 +990,14 @@ void RoomScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
             menu->addSeparator();
             foreach(const Skill *skill, skills){
                 QString tooltip = skill->getDescription();
-                menu->addAction(QPirate->translate(skill->objectName()))->setToolTip(tooltip);
+                menu->addAction(Bang->translate(skill->objectName()))->setToolTip(tooltip);
             }
         }
 
         menu->popup(event->screenPos());
     }else if(ServerInfo.FreeChoose && arrange_button){
         QGraphicsObject *obj = item->toGraphicsObject();
-        if(obj && QPirate->getGeneral(obj->objectName())){
+        if(obj && Bang->getGeneral(obj->objectName())){
             to_change = qobject_cast<CardItem *>(obj);
             change_general_menu->popup(event->screenPos());
         }
@@ -1007,7 +1007,7 @@ void RoomScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
 void RoomScene::chooseGeneral(const QStringList &generals){
     QApplication::alert(main_window);
     if(!main_window->isActiveWindow())
-        QPirate->playAudio("prelude");
+        Bang->playAudio("prelude");
     QDialog *dialog;
     
     if(generals.isEmpty())
@@ -1027,7 +1027,7 @@ void RoomScene::chooseSuit(const QStringList &suits)
     foreach(QString suit, suits){
         QCommandLinkButton *button = new QCommandLinkButton;
         button->setIcon(QIcon(QString("image/system/suit/%1.png").arg(suit)));
-        button->setText(QPirate->translate(suit));
+        button->setText(Bang->translate(suit));
         button->setObjectName(suit);
 
         layout->addWidget(button);
@@ -1057,7 +1057,7 @@ void RoomScene::chooseKingdom(const QStringList &kingdoms)
 
         button->setIcon(kingdom_icon);
         button->setIconSize(kingdom_pixmap.size());
-        button->setText(QPirate->translate(kingdom));
+        button->setText(Bang->translate(kingdom));
         button->setObjectName(kingdom);
 
         layout->addWidget(button);
@@ -1080,15 +1080,15 @@ void RoomScene::chooseOption(const QString &skillName, const QStringList &option
 {    
     QDialog *dialog = new QDialog;
     QVBoxLayout *layout = new QVBoxLayout;
-    dialog->setWindowTitle(QPirate->translate(skillName));   
+    dialog->setWindowTitle(Bang->translate(skillName));   
     layout->addWidget(new QLabel(tr("Please choose:")));
 
     foreach(QString option, options){
         QCommandLinkButton *button = new QCommandLinkButton;
         QString text = QString("%1:%2").arg(skillName).arg(option);
-        QString translated = QPirate->translate(text);
+        QString translated = Bang->translate(text);
         if(text == translated)
-            translated = QPirate->translate(option);
+            translated = Bang->translate(option);
 
         button->setObjectName(option);
         button->setText(translated);
@@ -1103,7 +1103,7 @@ void RoomScene::chooseOption(const QString &skillName, const QStringList &option
     connect(dialog, SIGNAL(rejected()), ClientInstance, SLOT(onPlayerMakeChoice()));
 
     dialog->setLayout(layout);
-    QPirate->playAudio("pop-up");
+    Bang->playAudio("pop-up");
     delete m_choiceDialog;
     m_choiceDialog = dialog;
 }
@@ -1111,7 +1111,7 @@ void RoomScene::chooseOption(const QString &skillName, const QStringList &option
 void RoomScene::chooseCard(const ClientPlayer *player, const QString &flags, const QString &reason)
 {
     PlayerCardDialog *dialog = new PlayerCardDialog(player, flags);
-    dialog->setWindowTitle(QPirate->translate(reason));
+    dialog->setWindowTitle(Bang->translate(reason));
     connect(dialog, SIGNAL(card_id_chosen(int)), ClientInstance, SLOT(onPlayerChooseCard(int)));
     connect(dialog, SIGNAL(rejected()), ClientInstance, SLOT(onPlayerChooseCard()));
     delete m_choiceDialog;
@@ -1364,7 +1364,7 @@ void RoomScene::keepGetCardLog(const CardsMoveStruct &move)
         // both src and dest are player
         QString type;
         if(move.to_place == Player::Judging){
-            const Card *trick = QPirate->getCard(move.card_ids.first());
+            const Card *trick = Bang->getCard(move.card_ids.first());
             if(trick->objectName() == "lightning")
                 type = "$LightningMove";
             else
@@ -1393,7 +1393,7 @@ void RoomScene::keepGetCardLog(const CardsMoveStruct &move)
             if (card_item != NULL);
             else if (movement.from == Self)
             {
-                card_item = new CardItem(QPirate->getCard(card_id));
+                card_item = new CardItem(Bang->getCard(card_id));
                 card_item->setPos(avatar->scenePos());                
             }
             else
@@ -1419,7 +1419,7 @@ void RoomScene::keepGetCardLog(const CardsMoveStruct &move)
     {
         QString from_general;
         from_general= src->getGeneralName();
-        from_general = QPirate->translate(from_general);        
+        from_general = Bang->translate(from_general);        
     }
     else{
         if(src_place == Player::DiscardPile || dest_place == Player::Hand){
@@ -1519,7 +1519,8 @@ void RoomScene::removeWidgetFromSkillDock(QWidget *widget){
 
 void RoomScene::acquireSkill(const ClientPlayer *player, const QString &skill_name){
     QGraphicsObject *dest = getAnimationObject(player->objectName());
-    QGraphicsTextItem *item = new QGraphicsTextItem(QPirate->translate(skill_name), NULL, this);
+    QGraphicsTextItem *item = new QGraphicsTextItem(Bang->translate(skill_name), NULL);
+    this->addItem(item);
     item->setFont(Config.BigFont);
 
     QGraphicsDropShadowEffect *drop = new QGraphicsDropShadowEffect;
@@ -1543,7 +1544,7 @@ void RoomScene::acquireSkill(const ClientPlayer *player, const QString &skill_na
     log_box->appendLog(type, from_general, QStringList(), QString(), arg);
 
     if(player == Self){
-        addSkillButton(QPirate->getSkill(skill_name));
+        addSkillButton(Bang->getSkill(skill_name));
     }
 }
 
@@ -1580,7 +1581,7 @@ void RoomScene::updateRoleComboBox(const QString &new_role){
     hegemony_mode["renegade"] = tr("Qun");
 
     QMap<QString, QString> *map = NULL;
-    switch(QPirate->getRoleIndex()){
+    switch(Bang->getRoleIndex()){
     case 4: map = &threeV3_mode; break;
     case 5: map = &hegemony_mode; break;
     default:
@@ -1660,7 +1661,7 @@ void RoomScene::updateTargetsEnablity(const Card *card){
             continue;
 
         bool enabled;
-        if(card)enabled= !QPirate->isProhibited(Self, player, card)
+        if(card)enabled= !Bang->isProhibited(Self, player, card)
                        && card->targetFilter(selected_targets, player, Self);
         else enabled = true;
 
@@ -2085,7 +2086,7 @@ void RoomScene::updateStatus(Client::Status oldStatus, Client::Status newStatus)
             QRegExp rx("@@?(\\w+)!?");
             if(rx.exactMatch(pattern)){
                 QString skill_name = rx.capturedTexts().at(1);
-                const ViewAsSkill *skill = QPirate->getViewAsSkill(skill_name);
+                const ViewAsSkill *skill = Bang->getViewAsSkill(skill_name);
                 if(skill)
                     dashboard->startPending(skill);
             }else{
@@ -2157,11 +2158,11 @@ void RoomScene::updateStatus(Client::Status oldStatus, Client::Status newStatus)
             discard_button->setEnabled(false);
 
             QString description;
-            const Skill *skill = QPirate->getSkill(ClientInstance->skill_name);
+            const Skill *skill = Bang->getSkill(ClientInstance->skill_name);
             if(skill)
                 description = skill->getDescription();
             else
-                description = QPirate->translate(ClientInstance->skill_name);
+                description = Bang->translate(ClientInstance->skill_name);
 
             if(!description.isEmpty() && description != ClientInstance->skill_name)
                 ClientInstance->getPromptDoc()->setHtml(tr("Please choose a player<br/> <b>Source</b>: %1<br/>").arg(description));
@@ -2306,15 +2307,15 @@ void RoomScene::updatePileButton(const QString &pile_name){
 
     QList<int> pile = Self->getPile(pile_name);
     if(pile.isEmpty())
-        button->setText(QPirate->translate(pile_name));
+        button->setText(Bang->translate(pile_name));
     else
-        button->setText(QString("%1 (%2)").arg(QPirate->translate(pile_name)).arg(pile.length()));
+        button->setText(QString("%1 (%2)").arg(Bang->translate(pile_name)).arg(pile.length()));
 
     menu->clear();
 
     QList<const Card *> cards;
     foreach(int card_id, pile){
-        const Card *card = QPirate->getCard(card_id);
+        const Card *card = Bang->getCard(card_id);
         cards << card;
     }
 
@@ -2431,7 +2432,7 @@ void RoomScene::changeHp(const QString &who, int delta, DamageStruct::Nature nat
 
     if(delta < 0){
         if(losthp){
-            QPirate->playAudio("hplost");
+            Bang->playAudio("hplost");
             return;
         }
 
@@ -2459,7 +2460,7 @@ void RoomScene::changeHp(const QString &who, int delta, DamageStruct::Nature nat
             }
         }
 
-        QPirate->playAudio(damage_effect);
+        Bang->playAudio(damage_effect);
 
         if(photo){
             //photo->setEmotion("damage");
@@ -2485,7 +2486,7 @@ void RoomScene::onStandoff(){
     freeze();
 
 #ifdef AUDIO_SUPPORT
-    QPirate->playAudio("standoff");
+    Bang->playAudio("standoff");
 #endif
 
     QDialog *dialog = new QDialog(main_window);
@@ -2526,7 +2527,7 @@ void RoomScene::onGameOver(){
     }else
         win_effect = "lose";
 
-    QPirate->playAudio(win_effect);
+    Bang->playAudio(win_effect);
 #endif
 
     QDialog *dialog = new QDialog(main_window);
@@ -2611,7 +2612,7 @@ void RoomScene::addRestartButton(QDialog *dialog){
 }
 
 void RoomScene::saveReplayRecord(){
-    QString location = QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+    QString location = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     QString filename = QFileDialog::getSaveFileName(main_window,
                                                     tr("Save replay record"),
                                                     location,
@@ -2655,7 +2656,7 @@ void ScriptExecutor::doScript(){
         return;
 
     QString script = box->toPlainText();
-    QByteArray data = script.toAscii();
+    QByteArray data = script.toLatin1();
     data = qCompress(data);
     script = data.toBase64();
 
@@ -2747,7 +2748,7 @@ void RoomScene::FillPlayerNames(QComboBox *combobox, bool add_none){
     combobox->setIconSize(General::TinyIconSize);
 
     foreach(const ClientPlayer *player, ClientInstance->getPlayers()){
-        QString general_name = QPirate->translate(player->getGeneralName());
+        QString general_name = Bang->translate(player->getGeneralName());
         if(!player->getGeneral()) continue;
         combobox->addItem(QIcon(player->getGeneral()->getPixmapPath("tiny")),
                           QString("%1 [%2]").arg(general_name).arg(player->screenName()),
@@ -2794,7 +2795,7 @@ void RoomScene::makeReviving(){
     QList<const ClientPlayer*> victims;;
     foreach(const ClientPlayer *player, ClientInstance->getPlayers()){
         if(player->isDead()){
-            QString general_name = QPirate->translate(player->getGeneralName());
+            QString general_name = Bang->translate(player->getGeneralName());
             items << QString("%1 [%2]").arg(player->screenName()).arg(general_name);
             victims << player;
         }
@@ -2842,7 +2843,7 @@ void RoomScene::fillTable(QTableWidget *table, const QList<const ClientPlayer *>
         const ClientPlayer *player = players.at(i);
 
         QTableWidgetItem *item = new QTableWidgetItem;
-        item->setText(QPirate->translate(player->getGeneralName()));
+        item->setText(Bang->translate(player->getGeneralName()));
         table->setItem(i, 0, item);
 
         item = new QTableWidgetItem;
@@ -2861,11 +2862,11 @@ void RoomScene::fillTable(QTableWidget *table, const QList<const ClientPlayer *>
         if(ServerInfo.EnableHegemony){
             QIcon icon(QString("image/kingdom/icon/%1.png").arg(player->getKingdom()));
             item->setIcon(icon);
-            item->setText(QPirate->translate(player->getKingdom()));
+            item->setText(Bang->translate(player->getKingdom()));
         }else{
             QIcon icon(QString("image/system/roles/%1.png").arg(player->getRole()));
             item->setIcon(icon);
-            item->setText(QPirate->translate(player->getRole()));
+            item->setText(Bang->translate(player->getRole()));
         }
         if(!player->isAlive())
             item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
@@ -2981,7 +2982,7 @@ void RoomScene::chooseSkillButton(){
 }
 
 void RoomScene::attachSkill(const QString &skill_name, bool from_left){
-    const Skill *skill = QPirate->getSkill(skill_name);
+    const Skill *skill = Bang->getSkill(skill_name);
     if(skill)
         addSkillButton(skill, from_left);
 }
@@ -3003,7 +3004,7 @@ void RoomScene::detachSkill(const QString &skill_name){
         }
     }
 
-    if(dashboard->getFilter() == QPirate->getSkill(skill_name)){
+    if(dashboard->getFilter() == Bang->getSkill(skill_name)){
         dashboard->setFilter(NULL);
     }
 }
@@ -3046,7 +3047,7 @@ void RoomScene::showOwnerButtons(bool owner){
 void RoomScene::showJudgeResult(const QString &who, const QString &result){
     if(special_card){
         const ClientPlayer *player = ClientInstance->getPlayer(who);
-        QString desc = QString(tr("%1's judge")).arg(QPirate->translate(player->getGeneralName()));
+        QString desc = QString(tr("%1's judge")).arg(Bang->translate(player->getGeneralName()));
         special_card->writeCardDesc(desc);
 
         special_card->setFrame(result);
@@ -3092,7 +3093,7 @@ KOFOrderBox::KOFOrderBox(bool self, QGraphicsScene *scene)
 
 void KOFOrderBox::revealGeneral(const QString &name){
     if(revealed < 3){
-        const General *general = QPirate->getGeneral(name);
+        const General *general = Bang->getGeneral(name);
         if(general){
             Pixmap *avatar = avatars[revealed ++];
             avatar->load(general->getPixmapPath("small"));
@@ -3221,7 +3222,7 @@ void RoomScene::onGameStart(){
         memory->lock();
 
         char *username = static_cast<char *>(memory->data());
-        const char *my_username = Config.UserName.toAscii();
+        const char *my_username = Config.UserName.toLatin1();
         play_music = qstrcmp(username, my_username) == 0;
 
         memory->unlock();
@@ -3229,7 +3230,7 @@ void RoomScene::onGameStart(){
         memory->lock();
 
         void *data = memory->data();
-        const char *username = Config.UserName.toAscii();
+        const char *username = Config.UserName.toLatin1();
         memcpy(data, username, qstrlen(username));
 
         play_music = true;
@@ -3241,7 +3242,7 @@ void RoomScene::onGameStart(){
         return;
 
     // start playing background music
-    QString bgmusic_path = Config.value("BackgroundMusic", "audio/system/background.ogg").toString();
+    QString bgmusic_path = Config.value("BackgroundMusic", "audio/system/bg_playing.mp3").toString();
 
     Audio::playBGM(bgmusic_path);
     Audio::setBGMVolume(Config.BGMVolume);
@@ -3501,7 +3502,7 @@ void RoomScene::doAppearingAnimation(const QString &name, const QStringList &arg
 void RoomScene::doLightboxAnimation(const QString &, const QStringList &args){
     // hide discarded card
     QString word = args.first();
-    word = QPirate->translate(word);
+    word = Bang->translate(word);
 
     QGraphicsRectItem *lightbox = addRect(main_window->rect());
 
@@ -3635,7 +3636,7 @@ void RoomScene::kick(){
         return;
 
     foreach(const ClientPlayer *player, players){
-        QString general_name = QPirate->translate(player->getGeneralName());
+        QString general_name = Bang->translate(player->getGeneralName());
         items << QString("%1 [%2]").arg(player->screenName()).arg(general_name);
     }
 

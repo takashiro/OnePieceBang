@@ -230,7 +230,7 @@ public:
                             break;
                         }
 
-                        room->moveCardTo(QPirate->getCard(card_id), to, Player::Judging, true);
+                        room->moveCardTo(Bang->getCard(card_id), to, Player::Judging, true);
                     }
                 }
 

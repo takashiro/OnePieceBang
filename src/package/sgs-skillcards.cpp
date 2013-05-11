@@ -87,7 +87,7 @@ void FanjianCard::onEffect(const CardEffectStruct &effect) const{
     Room *room = zhouyu->getRoom();
 
     int card_id = zhouyu->getRandomHandCardId();
-    const Card *card = QPirate->getCard(card_id);
+    const Card *card = Bang->getCard(card_id);
     Card::Suit suit = room->askForSuit(target, "fanjian");
 
     LogMessage log;

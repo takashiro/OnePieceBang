@@ -29,11 +29,11 @@ bool Skill::isLordSkill() const{
 }
 
 QString Skill::getDescription() const{
-    return QPirate->translate(":" + objectName());
+    return Bang->translate(":" + objectName());
 }
 
 QString Skill::getText() const{
-    QString skill_name = QPirate->translate(objectName());
+    QString skill_name = Bang->translate(objectName());
 
     switch(frequency){
     case Skill::NotFrequent:
@@ -95,7 +95,7 @@ void Skill::playEffect(int index) const{
         else
             filename = sources.first();
 
-        QPirate->playEffect(filename);
+        Bang->playEffect(filename);
         if(ClientInstance)
             ClientInstance->setLines(filename);
     }
@@ -305,14 +305,14 @@ SPConvertSkill::SPConvertSkill(const QString &name, const QString &from, const Q
 }
 
 bool SPConvertSkill::triggerable(const ServerPlayer *target) const{
-    if (target == NULL || QPirate->getGeneral(to) == NULL) return false;
-    QString package = QPirate->getGeneral(to)->getPackage();
-    if(QPirate->getBanPackages().contains(package)) return false;
+    if (target == NULL || Bang->getGeneral(to) == NULL) return false;
+    QString package = Bang->getGeneral(to)->getPackage();
+    if(Bang->getBanPackages().contains(package)) return false;
     return GameStartSkill::triggerable(target) && target->getGeneralName() == from;
 }
 
 void SPConvertSkill::onGameStart(ServerPlayer *player) const{
-    const General *general = QPirate->getGeneral(to);
+    const General *general = Bang->getGeneral(to);
     if(general == NULL){
         return;
     }

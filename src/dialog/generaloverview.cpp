@@ -42,19 +42,19 @@ void GeneralOverview::fillGenerals(const QList<const General *> &generals){
 
         QString name, kingdom, gender, max_hp, package;
 
-        name = QPirate->translate(general->objectName());
+        name = Bang->translate(general->objectName());
 
-        kingdom = QPirate->translate(general->getKingdom());
+        kingdom = Bang->translate(general->getKingdom());
         gender = general->isMale() ? tr("Male") : tr("Female");
         max_hp = QString::number(general->getMaxHp());
-        package = QPirate->translate(general->getPackage());
+        package = Bang->translate(general->getPackage());
 
-        QString nickname = QPirate->translate("#" + general->objectName());
+        QString nickname = Bang->translate("#" + general->objectName());
         QTableWidgetItem *nickname_item;
         if(!nickname.startsWith("#"))
             nickname_item = new QTableWidgetItem(nickname);
         else
-            nickname_item = new QTableWidgetItem(QPirate->translate("UnknowNick"));
+            nickname_item = new QTableWidgetItem(Bang->translate("UnknowNick"));
         nickname_item->setData(Qt::UserRole, general->objectName());
         nickname_item->setTextAlignment(Qt::AlignCenter);
 
@@ -117,7 +117,7 @@ GeneralOverview::~GeneralOverview()
 }
 
 void GeneralOverview::addLines(const Skill *skill){
-    QString skill_name = QPirate->translate(skill->objectName());
+    QString skill_name = Bang->translate(skill->objectName());
     QStringList sources = skill->getSources();
 
     if(sources.isEmpty()){
@@ -143,7 +143,7 @@ void GeneralOverview::addLines(const Skill *skill){
             button_layout->addWidget(button);
 
             QString filename = rx.capturedTexts().at(1);
-            QString skill_line = QPirate->translate("$" + filename);
+            QString skill_line = Bang->translate("$" + filename);
             button->setDescription(skill_line);
 
             connect(button, SIGNAL(clicked()), this, SLOT(playEffect()));
@@ -175,12 +175,12 @@ void GeneralOverview::on_tableWidget_itemSelectionChanged()
 {
     int row = ui->tableWidget->currentRow();
     QString general_name = ui->tableWidget->item(row, 0)->data(Qt::UserRole).toString();
-    const General *general = QPirate->getGeneral(general_name);
+    const General *general = Bang->getGeneral(general_name);
     ui->generalPhoto->setPixmap(QPixmap(general->getPixmapPath("card")));
     QList<const Skill *> skills = general->getVisibleSkillList();
 
     foreach(QString skill_name, general->getRelatedSkillNames()){
-        const Skill *skill = QPirate->getSkill(skill_name);
+        const Skill *skill = Bang->getSkill(skill_name);
         if(skill)
             skills << skill;
     }
@@ -193,18 +193,18 @@ void GeneralOverview::on_tableWidget_itemSelectionChanged()
         addLines(skill);
     }
 
-    QString last_word = QPirate->translate("~" + general->objectName());
+    QString last_word = Bang->translate("~" + general->objectName());
     if(last_word.startsWith("~")){
         QStringList origin_generals = general->objectName().split("_");
         if(origin_generals.length()>1)
-            last_word = QPirate->translate(("~") +  origin_generals.at(1));
+            last_word = Bang->translate(("~") +  origin_generals.at(1));
     }
 
     if(last_word.startsWith("~") && general->objectName().endsWith("f")){
         QString origin_general = general->objectName();
         origin_general.chop(1);
-        if(QPirate->getGeneral(origin_general))
-            last_word = QPirate->translate(("~") + origin_general);
+        if(Bang->getGeneral(origin_general))
+            last_word = Bang->translate(("~") + origin_general);
     }
 
     if(!last_word.startsWith("~")){
@@ -231,23 +231,23 @@ void GeneralOverview::on_tableWidget_itemSelectionChanged()
         connect(win_button, SIGNAL(clicked()), this, SLOT(playEffect()));
     }
 
-    QString designer_text = QPirate->translate("designer:" + general->objectName());
+    QString designer_text = Bang->translate("designer:" + general->objectName());
     if(!designer_text.startsWith("designer:"))
         ui->designerLineEdit->setText(designer_text);
     else
         ui->designerLineEdit->setText(tr("Official"));
 
-    QString cv_text = QPirate->translate("cv:" + general->objectName());
+    QString cv_text = Bang->translate("cv:" + general->objectName());
     if(!cv_text.startsWith("cv:"))
         ui->cvLineEdit->setText(cv_text);
     else
         ui->cvLineEdit->setText(tr("Official"));
 
-    QString illustrator_text = QPirate->translate("illustrator:" + general->objectName());
+    QString illustrator_text = Bang->translate("illustrator:" + general->objectName());
     if(!illustrator_text.startsWith("illustrator:"))
         ui->illustratorLineEdit->setText(illustrator_text);
     else
-        ui->illustratorLineEdit->setText(QPirate->translate("DefaultIllustrator"));
+        ui->illustratorLineEdit->setText(Bang->translate("DefaultIllustrator"));
 
     button_layout->addStretch();
     ui->skillTextEdit->append(general->getSkillDescription());
@@ -259,7 +259,7 @@ void GeneralOverview::playEffect()
     if(button){
         QString source = button->objectName();
         if(!source.isEmpty())
-            QPirate->playEffect(source);
+            Bang->playEffect(source);
     }
 }
 

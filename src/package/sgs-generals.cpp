@@ -284,7 +284,7 @@ public:
             // the only difference for Guicai & Guidao
             room->throwCard(judge->card);
 
-            judge->card = QPirate->getCard(card->getEffectiveId());
+            judge->card = Bang->getCard(card->getEffectiveId());
             room->moveCardTo(judge->card, NULL, Player::DiscardPile);
 
             LogMessage log;
@@ -1251,7 +1251,7 @@ public:
 SgsPackage::SgsPackage():Package("Sgs"){
     General *caocao, *zhangliao, *guojia, *xiahoudun, *simayi, *xuchu, *zhenji;
 
-    caocao = new General(this, "caocao$", "wei");
+    /*caocao = new General(this, "caocao$", "wei");
     caocao->addSkill(new Jianxiong);
     caocao->addSkill(new Hujia);
 
@@ -1260,12 +1260,12 @@ SgsPackage::SgsPackage():Package("Sgs"){
     simayi->addSkill(new Guicai);
 
     xiahoudun = new General(this, "xiahoudun", "wei");
-    xiahoudun->addSkill(new Ganglie);
+    xiahoudun->addSkill(new Ganglie);*/
 
     zhangliao = new General(this, "zhangliao", "wei");
-    zhangliao->addSkill(new Tuxi);
+    //zhangliao->addSkill(new Tuxi);
 
-    xuchu = new General(this, "xuchu", "wei");
+    /*xuchu = new General(this, "xuchu", "wei");
     xuchu->addSkill(new Luoyi);
     xuchu->addSkill(new LuoyiBuff);
     related_skills.insertMulti("luoyi", "#luoyi");
@@ -1352,7 +1352,7 @@ SgsPackage::SgsPackage():Package("Sgs"){
     diaochan = new General(this, "diaochan", "qun", 3, false);
     diaochan->addSkill(new Lijian);
     diaochan->addSkill(new Biyue);
-    //diaochan->addSkill(new SPConvertSkill("tuoqiao", "diaochan", "sp_diaochan"));
+    //diaochan->addSkill(new SPConvertSkill("tuoqiao", "diaochan", "sp_diaochan"));*/
 
     // for skill cards
     addMetaObject<ZhihengCard>();

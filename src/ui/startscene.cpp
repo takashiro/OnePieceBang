@@ -17,7 +17,7 @@ StartScene::StartScene()
     //the website URL
     QFont website_font(Config.SmallFont);
     website_font.setStyle(QFont::StyleItalic);
-    QGraphicsSimpleTextItem *website_text = addSimpleText("http://code.google.com/p/qpirate", website_font);
+    QGraphicsSimpleTextItem *website_text = addSimpleText("http://github.com/takashiro/OnePieceBang", website_font);
     website_text->setBrush(Qt::white);
     website_text->setPos(Config.Rect.width()/2 - website_text->boundingRect().width(),
                        Config.Rect.height()/2 - website_text->boundingRect().height());
@@ -116,8 +116,8 @@ void StartScene::printServerInfo(){
     }
 
     server_log->append(tr("Binding port number is %1").arg(Config.ServerPort));
-    server_log->append(tr("Game mode is %1").arg(QPirate->getModeName(Config.GameMode)));
-    server_log->append(tr("Player count is %1").arg(QPirate->getPlayerCount(Config.GameMode)));
+    server_log->append(tr("Game mode is %1").arg(Bang->getModeName(Config.GameMode)));
+    server_log->append(tr("Player count is %1").arg(Bang->getPlayerCount(Config.GameMode)));
 
     server_log->append( Config.OperationNoLimit ?
                         tr("There is no time limit") :

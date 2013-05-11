@@ -34,10 +34,10 @@ CardOverview::CardOverview(QWidget *parent) :
 }
 
 void CardOverview::loadFromAll(){
-    int i, n = QPirate->getCardCount();
+    int i, n = Bang->getCardCount();
     ui->tableWidget->setRowCount(n);
     for(i=0; i<n ;i++){
-        const Card *card = QPirate->getCard(i);
+        const Card *card = Bang->getCard(i);
         addCard(i, card);
     }
 
@@ -56,13 +56,13 @@ void CardOverview::loadFromList(const QList<const Card*> &list){
 }
 
 void CardOverview::addCard(int i, const Card *card){
-    QString name = QPirate->translate(card->objectName());
+    QString name = Bang->translate(card->objectName());
     QIcon suit_icon = QIcon(QString("image/system/suit/%1.png").arg(card->getSuitString()));
-    QString suit_str = QPirate->translate(card->getSuitString());
+    QString suit_str = Bang->translate(card->getSuitString());
     QString point = card->getNumberString();
-    QString type = QPirate->translate(card->getType());
-    QString subtype = QPirate->translate(card->getSubtype());
-    QString package = QPirate->translate(card->getPackage());
+    QString type = Bang->translate(card->getType());
+    QString subtype = Bang->translate(card->getSubtype());
+    QString package = Bang->translate(card->getPackage());
 
     QTableWidgetItem *name_item = new QTableWidgetItem(name);
     name_item->setData(Qt::UserRole, card->getId());
@@ -84,7 +84,7 @@ void CardOverview::on_tableWidget_itemSelectionChanged()
 {
     int row = ui->tableWidget->currentRow();
     int card_id = ui->tableWidget->item(row, 0)->data(Qt::UserRole).toInt();
-    const Card *card = QPirate->getCard(card_id);
+    const Card *card = Bang->getCard(card_id);
     QString pixmap_path = QString("image/big-card/%1.png").arg(card->objectName());
     ui->cardLabel->setPixmap(pixmap_path);
 
@@ -113,8 +113,8 @@ void CardOverview::on_malePlayButton_clicked()
     int row = ui->tableWidget->currentRow();
     if(row >= 0){
         int card_id = ui->tableWidget->item(row, 0)->data(Qt::UserRole).toInt();
-        const Card *card = QPirate->getCard(card_id);
-        QPirate->playCardEffect(card->objectName(), true);
+        const Card *card = Bang->getCard(card_id);
+        Bang->playCardEffect(card->objectName(), true);
     }
 }
 
@@ -123,7 +123,7 @@ void CardOverview::on_femalePlayButton_clicked()
     int row = ui->tableWidget->currentRow();
     if(row >= 0){
         int card_id = ui->tableWidget->item(row, 0)->data(Qt::UserRole).toInt();
-        const Card *card = QPirate->getCard(card_id);
-        QPirate->playCardEffect(card->objectName(), false);
+        const Card *card = Bang->getCard(card_id);
+        Bang->playCardEffect(card->objectName(), false);
     }
 }

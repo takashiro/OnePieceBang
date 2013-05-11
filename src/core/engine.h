@@ -110,6 +110,6 @@ private:
     lua_State *lua;
 };
 
-extern Engine *QPirate;
+extern Engine *Bang;
 
 #endif // ENGINE_H

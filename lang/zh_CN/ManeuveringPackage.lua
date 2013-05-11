@@ -45,7 +45,7 @@ return {
 	["fire-attack-card"] = "您可以弃置一张与%dest所展示卡牌相同花色(%arg)的牌对%dest产生一点火焰伤害",
 	["@fire-attack"] = "%src 展示的牌的花色为 %arg，请弃置与其相同花色的牌",
 
-	["iron_chain"] = "铁索连环",
+	["iron_chain"] = "连环锁",
 	[":iron_chain"] = "锦囊牌\
 出牌时机：出牌阶段。\
 使用目标：1、一至两名角色；2、不指定目标。\
