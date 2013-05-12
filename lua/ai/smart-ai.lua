@@ -3028,7 +3028,8 @@ function SmartAI:getCardId(class_name, player)
 	local cards = player:getCards("he")
 	cards = sgs.QList2Table(cards)
 	self:sortByUsePriority(cards)
-	local card_str = self:getGuhuoCard(class_name, player) or cardsView(class_name, player)
+	--local card_str = self:getGuhuoCard(class_name, player) or cardsView(class_name, player)
+	local card_str = cardsView(class_name, player)
 	if card_str then return card_str end
 
 	for _, card in ipairs(cards) do
@@ -3909,6 +3910,11 @@ function SmartAI:damageMinusHp(self, enemy, type)
 		if type == 0 then return (trick_effectivenum + slash_damagenum - effectivefireattacknum - enemy:getHp()) 
 		else return  (trick_effectivenum + slash_damagenum - enemy:getHp()) end
 	return -10
+end
+
+function SmartAI:needBear(player)
+    player = player or self.player
+    return player:hasSkill("renjie") and not player:hasSkill("jilve") and player:getMark("@bear") < 4
 end
 
 dofile "lua/ai/debug-ai.lua"
