@@ -82,11 +82,11 @@ public:
     virtual void onUse(Room *room, const CardUseStruct &card_use) const;
 };
 
-class GodSalvation:public GlobalEffect{
+class AllBlue:public GlobalEffect{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE GodSalvation(Card::Suit suit = Heart, int number = 1);
+    Q_INVOKABLE AllBlue(Card::Suit suit = Heart, int number = 1);
     virtual bool isCancelable(const CardEffectStruct &effect) const;
     virtual void onEffect(const CardEffectStruct &effect) const;
 };

@@ -29,7 +29,7 @@ sgs.ai_chaofeng.yuanshu = 3
 sgs.ai_skill_invoke.danlao = function(self, data)
 	local effect = data:toCardUse()
 	local current = self.room:getCurrent()
-	if effect.card:inherits("GodSalvation") and self.player:isWounded() then
+	if effect.card:inherits("AllBlue") and self.player:isWounded() then
 		return false
 	elseif effect.card:inherits("AmazingGrace") and
 		(self.player:getSeat() - current:getSeat()) % (global_room:alivePlayerCount()) < global_room:alivePlayerCount()/2 then

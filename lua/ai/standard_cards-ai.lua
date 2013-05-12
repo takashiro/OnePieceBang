@@ -392,7 +392,7 @@ sgs.ai_skill_cardask["double-sword-card"] = function(self, data, pattern, target
 	if self:needBear() then return "." end
 	local cards = self.player:getHandcards()
 	for _, card in sgs.qlist(cards) do
-		if card:inherits("Slash") or card:inherits("Shit") or card:inherits("Collateral") or card:inherits("GodSalvation")
+		if card:inherits("Slash") or card:inherits("Shit") or card:inherits("Collateral") or card:inherits("AllBlue")
 		or card:inherits("Disaster") or card:inherits("EquipCard") or card:inherits("AmazingGrace") then
 			return "$"..card:getEffectiveId()
 		end
@@ -692,7 +692,7 @@ sgs.ai_use_value.AmazingGrace = 3
 sgs.ai_keep_value.AmazingGrace = -1
 sgs.ai_use_priority.AmazingGrace = 1
 
-function SmartAI:useCardGodSalvation(card, use)
+function SmartAI:useCardAllBlue(card, use)
 	local good, bad = 0, 0
 	if self.player:hasSkill("noswuyan") and self.player:isWounded() then
 		use.card = card
@@ -720,8 +720,8 @@ function SmartAI:useCardGodSalvation(card, use)
 	end
 end
 
-sgs.ai_use_priority.GodSalvation = 3.9
-sgs.dynamic_value.benefit.GodSalvation = true
+sgs.ai_use_priority.AllBlue = 3.9
+sgs.dynamic_value.benefit.AllBlue = true
 
 local function factorial(n)
 	if n <= 0.1 then return 1 end

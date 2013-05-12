@@ -398,7 +398,7 @@ function SmartAI:getDynamicUsePriority(card)
 					else dynamic_value = dynamic_value + ((player:getHandcardNum()+player:getHp())/player:getHp())*dynamic_value
 					end
 				end
-			elseif use_card:inherits("GodSalvation") then
+			elseif use_card:inherits("AllBlue") then
 				local weak_mate, weak_enemy = 0, 0
 				for _, player in sgs.qlist(self.room:getAllPlayers()) do
 					if player:getHp() <= 1 and player:getHandcardNum() <= 1 then
@@ -1849,7 +1849,7 @@ function SmartAI:askForNullification(trick, from, to, positive)
 		end
 		if from then
 			if self:isEnemy(to) then
-				if trick:inherits("GodSalvation") and self:isWeak(to) then
+				if trick:inherits("AllBlue") and self:isWeak(to) then
 					return null_card
 				end
 			end
@@ -1859,7 +1859,7 @@ function SmartAI:askForNullification(trick, from, to, positive)
 			if from:objectName() == to:objectName() then
 				if self:isFriend(from) then return null_card else return end
 			end
-			if not (trick:inherits("AmazingGrace") or trick:inherits("GodSalvation") or trick:inherits("AOE")) then
+			if not (trick:inherits("AmazingGrace") or trick:inherits("AllBlue") or trick:inherits("AOE")) then
 				if self:isFriend(from) then
 					if ("snatch|dismantlement"):match(trick:objectName()) and to:isNude() then
 					elseif trick:inherits("FireAttack") and to:isKongcheng() then
@@ -2413,7 +2413,7 @@ function SmartAI:getCardNeedPlayer(cards)
 		for _,enemy in ipairs(self.enemies) do
 			if (self:needKongcheng(enemy) or (enemy:hasSkill("lianying") and enemy:getHandcardNum() == 1)) and enemy:faceUp() then
 				for _,acard in ipairs(cardtogive) do
-					if acard:inherits("Shit") or acard:inherits("Lightning") or acard:inherits("Collateral") or acard:inherits("GodSalvation") then
+					if acard:inherits("Shit") or acard:inherits("Lightning") or acard:inherits("Collateral") or acard:inherits("AllBlue") then
 						return acard, enemy
 					end
 				end
@@ -2516,7 +2516,7 @@ function SmartAI:getCardNeedPlayer(cards)
 	end
 	local zhugeliang = self.room:findPlayerBySkillName("kongcheng")
 	if zhugeliang and zhugeliang:objectName() ~= self.player:objectName() and self:isEnemy(zhugeliang) and zhugeliang:isKongcheng() then
-		local shit = self:getCard("Shit") or self:getCard("Disaster") or self:getCard("GodSalvation") or self:getCard("AmazingGrace")
+		local shit = self:getCard("Shit") or self:getCard("Disaster") or self:getCard("AllBlue") or self:getCard("AmazingGrace")
 		if shit then
 			return shit, zhugeliang
 		end
@@ -3682,7 +3682,7 @@ function SmartAI:hasTrickEffective(card, player)
 		end
 		if self.player:hasSkill("noswuyan") then
 			if card:inherits("TrickCard") and not
-				(card:inherits("DelayedTrick") or card:inherits("GodSalvation") or card:inherits("AmazingGrace")) then
+				(card:inherits("DelayedTrick") or card:inherits("AllBlue") or card:inherits("AmazingGrace")) then
 			return false end
 		end
 	end

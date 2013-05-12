@@ -335,7 +335,7 @@ qice_skill.getTurnUseCard=function(self)
 	local i
 	local good, bad = 0, 0
 	local caocao = self.room:findPlayerBySkillName("jianxiong") 
-	local qicetrick = "buster_call|haou_haki|ex_nihilo|god_salvation"
+	local qicetrick = "buster_call|haou_haki|ex_nihilo|all_blue"
 	local qicetricks = qicetrick:split("|")
 	for i=1, #qicetricks do
 		local forbiden = qicetricks[i]
@@ -373,7 +373,7 @@ qice_skill.getTurnUseCard=function(self)
 			end
 		end
 		if good > bad then
-			local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. "god_salvation")
+			local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. "all_blue")
 			return parsed_card
 		end
 		if self:getCardsNum("Jink") == 0 and self:getCardsNum("Vulnerary") == 0 then
@@ -392,7 +392,7 @@ qice_skill.getTurnUseCard=function(self)
 			end
 		end
 		if good > bad and self.player:isWounded() then
-			local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. "god_salvation")
+			local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. "all_blue")
 			return parsed_card
 		end
 		if self:getCardsNum("Jink") == 0 and self:getCardsNum("Vulnerary") == 0 and self:getCardsNum("Analeptic") == 0 and self:getCardsNum("Nullification") == 0 then
@@ -410,7 +410,7 @@ qice_skill.getTurnUseCard=function(self)
 	end
 	if self:getCardsNum("Jink") == 0 and self:getCardsNum("Vulnerary") == 0 and self:getCardsNum("Analeptic") == 0 and self:getCardsNum("Nullification") == 0 then
 		if good > bad and self.player:isWounded() then
-			local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. "god_salvation")
+			local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. "all_blue")
 			return parsed_card
 		end
 		local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. "ex_nihilo")

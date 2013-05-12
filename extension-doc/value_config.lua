@@ -44,7 +44,7 @@ sgs.dynamic_value = {
 		Analeptic = true,
 		IronChain = true,
 		Exnihilo = true,
-		GodSalvation = true,
+		AllBlue = true,
 		
 		RendeCard = true,
 		JieyinCard = true,

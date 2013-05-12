@@ -530,17 +530,17 @@ void AmazingGrace::onEffect(const CardEffectStruct &effect) const{
     room->setTag("AmazingGrace", ag_list);
 }
 
-GodSalvation::GodSalvation(Suit suit, int number)
+AllBlue::AllBlue(Suit suit, int number)
     :GlobalEffect(suit, number)
 {
-    setObjectName("god_salvation");
+    setObjectName("all_blue");
 }
 
-bool GodSalvation::isCancelable(const CardEffectStruct &effect) const{
+bool AllBlue::isCancelable(const CardEffectStruct &effect) const{
     return effect.to->isWounded();
 }
 
-void GodSalvation::onEffect(const CardEffectStruct &effect) const{
+void AllBlue::onEffect(const CardEffectStruct &effect) const{
     Room *room = effect.to->getRoom();
 
     RecoverStruct recover;
@@ -1198,7 +1198,7 @@ StandardCardPackage::StandardCardPackage()
 
     cards << new AmazingGrace(Card::Heart, 3)
           << new AmazingGrace(Card::Heart, 4)
-          << new GodSalvation
+          << new AllBlue
           << new BusterCall(Card::Spade, 7)
           << new BusterCall(Card::Spade, 13)
           << new BusterCall(Card::Club, 7)

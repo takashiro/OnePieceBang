@@ -75,7 +75,7 @@ public:
             foe = room->askForPlayerChosen(shenguanyu, foes, "wuhun");
 
         JudgeStruct judge;
-        judge.pattern = QRegExp("(Vulnerary|GodSalvation):(.*):(.*)");
+        judge.pattern = QRegExp("(Vulnerary|AllBlue):(.*):(.*)");
         judge.good = true;
         judge.reason = "wuhun";
         judge.who = foe;

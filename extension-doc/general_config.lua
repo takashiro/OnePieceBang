@@ -111,7 +111,7 @@ sgs.ai_use_priority = {
 	Snatch=4.3,
 	ExNihilo=4.6,
 
-	GodSalvation=3.9,
+	AllBlue=3.9,
 
 	ArcheryAttack=3.5,
 	SavageAssault=3.5,
@@ -156,7 +156,7 @@ sgs.ai_use_priority = {
 	DefensiveHorse = 0,
 
 
-	--god_salvation
+	--all_blue
 	--deluge
 	--supply_shortage
 	--earthquake
