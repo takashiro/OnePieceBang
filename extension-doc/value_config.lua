@@ -43,7 +43,7 @@ sgs.dynamic_value = {
 		Vulnerary = true,
 		Analeptic = true,
 		IronChain = true,
-		Exnihilo = true,
+		TreasureChest = true,
 		AllBlue = true,
 		
 		RendeCard = true,

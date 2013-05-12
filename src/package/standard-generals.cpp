@@ -166,7 +166,7 @@ public:
 
     virtual bool viewFilter(const CardItem *to_select) const{
         const Card *card = to_select->getCard();
-        return !card->isEquipped() && (card->getSuit() == Card::Heart || card->inherits("Exnihilo"));
+        return !card->isEquipped() && (card->getSuit() == Card::Heart || card->inherits("TreasureChest"));
     }
 
     virtual const Card *viewAs(CardItem *card_item) const{
