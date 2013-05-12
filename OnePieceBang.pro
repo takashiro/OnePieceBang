@@ -57,9 +57,6 @@ SOURCES += \
         src/package/standard.cpp \
         src/scenario/scenario.cpp \
         src/scenario/boss-mode-scenario.cpp \
-        src/scenario/couple-scenario.cpp \
-        src/scenario/fancheng-scenario.cpp \
-        src/scenario/guandu-scenario.cpp \
         src/scenario/scenerule.cpp \
         src/scenario/miniscenarios.cpp \
         src/scenario/zombie-mode-scenario.cpp \
@@ -130,10 +127,6 @@ SOURCES += \
         src/jsoncpp/src/json_internalmap.inl \
         src/jsoncpp/src/json_internalarray.inl \
         swig/bang_wrap.cxx \
-    src/package/wind.cpp \
-    src/package/god.cpp \
-    src/package/sgs-skillcards.cpp \
-    src/package/sgs-generals.cpp \
     src/package/standard-generals.cpp \
     src/package/test.cpp \
     src/package/alabastan.cpp \
@@ -181,9 +174,6 @@ HEADERS += \
         src/package/standard-equips.h \
         src/package/standard.h \
         src/scenario/boss-mode-scenario.h \
-        src/scenario/couple-scenario.h \
-        src/scenario/fancheng-scenario.h \
-        src/scenario/guandu-scenario.h \
         src/scenario/miniscenarios.h \
         src/scenario/scenario.h \
         src/scenario/scenerule.h \
@@ -254,10 +244,7 @@ HEADERS += \
         src/jsoncpp/include/json/config.h \
         src/jsoncpp/include/json/autolink.h \
         src/jsoncpp/include/json/assertions.h \
-    src/package/wind.h \
-    src/package/god.h \
     src/package/standard-generals.h \
-    src/package/sgs-skillcards.h \
     src/package/test.h \
     src/package/alabastan.h \
     src/package/thrillerbark.h \

@@ -2,7 +2,6 @@
 #define ZOMBIE_MODE_H
 
 #include "scenario.h"
-#include "sgs-skillcards.h"
 #include "maneuvering.h"
 
 class ZombieScenario : public Scenario{
@@ -30,13 +29,12 @@ public:
     Q_INVOKABLE GanranEquip(Card::Suit suit, int number);
 };
 
-class VulneraryingCard: public QingnangCard{
+class VulneraryingCard: public SkillCard{
     Q_OBJECT
 
 public:
     Q_INVOKABLE VulneraryingCard();
     virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
 };
-
 
 #endif // ZOMBIE_MODE_H

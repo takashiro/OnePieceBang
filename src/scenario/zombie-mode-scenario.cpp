@@ -277,9 +277,7 @@ public:
     }
 };
 
-VulneraryingCard::VulneraryingCard()
-    :QingnangCard()
-{
+VulneraryingCard::VulneraryingCard(){
 
 }
 
@@ -349,8 +347,8 @@ ZombieScenario::ZombieScenario()
     zombie->addSkill(new Ganran);
     zombie->addSkill(new Zaibian);
 
-    zombie->addSkill("paoxiao");
-    zombie->addSkill("wansha");
+    //zombie->addSkill("paoxiao");
+    //zombie->addSkill("wansha");
 
     addMetaObject<VulneraryingCard>();
     addMetaObject<GanranEquip>();
