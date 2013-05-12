@@ -292,7 +292,7 @@ startGame 命令没有任何参数，不过为了符合格式要求，arg 用 '.
 . askForExchange 请求换牌
 . askForSuit 询问花色选择
 . askForKingdom 询问势力选择
-. askForSinglePeach 询问出桃
+. askForSingleVulnerary 询问出伤药
 . askForCardChosen 选择卡牌
 . askForCard 请求打出某种类型的卡牌
 . askForUseCard 请求使用某种类型的卡牌

@@ -31,7 +31,7 @@ public:
 	virtual const Card *askForCardShow(ServerPlayer *requestor, const char *reason) = 0;
 	virtual const Card *askForPindian(ServerPlayer *requestor, const char *reason) = 0;
 	virtual ServerPlayer *askForPlayerChosen(const QList<ServerPlayer *> &targets, const char *reason) = 0;
-	virtual const Card *askForSinglePeach(ServerPlayer *dying) = 0;
+	virtual const Card *askForSingleVulnerary(ServerPlayer *dying) = 0;
 };
 
 class TrustAI: public AI{
@@ -52,7 +52,7 @@ public:
 	virtual const Card *askForCardShow(ServerPlayer *requestor, const char *reason);
 	virtual const Card *askForPindian(ServerPlayer *requestor, const char *reason);
 	virtual ServerPlayer *askForPlayerChosen(const QList<ServerPlayer *> &targets, const char *reason) ;
-	virtual const Card *askForSinglePeach(ServerPlayer *dying) ;
+	virtual const Card *askForSingleVulnerary(ServerPlayer *dying) ;
 
 	virtual bool useCard(const Card *card);
 };
@@ -70,7 +70,7 @@ public:
 	virtual ServerPlayer *askForPlayerChosen(const QList<ServerPlayer *> &targets, const char *reason) ;
 	virtual const Card *askForCard(const char *pattern, const char *prompt, const QVariant &data);
 	virtual int askForAG(const QList<int> &card_ids, bool refusable, const char *reason);
-	virtual const Card *askForSinglePeach(ServerPlayer *dying);
+	virtual const Card *askForSingleVulnerary(ServerPlayer *dying);
 	virtual const Card *askForPindian(ServerPlayer *requestor, const char *reanson);
 	virtual Card::Suit askForSuit(const QString&);
 	
@@ -343,7 +343,7 @@ const Card *LuaAI::askForCardShow(ServerPlayer *requestor, const QString &reason
 		return TrustAI::askForCardShow(requestor, reason);
 }
 
-const Card *LuaAI::askForSinglePeach(ServerPlayer *dying){
+const Card *LuaAI::askForSingleVulnerary(ServerPlayer *dying){
 	lua_State *L = room->getLuaState();
 
 		pushCallback(L, __FUNCTION__);
@@ -355,12 +355,12 @@ const Card *LuaAI::askForSinglePeach(ServerPlayer *dying){
 		lua_pop(L, 1);
 		room->output(error_msg);
 
-		return TrustAI::askForSinglePeach(dying);
+		return TrustAI::askForSingleVulnerary(dying);
 	}
 	const char *result = lua_tostring(L, -1);
 	lua_pop(L, 1);
 	if(result == NULL)
-		return TrustAI::askForSinglePeach(dying);
+		return TrustAI::askForSingleVulnerary(dying);
 		
 	return Card::Parse(result);
 }

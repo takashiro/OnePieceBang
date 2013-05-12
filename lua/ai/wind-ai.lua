@@ -112,7 +112,7 @@ sgs.ai_card_intention.ShensuCard = 80
 
 sgs.xiahouyuan_keep_value = 
 {
-	Peach = 6,
+	Vulnerary = 6,
 	Jink = 5.1,
 	Crossbow = 5,
 	Blade = 5,
@@ -318,7 +318,7 @@ sgs.ai_skill_use["@@tianxiang"] = function(self, data)
 	cards=sgs.QList2Table(cards)
 	self:sortByUseValue(cards,true)
 	for _,card in ipairs(cards) do
-		if (card:getSuit() == sgs.Card_Spade or card:getSuit() == sgs.Card_Heart) and not card:inherits("Peach") then
+		if (card:getSuit() == sgs.Card_Spade or card:getSuit() == sgs.Card_Heart) and not card:inherits("Vulnerary") then
 			card_id = card:getId()
 			break
 		end
@@ -431,13 +431,13 @@ guhuo_skill.getTurnUseCard=function(self)
 		end
 	end
 
-	local card_str = self:getGuhuoCard("Peach", self.player, true) 
+	local card_str = self:getGuhuoCard("Vulnerary", self.player, true) 
 	if card_str then return sgs.Card_Parse(card_str) end
 
 	local slash_str = self:getGuhuoCard("Slash", self.player, true) or self:getGuhuoCard("Analeptic", self.player, true)
 	if slash_str and self:slashIsAvailable() and (self.player:canSlashWithoutCrossbow() or self:isEquip("Crossbow")) then return sgs.Card_Parse(slash_str) end
 
-	local guhuo = "peach|ex_nihilo|snatch|amazing_grace|haou_haki|fire_attack"
+	local guhuo = "vulnerary|ex_nihilo|snatch|amazing_grace|haou_haki|fire_attack"
 	local guhuos = guhuo:split("|")
 	for _, package in ipairs(sgs.Bang:getBanPackages()) do
 		if package == "maneuvering" then
@@ -462,7 +462,7 @@ guhuo_skill.getTurnUseCard=function(self)
 				local guhuocard = sgs.Bang:cloneCard(newguhuo, card:getSuit(), card:getNumber())
 				if self:getRestCardsNum(guhuocard:className()) == 0 then return end
 				local dummyuse = {isDummy = true}
-				if newguhuo == "peach" then self:useBasicCard(guhuocard,dummyuse,false) else self:useTrickCard(guhuocard,dummyuse) end
+				if newguhuo == "vulnerary" then self:useBasicCard(guhuocard,dummyuse,false) else self:useTrickCard(guhuocard,dummyuse) end
 				if dummyuse.card then
 					local parsed_card=sgs.Card_Parse("@GuhuoCard=" .. card:getId() .. ":" .. newguhuo)
 					return parsed_card
@@ -489,7 +489,7 @@ local function getGuhuoViewCard(self, class_name, player)
 
 	if #card_use > 1 or (#card_use > 0 and card_use[1]:getSuit() == sgs.Card_Heart) then
 		local index = 1
-		if class_name == "Peach" or class_name == "Analeptic" or class_name == "Jink" then
+		if class_name == "Vulnerary" or class_name == "Analeptic" or class_name == "Jink" then
 			index = #card_use
 		end
 		return "@GuhuoCard=" .. card_use[index]:getEffectiveId() ..":".. card_use[index]:objectName()
@@ -500,7 +500,7 @@ function SmartAI:getGuhuoCard(class_name, player, at_play)
 	player = player or self.player
 	if not player or not player:hasSkill("guhuo") then return end
 	if at_play then
-		if class_name == "Peach" and not player:isWounded() then return
+		if class_name == "Vulnerary" and not player:isWounded() then return
 		elseif class_name == "Analeptic" and player:hasUsed("Analeptic") then return
 		elseif class_name == "Slash" and not self:slashIsAvailable(player) then return
 		elseif class_name == "Jink" or class_name == "Nullification" then return

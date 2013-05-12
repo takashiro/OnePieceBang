@@ -522,7 +522,7 @@ public:
 class Jiefan : public TriggerSkill{
 public:
     Jiefan():TriggerSkill("jiefan"){
-        events << AskForPeaches << DamageProceed << CardFinished;
+        events << AskForVulneraries << DamageProceed << CardFinished;
     }
 
     virtual bool triggerable(const ServerPlayer *target) const{
@@ -534,7 +534,7 @@ public:
 
         ServerPlayer *handang = room->findPlayerBySkillName(objectName());
 
-        if(event == AskForPeaches && player->hasSkill(objectName()) && room->getCurrent()->objectName() != handang->objectName()){
+        if(event == AskForVulneraries && player->hasSkill(objectName()) && room->getCurrent()->objectName() != handang->objectName()){
             DyingStruct dying = data.value<DyingStruct>();
             if(!handang || !dying.savers.contains(handang) || dying.who->getHp() > 0 || handang->isNude() ||
                room->getCurrent()->isDead() || !room->askForSkillInvoke(handang, objectName(), data))
@@ -562,10 +562,10 @@ public:
                 room->removeTag("JiefanTarget");
                 if(target->getHp() < 1)
                 {
-                    Peach *peach = new Peach(damage.card->getSuit(), damage.card->getNumber());
-                    peach->setSkillName(objectName());
+                    Vulnerary *vulnerary = new Vulnerary(damage.card->getSuit(), damage.card->getNumber());
+                    vulnerary->setSkillName(objectName());
                     CardUseStruct use;
-                    use.card = peach;
+                    use.card = vulnerary;
                     use.from = handang;
                     use.to << target;
                     room->useCard(use);

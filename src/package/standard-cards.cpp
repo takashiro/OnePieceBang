@@ -92,20 +92,20 @@ bool Jink::isAvailable(const Player *) const{
     return false;
 }
 
-Peach::Peach(Suit suit, int number):BasicCard(suit, number){
-    setObjectName("peach");
+Vulnerary::Vulnerary(Suit suit, int number):BasicCard(suit, number){
+    setObjectName("vulnerary");
     target_fixed = true;
 }
 
-QString Peach::getSubtype() const{
+QString Vulnerary::getSubtype() const{
     return "recover_card";
 }
 
-QString Peach::getEffectPath(bool ) const{
+QString Vulnerary::getEffectPath(bool ) const{
     return Card::getEffectPath();
 }
 
-void Peach::onUse(Room *room, const CardUseStruct &card_use) const{
+void Vulnerary::onUse(Room *room, const CardUseStruct &card_use) const{
     CardUseStruct use = card_use;
     if(use.to.isEmpty()){
         use.to << use.from;
@@ -113,18 +113,18 @@ void Peach::onUse(Room *room, const CardUseStruct &card_use) const{
     BasicCard::onUse(room, use);
 }
 
-void Peach::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
+void Vulnerary::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
     room->throwCard(this);
 
     foreach(ServerPlayer *tmp, targets)
         room->cardEffect(this, source, tmp);
 }
 
-void Peach::onEffect(const CardEffectStruct &effect) const{
+void Vulnerary::onEffect(const CardEffectStruct &effect) const{
     Room *room = effect.to->getRoom();
 
     // do animation
-    room->broadcastInvoke("animate", QString("peach:%1:%2")
+    room->broadcastInvoke("animate", QString("vulnerary:%1:%2")
                           .arg(effect.from->objectName())
                           .arg(effect.to->objectName()));
 
@@ -136,7 +136,7 @@ void Peach::onEffect(const CardEffectStruct &effect) const{
     room->recover(effect.to, recover);
 }
 
-bool Peach::isAvailable(const Player *player) const{
+bool Vulnerary::isAvailable(const Player *player) const{
     return player->isWounded();
 }
 
@@ -1150,15 +1150,15 @@ StandardCardPackage::StandardCardPackage()
           << new Jink(Card::Diamond, 11)
           << new Jink(Card::Diamond, 11)
 
-          << new Peach(Card::Heart, 3)
-          << new Peach(Card::Heart, 4)
-          << new Peach(Card::Heart, 6)
-          << new Peach(Card::Heart, 7)
-          << new Peach(Card::Heart, 8)
-          << new Peach(Card::Heart, 9)
-          << new Peach(Card::Heart, 12)
+          << new Vulnerary(Card::Heart, 3)
+          << new Vulnerary(Card::Heart, 4)
+          << new Vulnerary(Card::Heart, 6)
+          << new Vulnerary(Card::Heart, 7)
+          << new Vulnerary(Card::Heart, 8)
+          << new Vulnerary(Card::Heart, 9)
+          << new Vulnerary(Card::Heart, 12)
 
-          << new Peach(Card::Diamond, 12)
+          << new Vulnerary(Card::Diamond, 12)
 
           << new Crossbow(Card::Club)
           << new Crossbow(Card::Diamond)

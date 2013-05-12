@@ -27,7 +27,7 @@ sgs.ai_keep_value.Analeptic = 4.5
 该表的元素名为卡牌的类名，例子如 standard-ai.lua 里面 586 行附近张飞的表：]]
 sgs.zhangfei_keep_value = 
 {
-	Peach = 6,
+	Vulnerary = 6,
 	Analeptic = 5.8,
 	Jink = 5.7,
 	FireSlash = 5.6,
@@ -75,7 +75,7 @@ damage_card：能造成伤害的牌
 control_usecard：类似乐不思蜀的延时类锦囊
 control_card：不直接造成伤害但是能造成负面效果的牌，如过河拆桥
 lucky_chance：类似闪电的延时类锦囊
-benefit：能造成正面效果的牌，如桃。
+benefit：能造成正面效果的牌，如伤药。
 例子可见 maneuvering-ai.lua 第 133 行：]]
 sgs.dynamic_value.control_usecard.SupplyShortage = true
 --[[更多例子可以参考 value_config.lua 前 55 行。
@@ -192,7 +192,7 @@ selfonly 表示是否需要考虑房间里的其它玩家，
 当 selfonly 为 false 或缺省时，有两种情况会计入其它玩家的牌数：
 . player 有激将技能且计算【杀】的张数时，会计入所有友方蜀将的【杀】；
 . player 有护驾技能且计算【闪】的张数时，会计入所有友方魏将的【闪】；
-* SmartAI:getAllPeachNum([player])：获得玩家 player 及其友方所有的【桃】数。
+* SmartAI:getAllVulneraryNum([player])：获得玩家 player 及其友方所有的【伤药】数。
 在这一组函数中，全部均已经考虑视为技，但是需要编写相关的代码来使 AI 会使用视为技，详见 13-ViewAs.lua。
 
 * SmartAI:hasSuit(suit_strings[, include_equip[, player]])：

@@ -141,7 +141,7 @@ public:
     void askForCard(const Json::Value&);
     void askForUseCard(const Json::Value&);
     void askForAG(const Json::Value&);
-    void askForSinglePeach(const Json::Value &);
+    void askForSingleVulnerary(const Json::Value &);
     void askForCardShow(const Json::Value &);
     void askForSkillInvoke(const Json::Value &);
     void askForChoice(const Json::Value &);

@@ -80,7 +80,7 @@ return {
 	["#GuhuoQuery"] = "%from 表示 %arg",
 	["$GuhuoResult"] = "%from 用来蛊惑的牌是 %card",
 	["guhuo-saveself"] = "自救蛊惑",
-	["guhuo-saveself:peach"] = "桃子",
+	["guhuo-saveself:vulnerary"] = "伤药",
 	["guhuo-saveself:analeptic"] = "酒",
 
 	["$huangtian1"] = "苍天已死，黄天当立",

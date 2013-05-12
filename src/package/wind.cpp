@@ -470,7 +470,7 @@ public:
 class Buqu: public TriggerSkill{
 public:
     Buqu():TriggerSkill("buqu"){
-        events << Dying << AskForPeachesDone;
+        events << Dying << AskForVulnerariesDone;
         default_choice = "alive";
     }
 
@@ -512,7 +512,7 @@ public:
                     return true;
                 }
             }
-        }else if(event == AskForPeachesDone){
+        }else if(event == AskForVulnerariesDone){
             const QList<int> &buqu = zhoutai->getPile("buqu");
 
             if(zhoutai->getHp() > 0)
@@ -756,8 +756,8 @@ bool GuhuoCard::guhuo(ServerPlayer* yuji, const QString& message) const{
     }else{
         const Card *card = Bang->getCard(subcards.first());
         bool real;
-        if(user_string == "peach+analeptic")
-            real = card->objectName() == "peach" || card->objectName() == "analeptic";
+        if(user_string == "vulnerary+analeptic")
+            real = card->objectName() == "vulnerary" || card->objectName() == "analeptic";
         else
             real = card->match(user_string);
 
@@ -942,7 +942,7 @@ const Card *GuhuoCard::validateInResposing(ServerPlayer *yuji, bool *continuable
     room->playSkillEffect("guhuo");
 
     QString to_guhuo;
-    if(user_string == "peach+analeptic")
+    if(user_string == "vulnerary+analeptic")
         to_guhuo = room->askForChoice(yuji, "guhuo-saveself", user_string);
     else
         to_guhuo = user_string;

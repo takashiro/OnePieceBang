@@ -24,7 +24,7 @@ public:
         room->setPlayerProperty(player, "maxhp", maxhp);
         room->setPlayerProperty(player, "hp", player->getMaxHp());
         room->setPlayerProperty(player, "role", "renegade");
-        player->loseSkill("peaching");
+        player->loseSkill("vulnerarying");
 
         LogMessage log;
         log.type = "#Zombify";
@@ -43,7 +43,7 @@ public:
 
         switch(event){
         case GameStart:{
-                room->acquireSkill(player, "peaching");
+                room->acquireSkill(player, "vulnerarying");
                 break;
             }
 
@@ -277,20 +277,20 @@ public:
     }
 };
 
-PeachingCard::PeachingCard()
+VulneraryingCard::VulneraryingCard()
     :QingnangCard()
 {
 
 }
 
-bool PeachingCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
+bool VulneraryingCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
     if(targets.length() > 0)return false;
     return to_select->isWounded() && (Self->distanceTo(to_select) <= 1);
 }
 
-class Peaching: public OneCardViewAsSkill{
+class Vulnerarying: public OneCardViewAsSkill{
 public:
-    Peaching():OneCardViewAsSkill("peaching"){
+    Vulnerarying():OneCardViewAsSkill("vulnerarying"){
 
     }
 
@@ -299,11 +299,11 @@ public:
     }
 
     virtual bool viewFilter(const CardItem *to_select) const{
-        return to_select->getCard()->inherits("Peach");
+        return to_select->getCard()->inherits("Vulnerary");
     }
 
     virtual const Card *viewAs(CardItem *card_item) const{
-        PeachingCard *qingnang_card = new PeachingCard;
+        VulneraryingCard *qingnang_card = new VulneraryingCard;
         qingnang_card->addSubcard(card_item->getCard()->getId());
 
         return qingnang_card;
@@ -342,7 +342,7 @@ ZombieScenario::ZombieScenario()
 {
     rule = new ZombieRule(this);
 
-    skills<< new Peaching;
+    skills<< new Vulnerarying;
 
     General *zombie = new General(this, "zombie", "die", 3, true, true);
     zombie->addSkill(new Xunmeng);
@@ -352,7 +352,7 @@ ZombieScenario::ZombieScenario()
     zombie->addSkill("paoxiao");
     zombie->addSkill("wansha");
 
-    addMetaObject<PeachingCard>();
+    addMetaObject<VulneraryingCard>();
     addMetaObject<GanranEquip>();
 }
 

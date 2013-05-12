@@ -707,7 +707,7 @@ public:
         QString wuling = xuandi->tag.value("wuling").toString();
         if(event == CardEffected && wuling == "water"){
             CardEffectStruct effect = data.value<CardEffectStruct>();
-            if(effect.card && effect.card->inherits("Peach")){
+            if(effect.card && effect.card->inherits("Vulnerary")){
                 RecoverStruct recover;
                 recover.card = effect.card;
                 recover.who = effect.from;

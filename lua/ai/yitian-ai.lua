@@ -493,7 +493,7 @@ sgs.ai_cardshow.lexue = function(self, requestor)
 	local cards = self.player:getHandcards()
 	if self:isFriend(requestor) then
 		for _, card in sgs.qlist(cards) do
-			if card:inherits("Peach") and requestor:isWounded() then
+			if card:inherits("Vulnerary") and requestor:isWounded() then
 				result = card
 			elseif card:isNDTrick() then
 				result = card
@@ -569,7 +569,7 @@ table.insert(sgs.ai_skills, xunzhi_skill)
 function xunzhi_skill.getTurnUseCard(self)
 	if self.player:hasUsed("XunzhiCard") then return end
 	if (#self.friends > 1 and self.role ~= "renegade") or (#self.enemies == 1 and sgs.turncount > 1) then
-		if self:getAllPeachNum() == 0 and self.player:getHp() == 1 then
+		if self:getAllVulneraryNum() == 0 and self.player:getHp() == 1 then
 			return sgs.Card_Parse("@XunzhiCard=.")
 		end
 		if self:isWeak() and self.role == "rebel" and self.player:inMyAttackRange(self.room:getLord()) and self:isEquip("Crossbow") then

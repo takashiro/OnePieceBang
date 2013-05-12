@@ -352,7 +352,7 @@ public:
 class Niepan: public TriggerSkill{
 public:
     Niepan():TriggerSkill("niepan"){
-        events << AskForPeaches;
+        events << AskForVulneraries;
         frequency = Limited;
     }
 

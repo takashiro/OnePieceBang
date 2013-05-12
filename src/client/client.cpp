@@ -110,8 +110,8 @@ Client::Client(QObject *parent, const QString &filename)
     //callbacks["askForDirection"] = &Client::askForDirection;
     m_interactions[S_COMMAND_EXCHANGE_CARD] = &Client::askForExchange;
     //callbacks["askForExchange"] = &Client::askForExchange;
-    m_interactions[S_COMMAND_ASK_PEACH] = &Client::askForSinglePeach;
-    //callbacks["askForSinglePeach"] = &Client::askForSinglePeach;
+    m_interactions[S_COMMAND_ASK_VULNERARY] = &Client::askForSingleVulnerary;
+    //callbacks["askForSingleVulnerary"] = &Client::askForSingleVulnerary;
     m_interactions[S_COMMAND_SKILL_GUANXING] = &Client::askForGuanxing;
     //callbacks["doGuanxing"] = &Client::doGuanxing;
     m_interactions[S_COMMAND_SKILL_GONGXIN] = &Client::askForGongxin;
@@ -1362,20 +1362,20 @@ void Client::clearAG(const QString &){
     emit ag_cleared();
 }
 
-void Client::askForSinglePeach(const Json::Value &arg){
+void Client::askForSingleVulnerary(const Json::Value &arg){
     
     if (!arg.isArray() || arg.size() != 2 || !arg[0].isString() || !arg[1].isInt()) return;
 
     ClientPlayer *dying = getPlayer(toQString(arg[0]));
-    int peaches = arg[1].asInt();
+    int vulneraryes = arg[1].asInt();
 
     if(dying == Self){
-        prompt_doc->setHtml(tr("You are dying, please provide %1 peach(es)(or analeptic) to save yourself").arg(peaches));
-        card_pattern = "peach+analeptic";
+        prompt_doc->setHtml(tr("You are dying, please provide %1 vulnerary(es)(or analeptic) to save yourself").arg(vulneraryes));
+        card_pattern = "vulnerary+analeptic";
     }else{
         QString dying_general = Bang->translate(dying->getGeneralName());
-        prompt_doc->setHtml(tr("%1 is dying, please provide %2 peach(es) to save him").arg(dying_general).arg(peaches));
-        card_pattern = "peach";
+        prompt_doc->setHtml(tr("%1 is dying, please provide %2 vulnerary(es) to save him").arg(dying_general).arg(vulneraryes));
+        card_pattern = "vulnerary";
     }
 
     m_isDiscardActionRefusable = true;

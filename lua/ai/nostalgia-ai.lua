@@ -11,10 +11,10 @@ end
 sgs.ai_skill_use_func.NosJujianCard = function(card, use, self)
 	local abandon_handcard = {}
 	local index = 0
-	local hasPeach = (self:getCardsNum("Peach") > 0)
+	local hasVulnerary = (self:getCardsNum("Vulnerary") > 0)
 
 	local trick_num, basic_num, equip_num = 0, 0, 0
-	if not hasPeach and self.player:isWounded() and self.player:getHandcardNum() >=3 then
+	if not hasVulnerary and self.player:isWounded() and self.player:getHandcardNum() >=3 then
 		local cards = self.player:getCards("he")
 		cards=sgs.QList2Table(cards)
 		self:sortByUseValue(cards, true)
@@ -58,7 +58,7 @@ sgs.ai_skill_use_func.NosJujianCard = function(card, use, self)
 			for _, card in ipairs(cards) do
 				if #abandon_handcard >= 3 then break end
 				if not card:inherits("Nullification") and not card:inherits("EquipCard") and
-					not card:inherits("Peach") and not card:inherits("Jink") and
+					not card:inherits("Vulnerary") and not card:inherits("Jink") and
 					not card:inherits("Indulgence") and not card:inherits("SupplyShortage") then
 					table.insert(abandon_handcard, card:getId())
 					index = 5
@@ -101,7 +101,7 @@ sgs.dynamic_value.benefit.NosJujianCard = true
 sgs.ai_skill_cardask["@enyuanheart"] = function(self)
 	local cards = self.player:getHandcards()
 	for _, card in sgs.qlist(cards) do
-		if card:getSuit() == sgs.Card_Heart and not (card:inherits("Peach") or card:inherits("ExNihilo")) then
+		if card:getSuit() == sgs.Card_Heart and not (card:inherits("Vulnerary") or card:inherits("ExNihilo")) then
 			return card:getEffectiveId()
 		end
 	end
@@ -143,7 +143,7 @@ sgs.ai_skill_use_func.NosXuanhuoCard = function(card, use, self)
 		for _, enemy in ipairs(self.enemies) do
 			if not enemy:isKongcheng() then
 				for _, card in ipairs(cards)do
-					if card:getSuit() == sgs.Card_Heart and not card:inherits("Peach")  and self.player:getHandcardNum() > 1 then
+					if card:getSuit() == sgs.Card_Heart and not card:inherits("Vulnerary")  and self.player:getHandcardNum() > 1 then
 						use.card = sgs.Card_Parse("@NosXuanhuoCard=" .. card:getEffectiveId())
 						target = enemy
 						break

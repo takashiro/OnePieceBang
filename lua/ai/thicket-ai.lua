@@ -319,8 +319,8 @@ luanwu_skill.getTurnUseCard=function(self)
 			end
 		end
 		if not has_slash or not can_slash then
-			if self:isFriend(player) then good = good + math.max(self:getCardsNum("Peach", player), 1)
-			else bad = bad + math.max(self:getCardsNum("Peach", player), 1)
+			if self:isFriend(player) then good = good + math.max(self:getCardsNum("Vulnerary", player), 1)
+			else bad = bad + math.max(self:getCardsNum("Vulnerary", player), 1)
 			end
 		end
 

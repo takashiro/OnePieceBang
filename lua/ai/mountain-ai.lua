@@ -221,9 +221,9 @@ sgs.ai_skill_cardask["@xiangle-discard"] = function(self, data)
 	if self:isFriend(effect.to) and not
 		(effect.to:hasSkill("leiji") and (self:getCardsNum("Jink", effect.to)>0 or (not self:isWeak(effect.to) and self:isEquip("EightDiagram",effect.to))))
 		then return "." end
-	local has_peach, has_anal, has_slash, has_jink
+	local has_vulnerary, has_anal, has_slash, has_jink
 	for _, card in sgs.qlist(self.player:getHandcards()) do
-		if card:inherits("Peach") then has_peach = card
+		if card:inherits("Vulnerary") then has_vulnerary = card
 		elseif card:inherits("Analeptic") then has_anal = card
 		elseif card:inherits("Slash") then has_slash = card
 		elseif card:inherits("Jink") then has_jink = card
@@ -232,10 +232,10 @@ sgs.ai_skill_cardask["@xiangle-discard"] = function(self, data)
 
 	if has_slash then return "$" .. has_slash:getEffectiveId()
 	elseif has_jink then return "$" .. has_jink:getEffectiveId()
-	elseif has_anal or has_peach then
-		if self:getCardsNum("Jink", effect.to) == 0 and self.player:hasFlag("drank") and self:getAllPeachNum(effect.to) == 0 then
+	elseif has_anal or has_vulnerary then
+		if self:getCardsNum("Jink", effect.to) == 0 and self.player:hasFlag("drank") and self:getAllVulneraryNum(effect.to) == 0 then
 			if has_anal then return "$" .. has_anal:getEffectiveId()
-			else return "$" .. has_peach:getEffectiveId()
+			else return "$" .. has_vulnerary:getEffectiveId()
 			end
 		end
 	else return "."
@@ -548,9 +548,9 @@ function sgs.ai_skill_choice.huashen(self, choices)
 				if str:matchOne(askill) then return askill end
 			end
 		end
-		if str:matchOne("guixin") and (not self:isWeak() or self:getAllPeachNum() > 0) then return "guixin" end
+		if str:matchOne("guixin") and (not self:isWeak() or self:getAllVulneraryNum() > 0) then return "guixin" end
 		for _, askill in ipairs(sgs.masochism_skill:split("|")) do
-			if str:matchOne(askill) and (self.player:getHp() > 1 or self:getAllPeachNum() > 0) then return askill end
+			if str:matchOne(askill) and (self.player:getHp() > 1 or self:getAllVulneraryNum() > 0) then return askill end
 		end
 
 		if self.player:isKongcheng() then

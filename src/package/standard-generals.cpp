@@ -464,7 +464,7 @@ public:
         case Client::Responsing:{
             if(ClientInstance->getPattern() == "slash"){
                 return card->inherits("Jink");
-            }else if( ClientInstance->getPattern() == "peach"){
+            }else if( ClientInstance->getPattern() == "vulnerary"){
                 return card->inherits("Slash") && card->getSuit() == Card::Club;
             }
         }
@@ -478,7 +478,7 @@ public:
     }
 
     virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
-        return pattern == "slash" || pattern.contains("peach");
+        return pattern == "slash" || pattern.contains("vulnerary");
     }
 
     virtual const Card *viewAs(CardItem *card_item) const{
@@ -487,7 +487,7 @@ public:
         if(sub->inherits("Jink")){
             card = new FireSlash(sub->getSuit(), sub->getNumber());
         }else if(sub->inherits("Slash") && sub->getSuit() == Card::Club){
-            card = new Peach(sub->getSuit(), sub->getNumber());
+            card = new Vulnerary(sub->getSuit(), sub->getNumber());
         }
 
         if(card != NULL){

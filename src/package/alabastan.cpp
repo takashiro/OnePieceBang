@@ -204,7 +204,7 @@ public:
     }
 
     virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
-        return  pattern.contains("peach") && player->getPhase() == Player::NotActive;
+        return  pattern.contains("vulnerary") && player->getPhase() == Player::NotActive;
     }
 
     virtual bool viewFilter(const CardItem *to_select) const{
@@ -213,10 +213,10 @@ public:
 
     virtual const Card *viewAs(CardItem *card_item) const{
         const Card *first = card_item->getCard();
-        Peach *peach = new Peach(first->getSuit(), first->getNumber());
-        peach->addSubcard(first->getId());
-        peach->setSkillName(objectName());
-        return peach;
+        Vulnerary *vulnerary = new Vulnerary(first->getSuit(), first->getNumber());
+        vulnerary->addSubcard(first->getId());
+        vulnerary->setSkillName(objectName());
+        return vulnerary;
     }
 };
 
@@ -241,7 +241,7 @@ public:
             data = QVariant::fromValue(damage);
         }else{
             CardEffectStruct effect = data.value<CardEffectStruct>();
-            if(effect.card->inherits("Peach")){
+            if(effect.card->inherits("Vulnerary")){
                 room->sendLog("#TriggerSkill", player, objectName());
 
                 RecoverStruct recover;
@@ -520,7 +520,7 @@ public:
 class MedicalExpertise: public TriggerSkill{
 public:
     MedicalExpertise(): TriggerSkill("medicalexpertise"){
-        events << AskForPeaches;
+        events << AskForVulneraries;
     }
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{

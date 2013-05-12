@@ -63,7 +63,7 @@ sgs.ai_card_intention.JujianCard = -100
 
 sgs.xushu_keep_value = 
 {
-	Peach = 6,
+	Vulnerary = 6,
 	Jink = 5,
 	Weapon = 5,
 	Armor = 5,
@@ -127,7 +127,7 @@ end
 sgs.ai_skill_cardask["@enyuan"] = function(self)
 	local cards = self.player:getHandcards()
 	for _, card in sgs.qlist(cards) do
-		if  not (card:inherits("Peach") or card:inherits("ExNihilo")) then
+		if  not (card:inherits("Vulnerary") or card:inherits("ExNihilo")) then
 			return card:getEffectiveId()
 		end
 	end

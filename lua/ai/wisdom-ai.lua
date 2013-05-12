@@ -14,7 +14,7 @@ sgs.ai_skill_use_func.JuaoCard = function(card, use, self)
 	for _, friend in ipairs(self.friends_noself) do
 		if friend:getHp() == 1 then
 			for _, hcard in sgs.qlist(cards) do
-				if hcard:inherits("Analeptic") or hcard:inherits("Peach") then
+				if hcard:inherits("Analeptic") or hcard:inherits("Vulnerary") then
 					table.insert(givecard, hcard:getId())
 				end
 				if #givecard == 1 and givecard[1] ~= hcard:getId() and not hcard:inherits("Shit") then
@@ -77,7 +77,7 @@ sgs.ai_skill_use_func.JuaoCard = function(card, use, self)
 					table.insert(givecard, hcard:getId())
 				end
 				if #givecard == 1 and givecard[1] ~= hcard:getId() and
-					not hcard:inherits("Peach") and not hcard:inherits("TrickCard") then
+					not hcard:inherits("Vulnerary") and not hcard:inherits("TrickCard") then
 					table.insert(givecard, hcard:getId())
 					use.card = sgs.Card_Parse("@JuaoCard=" .. table.concat(givecard, "+"))
 					if use.to then use.to:append(enemy) end
@@ -208,7 +208,7 @@ sgs.ai_skill_use_func.WeidaiCard = function(card, use, self)
 	use.card = card
 end
 
-sgs.ai_card_intention.WeidaiCard = sgs.ai_card_intention.Peach
+sgs.ai_card_intention.WeidaiCard = sgs.ai_card_intention.Vulnerary
 
 sgs.ai_skill_cardask["@weidai-analeptic"] = function(self, data)
 	local who = data:toPlayer()

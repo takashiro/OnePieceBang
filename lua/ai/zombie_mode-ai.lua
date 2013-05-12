@@ -27,14 +27,14 @@ if sgs.GetConfig("GameMode", ""):match("zombie") then
 		useTrickCard(self, card, use)
 	end
 	
-	local peaching_skill = {name = "peaching"}
-	table.insert(sgs.ai_skills, peaching_skill)
-	function peaching_skill.getTurnUseCard(self)
-		local peach = self:getCardId("Peach")
-		if peach and type(peach) == "number" then return sgs.Card_Parse("@PeachingCard=" .. peach) end
+	local vulnerarying_skill = {name = "vulnerarying"}
+	table.insert(sgs.ai_skills, vulnerarying_skill)
+	function vulnerarying_skill.getTurnUseCard(self)
+		local vulnerary = self:getCardId("Vulnerary")
+		if vulnerary and type(vulnerary) == "number" then return sgs.Card_Parse("@VulneraryingCard=" .. vulnerary) end
 	end
 	
-	function sgs.ai_skill_use_func.PeachingCard(card, use, self)
+	function sgs.ai_skill_use_func.VulneraryingCard(card, use, self)
 		self:sort(self.friends, "hp")
 		for _, friend in ipairs(self.friends) do
 			if friend:isWounded() and self.player:distanceTo(friend) <= 1 then

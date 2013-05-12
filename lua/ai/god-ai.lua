@@ -103,7 +103,7 @@ function SmartAI:cantbeHurt(player)
 		end
 	elseif player:hasSkill("tianxiang") then
 		for _, friend in ipairs(self.friends) do
-			if friend:getHp() < 2 and self:getCardsNum("Peach") == 0 then
+			if friend:getHp() < 2 and self:getCardsNum("Vulnerary") == 0 then
 				dyingfriend = dyingfriend + 1
 			end
 		end
@@ -186,7 +186,7 @@ end
 sgs.ai_skill_choice.qinyin = function(self, choices)
 	self:sort(self.friends, "hp")
 	self:sort(self.enemies, "hp")
-	if self.friends[1]:getHp() >= self.enemies[1]:getHp() and self:getAllPeachNum(self.player) > self:getAllPeachNum(self.enemies[1]) then
+	if self.friends[1]:getHp() >= self.enemies[1]:getHp() and self:getAllVulneraryNum(self.player) > self:getAllVulneraryNum(self.enemies[1]) then
 		return "down"
 	else
 		return "up"
@@ -227,7 +227,7 @@ smallyeyan_skill.getTurnUseCard=function(self)
 	end
 
 	self.yeyanchained = false
-	if self.player:getHp() + self:getCardsNum("Peach") + self:getCardsNum("Analeptic") <= 2 then
+	if self.player:getHp() + self:getCardsNum("Vulnerary") + self:getCardsNum("Analeptic") <= 2 then
 		return sgs.Card_Parse("@SmallYeyanCard=.")
 	end
 	local target_num = 0
@@ -539,7 +539,7 @@ end
 sgs.ai_chaofeng.shencaocao = -6
 
 sgs.ai_skill_choice.wumou = function(self, choices)
-	if self.player:getHp() + self:getCardsNum("Peach") > 3 then return "losehp"
+	if self.player:getHp() + self:getCardsNum("Vulnerary") > 3 then return "losehp"
 	else return "discard"
 	end
 end
@@ -626,7 +626,7 @@ sgs.ai_view_as.longhun = function(card, player, card_place)
 	elseif card:getSuit() == sgs.Card_Club then
 		return ("jink:longhun[%s:%s]=%d"):format(suit, number, card_id)
 	elseif card:getSuit() == sgs.Card_Heart then
-		return ("peach:longhun[%s:%s]=%d"):format(suit, number, card_id)
+		return ("vulnerary:longhun[%s:%s]=%d"):format(suit, number, card_id)
 	elseif card:getSuit() == sgs.Card_Spade then
 		return ("nullification:longhun[%s:%s]=%d"):format(suit, number, card_id)
 	end

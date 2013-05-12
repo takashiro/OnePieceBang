@@ -48,7 +48,7 @@ public:
     virtual const Card *askForCardShow(ServerPlayer *requestor, const QString &reason) = 0;
     virtual const Card *askForPindian(ServerPlayer *requestor, const QString &reason) = 0;
     virtual ServerPlayer *askForPlayerChosen(const QList<ServerPlayer *> &targets, const QString &reason) = 0;
-    virtual const Card *askForSinglePeach(ServerPlayer *dying) = 0;
+    virtual const Card *askForSingleVulnerary(ServerPlayer *dying) = 0;
     virtual ServerPlayer *askForYiji(const QList<int> &cards, int &card_id) = 0;
     virtual void askForGuanxing(const QList<int> &cards, QList<int> &up, QList<int> &bottom, bool up_only) = 0;
     virtual void filterEvent(TriggerEvent event, ServerPlayer *player, const QVariant &data);
@@ -78,7 +78,7 @@ public:
     virtual const Card *askForCardShow(ServerPlayer *requestor, const QString &reason);
     virtual const Card *askForPindian(ServerPlayer *requestor, const QString &reason);
     virtual ServerPlayer *askForPlayerChosen(const QList<ServerPlayer *> &targets, const QString &reason);
-    virtual const Card *askForSinglePeach(ServerPlayer *dying) ;
+    virtual const Card *askForSingleVulnerary(ServerPlayer *dying) ;
     virtual ServerPlayer *askForYiji(const QList<int> &cards, int &card_id);
     virtual void askForGuanxing(const QList<int> &cards, QList<int> &up, QList<int> &bottom, bool up_only);
 
@@ -105,7 +105,7 @@ public:
     virtual const Card *askForCard(const QString &pattern, const QString &prompt, const QVariant &data);
     virtual ServerPlayer *askForPlayerChosen(const QList<ServerPlayer *> &targets, const QString &reason);
     virtual int askForAG(const QList<int> &card_ids, bool refusable, const QString &reason);
-    virtual const Card *askForSinglePeach(ServerPlayer *dying);
+    virtual const Card *askForSingleVulnerary(ServerPlayer *dying);
     virtual const Card *askForPindian(ServerPlayer *requestor, const QString &reason);
     virtual Card::Suit askForSuit(const QString &reason);
 

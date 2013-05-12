@@ -187,7 +187,7 @@ huoji_skill.getTurnUseCard=function(self)
 	self:sortByUseValue(cards,true)
 
 	for _,acard in ipairs(cards)  do
-		if (acard:isRed()) and not acard:inherits("Peach") and (self:getDynamicUsePriority(acard)<sgs.ai_use_value.FireAttack or self:getOverflow() > 0) then
+		if (acard:isRed()) and not acard:inherits("Vulnerary") and (self:getDynamicUsePriority(acard)<sgs.ai_use_value.FireAttack or self:getOverflow() > 0) then
 			card = acard
 			break
 		end
@@ -258,17 +258,17 @@ end
 
 sgs.ai_skill_invoke.niepan = function(self, data)
 	local dying = data:toDying()
-	local peaches = 1 - dying.who:getHp()
+	local vulneraryes = 1 - dying.who:getHp()
 
 	local cards = self.player:getHandcards()
 	local n = 0
 	for _, card in sgs.qlist(cards) do
-		if card:inherits "Peach" or card:inherits "Analeptic" then
+		if card:inherits "Vulnerary" or card:inherits "Analeptic" then
 			n = n + 1
 		end
 	end
 
-	return n < peaches
+	return n < vulneraryes
 end
 
 sgs.ai_chaofeng.pangtong = -1
@@ -390,12 +390,12 @@ luanji_skill.getTurnUseCard=function(self)
 		local same_suit=false
 		cards = sgs.QList2Table(cards)
 		for _, fcard in ipairs(cards) do
-			if not (fcard:inherits("Peach") or fcard:inherits("ExNihilo") or fcard:inherits("AOE")) then
+			if not (fcard:inherits("Vulnerary") or fcard:inherits("ExNihilo") or fcard:inherits("AOE")) then
 				first_card = fcard
 				first_found = true
 				for _, scard in ipairs(cards) do
 					if first_card ~= scard and scard:getSuitString() == first_card:getSuitString() and 
-						not (scard:inherits("Peach") or scard:inherits("ExNihilo") or scard:inherits("AOE")) then
+						not (scard:inherits("Vulnerary") or scard:inherits("ExNihilo") or scard:inherits("AOE")) then
 						second_card = scard
 						second_found = true
 						break

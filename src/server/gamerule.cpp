@@ -16,8 +16,8 @@ GameRule::GameRule(QObject *)
     //setParent(parent);
 
     events << GameStart << TurnStart << PhaseChange << CardUsed << CardFinished
-            << CardEffected << HpRecover << HpLost << AskForPeachesDone
-            << AskForPeaches << Death << Dying << GameOverJudge
+            << CardEffected << HpRecover << HpLost << AskForVulnerariesDone
+            << AskForVulneraries << Death << Dying << GameOverJudge
             << SlashHit << SlashMissed << SlashEffected << SlashProceed
             << DamageDone << DamageComplete
             << StartJudge << FinishJudge << Pindian;
@@ -276,7 +276,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
             DyingStruct dying = data.value<DyingStruct>();
 
             LogMessage log;
-            log.type = "#AskForPeaches";
+            log.type = "#AskForVulneraries";
             log.from = player;
             log.to = dying.savers;
             log.arg = QString::number(1 - player->getHp());
@@ -287,25 +287,25 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
                 if(player->getHp() > 0)
                     break;
 
-                thread->trigger(AskForPeaches, saver, data);
+                thread->trigger(AskForVulneraries, saver, data);
             }
 
             player->setFlags("-dying");
-            thread->trigger(AskForPeachesDone, player, data);
+            thread->trigger(AskForVulnerariesDone, player, data);
 
             break;
         }
 
-    case AskForPeaches:{
+    case AskForVulneraries:{
             DyingStruct dying = data.value<DyingStruct>();
 
             while(dying.who->getHp() <= 0){
-                const Card *peach = room->askForSinglePeach(player, dying.who);
-                if(peach == NULL)
+                const Card *vulnerary = room->askForSingleVulnerary(player, dying.who);
+                if(vulnerary == NULL)
                     break;
 
                 CardUseStruct use;
-                use.card = peach;
+                use.card = vulnerary;
                 use.from = player;
                 if(player != dying.who)
                     use.to << dying.who;
@@ -319,7 +319,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
             break;
         }
 
-    case AskForPeachesDone:{
+    case AskForVulnerariesDone:{
             if(player->getHp() <= 0 && player->isAlive()){
                 DyingStruct dying = data.value<DyingStruct>();
                 room->killPlayer(player, dying.damage);

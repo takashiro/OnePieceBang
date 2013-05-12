@@ -123,9 +123,9 @@ wusheng_skill.getTurnUseCard=function(self,inclusive)
 	self:sortByUseValue(cards,true) -- 按使用价值从小到大排列卡牌
 	
 	for _,card in ipairs(cards) do
-		if card:isRed() and not card:inherits("Slash") and not card:inherits("Peach") 				--not peach
+		if card:isRed() and not card:inherits("Slash") and not card:inherits("Vulnerary") 				--not vulnerary
 			and ((self:getUseValue(card)<sgs.ai_use_value.Slash) or inclusive) then
-			-- 如果卡牌为红色，且不是【杀】和【桃】，且使用价值比【杀】要低或者没有手牌
+			-- 如果卡牌为红色，且不是【杀】和【伤药】，且使用价值比【杀】要低或者没有手牌
 			red_card = card
 			break -- 记录这一张卡牌并跳出循环
 		end
@@ -267,7 +267,7 @@ function SmartAI:useCardByClassName(card, use)
 end
 --[[
 这一函数为 SmartAI.useBasicCard 和 SmartAI.useTrickCard 提供了接口。
-例如，要告诉 AI 如何使用【桃】，就需要写一个函数 SmartAI.useCardPeach
+例如，要告诉 AI 如何使用【伤药】，就需要写一个函数 SmartAI.useCardVulnerary
 （该函数位于 standard_cards-ai.lua）
 要告诉 AI 如何使用【兵粮寸断】，就需要写一个函数 SmartAI.useCardSupplyShortage
 （该函数位于 maneuvering-ai.lua）
@@ -344,7 +344,7 @@ function SmartAI:getTurnUse() -- 这个函数的目的就是得到计划使用�
 				if card:inherits("OffensiveHorse") then self.predictNewHorse = true end
 				if card:objectName() == "crossbow" then slashAvail = 100 end
 				if card:inherits("Snatch") then i = i-1 end
-				if card:inherits("Peach") then i = i+2 end
+				if card:inherits("Vulnerary") then i = i+2 end
 				if card:inherits("Collateral") then i = i-1 end
 				if card:inherits("AmazingGrace") then i = i-1 end
 				if card:inherits("ExNihilo") then i = i-2 end

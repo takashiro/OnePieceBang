@@ -546,13 +546,13 @@
     </message>
     <message>
         <location filename="../../src/client/client.cpp" line="1385"/>
-        <source>You are dying, please provide %1 peach(es)(or analeptic) to save yourself</source>
-        <translation type="unfinished">您正在死亡线上挣扎，请提供 %1 个桃子（或酒）来救您自己</translation>
+        <source>You are dying, please provide %1 vulnerary(es)(or analeptic) to save yourself</source>
+        <translation type="unfinished">您正在死亡线上挣扎，请提供 %1 个伤药（或酒）来救您自己</translation>
     </message>
     <message>
         <location filename="../../src/client/client.cpp" line="1389"/>
-        <source>%1 is dying, please provide %2 peach(es) to save him</source>
-        <translation type="unfinished">%1 正在死亡线上挣扎，请提供 %2 个桃子来拯救他</translation>
+        <source>%1 is dying, please provide %2 vulnerary(es) to save him</source>
+        <translation type="unfinished">%1 正在死亡线上挣扎，请提供 %2 个伤药来拯救他</translation>
     </message>
     <message>
         <location filename="../../src/client/client.cpp" line="1401"/>

@@ -752,7 +752,7 @@ public:
 class Jiuyuan: public TriggerSkill{
 public:
     Jiuyuan():TriggerSkill("jiuyuan$"){
-        events << Dying << AskForPeachesDone << CardEffected;
+        events << Dying << AskForVulnerariesDone << CardEffected;
         frequency = Compulsory;
     }
 
@@ -775,7 +775,7 @@ public:
 
         case CardEffected: {
                 CardEffectStruct effect = data.value<CardEffectStruct>();
-                if(effect.card->inherits("Peach") && effect.from->getKingdom() == "wu"
+                if(effect.card->inherits("Vulnerary") && effect.from->getKingdom() == "wu"
                    && sunquan != effect.from && sunquan->hasFlag("dying"))
                 {
                     int index = effect.from->getGeneral()->isMale() ? 2 : 3;
@@ -799,7 +799,7 @@ public:
                 break;
             }
 
-        case AskForPeachesDone:{
+        case AskForVulnerariesDone:{
                 if(sunquan->getHp() > 0 && sunquan->hasFlag("jiuyuan"))
                     room->playSkillEffect("jiuyuan", 4);
                 sunquan->setFlags("-jiuyuan");
@@ -1207,7 +1207,7 @@ public:
     }
 
     virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
-        return  pattern.contains("peach") && player->getPhase() == Player::NotActive;
+        return  pattern.contains("vulnerary") && player->getPhase() == Player::NotActive;
     }
 
     virtual bool viewFilter(const CardItem *to_select) const{
@@ -1216,10 +1216,10 @@ public:
 
     virtual const Card *viewAs(CardItem *card_item) const{
         const Card *first = card_item->getCard();
-        Peach *peach = new Peach(first->getSuit(), first->getNumber());
-        peach->addSubcard(first->getId());
-        peach->setSkillName(objectName());
-        return peach;
+        Vulnerary *vulnerary = new Vulnerary(first->getSuit(), first->getNumber());
+        vulnerary->addSubcard(first->getId());
+        vulnerary->setSkillName(objectName());
+        return vulnerary;
     }
 };
 

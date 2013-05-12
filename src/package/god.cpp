@@ -75,7 +75,7 @@ public:
             foe = room->askForPlayerChosen(shenguanyu, foes, "wuhun");
 
         JudgeStruct judge;
-        judge.pattern = QRegExp("(Peach|GodSalvation):(.*):(.*)");
+        judge.pattern = QRegExp("(Vulnerary|GodSalvation):(.*):(.*)");
         judge.good = true;
         judge.reason = "wuhun";
         judge.who = foe;
@@ -1164,7 +1164,7 @@ public:
     virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
         return pattern == "slash"
                 || pattern == "jink"
-                || pattern.contains("peach")
+                || pattern.contains("vulnerary")
                 || pattern == "nullification";
     }
 
@@ -1200,7 +1200,7 @@ public:
                     return card->getSuit() == Card::Club;
                 else if(pattern == "nullification")
                     return card->getSuit() == Card::Spade;
-                else if(pattern == "peach" || pattern == "peach+analeptic")
+                else if(pattern == "vulnerary" || pattern == "vulnerary+analeptic")
                     return card->getSuit() == Card::Heart;
                 else if(pattern == "slash")
                     return card->getSuit() == Card::Diamond;
@@ -1231,7 +1231,7 @@ public:
             }
 
         case Card::Heart:{
-                new_card = new Peach(suit, number);
+                new_card = new Vulnerary(suit, number);
                 break;
             }
 

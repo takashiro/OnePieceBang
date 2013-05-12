@@ -473,8 +473,8 @@ enum TriggerEvent{
     DamageComplete,
 
     Dying,
-    AskForPeaches,
-    AskForPeachesDone,
+    AskForVulneraries,
+    AskForVulnerariesDone,
     Death,
     GameOverJudge,
 
@@ -902,7 +902,7 @@ public:
 	bool askForYiji(ServerPlayer *guojia, QList<int> &cards);
 	const Card *askForPindian(ServerPlayer *player, ServerPlayer *from, ServerPlayer *to, const char *reason);
 	ServerPlayer *askForPlayerChosen(ServerPlayer *player, const QList<ServerPlayer *> &targets, const char *reason);
-	const Card *askForSinglePeach(ServerPlayer *player, ServerPlayer *dying);
+	const Card *askForSingleVulnerary(ServerPlayer *player, ServerPlayer *dying);
 };
 
 %extend Room {

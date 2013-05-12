@@ -305,7 +305,7 @@ sgs.ai_skill_invoke.chunlao = sgs.ai_skill_invoke.buyi
 
 sgs.chengpu_keep_value = 
 {
-	Peach = 6,
+	Vulnerary = 6,
 	Jink = 5.1,
 	Slash = 5.5,
 }
@@ -376,7 +376,7 @@ qice_skill.getTurnUseCard=function(self)
 			local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. "god_salvation")
 			return parsed_card
 		end
-		if self:getCardsNum("Jink") == 0 and self:getCardsNum("Peach") == 0 then
+		if self:getCardsNum("Jink") == 0 and self:getCardsNum("Vulnerary") == 0 then
 			local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. "ex_nihilo")
 			return parsed_card
 		end
@@ -395,7 +395,7 @@ qice_skill.getTurnUseCard=function(self)
 			local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. "god_salvation")
 			return parsed_card
 		end
-		if self:getCardsNum("Jink") == 0 and self:getCardsNum("Peach") == 0 and self:getCardsNum("Analeptic") == 0 and self:getCardsNum("Nullification") == 0 then
+		if self:getCardsNum("Jink") == 0 and self:getCardsNum("Vulnerary") == 0 and self:getCardsNum("Analeptic") == 0 and self:getCardsNum("Nullification") == 0 then
 			local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. "ex_nihilo")
 			return parsed_card
 		end
@@ -408,7 +408,7 @@ qice_skill.getTurnUseCard=function(self)
 			return parsed_card
 		end
 	end
-	if self:getCardsNum("Jink") == 0 and self:getCardsNum("Peach") == 0 and self:getCardsNum("Analeptic") == 0 and self:getCardsNum("Nullification") == 0 then
+	if self:getCardsNum("Jink") == 0 and self:getCardsNum("Vulnerary") == 0 and self:getCardsNum("Analeptic") == 0 and self:getCardsNum("Nullification") == 0 then
 		if good > bad and self.player:isWounded() then
 			local parsed_card=sgs.Card_Parse("@QiceCard=" .. table.concat(allcard,"+") .. ":" .. "god_salvation")
 			return parsed_card

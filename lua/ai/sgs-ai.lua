@@ -92,19 +92,19 @@ sgs.ai_skill_discard.ganglie = function(self, discard_num, optional, include_equ
 	local to_discard = {}
 	local cards = sgs.QList2Table(self.player:getHandcards())
 	local index = 0
-	local all_peaches = 0
+	local all_vulneraryes = 0
 	for _, card in ipairs(cards) do
-		if card:inherits("Peach") then
-			all_peaches = all_peaches + 1
+		if card:inherits("Vulnerary") then
+			all_vulneraryes = all_vulneraryes + 1
 		end
 	end
-	if all_peaches >= 2 and self:getOverflow() <= 0 then return {} end
+	if all_vulneraryes >= 2 and self:getOverflow() <= 0 then return {} end
 	self:sortByKeepValue(cards)
 	cards = sgs.reverse(cards)
 
 	for i = #cards, 1, -1 do
 		local card = cards[i]
-		if not card:inherits("Peach") and not self.player:isJilei(card) then
+		if not card:inherits("Vulnerary") and not self.player:isJilei(card) then
 			table.insert(to_discard, card:getEffectiveId())
 			table.remove(cards, i)
 			index = index + 1
@@ -196,7 +196,7 @@ end
 
 sgs.xuchu_keep_value = 
 {
-	Peach 			= 6,
+	Vulnerary 			= 6,
 	Analeptic 		= 5.8,
 	Jink 			= 5.2,
 	Duel            = 5.5,
@@ -357,7 +357,7 @@ sgs.ai_view_as.wusheng = function(card, player, card_place)
 	local suit = card:getSuitString()
 	local number = card:getNumberString()
 	local card_id = card:getEffectiveId()
-	if card:isRed() and not card:inherits("Peach") then
+	if card:isRed() and not card:inherits("Vulnerary") then
 		return ("slash:wusheng[%s:%s]=%d"):format(suit, number, card_id)
 	end
 end
@@ -374,7 +374,7 @@ wusheng_skill.getTurnUseCard=function(self,inclusive)
 	self:sortByUseValue(cards,true)
 	
 	for _,card in ipairs(cards) do
-		if card:isRed() and not card:inherits("Slash") and not card:inherits("Peach") 				--not peach
+		if card:isRed() and not card:inherits("Slash") and not card:inherits("Vulnerary") 				--not vulnerary
 			and ((self:getUseValue(card)<sgs.ai_use_value.Slash) or inclusive) then
 			red_card = card
 			break
@@ -402,7 +402,7 @@ end
 
 sgs.zhangfei_keep_value = 
 {
-	Peach = 6,
+	Vulnerary = 6,
 	Analeptic = 5.8,
 	Jink = 5.7,
 	FireSlash = 5.6,
@@ -460,7 +460,7 @@ end
 
 sgs.zhaoyun_keep_value = 
 {
-	Peach = 6,
+	Vulnerary = 6,
 	Analeptic = 5.8,
 	Jink = 5.7,
 	FireSlash = 5.7,
@@ -490,7 +490,7 @@ end
 
 sgs.huangyueying_keep_value = 
 {
-	Peach 		= 6,
+	Vulnerary 		= 6,
 	Analeptic 	= 5.9,
 	Jink 		= 5.8,
 	ExNihilo	= 5.7,
@@ -523,8 +523,8 @@ sgs.ai_skill_use_func.ZhihengCard = function(card, use, self)
 	if self.player:getHp() < 3 then
 		local zcards = self.player:getCards("he")
 		for _, zcard in sgs.qlist(zcards) do
-			if not zcard:inherits("Peach") and not zcard:inherits("ExNihilo") then
-				if self:getAllPeachNum()>0 or not zcard:inherits("Shit") then table.insert(unpreferedCards,zcard:getId()) end
+			if not zcard:inherits("Vulnerary") and not zcard:inherits("ExNihilo") then
+				if self:getAllVulneraryNum()>0 or not zcard:inherits("Shit") then table.insert(unpreferedCards,zcard:getId()) end
 			end	
 		end
 	end
@@ -695,7 +695,7 @@ fanjian_skill.getTurnUseCard=function(self)
 	for _, card in sgs.qlist(cards) do
 		if card:getSuit() == sgs.Card_Diamond and self.player:getHandcardNum() == 1 then
 			return nil
-		elseif card:inherits("Peach") or card:inherits("Analeptic") then
+		elseif card:inherits("Vulnerary") or card:inherits("Analeptic") then
 			return nil
 		end
 	end
@@ -864,7 +864,7 @@ jieyin_skill.getTurnUseCard=function(self)
 	local first, second
 	self:sortByUseValue(cards,true)
 	for _, card in ipairs(cards) do
-		if card:getTypeId() ~= sgs.Card_Equip and not (card:inherits("Shit") and self:isWeak() and self:getAllPeachNum()==0) then
+		if card:getTypeId() ~= sgs.Card_Equip and not (card:inherits("Shit") and self:isWeak() and self:getAllVulneraryNum()==0) then
 			if not first then first  = cards[1]:getEffectiveId()
 			else second = cards[2]:getEffectiveId()
 			end
@@ -909,7 +909,7 @@ sgs.dynamic_value.benefit.JieyinCard = true
 
 sgs.sunshangxiang_keep_value = 
 {
-	Peach = 6,
+	Vulnerary = 6,
 	Jink = 5.1,
 	Crossbow = 5,
 	Blade = 5,
@@ -960,8 +960,8 @@ sgs.ai_skill_use_func.QingnangCard=function(card,use,self)
 	end	
 	for _, friend in ipairs(self.friends) do
 		if friend:isWounded() and
-			not (friend:hasSkill("longhun") and self:getAllPeachNum() > 0) and
-			not (friend:hasSkill("hunzi") and friend:getMark("hunzi") == 0 and self:getAllPeachNum() > 1) then
+			not (friend:hasSkill("longhun") and self:getAllVulneraryNum() > 0) and
+			not (friend:hasSkill("hunzi") and friend:getMark("hunzi") == 0 and self:getAllVulneraryNum() > 1) then
 			use.card=card
 			if use.to then use.to:append(friend) end
 			return
@@ -979,7 +979,7 @@ sgs.ai_view_as.jijiu = function(card, player, card_place)
 	local number = card:getNumberString()
 	local card_id = card:getEffectiveId()
 	if card:isRed() and player:getPhase()==sgs.Player_NotActive then
-		return ("peach:jijiu[%s:%s]=%d"):format(suit, number, card_id)
+		return ("vulnerary:jijiu[%s:%s]=%d"):format(suit, number, card_id)
 	end
 end
 
@@ -1021,7 +1021,7 @@ lijian_skill.getTurnUseCard=function(self)
 			
 			for _, acard in ipairs(cards) do
 				if (acard:inherits("BasicCard") or acard:inherits("EquipCard") or acard:inherits("AmazingGrace"))
-					and not acard:inherits("Peach") and not acard:inherits("Shit") then 
+					and not acard:inherits("Vulnerary") and not acard:inherits("Shit") then 
 					card_id = acard:getEffectiveId()
 					break
 				end
@@ -1038,7 +1038,7 @@ lijian_skill.getTurnUseCard=function(self)
 			cards=sgs.QList2Table(self.player:getHandcards())
 			for _, acard in ipairs(cards) do
 				if (acard:inherits("BasicCard") or acard:inherits("EquipCard") or acard:inherits("AmazingGrace"))
-					and not acard:inherits("Peach") and not acard:inherits("Shit") then 
+					and not acard:inherits("Vulnerary") and not acard:inherits("Shit") then 
 					card_id = acard:getEffectiveId()
 					break
 				end

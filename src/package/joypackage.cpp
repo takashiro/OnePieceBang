@@ -251,9 +251,9 @@ void MudSlide::takeEffect(ServerPlayer *target) const{
     }
 }
 
-class GrabPeach: public TriggerSkill{
+class GrabVulnerary: public TriggerSkill{
 public:
-    GrabPeach():TriggerSkill("grab_peach"){
+    GrabVulnerary():TriggerSkill("grab_vulnerary"){
         events << CardUsed;
     }
 
@@ -263,13 +263,13 @@ public:
 
     virtual bool trigger(TriggerEvent , ServerPlayer *player, QVariant &data) const{
         CardUseStruct use = data.value<CardUseStruct>();
-        if(use.card->inherits("Peach")){
+        if(use.card->inherits("Vulnerary")){
             Room *room = player->getRoom();
             QList<ServerPlayer *> players = room->getOtherPlayers(player);
 
             foreach(ServerPlayer *p, players){
                 if(p->getOffensiveHorse() == parent() &&
-                   p->askForSkillInvoke("grab_peach", data))
+                   p->askForSkillInvoke("grab_vulnerary", data))
                 {
                     room->throwCard(p->getOffensiveHorse());
                     p->playCardEffect(objectName());
@@ -289,12 +289,12 @@ Monkey::Monkey(Card::Suit suit, int number)
 {
     setObjectName("monkey");
 
-    grab_peach = new GrabPeach;
-    grab_peach->setParent(this);
+    grab_vulnerary = new GrabVulnerary;
+    grab_vulnerary->setParent(this);
 }
 
 void Monkey::onInstall(ServerPlayer *player) const{
-    player->getRoom()->getThread()->addTriggerSkill(grab_peach);
+    player->getRoom()->getThread()->addTriggerSkill(grab_vulnerary);
 }
 
 void Monkey::onUninstall(ServerPlayer *player) const{

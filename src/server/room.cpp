@@ -53,7 +53,7 @@ void Room::initCallbacks(){
     m_requestResponsePair[S_COMMAND_PLAY_CARD] = S_COMMAND_USE_CARD;
     m_requestResponsePair[S_COMMAND_NULLIFICATION] = S_COMMAND_RESPONSE_CARD;
     m_requestResponsePair[S_COMMAND_SHOW_CARD] = S_COMMAND_RESPONSE_CARD;
-    m_requestResponsePair[S_COMMAND_ASK_PEACH] = S_COMMAND_RESPONSE_CARD;
+    m_requestResponsePair[S_COMMAND_ASK_VULNERARY] = S_COMMAND_RESPONSE_CARD;
     m_requestResponsePair[S_COMMAND_PINDIAN] = S_COMMAND_RESPONSE_CARD;
     m_requestResponsePair[S_COMMAND_EXCHANGE_CARD] = S_COMMAND_DISCARD_CARD;
     m_requestResponsePair[S_COMMAND_CHOOSE_DIRECTION] = S_COMMAND_MULTIPLE_CHOICE;
@@ -1120,8 +1120,8 @@ const Card *Room::askForCardShow(ServerPlayer *player, ServerPlayer *requestor, 
     return card;
 }
 
-const Card *Room::askForSinglePeach(ServerPlayer *player, ServerPlayer *dying){
-    notifyMoveFocus(player, S_COMMAND_ASK_PEACH);
+const Card *Room::askForSingleVulnerary(ServerPlayer *player, ServerPlayer *dying){
+    notifyMoveFocus(player, S_COMMAND_ASK_VULNERARY);
     //@todo: put this into AI!!!!!!!!!!!!!!!!!
     if(player->isKongcheng()){
         // jijiu special case
@@ -1157,13 +1157,13 @@ const Card *Room::askForSinglePeach(ServerPlayer *player, ServerPlayer *dying){
 
     AI *ai = player->getAI();
     if(ai)
-        card= ai->askForSinglePeach(dying);
+        card= ai->askForSingleVulnerary(dying);
     else{
-        int peaches = 1 - dying->getHp();
+        int vulneraryes = 1 - dying->getHp();
         Json::Value arg(Json::arrayValue);
         arg[0] = toJsonString(dying->objectName());
-        arg[1] = peaches;
-        bool success = doRequest(player, S_COMMAND_ASK_PEACH, arg, true);
+        arg[1] = vulneraryes;
+        bool success = doRequest(player, S_COMMAND_ASK_VULNERARY, arg, true);
         Json::Value clientReply = player->getClientReply();
         if (!success || !clientReply.isString()) return NULL;
 
@@ -1173,12 +1173,12 @@ const Card *Room::askForSinglePeach(ServerPlayer *player, ServerPlayer *dying){
             card = card->validateInResposing(player, &continuable);
     }
     if(card){
-        QVariant decisionData = QVariant::fromValue("peach:"+
+        QVariant decisionData = QVariant::fromValue("vulnerary:"+
             QString("%1:%2:%3").arg(dying->objectName()).arg(1 - dying->getHp()).arg(card->toString()));
         thread->trigger(ChoiceMade, player, decisionData);
         return card;
     }else if(continuable)
-        return askForSinglePeach(player, dying);
+        return askForSingleVulnerary(player, dying);
     else
         return NULL;
 }

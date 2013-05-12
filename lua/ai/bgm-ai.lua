@@ -30,7 +30,7 @@ lihun_skill.getTurnUseCard=function(self)
 
 		for _, acard in ipairs(cards) do
 			if (acard:getTypeId() ~= sgs.Card_Trick or acard:inherits("AmazingGrace"))
-				and not acard:inherits("Peach") and not acard:inherits("Shit") then
+				and not acard:inherits("Vulnerary") and not acard:inherits("Shit") then
 				card_id = acard:getEffectiveId()
 				break
 			end
@@ -47,7 +47,7 @@ lihun_skill.getTurnUseCard=function(self)
 		cards=sgs.QList2Table(self.player:getHandcards())
 		for _, acard in ipairs(cards) do
 			if (acard:getTypeId() ~= sgs.Card_Trick or acard:inherits("AmazingGrace"))
-				and not acard:inherits("Peach") and not acard:inherits("Shit") then
+				and not acard:inherits("Vulnerary") and not acard:inherits("Shit") then
 				card_id = acard:getEffectiveId()
 				break
 			end
@@ -156,7 +156,7 @@ sgs.ai_skill_askforag.manjuan = function(self, card_ids)
 		end
 	end
 	for _, card in ipairs(cards) do
-		if card:inherits("Peach") and self.player:isWounded() and self:getCardsNum("Peach") < self.player:getLostHp() then return card:getEffectiveId() end
+		if card:inherits("Vulnerary") and self.player:isWounded() and self:getCardsNum("Vulnerary") < self.player:getLostHp() then return card:getEffectiveId() end
 	end
 	for _, card in ipairs(cards) do
 		if card:inherits("AOE") and self:getAoeValue(card) > 0 then return card:getEffectiveId() end

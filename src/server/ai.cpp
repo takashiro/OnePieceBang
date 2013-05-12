@@ -174,7 +174,7 @@ void TrustAI::activate(CardUseStruct &card_use){
 }
 
 bool TrustAI::useCard(const Card *card){
-    if(card->inherits("Peach"))
+    if(card->inherits("Vulnerary"))
         return self->isWounded();
     else if(card->inherits("EquipCard")){
         const EquipCard *equip = qobject_cast<const EquipCard *>(card);
@@ -328,11 +328,11 @@ ServerPlayer *TrustAI::askForPlayerChosen(const QList<ServerPlayer *> &targets, 
     return targets.at(r);
 }
 
-const Card *TrustAI::askForSinglePeach(ServerPlayer *dying) {
+const Card *TrustAI::askForSingleVulnerary(ServerPlayer *dying) {
     if(isFriend(dying)){
         QList<const Card *> cards = self->getHandcards();
         foreach(const Card *card, cards){
-            if(card->inherits("Peach"))
+            if(card->inherits("Vulnerary"))
                 return card;
 
             if(card->inherits("BusouHaki") && dying == self)
@@ -362,10 +362,10 @@ const Card *TrustAI::askForSinglePeach(ServerPlayer *dying) {
             cards = self->getCards("he");
             foreach(const Card *card, cards){
                 if(card->isRed()){
-                    Peach *peach = new Peach(card->getSuit(), card->getNumber());
-                    peach->addSubcard(card);
-                    peach->setSkillName("jijiu");
-                    return peach;
+                    Vulnerary *vulnerary = new Vulnerary(card->getSuit(), card->getNumber());
+                    vulnerary->addSubcard(card);
+                    vulnerary->setSkillName("jijiu");
+                    return vulnerary;
                 }
             }
         }
