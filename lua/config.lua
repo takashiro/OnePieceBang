@@ -9,8 +9,6 @@ config = {
 	kingdoms = {"pirate", "government", "citizen", "noble"},
 	package_names = {
 	"StandardCard",
-        "StandardExCard",
-        "Maneuvering",
         "Disaster",
 
         "Standard",

@@ -7,7 +7,6 @@
 #include "standard.h"
 #include "carditem.h"
 #include "engine.h"
-#include "maneuvering.h"
 
 class TestPackage : public Package
 {

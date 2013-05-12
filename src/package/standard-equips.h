@@ -87,11 +87,4 @@ public:
     StandardCardPackage();
 };
 
-class StandardExCardPackage: public Package{
-    Q_OBJECT
-
-public:
-    StandardExCardPackage();
-};
-
 #endif // STANDARDEQUIPS_H

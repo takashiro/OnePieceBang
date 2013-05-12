@@ -1,6 +1,5 @@
 #include "alabastan.h"
 #include "skill.h"
-#include "maneuvering.h"
 #include "carditem.h"
 #include "engine.h"
 

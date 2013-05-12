@@ -52,7 +52,6 @@ SOURCES += \
         src/package/package.cpp \
         src/package/exppattern.cpp \
         src/package/joypackage.cpp \
-        src/package/maneuvering.cpp \
         src/package/standard-cards.cpp \
         src/package/standard.cpp \
         src/scenario/scenario.cpp \
@@ -169,7 +168,6 @@ HEADERS += \
         src/dialog/scenario-overview.h \
         src/package/exppattern.h \
         src/package/joypackage.h \
-        src/package/maneuvering.h \
         src/package/package.h \
         src/package/standard-equips.h \
         src/package/standard.h \
