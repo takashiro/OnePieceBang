@@ -62,7 +62,7 @@ sgs.zhangfei_keep_value =
 	FireSlash = 5.6,
 	Slash = 5.4,
 	ThunderSlash = 5.5,
-	ExNihilo = 4.7
+	TreasureChest = 4.7
 }
 
 sgs.zhaoyun_keep_value = 
@@ -73,7 +73,7 @@ sgs.zhaoyun_keep_value =
 	FireSlash = 5.7,
 	Slash = 5.6,
 	ThunderSlash = 5.5,
-	ExNihilo = 4.7
+	TreasureChest = 4.7
 }
 
 sgs.huangyueying_keep_value = 
@@ -81,7 +81,7 @@ sgs.huangyueying_keep_value =
 	Vulnerary 		= 6,
 	Analeptic 	= 5.9,
 	Jink 		= 5.8,
-	ExNihilo	= 5.7,
+	TreasureChest	= 5.7,
 	Snatch 		= 5.7,
 	Dismantlement = 5.6,
 	IronChain 	= 5.5,

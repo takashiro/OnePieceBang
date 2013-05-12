@@ -1779,7 +1779,7 @@ function SmartAI:askForNullification(trick, from, to, positive)
 	if self.player:hasSkill("wumou") and self.player:getMark("@wrath") < 6 then return nil end
 	if positive then
 		if from and self:isEnemy(from) and (sgs.evaluateRoleTrends(from) ~= "neutral" or sgs.isRolePredictable()) then
-			if trick:inherits("ExNihilo") and (self:isWeak(from) or self:hasSkills(sgs.cardneed_skill,from)) then return null_card end 
+			if trick:inherits("TreasureChest") and (self:isWeak(from) or self:hasSkills(sgs.cardneed_skill,from)) then return null_card end 
 			if trick:inherits("IronChain") and not self:isEquip("Vine", to) then return nil end
 			if self:isFriend(to) then
 				if trick:inherits("Dismantlement") then 
@@ -2720,7 +2720,7 @@ function SmartAI:getTurnUse()
 				if card:inherits("Vulnerary") then i = i+2 end
 				if card:inherits("Collateral") then i = i-1 end
 				if card:inherits("AmazingGrace") then i = i-1 end
-				if card:inherits("ExNihilo") then i = i-2 end
+				if card:inherits("TreasureChest") then i = i-2 end
 				table.insert(turnUse,card)
 			end
 			i = i+1
@@ -3691,7 +3691,7 @@ end
 
 function SmartAI:useTrickCard(card, use)
 	if self.player:hasSkill("chengxiang") and self.player:getHandcardNum() < 8 and card:getNumber() < 7 then return end
-	if self:needBear() and not ("amazing_grace|ex_nihilo|snatch|iron_chain"):match(card:objectName()) then return end
+	if self:needBear() and not ("amazing_grace|treasure_chest|snatch|iron_chain"):match(card:objectName()) then return end
 	if self.player:hasSkill("wumou") and self.player:getMark("@wrath") < 6 then
 		if not (card:inherits("AOE") or card:inherits("DelayedTrick")) then return end
 	end

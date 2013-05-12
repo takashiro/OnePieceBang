@@ -738,14 +738,14 @@ bool Nullification::isAvailable(const Player *) const{
     return false;
 }
 
-ExNihilo::ExNihilo(Suit suit, int number)
+TreasureChest::TreasureChest(Suit suit, int number)
     :SingleTargetTrick(suit, number, false)
 {
-    setObjectName("ex_nihilo");
+    setObjectName("treasure_chest");
     target_fixed = true;
 }
 
-void ExNihilo::onEffect(const CardEffectStruct &effect) const{
+void TreasureChest::onEffect(const CardEffectStruct &effect) const{
     effect.to->drawCards(2);
 }
 
@@ -1206,10 +1206,10 @@ StandardCardPackage::StandardCardPackage()
           << new Duel(Card::Spade, 1)
           << new Duel(Card::Club, 1)
           << new Duel(Card::Diamond, 1)
-          << new ExNihilo(Card::Heart, 7)
-          << new ExNihilo(Card::Heart, 8)
-          << new ExNihilo(Card::Heart, 9)
-          << new ExNihilo(Card::Heart, 11)
+          << new TreasureChest(Card::Heart, 7)
+          << new TreasureChest(Card::Heart, 8)
+          << new TreasureChest(Card::Heart, 9)
+          << new TreasureChest(Card::Heart, 11)
           << new Snatch(Card::Spade, 3)
           << new Snatch(Card::Spade, 4)
           << new Snatch(Card::Spade, 11)

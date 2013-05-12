@@ -33,7 +33,7 @@ sgs.zhangfei_keep_value =
 	FireSlash = 5.6,
 	Slash = 5.4,
 	ThunderSlash = 5.5,
-	ExNihilo = 4.7
+	TreasureChest = 4.7
 }
 --[[更多例子可以参考旧版 AI 的 value_config.lua 文件的第 57 行至第 152 行。
 
@@ -53,7 +53,7 @@ sgs.shenzhaoyun_suit_value =
 ? SmartAI:getUseValue(card)：获得一张卡牌的使用价值。
 该函数会载入表 sgs.ai_use_value。
 * sgs.ai_use_value：包含卡牌的使用价值的表。例子如 standard_cards-ai.lua 第 609 行：]]
-sgs.ai_use_value.ExNihilo = 10 --无中生有
+sgs.ai_use_value.TreasureChest = 10 --无中生有
 --[[更多例子可以参考 general_config.lua 文件的第 22 行至第 78 行。
 
 ? SmartAI:getUsePriority(card)：获得一张卡牌的使用优先级。

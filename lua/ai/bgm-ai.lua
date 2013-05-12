@@ -141,7 +141,7 @@ sgs.ai_skill_askforag.manjuan = function(self, card_ids)
 		table.insert(cards, sgs.Bang:getCard(card_id))
 	end
 	for _, card in ipairs(cards) do
-		if card:inherits("ExNihilo") then return card:getEffectiveId() end
+		if card:inherits("TreasureChest") then return card:getEffectiveId() end
 	end
 	for _, card in ipairs(cards) do
 		if card:inherits("Snatch") then

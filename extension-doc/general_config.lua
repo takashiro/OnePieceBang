@@ -12,7 +12,7 @@ sgs.ai_keep_value = {
 	ThunderSlash = 2.5,
 	FireSlash = 2.6,
 
-	ExNihilo=4.6,
+	TreasureChest=4.6,
 
 	AmazingGrace=-1,
 	Lightning=-1,
@@ -41,7 +41,7 @@ sgs.ai_use_value =
 	GreatYeyanCard = 8,
 	MediumYeyanCard = 5.6,
 --normal cards
-	ExNihilo=10,
+	TreasureChest=10,
 
 	Snatch=9,
 	Collateral=8.8,
@@ -109,7 +109,7 @@ sgs.ai_use_priority = {
 
 	Dismantlement=4.4,
 	Snatch=4.3,
-	ExNihilo=4.6,
+	TreasureChest=4.6,
 
 	AllBlue=3.9,
 

@@ -390,12 +390,12 @@ luanji_skill.getTurnUseCard=function(self)
 		local same_suit=false
 		cards = sgs.QList2Table(cards)
 		for _, fcard in ipairs(cards) do
-			if not (fcard:inherits("Vulnerary") or fcard:inherits("ExNihilo") or fcard:inherits("AOE")) then
+			if not (fcard:inherits("Vulnerary") or fcard:inherits("TreasureChest") or fcard:inherits("AOE")) then
 				first_card = fcard
 				first_found = true
 				for _, scard in ipairs(cards) do
 					if first_card ~= scard and scard:getSuitString() == first_card:getSuitString() and 
-						not (scard:inherits("Vulnerary") or scard:inherits("ExNihilo") or scard:inherits("AOE")) then
+						not (scard:inherits("Vulnerary") or scard:inherits("TreasureChest") or scard:inherits("AOE")) then
 						second_card = scard
 						second_found = true
 						break

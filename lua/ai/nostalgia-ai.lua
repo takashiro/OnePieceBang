@@ -19,7 +19,7 @@ sgs.ai_skill_use_func.NosJujianCard = function(card, use, self)
 		cards=sgs.QList2Table(cards)
 		self:sortByUseValue(cards, true)
 		for _, card in ipairs(cards) do
-			if card:getTypeId() == sgs.Card_Trick and not card:inherits("ExNihilo") then trick_num = trick_num + 1
+			if card:getTypeId() == sgs.Card_Trick and not card:inherits("TreasureChest") then trick_num = trick_num + 1
 			elseif card:getTypeId() == sgs.Card_Basic then basic_num = basic_num + 1
 			elseif card:getTypeId() == sgs.Card_Equip then equip_num = equip_num + 1
 			end
@@ -33,7 +33,7 @@ sgs.ai_skill_use_func.NosJujianCard = function(card, use, self)
 		for _, friend in ipairs(self.friends_noself) do
 			if (friend:getHandcardNum()<2) or (friend:getHandcardNum()<friend:getHp()+1) and not friend:hasSkill("manjuan") then
 				for _, fcard in ipairs(cards) do
-					if fcard:inherits(result_class) and not fcard:inherits("ExNihilo") then
+					if fcard:inherits(result_class) and not fcard:inherits("TreasureChest") then
 						table.insert(abandon_handcard, fcard:getId())
 						index = index + 1
 					end
@@ -101,7 +101,7 @@ sgs.dynamic_value.benefit.NosJujianCard = true
 sgs.ai_skill_cardask["@enyuanheart"] = function(self)
 	local cards = self.player:getHandcards()
 	for _, card in sgs.qlist(cards) do
-		if card:getSuit() == sgs.Card_Heart and not (card:inherits("Vulnerary") or card:inherits("ExNihilo")) then
+		if card:getSuit() == sgs.Card_Heart and not (card:inherits("Vulnerary") or card:inherits("TreasureChest")) then
 			return card:getEffectiveId()
 		end
 	end

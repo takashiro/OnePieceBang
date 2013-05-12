@@ -347,7 +347,7 @@ function SmartAI:getTurnUse() -- 这个函数的目的就是得到计划使用�
 				if card:inherits("Vulnerary") then i = i+2 end
 				if card:inherits("Collateral") then i = i-1 end
 				if card:inherits("AmazingGrace") then i = i-1 end
-				if card:inherits("ExNihilo") then i = i-2 end
+				if card:inherits("TreasureChest") then i = i-2 end
 				table.insert(turnUse,card) -- 则把它加入到计划用牌中
 			end
 			i = i+1

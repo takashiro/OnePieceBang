@@ -662,7 +662,7 @@ sgs.ai_skill_invoke.jilve=function(self,data)
 	elseif event == sgs.CardUsed or event == sgs.CardResponsed then
 		local card = data:toCard()
 		card = card or data:toCardUse().card
-		return use or card:inherits("ExNihilo")
+		return use or card:inherits("TreasureChest")
 	else
 		assert(false)
 	end

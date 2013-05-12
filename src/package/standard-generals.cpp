@@ -147,7 +147,7 @@ public:
 };
 
 LieCard::LieCard(Card::Suit suit, int number): SingleTargetTrick(suit, number, false){
-    setObjectName("ex_nihilo");
+    setObjectName("treasure_chest");
 }
 
 bool LieCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{

@@ -408,7 +408,7 @@ sgs.zhangfei_keep_value =
 	FireSlash = 5.6,
 	Slash = 5.4,
 	ThunderSlash = 5.5,
-	ExNihilo = 4.7
+	TreasureChest = 4.7
 }
 
 sgs.ai_chaofeng.zhangfei = 3
@@ -466,7 +466,7 @@ sgs.zhaoyun_keep_value =
 	FireSlash = 5.7,
 	Slash = 5.6,
 	ThunderSlash = 5.5,
-	ExNihilo = 4.7
+	TreasureChest = 4.7
 }
 
 sgs.ai_skill_invoke.tieji = function(self, data)
@@ -493,7 +493,7 @@ sgs.huangyueying_keep_value =
 	Vulnerary 		= 6,
 	Analeptic 	= 5.9,
 	Jink 		= 5.8,
-	ExNihilo	= 5.7,
+	TreasureChest	= 5.7,
 	Snatch 		= 5.7,
 	Dismantlement = 5.6,
 	IronChain 	= 5.5,
@@ -523,7 +523,7 @@ sgs.ai_skill_use_func.ZhihengCard = function(card, use, self)
 	if self.player:getHp() < 3 then
 		local zcards = self.player:getCards("he")
 		for _, zcard in sgs.qlist(zcards) do
-			if not zcard:inherits("Vulnerary") and not zcard:inherits("ExNihilo") then
+			if not zcard:inherits("Vulnerary") and not zcard:inherits("TreasureChest") then
 				if self:getAllVulneraryNum()>0 or not zcard:inherits("Shit") then table.insert(unpreferedCards,zcard:getId()) end
 			end	
 		end

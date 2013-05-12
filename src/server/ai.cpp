@@ -194,7 +194,7 @@ bool TrustAI::useCard(const Card *card){
             return true;
         }
 
-    }else if(card->inherits("ExNihilo"))
+    }else if(card->inherits("TreasureChest"))
         return true;
     else
         return false;

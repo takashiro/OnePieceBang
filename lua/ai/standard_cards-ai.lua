@@ -831,20 +831,20 @@ sgs.ai_skill_cardask["duel-slash"] = function(self, data, pattern, target)
 	else return "." end
 end
 
-function SmartAI:useCardExNihilo(card, use)
+function SmartAI:useCardTreasureChest(card, use)
 	use.card = card
 	if not use.isDummy then
 		self:speak("lucky")
 	end
 end
 
-sgs.ai_card_intention.ExNihilo = -80
+sgs.ai_card_intention.TreasureChest = -80
 
-sgs.ai_keep_value.ExNihilo = 3.6
-sgs.ai_use_value.ExNihilo = 10
-sgs.ai_use_priority.ExNihilo = 6
+sgs.ai_keep_value.TreasureChest = 3.6
+sgs.ai_use_value.TreasureChest = 10
+sgs.ai_use_priority.TreasureChest = 6
 
-sgs.dynamic_value.benefit.ExNihilo = true
+sgs.dynamic_value.benefit.TreasureChest = true
 
 function SmartAI:getDangerousCard(who)
 	local weapon = who:getWeapon()

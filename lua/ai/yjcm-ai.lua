@@ -127,7 +127,7 @@ end
 sgs.ai_skill_cardask["@enyuan"] = function(self)
 	local cards = self.player:getHandcards()
 	for _, card in sgs.qlist(cards) do
-		if  not (card:inherits("Vulnerary") or card:inherits("ExNihilo")) then
+		if  not (card:inherits("Vulnerary") or card:inherits("TreasureChest")) then
 			return card:getEffectiveId()
 		end
 	end

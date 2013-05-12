@@ -149,11 +149,11 @@ public:
     virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const;
 };
 
-class ExNihilo: public SingleTargetTrick{
+class TreasureChest: public SingleTargetTrick{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE ExNihilo(Card::Suit suit, int number);
+    Q_INVOKABLE TreasureChest(Card::Suit suit, int number);
     virtual void onEffect(const CardEffectStruct &effect) const;
 };
 
