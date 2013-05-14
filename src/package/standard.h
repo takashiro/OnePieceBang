@@ -110,11 +110,11 @@ public:
     virtual void onUse(Room *room, const CardUseStruct &card_use) const;
 };
 
-class BusterCall:public AOE{
+class NeptunianAttack:public AOE{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE BusterCall(Card::Suit suit, int number);
+    Q_INVOKABLE NeptunianAttack(Card::Suit suit, int number);
     virtual void onEffect(const CardEffectStruct &effect) const;
 };
 

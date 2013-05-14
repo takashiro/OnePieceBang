@@ -668,8 +668,8 @@ sgs.ai_skill_cardask.aoe = function(self, data, pattern, target, target2, name)
 		(self.player:getHp()>1 or self:getAllVulneraryNum()>0) and not self.player:containsTrick("indulgence") then return "." end
 end
 
-sgs.ai_skill_cardask["buster-call-slash"] = function(self, data, pattern, target, target2)
-	return sgs.ai_skill_cardask.aoe(self, data, pattern, target, target2, "buster_call")
+sgs.ai_skill_cardask["neptunian-attack-slash"] = function(self, data, pattern, target, target2)
+	return sgs.ai_skill_cardask.aoe(self, data, pattern, target, target2, "neptunian_attack")
 end
 
 sgs.ai_skill_cardask["archery-attack-jink"] = function(self, data, pattern, target)

@@ -549,15 +549,15 @@ void AllBlue::onEffect(const CardEffectStruct &effect) const{
     room->recover(effect.to, recover);
 }
 
-BusterCall::BusterCall(Suit suit, int number)
+NeptunianAttack::NeptunianAttack(Suit suit, int number)
     :AOE(suit, number)
 {
-    setObjectName("buster_call");
+    setObjectName("neptunian_attack");
 }
 
-void BusterCall::onEffect(const CardEffectStruct &effect) const{
+void NeptunianAttack::onEffect(const CardEffectStruct &effect) const{
     Room *room = effect.to->getRoom();
-    const Card *slash = room->askForCard(effect.to, "slash", "buster-call-slash:" + effect.from->objectName());
+    const Card *slash = room->askForCard(effect.to, "slash", "neptunian-attack-slash:" + effect.from->objectName());
     if(slash)
         room->setEmotion(effect.to, "killer");
     else{
@@ -1554,9 +1554,9 @@ StandardCardPackage::StandardCardPackage()
     cards << new AmazingGrace(Card::Heart, 3)
           << new AmazingGrace(Card::Heart, 4)
           << new AllBlue
-          << new BusterCall(Card::Spade, 7)
-          << new BusterCall(Card::Spade, 13)
-          << new BusterCall(Card::Club, 7)
+          << new NeptunianAttack(Card::Spade, 7)
+          << new NeptunianAttack(Card::Spade, 13)
+          << new NeptunianAttack(Card::Club, 7)
           << new HaouHaki(Card::Heart, 1)
           << new Duel(Card::Spade, 1)
           << new Duel(Card::Club, 1)

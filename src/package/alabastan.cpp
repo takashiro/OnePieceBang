@@ -184,7 +184,7 @@ public:
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
         CardEffectStruct effect = data.value<CardEffectStruct>();
-        if(effect.card != NULL && effect.card->inherits("BusterCall")){
+        if(effect.card != NULL && effect.card->inherits("NeptunianAttack")){
             player->getRoom()->sendLog("#TriggerSkill", player, objectName());
             return true;
         }
