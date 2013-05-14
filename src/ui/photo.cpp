@@ -36,7 +36,7 @@ Photo::Photo(): player(NULL),
                 order_item(NULL), hide_avatar(false)
 {
     setAcceptHoverEvents(true);
-    //translate(-S_NORMAL_PHOTO_WIDTH / 2, -S_NORMAL_PHOTO_HEIGHT / 2);
+    this->setTransform(QTransform::fromTranslate(-S_NORMAL_PHOTO_WIDTH / 2, -S_NORMAL_PHOTO_HEIGHT / 2), true);
 
     chain_icon = QPixmap("image/system/chain.png");
 

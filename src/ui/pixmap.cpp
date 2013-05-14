@@ -32,8 +32,7 @@ bool Pixmap::_load(const QString &filename, QSize size, bool useNewSize, bool ce
         QImageReader reader(filename);
         QString error_string = reader.errorString();
 
-        QString warning = tr("Can not load image %1[%2], error string is %3")
-                          .arg(filename).arg(metaObject()->className()).arg(error_string);        
+        QString warning = tr("Can not load image %1[%2], error string is %3").arg(filename).arg(metaObject()->className()).arg(error_string);
         QMessageBox::warning(NULL, tr("Warning"), warning);        
     } else {
         if (useNewSize)
@@ -49,7 +48,7 @@ bool Pixmap::_load(const QString &filename, QSize size, bool useNewSize, bool ce
         if(center_as_origin)
         {
             resetTransform();
-            //this->scaled(-_m_width / 2, -_m_height / 2);
+            this->setTransform(QTransform::fromTranslate(-_m_width / 2, -_m_height / 2), true);
         }
         else
             this->prepareGeometryChange();
@@ -68,7 +67,7 @@ Pixmap::Pixmap(bool center_as_origin)
     if(center_as_origin)
     {
         resetTransform();
-        //this->scaled(-pixmap.width() / 2, -pixmap.height()/2);
+        this->setTransform(QTransform::fromTranslate(-_m_width / 2, -_m_height / 2), true);
     }
     _m_width = _m_height = 0;
 }

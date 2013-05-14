@@ -411,17 +411,16 @@ RoomScene::RoomScene(QMainWindow *main_window)
     fill_robots = NULL;
     if(ServerInfo.EnableAI){
         control_panel = addRect(0, 0, 500, 150, Qt::NoPen);
-        // control_panel->translate(-control_panel->boundingRect().width() / 2, -control_panel->boundingRect().height() / 2);
         control_panel->hide();
 
         add_robot = new Button(tr("Add a robot"));
         add_robot->setParentItem(control_panel);
-        //add_robot->translate(-add_robot->boundingRect().width() / 2, -add_robot->boundingRect().height() / 2);
+        add_robot->setTransform(QTransform::fromTranslate(-add_robot->boundingRect().width() / 2, -add_robot->boundingRect().height() / 2), true);
         add_robot->setPos(0, -add_robot->boundingRect().height() - 10);
 
         fill_robots = new Button(tr("Fill robots"));
         fill_robots->setParentItem(control_panel);
-        //fill_robots->translate(-fill_robots->boundingRect().width() / 2, -fill_robots->boundingRect().height() / 2);
+        fill_robots->setTransform(QTransform::fromTranslate(-fill_robots->boundingRect().width() / 2, -fill_robots->boundingRect().height() / 2), true);
         add_robot->setPos(0, add_robot->boundingRect().height() + 10);
 
         connect(add_robot, SIGNAL(clicked()), ClientInstance, SLOT(addRobot()));
