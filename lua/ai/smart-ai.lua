@@ -3936,9 +3936,6 @@ for _, aextension in ipairs(sgs.Bang:getExtensions()) do
 	end
 end
 
-dofile "lua/ai/sp-ai.lua"
-dofile "lua/ai/special3v3-ai.lua"
-
 for _, ascenario in ipairs(sgs.Bang:getScenarioNames()) do
 	if not loaded:match(ascenario) and files:match(string.lower(ascenario)) then
 		dofile("lua/ai/" .. string.lower(ascenario) .. "-ai.lua")
