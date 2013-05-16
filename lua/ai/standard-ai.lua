@@ -204,7 +204,7 @@ sgs.xuchu_keep_value =
 	Slash 			= 5.4,
 	ThunderSlash 	= 5.5,	
 	Axe				= 5,
-	Blade 			= 4.9,
+	SandaiKitetsu 			= 4.9,
 	Spear 			= 4.9,
 	Fan				= 4.8,
 	KylinBow		= 4.7,
@@ -247,7 +247,7 @@ rende_skill.getTurnUseCard=function(self)
 	if self.player:usedTimes("RendeCard") > 1 and mode:find("04_1v3") then return end
 	for _, player in ipairs(self.friends_noself) do
 		if ((player:hasSkill("haoshi") and not player:containsTrick("supply_shortage")) 
-			or player:hasSkill("longluo") or (not player:containsTrick("indulgence") and  player:hasSkill("yishe"))
+			or player:hasSkill("longluo") or (not player:containsTrick("negative_soul") and  player:hasSkill("yishe"))
 			and player:faceUp()) or player:hasSkill("jijiu") then
 			return sgs.Card_Parse("@RendeCard=.")
 		end
@@ -395,7 +395,7 @@ wusheng_skill.getTurnUseCard=function(self,inclusive)
 end
 
 function sgs.ai_cardneed.paoxiao(to, card)
-	if not to:containsTrick("indulgence") then
+	if not to:containsTrick("negative_soul") then
 		return card:inherits("Slash")
 	end
 end
@@ -483,7 +483,7 @@ end
 sgs.ai_chaofeng.machao = 1
 
 function sgs.ai_cardneed.jizhi(to, card)
-	if not to:containsTrick("indulgence") or card:inherits("Nullification") then
+	if not to:containsTrick("negative_soul") or card:inherits("Nullification") then
 		return card:getTypeId() == sgs.Card_Trick
 	end
 end
@@ -753,7 +753,7 @@ guose_skill.getTurnUseCard=function(self,inclusive)
 	end
 	
 	for _,acard in ipairs(cards)  do
-		if (acard:getSuit() == sgs.Card_Diamond) and ((self:getUseValue(acard)<sgs.ai_use_value.Indulgence) or inclusive) then
+		if (acard:getSuit() == sgs.Card_Diamond) and ((self:getUseValue(acard)<sgs.ai_use_value.NegativeSoul) or inclusive) then
 			local shouldUse=true
 			
 			if acard:inherits("Armor") then
@@ -778,10 +778,10 @@ guose_skill.getTurnUseCard=function(self,inclusive)
 	if not card then return nil end
 	local number = card:getNumberString()
 	local card_id = card:getEffectiveId()
-	local card_str = ("indulgence:guose[diamond:%s]=%d"):format(number, card_id)	
-	local indulgence = sgs.Card_Parse(card_str)
-	assert(indulgence)
-	return indulgence	
+	local card_str = ("negative_soul:guose[diamond:%s]=%d"):format(number, card_id)	
+	local negative_soul = sgs.Card_Parse(card_str)
+	assert(negative_soul)
+	return negative_soul	
 end
 
 sgs.ai_skill_use["@@liuli"] = function(self, prompt)
@@ -912,17 +912,17 @@ sgs.sunshangxiang_keep_value =
 	Vulnerary = 6,
 	Jink = 5.1,
 	Crossbow = 5,
-	Blade = 5,
+	SandaiKitetsu = 5,
 	Spear = 5,
-	DoubleSword =5,
-	QinggangSword=5,
+	OkamaMicrophone =5,
+	WadoIchimonji=5,
 	Axe=5,
 	KylinBow=5,
 	Halberd=5,
 	IceSword=5,
 	Fan=5,
 	MoonSpear=5,
-	GudingBlade=5,
+	Shusui=5,
 	DefensiveHorse = 5,
 	OffensiveHorse = 5
 }

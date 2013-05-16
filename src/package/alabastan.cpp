@@ -567,7 +567,7 @@ public:
         if(use.from->isKongcheng())
             draw_card = true;
         else{
-            QString prompt = "double-sword-card:" + player->getGeneralName();
+            QString prompt = "okama-microphone-card:" + player->getGeneralName();
             const Card *card = room->askForCard(use.from, ".", prompt, QVariant(), CardDiscarded);
             if(card){
                 room->throwCard(card);

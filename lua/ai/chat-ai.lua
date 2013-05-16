@@ -13,8 +13,8 @@ function speakTrigger(card,from,to,event)
 
 	if not card then return end
 
-	if card:inherits("Indulgence") and (to:getHandcardNum()>to:getHp()) then
-		speak(to,"indulgence")
+	if card:inherits("NegativeSoul") and (to:getHandcardNum()>to:getHp()) then
+		speak(to,"negative_soul")
 	elseif card:inherits("LeijiCard") then
 		speak(from,"leiji_jink")
 	elseif card:inherits("QuhuCard") then
@@ -119,8 +119,8 @@ sgs.ai_chat.kurou=
 "求伤药求连弩各种求"
 }
 
---indulgence
-sgs.ai_chat.indulgence=
+--negative_soul
+sgs.ai_chat.negative_soul=
 {
 "乐，乐你妹啊乐",
 "擦，乐我",

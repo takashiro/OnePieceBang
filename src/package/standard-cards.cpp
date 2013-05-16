@@ -146,9 +146,9 @@ Crossbow::Crossbow(Suit suit, int number)
     setObjectName("crossbow");
 }
 
-class DoubleSwordSkill: public WeaponSkill{
+class OkamaMicrophoneSkill: public WeaponSkill{
 public:
-    DoubleSwordSkill():WeaponSkill("double_sword"){
+    OkamaMicrophoneSkill():WeaponSkill("okama_microphone"){
         events << SlashEffect;
     }
 
@@ -163,7 +163,7 @@ public:
                 if(effect.to->isKongcheng())
                     draw_card = true;
                 else{
-                    QString prompt = "double-sword-card:" + effect.from->getGeneralName();
+                    QString prompt = "okama-microphone-card:" + effect.from->getGeneralName();
                     const Card *card = room->askForCard(effect.to, ".", prompt, QVariant(), CardDiscarded);
                     if(card){
                         room->throwCard(card);
@@ -180,16 +180,16 @@ public:
     }
 };
 
-DoubleSword::DoubleSword(Suit suit, int number)
+OkamaMicrophone::OkamaMicrophone(Suit suit, int number)
     :Weapon(suit, number, 2)
 {
-    setObjectName("double_sword");
-    skill = new DoubleSwordSkill;
+    setObjectName("okama_microphone");
+    skill = new OkamaMicrophoneSkill;
 }
 
-class QinggangSwordSkill: public WeaponSkill{
+class WadoIchimonjiSkill: public WeaponSkill{
 public:
-    QinggangSwordSkill():WeaponSkill("qinggang_sword"){
+    WadoIchimonjiSkill():WeaponSkill("wado_ichimonji"){
         events << SlashEffect;
     }
 
@@ -201,17 +201,17 @@ public:
     }
 };
 
-QinggangSword::QinggangSword(Suit suit, int number)
+WadoIchimonji::WadoIchimonji(Suit suit, int number)
     :Weapon(suit, number, 2)
 {
-    setObjectName("qinggang_sword");
+    setObjectName("wado_ichimonji");
 
-    skill = new QinggangSwordSkill;
+    skill = new WadoIchimonjiSkill;
 }
 
-class BladeSkill : public WeaponSkill{
+class SandaiKitetsuSkill : public WeaponSkill{
 public:
-    BladeSkill():WeaponSkill("blade"){
+    SandaiKitetsuSkill():WeaponSkill("sandai_kitetsu"){
         events << SlashMissed;
     }
 
@@ -226,7 +226,7 @@ public:
             return false;
 
         Room *room = player->getRoom();
-        const Card *card = room->askForCard(player, "slash", "blade-slash:" + effect.to->objectName(), QVariant(), NonTrigger);
+        const Card *card = room->askForCard(player, "slash", "sandai_kitetsu-slash:" + effect.to->objectName(), QVariant(), NonTrigger);
         if(card){
             // if player is drank, unset his flag
             if(player->hasFlag("drank"))
@@ -243,16 +243,16 @@ public:
     }
 };
 
-Blade::Blade(Suit suit, int number)
+SandaiKitetsu::SandaiKitetsu(Suit suit, int number)
     :Weapon(suit, number, 3)
 {
-    setObjectName("blade");
-    skill = new BladeSkill;
+    setObjectName("sandai_kitetsu");
+    skill = new SandaiKitetsuSkill;
 }
 
-class SpearSkill: public ViewAsSkill{
+class ShigureSkill: public ViewAsSkill{
 public:
-    SpearSkill():ViewAsSkill("spear"){
+    ShigureSkill():ViewAsSkill("shigure"){
 
     }
 
@@ -290,16 +290,16 @@ public:
     }
 };
 
-Spear::Spear(Suit suit, int number)
+Shigure::Shigure(Suit suit, int number)
     :Weapon(suit, number, 3)
 {
-    setObjectName("spear");
+    setObjectName("shigure");
     attach_skill = true;
 }
 
-class AxeViewAsSkill: public ViewAsSkill{
+class ImpactDialViewAsSkill: public ViewAsSkill{
 public:
-    AxeViewAsSkill():ViewAsSkill("axe"){
+    ImpactDialViewAsSkill():ViewAsSkill("impact_dial"){
 
     }
 
@@ -308,7 +308,7 @@ public:
     }
 
     virtual bool isEnabledAtResponse(const Player *, const QString &pattern) const{
-        return pattern == "@axe";
+        return pattern == "@impact_dial";
     }
 
     virtual bool viewFilter(const QList<CardItem *> &selected, const CardItem *to_select) const{
@@ -332,9 +332,9 @@ public:
     }
 };
 
-class AxeSkill: public WeaponSkill{
+class ImpactDialSkill: public WeaponSkill{
 public:
-    AxeSkill():WeaponSkill("axe"){
+    ImpactDialSkill():WeaponSkill("impact_dial"){
         events << SlashMissed;
     }
 
@@ -342,7 +342,7 @@ public:
         SlashEffectStruct effect = data.value<SlashEffectStruct>();
 
         Room *room = player->getRoom();
-        CardStar card = room->askForCard(player, "@axe", "@axe:" + effect.to->objectName(),data, CardDiscarded);
+        CardStar card = room->askForCard(player, "@impact_dial", "@impact_dial:" + effect.to->objectName(),data, CardDiscarded);
         if(card){
             QList<int> card_ids = card->getSubcards();
             foreach(int card_id, card_ids){
@@ -355,7 +355,7 @@ public:
             }
 
             LogMessage log;
-            log.type = "#AxeSkill";
+            log.type = "#ImpactDialSkill";
             log.from = player;
             log.to << effect.to;
             log.arg = objectName();
@@ -368,23 +368,23 @@ public:
     }
 };
 
-Axe::Axe(Suit suit, int number)
+ImpactDial::ImpactDial(Suit suit, int number)
     :Weapon(suit, number, 3)
 {
-    setObjectName("axe");
-    skill = new AxeSkill;
+    setObjectName("impact_dial");
+    skill = new ImpactDialSkill;
     attach_skill = true;
 }
 
-Halberd::Halberd(Suit suit, int number)
+Yubashiri::Yubashiri(Suit suit, int number)
     :Weapon(suit, number, 4)
 {
-    setObjectName("halberd");
+    setObjectName("yubashiri");
 }
 
-class KylinBowSkill: public WeaponSkill{
+class KabutoSkill: public WeaponSkill{
 public:
-    KylinBowSkill():WeaponSkill("kylin_bow"){
+    KabutoSkill():WeaponSkill("kabuto"){
         events << DamageProceed;
     }
 
@@ -421,24 +421,24 @@ public:
     }
 };
 
-KylinBow::KylinBow(Suit suit, int number)
+Kabuto::Kabuto(Suit suit, int number)
     :Weapon(suit, number, 5)
 {
-    setObjectName("kylin_bow");
-    skill = new KylinBowSkill;
+    setObjectName("kabuto");
+    skill = new KabutoSkill;
 }
 
-class EightDiagramSkill: public ArmorSkill{
+class CloudDialSkill: public ArmorSkill{
 private:
-    EightDiagramSkill():ArmorSkill("eight_diagram"){
+    CloudDialSkill():ArmorSkill("cloud_dial"){
         events << CardAsked;
     }
 
 public:
-    static EightDiagramSkill *GetInstance(){
-        static EightDiagramSkill *instance = NULL;
+    static CloudDialSkill *GetInstance(){
+        static CloudDialSkill *instance = NULL;
         if(instance == NULL)
-            instance = new EightDiagramSkill;
+            instance = new CloudDialSkill;
 
         return instance;
     }
@@ -476,10 +476,10 @@ public:
 
 
 
-EightDiagram::EightDiagram(Suit suit, int number)
+CloudDial::CloudDial(Suit suit, int number)
     :Armor(suit, number){
-    setObjectName("eight_diagram");
-    skill = EightDiagramSkill::GetInstance();
+    setObjectName("cloud_dial");
+    skill = CloudDialSkill::GetInstance();
 }
 
 AmazingGrace::AmazingGrace(Suit suit, int number)
@@ -871,10 +871,10 @@ void Dismantlement::onEffect(const CardEffectStruct &effect) const{
     room->sendLog(log);
 }
 
-Indulgence::Indulgence(Suit suit, int number)
+NegativeSoul::NegativeSoul(Suit suit, int number)
     :DelayedTrick(suit, number)
 {
-    setObjectName("indulgence");
+    setObjectName("negative_soul");
     target_fixed = false;
 
     judge.pattern = QRegExp("(.*):(heart):(.*)");
@@ -882,7 +882,7 @@ Indulgence::Indulgence(Suit suit, int number)
     judge.reason = objectName();
 }
 
-bool Indulgence::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const
+bool NegativeSoul::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const
 {
     if(!targets.isEmpty())
         return false;
@@ -896,7 +896,7 @@ bool Indulgence::targetFilter(const QList<const Player *> &targets, const Player
     return true;
 }
 
-void Indulgence::takeEffect(ServerPlayer *target) const{
+void NegativeSoul::takeEffect(ServerPlayer *target) const{
     target->clearHistory();
     target->skip(Player::Play);
 }
@@ -960,9 +960,9 @@ void Tornado::takeEffect(ServerPlayer *target) const{
 
 // EX cards
 
-class IceSwordSkill: public WeaponSkill{
+class SoulSolidSkill: public WeaponSkill{
 public:
-    IceSwordSkill():WeaponSkill("ice_sword"){
+    SoulSolidSkill():WeaponSkill("ice_sword"){
         events << DamageProceed;
     }
 
@@ -988,16 +988,16 @@ public:
     }
 };
 
-IceSword::IceSword(Suit suit, int number)
+SoulSolid::SoulSolid(Suit suit, int number)
     :Weapon(suit, number, 2)
 {
-    setObjectName("ice_sword");
-    skill = new IceSwordSkill;
+    setObjectName("soul_solid");
+    skill = new SoulSolidSkill;
 }
 
-class RenwangShieldSkill: public ArmorSkill{
+class CloakSkill: public ArmorSkill{
 public:
-    RenwangShieldSkill():ArmorSkill("renwang_shield"){
+    CloakSkill():ArmorSkill("cloak"){
         events << SlashEffected;
     }
 
@@ -1017,11 +1017,11 @@ public:
     }
 };
 
-RenwangShield::RenwangShield(Suit suit, int number)
+Cloak::Cloak(Suit suit, int number)
     :Armor(suit, number)
 {
-    setObjectName("renwang_shield");
-    skill = new RenwangShieldSkill;
+    setObjectName("cloak");
+    skill = new CloakSkill;
 }
 
 class HorseSkill: public DistanceSkill{
@@ -1138,9 +1138,9 @@ void BusouHaki::onEffect(const CardEffectStruct &effect) const{
     room->setPlayerFlag(effect.to, "drank");
 }
 
-class FireFanSkill: public WeaponSkill{
+class FlameDialSkill: public WeaponSkill{
 public:
-    FireFanSkill():WeaponSkill("fan"){
+    FlameDialSkill():WeaponSkill("flame_dial"){
         events << SlashEffect;
     }
     virtual bool trigger(TriggerEvent , ServerPlayer *player, QVariant &data) const{
@@ -1157,9 +1157,9 @@ public:
     }
 };
 
-class FanSkill: public OneCardViewAsSkill{
+class FlameDialViewAsSkill: public OneCardViewAsSkill{
 public:
-    FanSkill():OneCardViewAsSkill("fan"){
+    FlameDialViewAsSkill():OneCardViewAsSkill("flame_dial"){
 
     }
 
@@ -1185,15 +1185,15 @@ public:
 };
 
 
-Fan::Fan(Suit suit, int number):Weapon(suit, number, 4){
-    setObjectName("fan");
-    skill = new FireFanSkill;
+FlameDial::FlameDial(Suit suit, int number):Weapon(suit, number, 4){
+    setObjectName("flame_dial");
+    skill = new FlameDialSkill;
     attach_skill = true;
 }
 
-class GudingBladeSkill: public WeaponSkill{
+class ShusuiSkill: public WeaponSkill{
 public:
-    GudingBladeSkill():WeaponSkill("guding_blade"){
+    ShusuiSkill():WeaponSkill("shusui"){
         events << DamageProceed;
     }
 
@@ -1205,7 +1205,7 @@ public:
             Room *room = damage.to->getRoom();
 
             LogMessage log;
-            log.type = "#GudingBladeEffect";
+            log.type = "#ShusuiEffect";
             log.from = player;
             log.to << damage.to;
             log.arg = QString::number(damage.damage);
@@ -1220,9 +1220,9 @@ public:
     }
 };
 
-GudingBlade::GudingBlade(Suit suit, int number):Weapon(suit, number, 2){
-    setObjectName("guding_blade");
-    skill = new GudingBladeSkill;
+Shusui::Shusui(Suit suit, int number):Weapon(suit, number, 2){
+    setObjectName("shusui");
+    skill = new ShusuiSkill;
 }
 
 class VineSkill: public ArmorSkill{
@@ -1517,18 +1517,18 @@ StandardCardPackage::StandardCardPackage()
 
           << new Crossbow(Card::Club)
           << new Crossbow(Card::Diamond)
-          << new DoubleSword
-          << new QinggangSword
-          << new Blade
-          << new Spear
-          << new Axe
-          << new Halberd
-          << new KylinBow
+          << new OkamaMicrophone
+          << new WadoIchimonji
+          << new SandaiKitetsu
+          << new Shigure
+          << new ImpactDial
+          << new Yubashiri
+          << new Kabuto
 
-          << new EightDiagram(Card::Spade)
-          << new EightDiagram(Card::Club);
+          << new CloudDial(Card::Spade)
+          << new CloudDial(Card::Club);
 
-    skills << EightDiagramSkill::GetInstance();
+    skills << CloudDialSkill::GetInstance();
 
     {
         QList<Card *> horses;
@@ -1539,7 +1539,7 @@ StandardCardPackage::StandardCardPackage()
                << new OffensiveHorse(Card::Spade, 13)
                << new OffensiveHorse(Card::Diamond, 13);
 
-        horses.at(0)->setObjectName("jueying");
+        horses.at(0)->setObjectName("waver");
         horses.at(1)->setObjectName("dilu");
         horses.at(2)->setObjectName("zhuahuangfeidian");
         horses.at(3)->setObjectName("chitu");
@@ -1581,9 +1581,9 @@ StandardCardPackage::StandardCardPackage()
           << new Nullification(Card::Spade, 11)
           << new Nullification(Card::Club, 12)
           << new Nullification(Card::Club, 13)
-          << new Indulgence(Card::Spade, 6)
-          << new Indulgence(Card::Club, 6)
-          << new Indulgence(Card::Heart, 6)
+          << new NegativeSoul(Card::Spade, 6)
+          << new NegativeSoul(Card::Club, 6)
+          << new NegativeSoul(Card::Heart, 6)
           << new Lightning(Card::Spade, 1)
           << new Lightning(Card::Heart, 12)
           << new Rain(Card::Heart, 1)
@@ -1591,12 +1591,12 @@ StandardCardPackage::StandardCardPackage()
           << new Tornado(Card::Club, 1)
           << new Tornado(Card::Diamond, 12);
 
-    cards << new IceSword(Card::Spade, 2)
-          << new RenwangShield(Card::Club, 2)
+    cards << new SoulSolid(Card::Spade, 2)
+          << new Cloak(Card::Club, 2)
           << new Nullification(Card::Diamond, 12);
 
     // spade
-    cards << new GudingBlade(Card::Spade, 1)
+    cards << new Shusui(Card::Spade, 1)
             << new Vine(Card::Spade, 2)
             << new BusouHaki(Card::Spade, 3)
             << new ThunderSlash(Card::Spade, 4)
@@ -1641,7 +1641,7 @@ StandardCardPackage::StandardCardPackage()
             << new Nullification(Card::Heart, 13);
 
     // diamond
-    cards << new Fan(Card::Diamond, 1)
+    cards << new FlameDial(Card::Diamond, 1)
             << new Vulnerary(Card::Diamond, 2)
             << new Vulnerary(Card::Diamond, 3)
             << new FireSlash(Card::Diamond, 4)
@@ -1662,7 +1662,7 @@ StandardCardPackage::StandardCardPackage()
     foreach(Card *card, cards)
         card->setParent(this);
 
-    skills << new SpearSkill << new AxeViewAsSkill << new RainEffect << new RainEffectEx << new FanSkill;
+    skills << new ShigureSkill << new ImpactDialViewAsSkill << new RainEffect << new RainEffectEx << new FlameDialViewAsSkill;
     related_skills.insertMulti("raineffect", "#raineffect-extra");
 }
 

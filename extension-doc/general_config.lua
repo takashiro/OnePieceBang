@@ -47,7 +47,7 @@ sgs.ai_use_value =
 	Collateral=8.8,
 
 
-	Indulgence=8,
+	NegativeSoul=8,
 	Nullification = 8,
 	SupplyShortage=7,
 
@@ -127,13 +127,13 @@ sgs.ai_use_priority = {
 	OffensiveHorse = 2.69,
 	Halberd=2.685,
 	KylinBow=2.68,
-	Blade = 2.675,
-	GudingBlade=2.67,
-	DoubleSword =2.665,
+	SandaiKitetsu = 2.675,
+	Shusui=2.67,
+	OkamaMicrophone =2.665,
 	Spear = 2.66,
 	Fan=2.655,
 	IceSword=2.65,
-	QinggangSword=2.645,
+	WadoIchimonji=2.645,
 	Axe=2.64,
 	MoonSpear=2.635,
 	Crossbow = 2.63,
@@ -160,7 +160,7 @@ sgs.ai_use_priority = {
 	--deluge
 	--supply_shortage
 	--earthquake
-	--indulgence
+	--negative_soul
 	--mudslide
 	--lightning
 	--typhoon

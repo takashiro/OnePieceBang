@@ -513,9 +513,9 @@ function SmartAI:cardNeed(card)
 	if card:inherits("Axe") and  self:hasSkills("luoyi|jiushi|jiuchi|pojun",self.player) then return 15 end
 	if card:inherits("Weapon") and (not self.player:getWeapon()) and (self:getCardsNum("Slash") > 1) then return 6 end
 	if card:inherits("Nullification") and self:getCardsNum("Nullification") == 0 then
-		if self.player:containsTrick("indulgence") or self.player:containsTrick("supply_shortage") then return 10 end
+		if self.player:containsTrick("negative_soul") or self.player:containsTrick("supply_shortage") then return 10 end
 		for _,friend in ipairs(self.friends) do
-			if friend:containsTrick("indulgence") or friend:containsTrick("supply_shortage") then return 7 end
+			if friend:containsTrick("negative_soul") or friend:containsTrick("supply_shortage") then return 7 end
 		end
 		return 6
 	end
@@ -1805,7 +1805,7 @@ function SmartAI:askForNullification(trick, from, to, positive)
 
 		if self:isFriend(to) then
 			if not (to:hasSkill("guanxing") and global_room:alivePlayerCount() > 4) then 
-				if (trick:inherits("Indulgence") and not to:hasSkill("tuxi")) or 
+				if (trick:inherits("NegativeSoul") and not to:hasSkill("tuxi")) or 
 					(trick:inherits("SupplyShortage") and not self:hasSkills("guidao|tiandu",to) and to:getMark("@kuiwei") == 0) then
 					return null_card
 				end
@@ -1915,12 +1915,12 @@ function SmartAI:askForCardChosen(who, flags, reason)
 	if self:isFriend(who) then
 		if flags:match("j") then
 			local tricks = who:getCards("j")
-			local lightning, indulgence, supply_shortage
+			local lightning, negative_soul, supply_shortage
 			for _, trick in sgs.qlist(tricks) do
 				if trick:inherits("Lightning") then
 					lightning = trick:getId()
-				elseif trick:inherits("Indulgence") or trick:getSuit() == sgs.Card_Diamond then
-					indulgence = trick:getId()
+				elseif trick:inherits("NegativeSoul") or trick:getSuit() == sgs.Card_Diamond then
+					negative_soul = trick:getId()
 				elseif not trick:inherits("Disaster") then
 					supply_shortage = trick:getId()
 				end
@@ -1931,16 +1931,16 @@ function SmartAI:askForCardChosen(who, flags, reason)
 				return lightning
 			end
 
-			if indulgence and supply_shortage then
+			if negative_soul and supply_shortage then
 				if who:getHp() < who:getHandcardNum() then
-					return indulgence
+					return negative_soul
 				else
 					return supply_shortage
 				end
 			end
 
-			if indulgence or supply_shortage then
-				return indulgence or supply_shortage
+			if negative_soul or supply_shortage then
+				return negative_soul or supply_shortage
 			end
 		end
 
@@ -2123,7 +2123,7 @@ function SmartAI:askForAG(card_ids, refusable, reason)
 
 	if refusable and self:hasSkill("xinzhan") then
 		local next_player = self.player:getNextAlive()
-		if self:isFriend(next_player) and next_player:containsTrick("indulgence") then
+		if self:isFriend(next_player) and next_player:containsTrick("negative_soul") then
 			if #card_ids == 1 then return -1 end
 		end
 		for _, card_id in ipairs(card_ids) do
@@ -2140,7 +2140,7 @@ function SmartAI:askForAG(card_ids, refusable, reason)
 		if card:inherits("Vulnerary") then return card:getEffectiveId() end
 	end
 	for _, card in ipairs(cards) do
-		if card:inherits("Indulgence") and not (self:isWeak() and self:getCardsNum("Jink") == 0) then return card:getEffectiveId() end
+		if card:inherits("NegativeSoul") and not (self:isWeak() and self:getCardsNum("Jink") == 0) then return card:getEffectiveId() end
 		if card:inherits("AOE") and not (self:isWeak() and self:getCardsNum("Jink", self.player) == 0) then return card:getEffectiveId() end
 	end
 	self:sortByCardNeed(cards)
@@ -2157,13 +2157,13 @@ function SmartAI:askForCardShow(requestor, reason)
 end
 
 function sgs.ai_cardneed.bignumber(to, card, self)
-	if not to:containsTrick("indulgence") and self:getUseValue(card) < 6 then
+	if not to:containsTrick("negative_soul") and self:getUseValue(card) < 6 then
 		return card:getNumber() > 10
 	end
 end
 
 function sgs.ai_cardneed.equip(to, card, self)
-	if not to:containsTrick("indulgence") then
+	if not to:containsTrick("negative_soul") then
 		return card:getTypeId() == sgs.Card_Equip
 	end
 end
@@ -2258,7 +2258,7 @@ function SmartAI:getCardNeedPlayer(cards)
 	if self.player:getLostHp() < 2 then   
 		local cannulname = self.player:getGeneralName()
 		for _, friend in ipairs(friends) do
-			if friend:containsTrick("indulgence") and not friend:getGeneralName() == cannulname  and friend:faceUp() then
+			if friend:containsTrick("negative_soul") and not friend:getGeneralName() == cannulname  and friend:faceUp() then
 				for _, hcard in ipairs(cardtogive) do
 					if hcard:inherits("Nullification") then
 						return hcard, friend
@@ -2270,7 +2270,7 @@ function SmartAI:getCardNeedPlayer(cards)
 
 		for _, friend in ipairs(friends) do
 			if not self:needKongcheng(friend) then
-				if self:isWeak(friend) and not (friend:containsTrick("indulgence") and not friend:getGeneralName() == cannulname) and 
+				if self:isWeak(friend) and not (friend:containsTrick("negative_soul") and not friend:getGeneralName() == cannulname) and 
 					friend:getHandcardNum() < 3 then
 					for _, hcard in ipairs(cards) do
 						if hcard:inherits("Vulnerary") or hcard:inherits("Jink") or hcard:inherits("Analeptic") then
@@ -2282,7 +2282,7 @@ function SmartAI:getCardNeedPlayer(cards)
 		end
 
 		for _, friend in ipairs(friends) do
-			if friend:hasSkill("shuangxiong")  and not friend:containsTrick("indulgence") and not friend:containsTrick("supply_shortage") and friend:faceUp() then
+			if friend:hasSkill("shuangxiong")  and not friend:containsTrick("negative_soul") and not friend:containsTrick("supply_shortage") and friend:faceUp() then
 				for _, hcard in ipairs(cardtogive) do
 					if #cardtogive > 1 then 
 						return hcard, friend
@@ -2292,7 +2292,7 @@ function SmartAI:getCardNeedPlayer(cards)
 		end
 
 		for _, friend in ipairs(friends) do
-			if friend:hasSkill("xianzhen") or friend:hasSkill("tianyi")  and not friend:containsTrick("indulgence") and friend:faceUp() then
+			if friend:hasSkill("xianzhen") or friend:hasSkill("tianyi")  and not friend:containsTrick("negative_soul") and friend:faceUp() then
 				for _, hcard in ipairs(cardtogive) do
 					local givebigdone = 0
 					if #cardtogive > 1 and givebigdone ~= 1 and hcard:getNumber() > 10 then 
@@ -2310,7 +2310,7 @@ function SmartAI:getCardNeedPlayer(cards)
 		end
 
 		for _, friend in ipairs(friends) do
-			if friend:hasSkill("paoxiao") and not friend:containsTrick("indulgence") and friend:faceUp() then
+			if friend:hasSkill("paoxiao") and not friend:containsTrick("negative_soul") and friend:faceUp() then
 			local noweapon
 				if not friend:getWeapon() and  giveweapondone ~= 1 then
 					noweapon = 1
@@ -2331,7 +2331,7 @@ function SmartAI:getCardNeedPlayer(cards)
 		end
 
 		for _, friend in ipairs(friends) do
-			if friend:hasSkill("jizhi") and not friend:containsTrick("indulgence") and friend:faceUp() then
+			if friend:hasSkill("jizhi") and not friend:containsTrick("negative_soul") and friend:faceUp() then
 				for _, hcard in ipairs(cardtogive) do
 					if #cardtogive > 1 and hcard:inherits("TrickCard") then 
 						return hcard, friend
@@ -2353,7 +2353,7 @@ function SmartAI:getCardNeedPlayer(cards)
 		end
 
 		for _, friend in ipairs(friends) do
-			if friend:hasSkill("zhiheng") and not friend:containsTrick("indulgence") and friend:faceUp() then
+			if friend:hasSkill("zhiheng") and not friend:containsTrick("negative_soul") and friend:faceUp() then
 				for _, hcard in ipairs(cardtogive) do
 					if #cardtogive > 1 and not hcard:inherits("Jink") then 
 						return hcard, friend
@@ -2371,7 +2371,7 @@ function SmartAI:getCardNeedPlayer(cards)
 		if (self.player:getHandcardNum() == 2 and self.player:usedTimes("RendeCard") == 0) or
 			(self.player:getHandcardNum() == 1 and self.player:usedTimes("RendeCard") == 1) then
 			for _, enemy in ipairs(self.enemies) do
-				if self:isEquip("GudingBlade", enemy) and 
+				if self:isEquip("Shusui", enemy) and 
 				(enemy:canSlash(self.player, true) or enemy:hasSkill("shensu") or enemy:hasSkill("wushen") or enemy:hasSkill("jiangchi")) then return end
 				if enemy:canSlash(self.player, true) and enemy:hasSkill("qianxi") and enemy:distanceTo(self.player) == 1 then return end
 			end
@@ -2477,7 +2477,7 @@ function SmartAI:getCardNeedPlayer(cards)
 					local v = 0
 					local target
 					for _, friend in ipairs(friends) do
-						if not friend:getArmor() and self:evaluateArmor(hcard, friend) > v and not friend:containsTrick("indulgence") 
+						if not friend:getArmor() and self:evaluateArmor(hcard, friend) > v and not friend:containsTrick("negative_soul") 
 							and not self:needKongcheng(friend) then
 							v = self:evaluateArmor(hcard, friend)
 							target = friend
@@ -2491,7 +2491,7 @@ function SmartAI:getCardNeedPlayer(cards)
 					self:sort(self.friends_noself)
 					for _, friend in ipairs(friends) do
 						if (not self:getSameEquip(hcard, friend)
-							or (self:hasSkills(sgs.lose_equip_skill, friend) and not friend:containsTrick("indulgence"))) and
+							or (self:hasSkills(sgs.lose_equip_skill, friend) and not friend:containsTrick("negative_soul"))) and
 							not self:needKongcheng(friend) then
 							return hcard, friend
 						end
@@ -3667,7 +3667,7 @@ function SmartAI:hasTrickEffective(card, player)
 	if player then
 		if self.room:isProhibited(self.player, player, card) then return false end
 		if (player:hasSkill("zhichi") and self.room:getTag("Zhichi"):toString() == player:objectName()) or player:hasSkill("noswuyan") then
-			if card and not (card:inherits("Indulgence") or card:inherits("SupplyShortage")) then return false end
+			if card and not (card:inherits("NegativeSoul") or card:inherits("SupplyShortage")) then return false end
 		end
 		if player:hasSkill("wuyan") then
 			if card and (card:inherits("Duel") or card:inherits("FireAttack")) then return false end
@@ -3898,11 +3898,11 @@ function SmartAI:damageMinusHp(self, enemy, type)
 				if not (enemy:hasSkill("xiangle") and basicnum < 2) then slash_damagenum = slash_damagenum + 1 end
 				if self:getCardsNum("Analeptic") > 0 and analepticpowerup == 0 and 
 					not ((self:isEquip("SilverLion", enemy) or self:isEquip("EightDiagram", enemy) or 
-						(not enemy:getArmor() and enemy:hasSkill("bazhen"))) and not self:isEquip("QinggangSword", self.player)) then 
+						(not enemy:getArmor() and enemy:hasSkill("bazhen"))) and not self:isEquip("WadoIchimonji", self.player)) then 
 						slash_damagenum = slash_damagenum + 1 
 						analepticpowerup = analepticpowerup + 1 
 				end
-				if self:isEquip("GudingBlade", self.player) and enemy:isKongcheng() and not self:isEquip("SilverLion", enemy) then
+				if self:isEquip("Shusui", self.player) and enemy:isKongcheng() and not self:isEquip("SilverLion", enemy) then
 					slash_damagenum = slash_damagenum + 1 
 				end
 			end

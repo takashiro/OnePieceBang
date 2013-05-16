@@ -887,7 +887,7 @@ void RoomScene::keyReleaseEvent(QKeyEvent *event){
     case Qt::Key_C: dashboard->selectCard("dismantlement"); break;
     case Qt::Key_U: dashboard->selectCard("duel"); break;
     case Qt::Key_L: dashboard->selectCard("lightning"); break;
-    case Qt::Key_I: dashboard->selectCard("indulgence"); break;
+    case Qt::Key_I: dashboard->selectCard("negative_soul"); break;
     case Qt::Key_R: dashboard->selectCard("collateral"); break;
     case Qt::Key_Y: dashboard->selectCard("all_blue"); break;
 

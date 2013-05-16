@@ -1,6 +1,6 @@
 sgs.ai_judgestring = 
 {
-	indulgence = "heart",
+	negative_soul = "heart",
 	diamond = "heart",
 	supply_shortage = "club",
 	spade = "club",

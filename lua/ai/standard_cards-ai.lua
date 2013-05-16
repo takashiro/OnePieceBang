@@ -21,7 +21,7 @@ function SmartAI:slashProhibit(card,enemy)
 			self:slashIsEffective(card,enemy) then return true end
 		if self:getCardsNum("Jink",enemy) == 0 and enemy:getHp() < 2 and self:slashIsEffective(card,enemy) then return true end
 		if enemy:isLord() and self:isWeak(enemy) and self:slashIsEffective(card,enemy) then return true end
-		if self:isEquip("GudingBlade") and enemy:isKongcheng() then return true end
+		if self:isEquip("Shusui") and enemy:isKongcheng() then return true end
 	else
 		if enemy:isChained() and not self:isGoodChainTarget(enemy) and self:slashIsEffective(card,enemy) 
 			and (card:inherits("NatureSlash") or self.player:hasSkill("zonghuo")) then
@@ -62,7 +62,7 @@ function SmartAI:slashIsEffective(slash, to)
 	if self.player:hasSkill("zonghuo") then nature = sgs.DamageStruct_Fire end
 	if not self:damageIsEffective(to, nature) then return false end
 
-	if self.player:hasWeapon("qinggang_sword") or (self.player:hasFlag("xianzhen_success") and self.room:getTag("XianzhenTarget"):toPlayer() == to) then
+	if self.player:hasWeapon("wado_ichimonji") or (self.player:hasFlag("xianzhen_success") and self.room:getTag("XianzhenTarget"):toPlayer() == to) then
 		return true
 	end
 
@@ -204,7 +204,7 @@ function SmartAI:useCardSlash(card, use)
 
 	for _, friend in ipairs(self.friends_noself) do
 		if friend:hasSkill("yiji") and friend:getLostHp() < 1 and
-			not (friend:containsTrick("indulgence") or friend:containsTrick("supply_shortage")) then
+			not (friend:containsTrick("negative_soul") or friend:containsTrick("supply_shortage")) then
 			local slash_prohibit = false
 			slash_prohibit = self:slashProhibit(card, friend)
 			if not slash_prohibit then
@@ -301,7 +301,7 @@ sgs.ai_skill_cardask["slash-jink"] = function(self, data, pattern, target)
 			if self:isEquip("Axe", target) then
 				if self:hasSkills(sgs.lose_equip_skill, target) and target:getEquips():length() > 1 then return "." end
 				if target:getHandcardNum() - target:getHp() > 2 then return "." end
-			elseif self:isEquip("Blade", target) then
+			elseif self:isEquip("SandaiKitetsu", target) then
 				if self:getCardsNum("Jink") <= self:getCardsNum("Slash", target) then return "." end
 			end
 		end
@@ -367,27 +367,27 @@ sgs.ai_keep_value.Jink = 4
 sgs.dynamic_value.benefit.Vulnerary = true
 
 sgs.weapon_range.Crossbow = 1
-sgs.weapon_range.DoubleSword = 2
-sgs.weapon_range.QinggangSword = 2
+sgs.weapon_range.OkamaMicrophone = 2
+sgs.weapon_range.WadoIchimonji = 2
 sgs.weapon_range.IceSword = 2
-sgs.weapon_range.GudingBlade = 2
+sgs.weapon_range.Shusui = 2
 sgs.weapon_range.Axe = 3
-sgs.weapon_range.Blade = 3
+sgs.weapon_range.SandaiKitetsu = 3
 sgs.weapon_range.Spear = 3
 sgs.weapon_range.Halberd = 4
 sgs.weapon_range.KylinBow = 5
 
-sgs.ai_skill_invoke.double_sword = true
+sgs.ai_skill_invoke.okama_microphone = true
 
-function sgs.ai_slash_weaponfilter.double_sword(to, self)
+function sgs.ai_slash_weaponfilter.okama_microphone(to, self)
 	return self.player:getGender()~=to:getGender()
 end
 
-function sgs.ai_weapon_value.double_sword(self, enemy)
+function sgs.ai_weapon_value.okama_microphone(self, enemy)
 	if enemy and enemy:getGeneral():isMale() ~= self.player:getGeneral():isMale() then return 3 end
 end
 
-sgs.ai_skill_cardask["double-sword-card"] = function(self, data, pattern, target)
+sgs.ai_skill_cardask["okama-microphone-card"] = function(self, data, pattern, target)
 	if target and self:isFriend(target) then return "." end
 	if self:needBear() then return "." end
 	local cards = self.player:getHandcards()
@@ -400,7 +400,7 @@ sgs.ai_skill_cardask["double-sword-card"] = function(self, data, pattern, target
 	return "."
 end
 
-function sgs.ai_weapon_value.qinggang_sword(self, enemy)
+function sgs.ai_weapon_value.wado_ichimonji(self, enemy)
 	if enemy and enemy:getArmor() then return 3 end
 end
 
@@ -425,11 +425,11 @@ sgs.ai_skill_invoke.ice_sword=function(self, data)
 	end
 end
 
-function sgs.ai_slash_weaponfilter.guding_blade(to)
+function sgs.ai_slash_weaponfilter.shusui(to)
 	return to:isKongcheng()
 end
 
-function sgs.ai_weapon_value.guding_blade(self, enemy)
+function sgs.ai_weapon_value.shusui(self, enemy)
 	if not enemy then return end
 	local value = 2
 	if enemy:getHandcardNum() < 1 then value = 4 end
@@ -489,7 +489,7 @@ function sgs.ai_weapon_value.axe(self, enemy)
 	if enemy and enemy:getHp() < 3 then return 3 - enemy:getHp() end
 end
 
-sgs.ai_skill_cardask["blade-slash"] = function(self, data, pattern, target)
+sgs.ai_skill_cardask["sandai_kitetsu-slash"] = function(self, data, pattern, target)
 	if target and self:isFriend(target) and not (target:hasSkill("leiji") and self:getCardsNum("Jink", target, "h") > 0) then
 		return "."
 	end
@@ -501,7 +501,7 @@ sgs.ai_skill_cardask["blade-slash"] = function(self, data, pattern, target)
 	return "."
 end
 
-function sgs.ai_weapon_value.blade(self, enemy)
+function sgs.ai_weapon_value.sandai_kitetsu(self, enemy)
 	if not enemy then return self:getCardsNum("Slash") end
 end
 
@@ -636,12 +636,12 @@ end
 sgs.ai_use_priority.OffensiveHorse = 2.69
 sgs.ai_use_priority.Halberd = 2.685
 sgs.ai_use_priority.KylinBow = 2.68
-sgs.ai_use_priority.Blade = 2.675
-sgs.ai_use_priority.GudingBlade = 2.67
-sgs.ai_use_priority.DoubleSword =2.665
+sgs.ai_use_priority.SandaiKitetsu = 2.675
+sgs.ai_use_priority.Shusui = 2.67
+sgs.ai_use_priority.OkamaMicrophone =2.665
 sgs.ai_use_priority.Spear = 2.66
 sgs.ai_use_priority.IceSword = 2.65
-sgs.ai_use_priority.QinggangSword = 2.645
+sgs.ai_use_priority.WadoIchimonji = 2.645
 sgs.ai_use_priority.Axe = 2.64
 sgs.ai_use_priority.Crossbow = 2.63
 sgs.ai_use_priority.SilverLion = 0.9
@@ -665,7 +665,7 @@ sgs.ai_skill_cardask.aoe = function(self, data, pattern, target, target2, name)
 	if self.player:hasSkill("wuyan") then return "." end
 	if target:hasSkill("wuyan") and not (menghuo and aoe:inherits("SavageAssault")) then return "." end
 	if self.player:hasSkill("jianxiong") and self:getAoeValue(aoe) > -10 and
-		(self.player:getHp()>1 or self:getAllVulneraryNum()>0) and not self.player:containsTrick("indulgence") then return "." end
+		(self.player:getHp()>1 or self:getAllVulneraryNum()>0) and not self.player:containsTrick("negative_soul") then return "." end
 end
 
 sgs.ai_skill_cardask["neptunian-attack-slash"] = function(self, data, pattern, target, target2)
@@ -970,12 +970,12 @@ function SmartAI:useCardSnatchOrDismantlement(card, use)
 	end
 
 	for _, friend in ipairs(friends) do
-		if (friend:containsTrick("indulgence") or friend:containsTrick("supply_shortage")) and self:hasTrickEffective(card, friend) then
+		if (friend:containsTrick("negative_soul") or friend:containsTrick("supply_shortage")) and self:hasTrickEffective(card, friend) then
 			use.card = card
 			if use.to then 
 				tricks = friend:delayedTricks()
 				for _, trick in sgs.qlist(tricks) do
-					if trick:inherits("Indulgence") then
+					if trick:inherits("NegativeSoul") then
 						if friend:getHp() < friend:getHandcardNum() then
 							sgs.ai_skill_cardchosen[name] = trick:getEffectiveId() 
 						end
@@ -983,7 +983,7 @@ function SmartAI:useCardSnatchOrDismantlement(card, use)
 					if trick:inherits("SupplyShortage") then
 						sgs.ai_skill_cardchosen[name] = trick:getEffectiveId() 
 					end
-					if trick:inherits("Indulgence") then
+					if trick:inherits("NegativeSoul") then
 						sgs.ai_skill_cardchosen[name] = trick:getEffectiveId() 
 					end
 				end				
@@ -1190,12 +1190,12 @@ local function hp_subtract_handcard(a,b)
 	return diff1 < diff2
 end
 
-function SmartAI:useCardIndulgence(card, use)
+function SmartAI:useCardNegativeSoul(card, use)
 	table.sort(self.enemies, hp_subtract_handcard)
 	
 	local enemies = self:exclude(self.enemies, card)
 	for _, enemy in ipairs(enemies) do
-		if self:hasSkills("lijian|fanjian",enemy) and not enemy:containsTrick("indulgence") and not enemy:isKongcheng() and enemy:faceUp() and self:objectiveLevel(enemy) > 3 then
+		if self:hasSkills("lijian|fanjian",enemy) and not enemy:containsTrick("negative_soul") and not enemy:isKongcheng() and enemy:faceUp() and self:objectiveLevel(enemy) > 3 then
 			use.card = card
 			if use.to then use.to:append(enemy) end
 			return
@@ -1203,7 +1203,7 @@ function SmartAI:useCardIndulgence(card, use)
 	end
 	
 	for _, enemy in ipairs(enemies) do
-		if not enemy:containsTrick("indulgence") and not enemy:hasSkill("keji") and enemy:faceUp() and self:objectiveLevel(enemy) > 3 then
+		if not enemy:containsTrick("negative_soul") and not enemy:hasSkill("keji") and enemy:faceUp() and self:objectiveLevel(enemy) > 3 then
 			use.card = card
 			if use.to then use.to:append(enemy) end
 			return
@@ -1211,11 +1211,11 @@ function SmartAI:useCardIndulgence(card, use)
 	end
 end
 
-sgs.ai_use_value.Indulgence = 8
+sgs.ai_use_value.NegativeSoul = 8
 
-sgs.ai_card_intention.Indulgence = 120
+sgs.ai_card_intention.NegativeSoul = 120
 
-sgs.dynamic_value.control_usecard.Indulgence = true
+sgs.dynamic_value.control_usecard.NegativeSoul = true
 
 function SmartAI:useCardLightning(card, use)
 	if self.player:containsTrick("lightning") then return end

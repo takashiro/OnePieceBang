@@ -187,11 +187,11 @@ private:
     bool movable;
 };
 
-class Indulgence:public DelayedTrick{
+class NegativeSoul:public DelayedTrick{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE Indulgence(Card::Suit suit, int number);
+    Q_INVOKABLE NegativeSoul(Card::Suit suit, int number);
 
     virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
     virtual void takeEffect(ServerPlayer *target) const;
@@ -403,18 +403,18 @@ public:
     virtual void onEffect(const CardEffectStruct &effect) const;
 };
 
-class Fan: public Weapon{
+class FlameDial: public Weapon{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE Fan(Card::Suit suit, int number);
+    Q_INVOKABLE FlameDial(Card::Suit suit, int number);
 };
 
-class GudingBlade: public Weapon{
+class Shusui: public Weapon{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE GudingBlade(Card::Suit suit, int number);
+    Q_INVOKABLE Shusui(Card::Suit suit, int number);
 };
 
 class Vine: public Armor{

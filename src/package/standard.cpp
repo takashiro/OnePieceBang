@@ -255,7 +255,7 @@ const DelayedTrick *DelayedTrick::CastFrom(const Card *card){
             trick->addSubcard(card->getId());
             break;
         case Card::Club:
-            trick = new Indulgence(suit, number);
+            trick = new NegativeSoul(suit, number);
             trick->addSubcard(card->getId());
             break;
         case Card::Diamond:

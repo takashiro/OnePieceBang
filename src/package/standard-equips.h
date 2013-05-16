@@ -10,74 +10,74 @@ public:
     Q_INVOKABLE Crossbow(Card::Suit suit, int number = 1);
 };
 
-class DoubleSword:public Weapon{
+class OkamaMicrophone:public Weapon{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE DoubleSword(Card::Suit suit = Spade, int number = 2);
+    Q_INVOKABLE OkamaMicrophone(Card::Suit suit = Spade, int number = 2);
 };
 
-class QinggangSword:public Weapon{
+class WadoIchimonji:public Weapon{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE QinggangSword(Card::Suit suit = Spade, int number = 6);
+    Q_INVOKABLE WadoIchimonji(Card::Suit suit = Spade, int number = 6);
 };
 
-class Blade:public Weapon{
+class SandaiKitetsu:public Weapon{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE Blade(Card::Suit suit = Spade, int number = 5);
+    Q_INVOKABLE SandaiKitetsu(Card::Suit suit = Spade, int number = 5);
 };
 
-class Spear:public Weapon{
+class Shigure:public Weapon{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE Spear(Card::Suit suit = Spade, int number = 12);
+    Q_INVOKABLE Shigure(Card::Suit suit = Spade, int number = 12);
 };
 
-class Axe:public Weapon{
+class ImpactDial:public Weapon{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE Axe(Card::Suit suit = Diamond, int number = 5);
+    Q_INVOKABLE ImpactDial(Card::Suit suit = Diamond, int number = 5);
 };
 
-class Halberd:public Weapon{
+class Yubashiri:public Weapon{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE Halberd(Card::Suit suit = Diamond, int number = 12);
+    Q_INVOKABLE Yubashiri(Card::Suit suit = Diamond, int number = 12);
 };
 
-class KylinBow:public Weapon{
+class Kabuto:public Weapon{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE KylinBow(Card::Suit suit = Heart, int number = 5);
+    Q_INVOKABLE Kabuto(Card::Suit suit = Heart, int number = 5);
 };
 
-class EightDiagram:public Armor{
+class CloudDial:public Armor{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE EightDiagram(Card::Suit suit, int number = 2);
+    Q_INVOKABLE CloudDial(Card::Suit suit, int number = 2);
 };
 
-class IceSword: public Weapon{
+class SoulSolid: public Weapon{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE IceSword(Card::Suit suit, int number);
+    Q_INVOKABLE SoulSolid(Card::Suit suit, int number);
 };
 
-class RenwangShield: public Armor{
+class Cloak: public Armor{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE RenwangShield(Card::Suit suit, int number);
+    Q_INVOKABLE Cloak(Card::Suit suit, int number);
 };
 
 class StandardCardPackage: public Package{

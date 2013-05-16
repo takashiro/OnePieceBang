@@ -18,10 +18,10 @@ public:
 
     virtual const Card *viewAs(CardItem *card_item) const{
         const Card *sub = card_item->getCard();
-        Indulgence *indulgence = new Indulgence(sub->getSuit(), sub->getNumber());
-        indulgence->addSubcard(sub);
-        indulgence->setSkillName(objectName());
-        return indulgence;
+        NegativeSoul *negative_soul = new NegativeSoul(sub->getSuit(), sub->getNumber());
+        negative_soul->addSubcard(sub);
+        negative_soul->setSkillName(objectName());
+        return negative_soul;
     }
 };
 
@@ -36,7 +36,7 @@ bool GhostRapCard::targetFilter(const QList<const Player *> &targets, const Play
 
     foreach(const Card *card, to_select->getJudgingArea()){
         const DelayedTrick *trick = DelayedTrick::CastFrom(card);
-        if(trick->inherits("Indulgence")){
+        if(trick->inherits("NegativeSoul")){
             return true;
         }
     }
