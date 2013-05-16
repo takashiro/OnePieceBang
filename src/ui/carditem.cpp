@@ -49,9 +49,7 @@ void CardItem::setCard(const Card* card)
         cardsuit_pixmap.load(QString("image/system/cardsuit/%1.png").arg(card->getSuitString()));
         number_pixmap.load(QString("image/system/%1/%2.png").arg(card->isBlack()?"black":"red").arg(card->getNumberString()));
         setToolTip(card->getDescription());
-    }
-    else
-    {
+    }else{
         Pixmap::load("image/system/card-back.png");
     }
     m_card = card;

@@ -3917,6 +3917,78 @@ function SmartAI:needBear(player)
     return player:hasSkill("renjie") and not player:hasSkill("jilve") and player:getMark("@bear") < 4
 end
 
+function SmartAI:cantbeHurt(player)
+	local maxfriendmark = 0
+	local maxenemymark = 0
+	local dyingfriend = 0
+	if player:hasSkill("wuhun") then
+		for _, friend in ipairs(self.friends) do
+			local friendmark = friend:getMark("@nightmare")
+			if friendmark > maxfriendmark then maxfriendmark = friendmark end
+		end
+		for _, enemy in ipairs(self.enemies) do
+			local enemymark = enemy:getMark("@nightmare")
+			if enemymark > maxenemymark and enemy:objectName() ~= player:objectName() then maxenemymark = enemymark end
+		end
+		if self:isEnemy(player) and not (player:isLord() and self.player:getRole() == "rebel") then
+			if (maxfriendmark+2 > maxenemymark) and not (#self.enemies==1 and #self.friends + #self.enemies == self.room:alivePlayerCount()) then 
+				if not (self.player:getMark("@nightmare") == maxfriendmark and self:isWeak() and not self.player:isLord() and not self.role == "renegade") then
+					return true
+				end
+			end
+		elseif maxfriendmark+1 > maxenemymark then 
+			return true
+		end
+	elseif player:hasSkill("duanchang") then
+		if player:getHp() < 2 then
+			if self:isFriend(player) then
+				return true
+			elseif #self.enemies > 2 then
+				return true
+			end
+		end
+	elseif player:hasSkill("tianxiang") then
+		for _, friend in ipairs(self.friends) do
+			if friend:getHp() < 2 and self:getCardsNum("Vulnerary") == 0 then
+				dyingfriend = dyingfriend + 1
+			end
+		end
+		if dyingfriend > 0 and player:getHandcardNum() > 0 then
+			return true
+		end
+	end
+	return false
+end
+
+function SmartAI:needDeath(player)
+    local maxfriendmark = 0
+	local maxenemymark = 0
+	player = player or self.player
+	if player:hasSkill("wuhun") then
+		for _, aplayer in sgs.qlist(self.room:getAlivePlayers()) do
+			local mark = aplayer:getMark("@nightmare")
+			if self:isFriend(player,aplayer) and player:objectName() ~= aplayer:objectName() then
+				if mark > maxfriendmark then maxfriendmark = mark end
+			end
+			if self:isEnemy(player,aplayer) then
+				if mark > maxenemymark then maxenemymark = mark end
+			end
+			if maxfriendmark > maxenemymark then return false
+			elseif maxenemymark == 0 then return false
+			else return true end
+		end
+	end
+	return false
+end
+
+function SmartAI:doNotSave(player)
+	if (player:hasSkill("niepan") and player:getMark("@nirvana") > 0 and player:getCards("e"):length() < 2) or 
+		(player:hasSkill("fuli") and player:getMark("@laoji") > 0 and player:getCards("e"):length() < 2) then
+		return true
+	end
+	return false
+end
+
 dofile "lua/ai/debug-ai.lua"
 dofile "lua/ai/standard_cards-ai.lua"
 dofile "lua/ai/maneuvering-ai.lua"

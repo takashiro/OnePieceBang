@@ -730,10 +730,6 @@ void StandardPackage::addGenerals()
     General *baki = new General(this, "baki", "pirate", 3);
     baki->addSkill(new Divided);
 
-    General *tashigi = new General(this, "tashigi", "government", 3, false);
-    tashigi->addSkill(new SwordsExpert);
-    tashigi->addSkill(new Kento);
-
     General *arlong = new General(this, "arlong", "pirate", 4);
     arlong->addSkill(new SharkOnTooth);
 
@@ -741,7 +737,15 @@ void StandardPackage::addGenerals()
     hatchan->addSkill(new SixSword);
     addMetaObject<SixSwordCard>();
 
+    General *tashigi = new General(this, "tashigi", "government", 3, false);
+    tashigi->addSkill(new SwordsExpert);
+    tashigi->addSkill(new Kento);
+
     General *smoker = new General(this, "smoker", "government", 3);
     smoker->addSkill(new FogBarrier);
     smoker->addSkill(new Justice);
+
+    General *gaapu = new General(this, "gaapu", "government", 4);
+
+    General *bellemere = new General(this, "bellemere", "government", 3);
 }

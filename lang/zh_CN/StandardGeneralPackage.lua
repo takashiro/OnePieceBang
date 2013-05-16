@@ -71,5 +71,8 @@ return {
 	["sixsword-target"] = "你可以选择弃置1张装备牌，或让 %src 摸一张牌",
 
 	["#gaapu"] = "鉄拳",
-	["gaappu"] = "ガープ",
+	["gaapu"] = "ガープ",
+
+	["#bellemere"] = "",
+	["bellemere"] = "ベルメル",
 }

@@ -2,7 +2,7 @@
 #define ZOMBIE_MODE_H
 
 #include "scenario.h"
-#include "maneuvering.h"
+#include "standard.h"
 
 class ZombieScenario : public Scenario{
     Q_OBJECT
