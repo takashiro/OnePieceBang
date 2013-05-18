@@ -338,7 +338,7 @@ public:
     }
 
     virtual bool triggerable(const ServerPlayer *target) const{
-        return !target->getJudgingArea().isEmpty();
+        return triggerable(target) && !target->getJudgingArea().isEmpty();
     }
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
