@@ -8,7 +8,7 @@ sgs.ai_skill_invoke.hujia = function(self, data)
 	local cards = self.player:getHandcards()
 	if sgs.hujiasource then return false end
 	for _, friend in ipairs(self.friends_noself) do
-		if friend:getKingdom() == "wei" and self:isEquip("EightDiagram", friend) then return true end
+		if friend:getKingdom() == "wei" and self:isEquip("MilkyDial", friend) then return true end
 	end
 	for _, card in sgs.qlist(cards) do
 		if card:inherits("Jink") then
@@ -218,7 +218,7 @@ sgs.ai_chaofeng.xuchu = 3
 sgs.ai_skill_invoke.tiandu = sgs.ai_skill_invoke.jianxiong
 
 function sgs.ai_slash_prohibit.tiandu(self, to)
-	if self:isEnemy(to) and self:isEquip("EightDiagram", to) then return true end
+	if self:isEnemy(to) and self:isEquip("MilkyDial", to) then return true end
 end
 
 sgs.ai_chaofeng.guojia = -4

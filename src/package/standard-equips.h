@@ -59,11 +59,11 @@ public:
     Q_INVOKABLE Kabuto(Card::Suit suit = Heart, int number = 5);
 };
 
-class CloudDial:public Armor{
+class MilkyDial:public Armor{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE CloudDial(Card::Suit suit, int number = 2);
+    Q_INVOKABLE MilkyDial(Card::Suit suit, int number = 2);
 };
 
 class SoulSolid: public Weapon{

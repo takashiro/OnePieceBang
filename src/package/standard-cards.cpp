@@ -428,17 +428,17 @@ Kabuto::Kabuto(Suit suit, int number)
     skill = new KabutoSkill;
 }
 
-class CloudDialSkill: public ArmorSkill{
+class MilkyDialSkill: public ArmorSkill{
 private:
-    CloudDialSkill():ArmorSkill("cloud_dial"){
+    MilkyDialSkill():ArmorSkill("milky_dial"){
         events << CardAsked;
     }
 
 public:
-    static CloudDialSkill *GetInstance(){
-        static CloudDialSkill *instance = NULL;
+    static MilkyDialSkill *GetInstance(){
+        static MilkyDialSkill *instance = NULL;
         if(instance == NULL)
-            instance = new CloudDialSkill;
+            instance = new MilkyDialSkill;
 
         return instance;
     }
@@ -476,10 +476,10 @@ public:
 
 
 
-CloudDial::CloudDial(Suit suit, int number)
+MilkyDial::MilkyDial(Suit suit, int number)
     :Armor(suit, number){
-    setObjectName("cloud_dial");
-    skill = CloudDialSkill::GetInstance();
+    setObjectName("milky_dial");
+    skill = MilkyDialSkill::GetInstance();
 }
 
 AmazingGrace::AmazingGrace(Suit suit, int number)
@@ -1525,10 +1525,10 @@ StandardCardPackage::StandardCardPackage()
           << new Yubashiri
           << new Kabuto
 
-          << new CloudDial(Card::Spade)
-          << new CloudDial(Card::Club);
+          << new MilkyDial(Card::Spade)
+          << new MilkyDial(Card::Club);
 
-    skills << CloudDialSkill::GetInstance();
+    skills << MilkyDialSkill::GetInstance();
 
     {
         QList<Card *> horses;

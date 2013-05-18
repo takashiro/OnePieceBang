@@ -148,7 +148,7 @@ sgs.ai_use_priority = {
 
 
 	SilverLion=0.9,
-	EightDiagram=0.8,
+	MilkyDial=0.8,
 	RenwangShield=0.7,
 	Vine=0.6,
 	GaleShell=0.9,

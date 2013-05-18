@@ -116,7 +116,7 @@ function SmartAI:useCardSlash(card, use)
 		if (self.player:hasSkill("pojun") and friend:getHp() > 4 and self:getCardsNum("Jink", friend) == 0
 			and friend:getHandcardNum() < 3)
 		or (friend:hasSkill("leiji") and not self.player:hasFlag("luoyi")
-		and (self:getCardsNum("Jink", friend) > 0 or (not self:isWeak(friend) and self:isEquip("EightDiagram",friend)))
+		and (self:getCardsNum("Jink", friend) > 0 or (not self:isWeak(friend) and self:isEquip("MilkyDial",friend)))
 		and (hasExplicitRebel(self.room) or not friend:isLord()))
 		or (friend:isLord() and self.player:hasSkill("guagu") and friend:getLostHp() >= 1 and self:getCardsNum("Jink", friend) == 0)
 		or (friend:hasSkill("jieming") and self.player:hasSkill("rende") and (huatuo and self:isFriend(huatuo)))
@@ -591,7 +591,7 @@ function sgs.ai_weapon_value.kylin_bow(self, target)
 	end
 end
 
-sgs.ai_skill_invoke.eight_diagram = function(self, data)
+sgs.ai_skill_invoke.milky_dial = function(self, data)
 	local dying = 0
 	local handang = self.room:findPlayerBySkillName("jiefan")
 	for _, aplayer in sgs.qlist(self.room:getAlivePlayers()) do
@@ -609,7 +609,7 @@ sgs.ai_skill_invoke.eight_diagram = function(self, data)
 	return true
 end
 
-function sgs.ai_armor_value.eight_diagram(player, self)
+function sgs.ai_armor_value.milky_dial(player, self)
 	local haszj = self:hasSkills("leiji", self:getEnemies(player))
 	if haszj then 
 		return 2
@@ -645,7 +645,7 @@ sgs.ai_use_priority.WadoIchimonji = 2.645
 sgs.ai_use_priority.Axe = 2.64
 sgs.ai_use_priority.Hammer = 2.63
 sgs.ai_use_priority.SilverLion = 0.9
-sgs.ai_use_priority.EightDiagram = 0.8
+sgs.ai_use_priority.MilkyDial = 0.8
 sgs.ai_use_priority.RenwangShield = 0.7
 sgs.ai_use_priority.DefensiveHorse = 0
 
@@ -851,7 +851,7 @@ function SmartAI:getDangerousCard(who)
 	if (weapon and weapon:inherits("Hammer")) then return  weapon:getEffectiveId() end
 	if (weapon and weapon:inherits("Spear") and who:hasSkill("paoxiao"))  then return  weapon:getEffectiveId() end
 	if (weapon and weapon:inherits("Axe") and self:hasSkills("luoyi|pojun|jiushi|jiuchi", who)) then return weapon:getEffectiveId() end
-	if (who:getArmor() and who:getArmor():inherits("EightDiagram") and who:getArmor():getSuit() == sgs.Card_Spade and who:hasSkill("leiji")) then return who:getArmor():getEffectiveId() end
+	if (who:getArmor() and who:getArmor():inherits("MilkyDial") and who:getArmor():getSuit() == sgs.Card_Spade and who:hasSkill("leiji")) then return who:getArmor():getEffectiveId() end
 	if (weapon and weapon:inherits("SPMoonSpear") and self:hasSkills("guidao|chongzhen|guicai|jilve", who)) then return weapon:getEffectiveId() end
 	if (weapon and who:hasSkill("liegong")) then return weapon:getEffectiveId() end
 end

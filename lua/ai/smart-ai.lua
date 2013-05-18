@@ -180,7 +180,7 @@ function sgs.getDefense(player)
 			defense = defense + 1
 		end
 	end
-	if player:getArmor() and player:getArmor():inherits("EightDiagram") and player:hasSkill("tiandu") then
+	if player:getArmor() and player:getArmor():inherits("MilkyDial") and player:hasSkill("tiandu") then
 		defense = defense + 0.5
 	end
 	if player:hasSkill("jieming") or player:hasSkill("yiji") or player:hasSkill("guixin") then
@@ -260,7 +260,7 @@ function SmartAI:getUseValue(card)
 	if card:getTypeId() == sgs.Card_Equip then
 		if self:hasEquip(card) then
 			if card:inherits("OffensiveHorse") and self.player:getAttackRange()>2 then return 5.5 end
-			if card:inherits("DefensiveHorse") and self:isEquip("EightDiagram") then return 5.5 end
+			if card:inherits("DefensiveHorse") and self:isEquip("MilkyDial") then return 5.5 end
 			return 9
 		end
 		if not self:getSameEquip(card) then v = 6.7 end
@@ -1595,7 +1595,7 @@ function SmartAI:filterEvent(event, player, data)
 			end
 		end
 		if card:inherits("Slash") and to:hasSkill("leiji") and 
-			(self:getCardsNum("Jink", to)>0 or (to:getArmor() and to:getArmor():objectName() == "eight_diagram"))
+			(self:getCardsNum("Jink", to)>0 or (to:getArmor() and to:getArmor():objectName() == "milky_dial"))
 			and (to:getHandcardNum()>2 or from:getState() == "robot") then
 			sgs.ai_leiji_effect = true
 		end
@@ -3502,7 +3502,7 @@ function SmartAI:canAvoidAOE(card)
 		end
 	end
 	if card:inherits("ArcheryAttack") then
-		if self:getCardsNum("Jink") > 0 or (self:isEquip("EightDiagram") and self.player:getHp() > 1) then
+		if self:getCardsNum("Jink") > 0 or (self:isEquip("MilkyDial") and self.player:getHp() > 1) then
 			return true
 		end
 	end
@@ -3600,13 +3600,13 @@ function SmartAI:getAoeValueTo(card, to , from)
 
 		if card:inherits("ArcheryAttack") then
 			sj_num = self:getCardsNum("Jink", to)
-			if (to:hasSkill("leiji") and self:getCardsNum("Jink", to) > 0) or self:isEquip("EightDiagram", to) then
+			if (to:hasSkill("leiji") and self:getCardsNum("Jink", to) > 0) or self:isEquip("MilkyDial", to) then
 				value = value + 30
 				if self:hasSuit("spade", true, to) then
 					value = value + 20
 				end
 			end
-			if to:hasSkill("qingguo") or self:isEquip("EightDiagram", to) then
+			if to:hasSkill("qingguo") or self:isEquip("MilkyDial", to) then
 				value = value + 20
 			end
 		end
@@ -3742,7 +3742,7 @@ function SmartAI:isEquip(equip_name, player)
 	for _, card in sgs.qlist(cards) do
 		if card:inherits(equip_name) then return true end
 	end
-	if equip_name == "EightDiagram" and player:hasSkill("bazhen") and not player:getArmor() then return true end
+	if equip_name == "MilkyDial" and player:hasSkill("bazhen") and not player:getArmor() then return true end
 	if equip_name == "Hammer" and player:hasSkill("paoxiao") then return true end
 	return false
 end
@@ -3897,7 +3897,7 @@ function SmartAI:damageMinusHp(self, enemy, type)
 				and (self.player:distanceTo(enemy) <= self.player:getAttackRange()) then
 				if not (enemy:hasSkill("xiangle") and basicnum < 2) then slash_damagenum = slash_damagenum + 1 end
 				if self:getCardsNum("Analeptic") > 0 and analepticpowerup == 0 and 
-					not ((self:isEquip("SilverLion", enemy) or self:isEquip("EightDiagram", enemy) or 
+					not ((self:isEquip("SilverLion", enemy) or self:isEquip("MilkyDial", enemy) or 
 						(not enemy:getArmor() and enemy:hasSkill("bazhen"))) and not self:isEquip("WadoIchimonji", self.player)) then 
 						slash_damagenum = slash_damagenum + 1 
 						analepticpowerup = analepticpowerup + 1 
