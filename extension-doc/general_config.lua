@@ -136,7 +136,7 @@ sgs.ai_use_priority = {
 	WadoIchimonji=2.645,
 	Axe=2.64,
 	MoonSpear=2.635,
-	Crossbow = 2.63,
+	Hammer = 2.63,
 
 
 	FireSlash = 2.6,

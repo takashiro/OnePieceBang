@@ -722,7 +722,7 @@ bool Player::isProhibited(const Player *to, const Card *card) const{
     return Bang->isProhibited(this, to, card);
 }
 
-bool Player::canSlashWithoutCrossbow() const{
+bool Player::canSlashWithoutHammer() const{
     if(hasSkill("paoxiao"))
         return true;
 

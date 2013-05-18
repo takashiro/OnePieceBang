@@ -115,7 +115,7 @@ sgs.sunshangxiang_keep_value =
 {
 	Vulnerary = 6,
 	Jink = 5.1,
-	Crossbow = 5,
+	Hammer = 5,
 	SandaiKitetsu = 5,
 	Spear = 5,
 	OkamaMicrophone =5,
@@ -135,7 +135,7 @@ sgs.xiahouyuan_keep_value =
 {
 	Vulnerary = 6,
 	Jink = 5.1,
-	Crossbow = 5,
+	Hammer = 5,
 	SandaiKitetsu = 5,
 	Spear = 5,
 	OkamaMicrophone =5,

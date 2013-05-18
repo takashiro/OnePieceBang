@@ -3,11 +3,11 @@
 
 #include "standard.h"
 
-class Crossbow:public Weapon{
+class Hammer:public Weapon{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE Crossbow(Card::Suit suit, int number = 1);
+    Q_INVOKABLE Hammer(Card::Suit suit, int number = 1);
 };
 
 class OkamaMicrophone:public Weapon{

@@ -266,7 +266,7 @@ function SmartAI:getUseValue(card)
 		if not self:getSameEquip(card) then v = 6.7 end
 		if self.weaponUsed and card:inherits("Weapon") then v = 2 end
 		if self.player:hasSkill("qiangxi") and card:inherits("Weapon") then v = 2 end
-		if self.player:hasSkill("kurou") and card:inherits("Crossbow") then return 9 end
+		if self.player:hasSkill("kurou") and card:inherits("Hammer") then return 9 end
 		if self:hasSkill("bazhen") or self:hasSkill("yizhong") and card:inherits("Armor") then v = 2 end
 		if self:hasSkills(sgs.lose_equip_skill) then return 10 end
 	elseif card:getTypeId() == sgs.Card_Basic then
@@ -509,7 +509,7 @@ function SmartAI:cardNeed(card)
 		if self.player:getHp() < 2 then return 10 end
 	end
 	if card:inherits("Slash") and (self:getCardsNum("Slash") > 0) then return 4 end
-	if card:inherits("Crossbow") and  self:hasSkills("luoshen|yongsi|kurou|keji|wusheng|wushen",self.player) then return 20 end
+	if card:inherits("Hammer") and  self:hasSkills("luoshen|yongsi|kurou|keji|wusheng|wushen",self.player) then return 20 end
 	if card:inherits("Axe") and  self:hasSkills("luoyi|jiushi|jiuchi|pojun",self.player) then return 15 end
 	if card:inherits("Weapon") and (not self.player:getWeapon()) and (self:getCardsNum("Slash") > 1) then return 6 end
 	if card:inherits("Nullification") and self:getCardsNum("Nullification") == 0 then
@@ -1958,7 +1958,7 @@ function SmartAI:askForCardChosen(who, flags, reason)
 		end
 	else
 		if flags:match("e") then
-			if self:isEquip("Crossbow",who) and who:getWeapon() then
+			if self:isEquip("Hammer",who) and who:getWeapon() then
 				for _, friend in ipairs(self.friends) do
 					if who:distanceTo(friend) <= 1 then return who:getWeapon():getId() end
 				end
@@ -2315,7 +2315,7 @@ function SmartAI:getCardNeedPlayer(cards)
 				if not friend:getWeapon() and  giveweapondone ~= 1 then
 					noweapon = 1
 					for _, hcard in ipairs(cardtogive) do
-						if #cardtogive > 1  and hcard:inherits("Weapon") and not hcard:inherits("Crossbow") then 
+						if #cardtogive > 1  and hcard:inherits("Weapon") and not hcard:inherits("Hammer") then 
 							giveweapondone = 1
 							noweapon = 0
 							return hcard, friend
@@ -2679,7 +2679,7 @@ function SmartAI:getTurnUse()
 
 	self:sortByUseValue(cards)
 
-	if self:isEquip("Crossbow") then
+	if self:isEquip("Hammer") then
 		slashAvail = 100
 	end
 
@@ -2715,7 +2715,7 @@ function SmartAI:getTurnUse()
 					self.weaponUsed = true
 				end
 				if card:inherits("OffensiveHorse") then self.predictNewHorse = true end
-				if card:objectName() == "crossbow" then slashAvail = 100 end
+				if card:objectName() == "hammer" then slashAvail = 100 end
 				if card:inherits("Snatch") then i = i-1 end
 				if card:inherits("Vulnerary") then i = i+2 end
 				if card:inherits("Collateral") then i = i-1 end
@@ -2811,7 +2811,7 @@ function SmartAI:needRetrial(judge)
 	end
 	if self:isFriend(judge.who) then
 		if judge.reason == "luoshen" and self:getOverflow(judge.who) > 1 and self.player:getHandcardNum() < 3
-			and not self:isEquip("Crossbow", judge.who) then return false end
+			and not self:isEquip("Hammer", judge.who) then return false end
 		return not judge:isGood()
 	elseif self:isEnemy(judge.who) then
 		return judge:isGood()
@@ -3743,7 +3743,7 @@ function SmartAI:isEquip(equip_name, player)
 		if card:inherits(equip_name) then return true end
 	end
 	if equip_name == "EightDiagram" and player:hasSkill("bazhen") and not player:getArmor() then return true end
-	if equip_name == "Crossbow" and player:hasSkill("paoxiao") then return true end
+	if equip_name == "Hammer" and player:hasSkill("paoxiao") then return true end
 	return false
 end
 
@@ -3762,7 +3762,7 @@ function SmartAI:evaluateWeapon(card)
 		end
 	end
 
-	if card:inherits("Crossbow") and deltaSelfThreat ~= 0 then
+	if card:inherits("Hammer") and deltaSelfThreat ~= 0 then
 		if self.player:hasSkill("kurou") then deltaSelfThreat = deltaSelfThreat*3+10 end
 		deltaSelfThreat = deltaSelfThreat + self:getCardsNum("Slash")*3-2
 	end
@@ -3838,7 +3838,7 @@ function SmartAI:useEquipCard(card, use)
 				if not friend:getWeapon() then return end
 			end
 		end
-		if self:hasSkills("paoxiao|fuhun",self.player) and card:inherits("Crossbow") then return end
+		if self:hasSkills("paoxiao|fuhun",self.player) and card:inherits("Hammer") then return end
 		if self.player:getWeapon() and self.player:getWeapon():inherits("YitianSword") then use.card = card return end
 		if self:evaluateWeapon(card) > self:evaluateWeapon(self.player:getWeapon()) then
 			if (not use.to) and self.weaponUsed and (not self:hasSkills(sgs.lose_equip_skill)) then return end
@@ -3893,7 +3893,7 @@ function SmartAI:damageMinusHp(self, enemy, type)
 					end
 				end
 				trick_effectivenum = trick_effectivenum + 1
-			elseif acard:inherits("Slash") and self:slashIsEffective(acard, enemy) and ( slash_damagenum == 0 or self:isEquip("Crossbow", self.player)) 
+			elseif acard:inherits("Slash") and self:slashIsEffective(acard, enemy) and ( slash_damagenum == 0 or self:isEquip("Hammer", self.player)) 
 				and (self.player:distanceTo(enemy) <= self.player:getAttackRange()) then
 				if not (enemy:hasSkill("xiangle") and basicnum < 2) then slash_damagenum = slash_damagenum + 1 end
 				if self:getCardsNum("Analeptic") > 0 and analepticpowerup == 0 and 

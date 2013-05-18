@@ -24,7 +24,7 @@ bool Slash::IsAvailable(const Player *player){
     if(player->hasFlag("slash_forbidden"))
         return false;
 
-    return player->hasWeapon("crossbow") || player->canSlashWithoutCrossbow();
+    return player->hasWeapon("hammer") || player->canSlashWithoutHammer();
 }
 
 bool Slash::isAvailable(const Player *player) const{
@@ -140,10 +140,10 @@ bool Vulnerary::isAvailable(const Player *player) const{
     return player->isWounded();
 }
 
-Crossbow::Crossbow(Suit suit, int number)
+Hammer::Hammer(Suit suit, int number)
     :Weapon(suit, number, 1)
 {
-    setObjectName("crossbow");
+    setObjectName("hammer");
 }
 
 class OkamaMicrophoneSkill: public WeaponSkill{
@@ -1515,8 +1515,8 @@ StandardCardPackage::StandardCardPackage()
 
           << new Vulnerary(Card::Diamond, 12)
 
-          << new Crossbow(Card::Club)
-          << new Crossbow(Card::Diamond)
+          << new Hammer(Card::Club)
+          << new Hammer(Card::Diamond)
           << new OkamaMicrophone
           << new WadoIchimonji
           << new SandaiKitetsu

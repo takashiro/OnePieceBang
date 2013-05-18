@@ -305,7 +305,7 @@ function SmartAI:getTurnUse() -- 这个函数的目的就是得到计划使用�
 
 	self:sortByUseValue(cards) -- 第三步：将可用牌按使用价值从大到小排序
 
-	if self.player:hasSkill("paoxiao") or (self.player:getWeapon() and self.player:getWeapon():objectName() == "crossbow") then
+	if self.player:hasSkill("paoxiao") or (self.player:getWeapon() and self.player:getWeapon():objectName() == "hammer") then
 		slashAvail = 100
 	end
 
@@ -342,7 +342,7 @@ function SmartAI:getTurnUse() -- 这个函数的目的就是得到计划使用�
 					self.weaponUsed = true
 				end
 				if card:inherits("OffensiveHorse") then self.predictNewHorse = true end
-				if card:objectName() == "crossbow" then slashAvail = 100 end
+				if card:objectName() == "hammer" then slashAvail = 100 end
 				if card:inherits("Snatch") then i = i-1 end
 				if card:inherits("Vulnerary") then i = i+2 end
 				if card:inherits("Collateral") then i = i-1 end

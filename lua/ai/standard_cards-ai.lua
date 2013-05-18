@@ -161,7 +161,7 @@ function SmartAI:useCardSlash(card, use)
 		and self:slashIsEffective(card, target) and
 		not (target:hasSkill("xiangle") and basicnum < 2) and not canliuli and
 		not (not self:isWeak(target) and #self.enemies > 1 and #self.friends > 1 and self.player:hasSkill("keji")
-			and self:getOverflow() > 0 and not self:isEquip("Crossbow")) then
+			and self:getOverflow() > 0 and not self:isEquip("Hammer")) then
 			-- fill the card use struct
 			local usecard = card
 			if not use.to or use.to:isEmpty() then
@@ -179,7 +179,7 @@ function SmartAI:useCardSlash(card, use)
 					end
 				end
 				if target:isChained() and self:isGoodChainTarget(target) and not use.card then
-					if self:isEquip("Crossbow") and card:inherits("NatureSlash") then
+					if self:isEquip("Hammer") and card:inherits("NatureSlash") then
 						local slashes = self:getCards("Slash")
 						for _, slash in ipairs(slashes) do
 							if not slash:inherits("NatureSlash") and self:slashIsEffective(slash, target)
@@ -366,7 +366,7 @@ sgs.ai_keep_value.Jink = 4
 
 sgs.dynamic_value.benefit.Vulnerary = true
 
-sgs.weapon_range.Crossbow = 1
+sgs.weapon_range.Hammer = 1
 sgs.weapon_range.OkamaMicrophone = 2
 sgs.weapon_range.WadoIchimonji = 2
 sgs.weapon_range.IceSword = 2
@@ -643,7 +643,7 @@ sgs.ai_use_priority.Spear = 2.66
 sgs.ai_use_priority.IceSword = 2.65
 sgs.ai_use_priority.WadoIchimonji = 2.645
 sgs.ai_use_priority.Axe = 2.64
-sgs.ai_use_priority.Crossbow = 2.63
+sgs.ai_use_priority.Hammer = 2.63
 sgs.ai_use_priority.SilverLion = 0.9
 sgs.ai_use_priority.EightDiagram = 0.8
 sgs.ai_use_priority.RenwangShield = 0.7
@@ -760,7 +760,7 @@ function SmartAI:useCardDuel(duel, use)
 				useduel = false
 			elseif n1 > 0 then
 				local percard = 0.35
-				if target:hasSkill("paoxiao") or target:hasWeapon("crossbow") then percard = 0.2 end
+				if target:hasSkill("paoxiao") or target:hasWeapon("hammer") then percard = 0.2 end
 				local poss = percard ^ n1 * (factorial(n1)/factorial(n2)/factorial(n1-n2))
 				if math.random() > poss then useduel = true end
 			end
@@ -793,7 +793,7 @@ function SmartAI:useCardDuel(duel, use)
 			useduel = false
 		elseif n1 > 0 then
 			local percard = 0.35
-			if target:hasSkill("paoxiao") or target:hasWeapon("crossbow") then percard = 0.2 end
+			if target:hasSkill("paoxiao") or target:hasWeapon("hammer") then percard = 0.2 end
 			local poss = percard ^ n1 * (factorial(n1)/factorial(n2)/factorial(n1-n2))
 			if math.random() > poss then useduel = true end
 		end
@@ -848,7 +848,7 @@ sgs.dynamic_value.benefit.TreasureChest = true
 
 function SmartAI:getDangerousCard(who)
 	local weapon = who:getWeapon()
-	if (weapon and weapon:inherits("Crossbow")) then return  weapon:getEffectiveId() end
+	if (weapon and weapon:inherits("Hammer")) then return  weapon:getEffectiveId() end
 	if (weapon and weapon:inherits("Spear") and who:hasSkill("paoxiao"))  then return  weapon:getEffectiveId() end
 	if (weapon and weapon:inherits("Axe") and self:hasSkills("luoyi|pojun|jiushi|jiuchi", who)) then return weapon:getEffectiveId() end
 	if (who:getArmor() and who:getArmor():inherits("EightDiagram") and who:getArmor():getSuit() == sgs.Card_Spade and who:hasSkill("leiji")) then return who:getArmor():getEffectiveId() end

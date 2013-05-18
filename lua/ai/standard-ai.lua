@@ -667,7 +667,7 @@ kurou_skill.getTurnUseCard=function(self,inclusive)
 		return sgs.Card_Parse("@KurouCard=.")
 	end
 
-	if self.player:getWeapon() and self.player:getWeapon():inherits("Crossbow") then
+	if self.player:getWeapon() and self.player:getWeapon():inherits("Hammer") then
 		for _, enemy in ipairs(self.enemies) do
 			if self.player:canSlash(enemy,true) and self.player:getHp()>1 then
 				return sgs.Card_Parse("@KurouCard=.")
@@ -911,7 +911,7 @@ sgs.sunshangxiang_keep_value =
 {
 	Vulnerary = 6,
 	Jink = 5.1,
-	Crossbow = 5,
+	Hammer = 5,
 	SandaiKitetsu = 5,
 	Spear = 5,
 	OkamaMicrophone =5,

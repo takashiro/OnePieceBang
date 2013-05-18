@@ -201,7 +201,7 @@ public:
 	QSet<QString> getAcquiredSkills() const;
 
 	virtual bool isProhibited(const Player *to, const Card *card) const;
-	bool canSlashWithoutCrossbow() const;
+	bool canSlashWithoutHammer() const;
 	virtual bool isLastHandCard(const Card *card) const = 0;
 
 	void jilei(const char *type);
