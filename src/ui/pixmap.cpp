@@ -25,7 +25,7 @@ bool Pixmap::load(const QString &filename, QSize size, bool center_as_origin)
 }
 
 bool Pixmap::_load(const QString &filename, QSize size, bool useNewSize, bool center_as_origin)
-{    
+{
     bool success = pixmap.load(filename);
 
     if (!success){

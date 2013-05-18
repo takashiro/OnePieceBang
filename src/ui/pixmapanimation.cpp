@@ -4,9 +4,7 @@
 #include <QDir>
 #include <QGraphicsScene>
 
-PixmapAnimation::PixmapAnimation(QGraphicsScene *scene) :
-    QGraphicsItem()
-{
+PixmapAnimation::PixmapAnimation(QGraphicsScene *scene){
 
 }
 

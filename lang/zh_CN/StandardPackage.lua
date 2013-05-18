@@ -36,7 +36,7 @@ local t = {
 	["okama-microphone-card"] = "%src 发动了雌雄双股剑特效，您必须弃置一张手牌或让 %src 摸一张牌",
 	["okama_microphone:yes"] = "您可以让对方选择自弃置一牌或让您摸一张牌",
 
-	["wado_ichimonji"] = "和道·一文字",
+	["wado_ichimonji"] = "和道一文字",
 	[":wado_ichimonji"] = "装备牌·武器\
 攻击范围：２\
 武器特效：<b>锁定技</b>，当你使用【杀】指定一名角色为目标后，无视其防具",

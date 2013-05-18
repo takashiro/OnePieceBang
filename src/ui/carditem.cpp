@@ -20,7 +20,7 @@ CardItem::CardItem(const Card *card)
     auto_back = true;
     frozen = false;
 
-    setTransformOriginPoint(pixmap.width()/2, pixmap.height()/2);    
+    setTransformOriginPoint(pixmap.width()/2, pixmap.height()/2);
     setAcceptHoverEvents(true);
 
     QPixmap frame_pixmap("image/system/frame/good.png");
@@ -43,7 +43,7 @@ void CardItem::setCard(const Card* card)
 {      
     if (card != NULL)        
     {
-        Pixmap::load(card->getPixmapPath(), false);
+        Pixmap::load(card->getPixmapPath());
         icon_pixmap.load(card->getIconPath());
         suit_pixmap.load(QString("image/system/suit/%1.png").arg(card->getSuitString()));
         cardsuit_pixmap.load(QString("image/system/cardsuit/%1.png").arg(card->getSuitString()));

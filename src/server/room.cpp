@@ -2032,7 +2032,6 @@ void Room::assignGeneralsForPlayers(const QList<ServerPlayer *> &to_assign){
 }
 
 void Room::chooseGenerals(){
-
     // for lord.
     const int nonlord_prob = 5;
     if(!Config.EnableHegemony)
@@ -2042,10 +2041,7 @@ void Room::chooseGenerals(){
         if(Config.EnableSame)
             lord_list = Bang->getRandomGenerals(Config.value("MaxChoice", 5).toInt());
         else if(the_lord->getState() == "robot")
-            if(qrand()%100 < nonlord_prob)
-                lord_list = Bang->getRandomGenerals(1);
-            else
-                lord_list = Bang->getLords();
+            lord_list = Bang->getRandomGenerals(1);
         else
             lord_list = Bang->getRandomLords();
         QString general = askForGeneral(the_lord, lord_list);

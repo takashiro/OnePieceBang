@@ -55,7 +55,7 @@ void Dashboard::createLeft(){
     equips << &weapon << &armor << &defensive_horse << &offensive_horse;
 
     for(int i = 0; i < 4; i++){
-        QRectF rect(8, 40 + 32 * i, 117, 25);
+        QRectF rect(8, S_EQUIP_NORMAL_Y + 32 * i, 117, 25);
         equip_rects[i] = new QGraphicsRectItem(rect, left);
         equip_rects[i]->setPen(Qt::NoPen);
     }
@@ -417,7 +417,7 @@ void Dashboard::_installDelayedTrick(CardItem *card){
     else
         tooltip=trick->getDescription();
     item->setToolTip(tooltip);
-    item->setPos(3 + delayed_tricks.length() * 27, 5);
+    item->setPos(3 + delayed_tricks.length() * 27, -14);
     delayed_tricks << item;
 }
 
@@ -625,9 +625,8 @@ void Dashboard::drawEquip(QPainter *painter, const CardItem *equip, int order){
         return;
 
     static const int width = 145;
-    static const int start_y = 40;
 
-    int y = start_y + order * 32;
+    int y = S_EQUIP_NORMAL_Y + order * 34;
 
     const EquipCard *card = qobject_cast<const EquipCard *>(equip->getCard());
     painter->setPen(Qt::black);
@@ -640,33 +639,27 @@ void Dashboard::drawEquip(QPainter *painter, const CardItem *equip, int order){
         QPixmapCache::insert(path, label);
     }
 
-    if(label.isNull())
-    {
-        painter->setPen(Qt::white);
-        QString text = QString("%1").arg(card->label());
-        painter->drawText(10, y + 20, text);
-    }else
-    {
-        QFont font("Algerian",12);
+    if(label.isNull()){
+        painter->setPen(Qt::black);
+        QString text = card->label();
+        QFont font(Config.SmallFont.family(), 10);
         font.setBold(true);
         painter->setFont(font);
-        painter->drawPixmap(8,y + 2,label.width(),label.height(),label);
+        painter->drawText(20, y + 20, text);
+    }else{
+        painter->drawPixmap(8, y + 2, label.width(), label.height(), label);
     }
 
     // draw the suit of equip
-    QRect suit_rect(width - 19, y + 10, 13, 13);
+    QRect suit_rect(width - 35, y + 10, 13, 13);
     painter->drawPixmap(suit_rect, equip->getSuitPixmap());
 
-
     // draw the number of equip
-
-    //painter->drawText(width - 4,y + 23,QString("%1").arg(card->getNumberString()));
-    painter->drawPixmap(width - 14,y + 3,equip->getNumberPixmap());
-
+    painter->drawPixmap(width - 27, y + 3, equip->getNumberPixmap());
 
     painter->setPen(Qt::white);
     if(equip->isMarked()){
-        painter->drawRect(8,y + 2,label.width(),label.height());
+        painter->drawRect(8, y + 2, label.width(), label.height());
     }
 }    
 
