@@ -285,10 +285,8 @@ public:
 };
 
 Monkey::Monkey(Card::Suit suit, int number)
-    :OffensiveHorse(suit, number)
+	:OffensiveHorse(suit, number, "money")
 {
-    setObjectName("monkey");
-
     grab_vulnerary = new GrabVulnerary;
     grab_vulnerary->setParent(this);
 }

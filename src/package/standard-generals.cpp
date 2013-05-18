@@ -362,7 +362,7 @@ public:
 
     virtual bool trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
         CardMoveStar move = data.value<CardMoveStar>();
-        if(move->from_place == Player::Equip){
+        if(move->from_place == Player::Equip && move->to != player){
             Room *room = player->getRoom();
             if(room->askForSkillInvoke(player, objectName())){
                 room->playSkillEffect(objectName());

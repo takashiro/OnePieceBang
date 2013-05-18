@@ -349,20 +349,20 @@ QString Horse::label() const{
     return format.arg(getName()).arg(correct);
 }
 
-OffensiveHorse::OffensiveHorse(Card::Suit suit, int number, int correct)
-    :Horse(suit, number, correct)
+OffensiveHorse::OffensiveHorse(Card::Suit suit, int number, const QString &name)
+    :Horse(suit, number, -1)
 {
-
+    setObjectName(name);
 }
 
 QString OffensiveHorse::getSubtype() const{
     return "offensive_horse";
 }
 
-DefensiveHorse::DefensiveHorse(Card::Suit suit, int number, int correct)
-    :Horse(suit, number, correct)
+DefensiveHorse::DefensiveHorse(Card::Suit suit, int number, const QString &name)
+    :Horse(suit, number, +1)
 {
-
+    setObjectName(name);
 }
 
 QString DefensiveHorse::getSubtype() const{
