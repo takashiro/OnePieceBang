@@ -18,12 +18,12 @@ sgs.ai_use_value.FireSlash = 4.4
 sgs.ai_keep_value.FireSlash = 2.6
 sgs.ai_use_priority.FireSlash = 2.6
 
-sgs.weapon_range.Fan = 4
-sgs.ai_use_priority.Fan = 2.655
+sgs.weapon_range.FlameDial = 4
+sgs.ai_use_priority.FlameDial = 2.655
 sgs.ai_use_priority.Vine = 0.6
 
 	
-sgs.ai_skill_invoke.fan = function(self, data)
+sgs.ai_skill_invoke.flame_dial = function(self, data)
     local target = data:toSlashEffect().to
     if self:isFriend(target) then
       return target:isChained() and self:isGoodChainTarget(target)
@@ -32,17 +32,17 @@ sgs.ai_skill_invoke.fan = function(self, data)
 	end
 end
 
-sgs.ai_view_as.fan = function(card, player, card_place)
+sgs.ai_view_as.flame_dial = function(card, player, card_place)
 	local suit = card:getSuitString()
 	local number = card:getNumberString()
 	local card_id = card:getEffectiveId()
 	if card:inherits("Slash") and not (card:inherits("FireSlash") or card:inherits("ThunderSlash")) then
-		return ("fire_slash:fan[%s:%s]=%d"):format(suit, number, card_id)
+		return ("fire_slash:flame_dial[%s:%s]=%d"):format(suit, number, card_id)
 	end
 end
 
 local fan_skill={}
-fan_skill.name="fan"
+fan_skill.name="flame_dial"
 table.insert(sgs.ai_skills,fan_skill)
 fan_skill.getTurnUseCard=function(self)
 	local cards = self.player:getCards("h")	
@@ -60,7 +60,7 @@ fan_skill.getTurnUseCard=function(self)
 	local suit = slash_card:getSuitString()
 	local number = slash_card:getNumberString()
 	local card_id = slash_card:getEffectiveId()
-	local card_str = ("fire_slash:fan[%s:%s]=%d"):format(suit, number, card_id)
+	local card_str = ("fire_slash:flame_dial[%s:%s]=%d"):format(suit, number, card_id)
 	local fireslash = sgs.Card_Parse(card_str)
 	assert(fireslash)
 	
@@ -68,7 +68,7 @@ fan_skill.getTurnUseCard=function(self)
 		
 end
 
-function sgs.ai_weapon_value.fan(self, enemy)
+function sgs.ai_weapon_value.flame_dial(self, enemy)
 	if enemy and (self:isEquip("Vine", enemy) or self:isEquip("GaleShell", enemy)) then return 3 end
 end
 

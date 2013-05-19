@@ -710,8 +710,7 @@ void RoomScene::updateTable()
 
     QRectF tableRect(col1, row1, col2 - col1, row2 - row1);
     m_tableCenterPos = tableRect.center();
-	qDebug() << "table center" << m_tableCenterPos;
-    control_panel->setPos(m_tableCenterPos);
+	control_panel->setPos(m_tableCenterPos);
     m_drawPile->setPos(m_tableCenterPos);
     m_discardPile->setPos(m_tableCenterPos);
     m_discardPile->setSize(qMax((int)tableRect.width() - room_layout->m_discardPilePadding * 2, room_layout->m_discardPileMinWidth),

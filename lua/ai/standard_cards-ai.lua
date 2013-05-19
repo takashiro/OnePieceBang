@@ -369,13 +369,13 @@ sgs.dynamic_value.benefit.Vulnerary = true
 sgs.weapon_range.Hammer = 1
 sgs.weapon_range.OkamaMicrophone = 2
 sgs.weapon_range.WadoIchimonji = 2
-sgs.weapon_range.IceSword = 2
+sgs.weapon_range.SoulSolid = 2
 sgs.weapon_range.Shusui = 2
-sgs.weapon_range.Axe = 3
+sgs.weapon_range.ImpactDial = 3
 sgs.weapon_range.SandaiKitetsu = 3
-sgs.weapon_range.Spear = 3
-sgs.weapon_range.Halberd = 4
-sgs.weapon_range.KylinBow = 5
+sgs.weapon_range.Shigure = 3
+sgs.weapon_range.Yubashiri = 4
+sgs.weapon_range.Kabuto = 5
 
 sgs.ai_skill_invoke.okama_microphone = true
 
@@ -564,7 +564,7 @@ spear_skill.getTurnUseCard=function(self,inclusive)
 	return slash	
 end
 
-function sgs.ai_slash_weaponfilter.fan(to)
+function sgs.ai_slash_weaponfilter.flame_dial(to)
 	local armor = to:getArmor()
 	return armor and (armor:inherits("Vine") or armor:inherits("GaleShell"))
 end
