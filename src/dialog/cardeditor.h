@@ -45,54 +45,6 @@ private:
     int outline;
 };
 
-class AATextItem: public QGraphicsTextItem{
-public:
-    AATextItem(const QString &text, QGraphicsItem *parent);
-
-protected:
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-};
-
-class SkillTitle;
-
-class SkillBox: public QGraphicsObject{
-    Q_OBJECT
-
-public:
-    SkillBox();
-    void setKingdom(const QString &kingdom);
-    void setMiddleHeight(int height);
-    void setTextEditable(bool editable);
-    void addSkill(const QString &text);
-    SkillTitle *getFocusTitle() const;
-
-    virtual QRectF boundingRect() const;
-
-public slots:
-    void removeSkill();
-    void setSkillTitleFont(const QFont &font);
-    void setSkillDescriptionFont(const QFont &font);
-    void setTinyFont(const QFont &font);
-    void insertSuit(int index);
-    void insertBoldText(const QString &bold_text);
-    void saveConfig();
-    void loadConfig();
-
-protected:
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
-private:
-    int middle_height;
-    QPixmap up, middle, down;
-    QString kingdom;
-    QList<SkillTitle *> skill_titles;
-    QGraphicsTextItem *skill_description;
-    QGraphicsTextItem *copyright_text;
-};
-
 class AvatarRectItem: public QGraphicsRectItem{
 public:
     AvatarRectItem(qreal width, qreal height, const QRectF &box_rect, int font_size);
@@ -115,14 +67,12 @@ public:
     void setGeneralPhoto(const QString &filename);
     BlackEdgeTextItem *getNameItem() const;
     BlackEdgeTextItem *getTitleItem() const;
-    SkillBox *getSkillBox() const;
     void saveConfig();
     void loadConfig();
     void setMenu(QMenu *menu);
 
 public slots:
-    void setRatio(int ratio);
-    void setMaxHp(int max_hp);
+	void setRatio(int ratio);
     void makeBigAvatar();
     void makeSmallAvatar();
     void makeTinyAvatar();
@@ -142,9 +92,7 @@ protected:
 private:
     Pixmap *photo;
     QGraphicsPixmapItem *frame;
-    QList<QGraphicsPixmapItem *> magatamas;
     BlackEdgeTextItem *name, *title;
-    SkillBox *skill_box;
     AvatarRectItem *big_avatar_rect, *small_avatar_rect, *tiny_avatar_rect;
     QMenu *menu, *done_menu;
 
@@ -175,7 +123,6 @@ private:
                                  BlackEdgeTextItem *item
                                  );
     QLayout *createGeneralLayout();
-    QWidget *createSkillBox();
 
 protected:
     virtual void closeEvent(QCloseEvent *);
@@ -190,8 +137,6 @@ private slots:
     void copyPhoto();
     void updateButtonText(const QFont &font);
     void saveAvatar(const QRectF &rect);
-    void addSkill();
-    void editSkill();
 };
 
 #endif // CARDEDITOR_H
