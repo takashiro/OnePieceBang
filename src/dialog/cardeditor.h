@@ -47,14 +47,8 @@ private:
 
 class AvatarRectItem: public QGraphicsRectItem{
 public:
-    AvatarRectItem(qreal width, qreal height, const QRectF &box_rect, int font_size);
+	AvatarRectItem(qreal width, qreal height);
     void toCenter(QGraphicsScene *scene);
-    void setKingdom(const QString &kingdom);
-    void setName(const QString &name);
-
-private:
-    QGraphicsRectItem *name_box;
-    BlackEdgeTextItem *name;
 };
 
 class CardScene: public QGraphicsScene{
@@ -77,8 +71,7 @@ public slots:
     void makeSmallAvatar();
     void makeTinyAvatar();
     void doneMakingAvatar();
-    void hideAvatarRects();
-    void setAvatarNameBox(const QString &text);
+	void hideAvatarRects();
     void resetPhoto();
 
 protected:
