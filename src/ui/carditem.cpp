@@ -41,7 +41,7 @@ CardItem::CardItem(const Card *card)
 
 void CardItem::setCard(const Card* card)
 {      
-    if (card != NULL)        
+	if (card != NULL)
     {
         Pixmap::load(card->getPixmapPath());
         icon_pixmap.load(card->getIconPath());
@@ -49,9 +49,9 @@ void CardItem::setCard(const Card* card)
         cardsuit_pixmap.load(QString("image/system/cardsuit/%1.png").arg(card->getSuitString()));
         number_pixmap.load(QString("image/system/%1/%2.png").arg(card->isBlack()?"black":"red").arg(card->getNumberString()));
         setToolTip(card->getDescription());
-    }else{
+	}else{
         Pixmap::load("image/system/card-back.png");
-    }
+	}
     m_card = card;
     filtered_card = card;
 }
@@ -110,7 +110,7 @@ const Card *CardItem::getFilteredCard() const{
 }
 
 void CardItem::setHomePos(QPointF home_pos){
-    this->home_pos = home_pos;
+	this->home_pos = home_pos;
 }
 
 QPointF CardItem::homePos() const{
@@ -149,7 +149,8 @@ QAbstractAnimation* CardItem::getGoBackAnimation(bool doFade)
         delete m_currentAnimation;
         m_currentAnimation = NULL;
     }
-    QPropertyAnimation *goback = new QPropertyAnimation(this, "pos");
+
+	QPropertyAnimation *goback = new QPropertyAnimation(this, "pos");
     goback->setEndValue(home_pos);
     goback->setEasingCurve(QEasingCurve::OutQuad);
     goback->setDuration(Config.S_MOVE_CARD_ANIMATION_DURAION);
@@ -171,9 +172,7 @@ QAbstractAnimation* CardItem::getGoBackAnimation(bool doFade)
         // card is disabled while moving
         // setEnabled(false);       
         m_currentAnimation = group;
-    }
-    else
-    {      
+    }else{
         m_currentAnimation = goback;
     }
     m_animationMutex.unlock();

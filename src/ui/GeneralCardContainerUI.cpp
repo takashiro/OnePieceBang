@@ -84,9 +84,8 @@ void PlayerCardContainer::_playMoveCardsAnimation(QList<CardItem*> &cards, bool 
     }
     
     QParallelAnimationGroup* animation = new QParallelAnimationGroup;
-    foreach (CardItem* card_item, cards)
-    {
-        if (destroyCards)        
+	foreach(CardItem* card_item, cards){
+		if (destroyCards)
             connect(card_item, SIGNAL(movement_animation_finished()), this, SLOT(_destroyCard()));
         animation->addAnimation(card_item->getGoBackAnimation(true));
     }

@@ -249,7 +249,7 @@ void Photo::updateAvatar(){
         bool success = QFile::exists(general->getPixmapPath("card"));
         if(success){
             success = avatar.load(general->getPixmapPath("card"));
-            avatar = avatar.copy(45, 30, S_NORMAL_PHOTO_WIDTH, S_NORMAL_PHOTO_HEIGHT);
+			avatar = avatar.copy(45, 60, S_NORMAL_PHOTO_WIDTH, S_NORMAL_PHOTO_HEIGHT);
         }
         _m_kingdomIcon.load(player->getKingdomIcon());
         _m_kindomColorMaskIcon = QPixmap(20, S_NORMAL_PHOTO_HEIGHT);
@@ -681,7 +681,7 @@ void Photo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
         int index = static_cast<int>(player->getPhase());
         QPixmap phase_pixmap = phase_pixmaps.at(index);
-        QRect phaseArea(S_NORMAL_PHOTO_WIDTH - 16, S_NORMAL_PHOTO_HEIGHT - 63, 16, 63);
+		QRect phaseArea(3, S_NORMAL_PHOTO_HEIGHT - 63, 16, 63);
         painter->drawPixmap(phaseArea, phase_pixmap);
     }
     drawEquip(painter, weapon, 0);
@@ -691,8 +691,7 @@ void Photo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 }
 
 void Photo::drawEquip(QPainter *painter, CardItem *equip, int order){
-    if(!equip)
-        return;
+	if(!equip) return;
 
     QRect suit_rect(3, 92 + order * 14, 13, 13);
     painter->drawPixmap(suit_rect, equip->getSuitPixmap());

@@ -710,6 +710,7 @@ void RoomScene::updateTable()
 
     QRectF tableRect(col1, row1, col2 - col1, row2 - row1);
     m_tableCenterPos = tableRect.center();
+	qDebug() << "table center" << m_tableCenterPos;
     control_panel->setPos(m_tableCenterPos);
     m_drawPile->setPos(m_tableCenterPos);
     m_discardPile->setPos(m_tableCenterPos);
@@ -949,7 +950,7 @@ void RoomScene::keyReleaseEvent(QKeyEvent *event){
 void RoomScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
     QGraphicsScene::contextMenuEvent(event);
 
-    QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
+	QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
     if(!item)
         return;
 
@@ -1261,10 +1262,9 @@ void RoomScene::loseCards(int moveId, QList<CardsMoveStruct> card_moves)
         card_container->m_currentPlayer = (ClientPlayer*)movement.to;
         PlayerCardContainer* from_container = _getPlayerCardContainer(movement.from_place, movement.from);
         QList<CardItem*> cards = from_container->removeCardItems(movement.card_ids, movement.from_place);
-        foreach (CardItem* card, cards)
-        {      
-            card->setHomePos(from_container->mapToScene(card->homePos()));
-            card->setPos(from_container->mapToScene(card->pos()));
+        foreach (CardItem* card, cards){
+			card->setHomePos(from_container->pos() + card->homePos());
+			card->setPos(from_container->pos() + card->pos());
             card->goBack(true);
             card->setParentItem(NULL);
         }

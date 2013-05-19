@@ -713,7 +713,7 @@ void CardScene::resetPhoto(){
 }
 
 void CardScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
-    QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
+	QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
     if(item){
         if(item->parentItem() == skill_box){
             QGraphicsScene::contextMenuEvent(event);

@@ -2772,12 +2772,12 @@ void Room::drawCards(QList<ServerPlayer*> players, int n, const QString &reason)
         move.to = player; move.to_place = Player::Hand; move.to_player_name = player->objectName();     
         moves.append(move);
     }
-    notifyMoveCards(true, moves, false);  
-    notifyMoveCards(false, moves, false);  
+	notifyMoveCards(true, moves, false);
+	notifyMoveCards(false, moves, false);
     foreach (ServerPlayer* player, players) {
         QVariant data = QVariant::fromValue(n);
         thread->trigger(CardDrawnDone, player, data);
-    }      
+	}
 }
 
 void Room::throwCard(const Card *card, ServerPlayer *who){

@@ -342,7 +342,7 @@ public:
     }
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-        if(!player->askForSkillInvoke(objectName())){
+		if(player == NULL || !player->askForSkillInvoke(objectName())){
             return false;
         }
 

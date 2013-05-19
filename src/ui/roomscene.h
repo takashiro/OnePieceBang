@@ -206,7 +206,7 @@ private:
     DiscardPile *m_discardPile;
     DrawPile *m_drawPile;
     // QQueue<CardItem*> piled_discards;
-    QMainWindow *main_window;
+	QMainWindow *main_window;
     QComboBox *role_combobox;
     IrregularButton *ok_button, *cancel_button, *discard_button;
     TrustButton *trust_button;
