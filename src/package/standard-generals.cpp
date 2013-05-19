@@ -727,8 +727,8 @@ void StandardPackage::addGenerals()
     usopp->addSkill(new Shoot);
     addMetaObject<LieCard>();
 
-    General *baki = new General(this, "baki", "pirate", 3);
-    baki->addSkill(new Divided);
+	General *buggy = new General(this, "buggy", "pirate", 3);
+	buggy->addSkill(new Divided);
 
     General *arlong = new General(this, "arlong", "pirate", 4);
     arlong->addSkill(new SharkOnTooth);
@@ -745,7 +745,7 @@ void StandardPackage::addGenerals()
     smoker->addSkill(new FogBarrier);
     smoker->addSkill(new Justice);
 
-    General *gaapu = new General(this, "gaapu", "government", 4);
+	General *garp = new General(this, "garp", "government", 4);
 
-    General *bellemere = new General(this, "bellemere", "government", 3);
+	General *bellmere = new General(this, "bellmere", "government", 3, false);
 }
