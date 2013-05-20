@@ -144,3 +144,19 @@ sgs.ai_skill_cardchosen.mirage = function(self, who, flags)
 	local judges = who:getJudgingArea()
 	return judges[0]
 end
+
+--Black Feet
+sgs.ai_view_as.blackfeet = function(card, player, card_place)
+	if card_place == sgs.Player_Equip then
+		return
+	end
+
+	local suit = card:getSuitString()
+	local number = card:getNumberString()
+	local card_id = card:getEffectiveId()
+	if card:inherits("Slash") and card:getSuit() == sgs.Card_Club then
+		return ("vulnerary:blackfeet[%s:%s]=%d"):format(suit, number, card_id)
+	elseif card:inherits("Jink") then
+		return ("fire_slash:blackfeet[%s:%s]=%d"):format(suit, number, card_id)
+	end
+end

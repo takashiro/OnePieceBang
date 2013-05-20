@@ -14,7 +14,7 @@ function SmartAI:slashProhibit(card,enemy)
 	end
 
 	if self:isFriend(enemy) then
-		if card:inherits("FireSlash") or self.player:hasWeapon("fan") or self.player:hasSkill("zonghuo") then
+		if card:inherits("FireSlash") or self.player:hasWeapon("flame_dial") or self.player:hasSkill("zonghuo") then
 			if self:isEquip("Vine", enemy) and not (enemy:isChained() and self:isGoodChainTarget(enemy)) then return true end
 		end
 		if enemy:isChained() and (card:inherits("NatureSlash") or self.player:hasSkill("zonghuo")) and not self:isGoodChainTarget(enemy) and
@@ -42,7 +42,7 @@ function SmartAI:canLiuli(other, another)
 end
 
 function SmartAI:slashIsEffective(slash, to)
-     if to:hasSkill("zuixiang") and to:isLocked(slash) then return false end
+    if to:hasSkill("zuixiang") and to:isLocked(slash) then return false end
 	if to:hasSkill("yizhong") and not to:getArmor() then
 		if slash:isBlack() then
 			return false
@@ -61,6 +61,7 @@ function SmartAI:slashIsEffective(slash, to)
 	local nature = natures[slash:className()]
 	if self.player:hasSkill("zonghuo") then nature = sgs.DamageStruct_Fire end
 	if not self:damageIsEffective(to, nature) then return false end
+	if to:hasSkill("divided") then return nature ~= sgs.DamageStruct_Normal end
 
 	if self.player:hasWeapon("wado_ichimonji") or (self.player:hasFlag("xianzhen_success") and self.room:getTag("XianzhenTarget"):toPlayer() == to) then
 		return true
