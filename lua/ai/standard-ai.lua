@@ -94,7 +94,6 @@ end
 sgs.ai_skill_cardask["@forecast-card"] = function(self, data)
 	local judge = data:toJudge()
 	local cards = sgs.QList2Table(self.player:getHandcards())
-	if cards:isEmpty() then return "." end
 
 	if #cards == 0 then return "." end
 	local card_id = self:getRetrialCardId(cards, judge)

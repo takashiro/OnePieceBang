@@ -332,8 +332,8 @@ public:
         }
 
         QStringList prompt_list;
-        prompt_list << "clima" << judge->who->objectName()
-                    << "clima" << judge->reason << judge->card->getEffectIdString();
+		prompt_list << "@forecast-card" << judge->who->objectName()
+					<< "forecast" << judge->reason << judge->card->getEffectIdString();
         QString prompt = prompt_list.join(":");
 		const Card *card = room->askForCard(player, "@forecast-card", prompt, data);
 
