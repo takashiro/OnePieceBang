@@ -74,7 +74,7 @@ end
 
 function sgs.ai_armor_value.vine(player, self)
 	for _, enemy in ipairs(self:getEnemies(player)) do
-		if (enemy:canSlash(player) and self:isEquip("Fan",enemy)) or self:hasSkills("huoji|shaoying", enemy) then return -1 end
+		if (enemy:canSlash(player) and self:isEquip("FlameDial", enemy)) or self:hasSkills("firepunch", enemy) then return -1 end
 		if enemy:objectName() == self.player:objectName() and (self:getCardId("FireSlash", enemy) or self:getCardId("FireAttack",enemy)) then return -1 end
 	end
 	if #(self:getEnemies(player))<3 then return 4 end

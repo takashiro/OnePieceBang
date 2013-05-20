@@ -2887,6 +2887,11 @@ function SmartAI:damageIsEffective(player, nature, source)
 	if player:getMark("@fog") > 0 and nature ~= sgs.DamageStruct_Thunder then
 		return false
 	end
+
+	if (player:hasSkill("insulator") or player:hasSkill("godthunder")) and nature == sgs.DamageStruct_Thunder then
+		return false
+	end
+
 	return true
 end
 

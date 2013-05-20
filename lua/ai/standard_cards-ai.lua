@@ -42,7 +42,7 @@ function SmartAI:canLiuli(other, another)
 end
 
 function SmartAI:slashIsEffective(slash, to)
-    if to:hasSkill("zuixiang") and to:isLocked(slash) then return false end
+     if to:hasSkill("zuixiang") and to:isLocked(slash) then return false end
 	if to:hasSkill("yizhong") and not to:getArmor() then
 		if slash:isBlack() then
 			return false
@@ -68,10 +68,10 @@ function SmartAI:slashIsEffective(slash, to)
 
 	local armor = to:getArmor()
 	if armor then
-		if armor:objectName() == "renwang_shield" then
+		if armor:objectName() == "cloak" then
 			return not slash:isBlack()
 		elseif armor:objectName() == "vine" then
-			return nature ~= sgs.DamageStruct_Normal or self.player:hasWeapon("fan")
+			return nature ~= sgs.DamageStruct_Normal or self.player:hasWeapon("flame_dial")
 		end
 	end
 
