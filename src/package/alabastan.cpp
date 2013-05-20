@@ -88,8 +88,9 @@ public:
     virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
         Room *room = target->getRoom();
         foreach(ServerPlayer *player, room->getOtherPlayers(target)){
-            if(player->hasSkill(objectName()) && player->askForSkillInvoke(objectName(), data)){
+			if(player->hasSkill(objectName()) && player->faceUp() && player->askForSkillInvoke(objectName(), data)){
                 player->drawCards(1);
+				player->turnOver();
             }
         }
 

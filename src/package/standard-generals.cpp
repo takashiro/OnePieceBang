@@ -76,7 +76,7 @@ public:
 class RubberPistolEx: public TriggerSkill{
 public:
     RubberPistolEx():TriggerSkill("#rubberpistol"){
-        events << CardAsked;
+		events << CardAsked;
     }
 
     virtual int getPriority() const{
@@ -87,7 +87,7 @@ public:
         QString asked = data.toString();
         if(asked == "slash"){
             Room *room = player->getRoom();
-            if(room->askForSkillInvoke(player, "rubberpistol")){
+			if(player->askForSkillInvoke("rubberpistol", data)){
                 JudgeStruct judge;
                 judge.pattern = QRegExp("(.*):(heart|diamond):(.*)");
                 judge.good = true;
@@ -342,7 +342,7 @@ public:
     }
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-		if(player == NULL || !player->askForSkillInvoke(objectName())){
+		if(!player->askForSkillInvoke(objectName())){
             return false;
         }
 
@@ -402,7 +402,7 @@ public:
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
         if(event == CardLostOnePiece){
             CardMoveStar move = data.value<CardMoveStar>();
-            if(move->from_place == Player::Equip && Bang->getCard(move->card_id)->getSubtype() == "weapon" && !player->getPile("sword").isEmpty()){
+			if(move->from_place == Player::Equip && move->to != player && Bang->getCard(move->card_id)->getSubtype() == "weapon" && !player->getPile("sword").isEmpty()){
                 int weapon_id = player->getPile("sword").last();
                 Room *room = player->getRoom();
                 room->moveCardTo(Bang->getCard(weapon_id), player, Player::Equip, true);

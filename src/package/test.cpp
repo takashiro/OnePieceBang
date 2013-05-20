@@ -128,7 +128,7 @@ public:
             }
         }else{
             CardUseStruct use = data.value<CardUseStruct>();
-            if(use.card->isRed() && player->askForSkillInvoke(objectName())){
+			if(use.card->isRed() && player->isWounded() && player->askForSkillInvoke(objectName())){
                 RecoverStruct recover;
                 recover.card = use.card;
                 recover.who = player;

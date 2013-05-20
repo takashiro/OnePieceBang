@@ -1367,14 +1367,14 @@ void Client::askForSingleVulnerary(const Json::Value &arg){
     if (!arg.isArray() || arg.size() != 2 || !arg[0].isString() || !arg[1].isInt()) return;
 
     ClientPlayer *dying = getPlayer(toQString(arg[0]));
-    int vulneraryes = arg[1].asInt();
+	int vulnerary_num = arg[1].asInt();
 
     if(dying == Self){
-        prompt_doc->setHtml(tr("You are dying, please provide %1 vulnerary(es)(or analeptic) to save yourself").arg(vulneraryes));
-        card_pattern = "vulnerary+analeptic";
+		prompt_doc->setHtml(tr("You are dying, please provide %1 vulnerary(es)(or analeptic) to save yourself").arg(vulnerary_num));
+		card_pattern = "vulnerary";
     }else{
         QString dying_general = Bang->translate(dying->getGeneralName());
-        prompt_doc->setHtml(tr("%1 is dying, please provide %2 vulnerary(es) to save him").arg(dying_general).arg(vulneraryes));
+		prompt_doc->setHtml(tr("%1 is dying, please provide %2 vulnerary(es) to save him").arg(dying_general).arg(vulnerary_num));
         card_pattern = "vulnerary";
     }
 

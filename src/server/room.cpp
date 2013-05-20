@@ -1157,12 +1157,12 @@ const Card *Room::askForSingleVulnerary(ServerPlayer *player, ServerPlayer *dyin
 
     AI *ai = player->getAI();
     if(ai)
-        card= ai->askForSingleVulnerary(dying);
+		card = ai->askForSingleVulnerary(dying);
     else{
-        int vulneraryes = 1 - dying->getHp();
-        Json::Value arg(Json::arrayValue);
+		int vulnerary_num = 1 - dying->getHp();
+		Json::Value arg(Json::arrayValue);
         arg[0] = toJsonString(dying->objectName());
-        arg[1] = vulneraryes;
+		arg[1] = vulnerary_num;
         bool success = doRequest(player, S_COMMAND_ASK_VULNERARY, arg, true);
         Json::Value clientReply = player->getClientReply();
         if (!success || !clientReply.isString()) return NULL;
