@@ -257,7 +257,7 @@ public:
         Card *card = NULL;
         switch(sub->getSuit()){
         case Card::Spade:
-            if(Self->containsTrick("lighting")){
+			if(Self->containsTrick("lightning")){
                 return NULL;
             }
             card = new Lightning(sub->getSuit(), sub->getNumber());
@@ -284,10 +284,40 @@ public:
     }
 };
 
+ForecastCard::ForecastCard(){
+}
+
+class ForecastViewAsSkill: public OneCardViewAsSkill{
+public:
+	ForecastViewAsSkill(): OneCardViewAsSkill(""){
+
+	}
+
+	virtual bool viewFilter(const CardItem *to_select) const{
+		return !to_select->isEquipped();
+	}
+
+	virtual const Card *viewAs(CardItem *card_item) const{
+		ForecastCard *card = new ForecastCard;
+		card->addSubcard(card_item->getFilteredCard());
+		card->setSkillName("forecast");
+		return card;
+	}
+
+	virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
+		return !player->isKongcheng() && pattern == "@forecast-card";
+	}
+
+	virtual bool isEnabledAtPlay(const Player *) const{
+		return false;
+	}
+};
+
 class Forecast: public TriggerSkill{
 public:
     Forecast():TriggerSkill("forecast"){
         events << AskForRetrial;
+		view_as_skill = new ForecastViewAsSkill;
     }
 
     virtual bool triggerable(const ServerPlayer *target) const{
@@ -305,7 +335,7 @@ public:
         prompt_list << "clima" << judge->who->objectName()
                     << "clima" << judge->reason << judge->card->getEffectIdString();
         QString prompt = prompt_list.join(":");
-        const Card *card = room->askForCard(player, ".", prompt, data);
+		const Card *card = room->askForCard(player, "@forecast-card", prompt, data);
 
         if(card){
             const Card *oldJudge = judge->card;
@@ -338,11 +368,11 @@ public:
     }
 
     virtual bool triggerable(const ServerPlayer *target) const{
-        return triggerable(target) && !target->getJudgingArea().isEmpty();
+		return TriggerSkill::triggerable(target) && !target->getJudgingArea().isEmpty();
     }
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-		if(!player->askForSkillInvoke(objectName())){
+		if(!player->askForSkillInvoke(objectName(), data)){
             return false;
         }
 
@@ -717,6 +747,7 @@ void StandardPackage::addGenerals()
     nami->addSkill(new Clima);
     nami->addSkill(new Forecast);
     nami->addSkill(new Mirage);
+	addMetaObject<ForecastCard>();
 
     General *sanji = new General(this, "sanji", "pirate", 4);
     sanji->addSkill(new Gentleman);

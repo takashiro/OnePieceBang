@@ -73,14 +73,14 @@ function setInitialTables()
 	sgs.lose_equip_skill = 		"xiaoji|xuanfeng|nosxuanfeng"
 	sgs.need_kongcheng = 		"lianying|kongcheng"
 	sgs.masochism_skill = 		"fankui|jieming|yiji|ganglie|enyuan|fangzhu|guixin|quanji"
-	sgs.wizard_skill = 			"guicai|guidao|jilve|tiandu"
-	sgs.wizard_harm_skill = 	"guicai|guidao|jilve"
+	sgs.wizard_skill = 			"forecast"
+	sgs.wizard_harm_skill = 	"forecast"
 	sgs.priority_skill = 		"dimeng|haoshi|qingnang|jizhi|guzheng|qixi|jieyin|guose|duanliang|jujian|fanjian|lijian|manjuan|lihun"
 	sgs.save_skill = 			"jijiu|buyi|jiefan|chunlao"
 	sgs.exclusive_skill = 		"huilei|duanchang|enyuan|wuhun|buqu|yiji|ganglie|guixin|jieming|miji"
 	sgs.cardneed_skill =        "paoxiao|tianyi|xianzhen|shuangxiong|jizhi|guose|duanliang|qixi|qingnang|" ..
 								"jieyin|renjie|zhiheng|rende|jujian|guicai|guidao|jilve|longhun|wusheng|longdan"
-	sgs.drawvulnerary_skill =       "tuxi|qiaobian"
+	sgs.drawvulnerary_skill =   "tuxi|qiaobian"
 	sgs.recover_skill =         "rende|kuanggu|zaiqi|jieyin|qingnang|yinghun"
 	
 	for _, aplayer in sgs.qlist(global_room:getAllPlayers()) do
@@ -2807,7 +2807,7 @@ function SmartAI:needRetrial(judge)
 				return judge:isGood()
 			end
 		end
-		if self:hasSkills("wuyan|hongyan",judge.who) then return false end
+		if self:hasSkills("wuyan|hongyan", judge.who) then return false end
 	end
 	if self:isFriend(judge.who) then
 		if judge.reason == "luoshen" and self:getOverflow(judge.who) > 1 and self.player:getHandcardNum() < 3
@@ -2822,17 +2822,12 @@ end
 
 function SmartAI:canRetrial(player) 
 	player = player or self.player
-	if player:hasSkill("guidao") then
-		local blackequipnum = 0
-		for _,equip in sgs.qlist(player:getEquips()) do
-			if equip:isBlack() then blackequipnum = blackequipnum+1 end
-		end
-		return (blackequipnum+player:getHandcardNum()) > 0
-	elseif player:hasSkill("guicai") then
+	
+	if player:hasSkill("forecast") then
 		return player:getHandcardNum() > 0
-	elseif player:hasSkill("jilve") then
-		return player:getHandcardNum() > 0 and player:getMark("@bear") > 0
-	end		
+	end
+
+	return false
 end
 
 function SmartAI:getFinalRetrial(player) 

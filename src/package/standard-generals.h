@@ -29,6 +29,13 @@ public:
     virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &) const;
 };
 
+class ForecastCard: public SkillCard{
+	Q_OBJECT
+
+public:
+	Q_INVOKABLE ForecastCard();
+};
+
 class LieCard: public SingleTargetTrick{
     Q_OBJECT
 

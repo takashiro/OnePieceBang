@@ -1272,3 +1272,55 @@ end
 sgs.dynamic_value.lucky_chance.Lightning = true
 
 sgs.ai_keep_value.Lightning = -1
+
+function SmartAI:useCardTornado(card, use)
+	if self.player:containsTrick("tornado") then return end
+	if self.player:hasSkill("weimu") and card:isBlack() then return end
+	if self.room:isProhibited(self.player, self.player, card) then end
+
+	--if not self:hasWizard(self.enemies) then--and self.room:isProhibited(self.player, self.player, card) then
+	if self:getFinalRetrial(self.player) == 2 then 
+	return
+	elseif self:getFinalRetrial(self.player) == 1 then
+		use.card = card
+		return
+	else
+		local players = self.room:getAllPlayers()
+		players = sgs.QList2Table(players)
+
+		local friends = 0
+		local enemies = 0
+
+		for _,player in ipairs(players) do
+			if self:objectiveLevel(player) >= 4 then
+				enemies = enemies + 1
+			elseif self:isFriend(player) then
+				friends = friends + 1
+			end
+		end
+
+		local ratio
+
+		if friends == 0 then ratio = 999
+		else ratio = enemies/friends
+		end
+
+		if ratio > 1.5 then
+			use.card = card
+			return
+		end
+	end
+end
+
+function SmartAI:useCardRain(card, use)
+	if self.player:containsTrick("rain") then return end
+	if self.player:hasSkill("weimu") and card:isBlack() then return end
+	if self.room:isProhibited(self.player, self.player, card) then end
+
+	if self:getFinalRetrial(self.player) == 1 then
+		use.card = card
+		return
+	end
+
+	return
+end
