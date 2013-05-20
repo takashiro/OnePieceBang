@@ -26,7 +26,7 @@ config = {
         --"Couple",
         --"Zombie",
         --"Impasse",
-        --"Custom",
+        "Custom",
 	},
 
         --color_wei = "#547998",

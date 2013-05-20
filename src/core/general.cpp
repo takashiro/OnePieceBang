@@ -23,7 +23,7 @@ General::General(Package *package, const QString &name, const QString &kingdom, 
 }
 
 int General::getMaxHp() const{
-    return max_hp;
+	return max_hp;
 }
 
 QString General::getKingdom() const{

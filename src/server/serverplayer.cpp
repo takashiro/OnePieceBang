@@ -728,9 +728,9 @@ ServerPlayer *ServerPlayer::getNextAlive() const{
 int ServerPlayer::getGeneralMaxHp() const{
     int max_hp = 0;
 
-    if(getGeneral2() == NULL)
-        max_hp = getGeneral()->getMaxHp();
-    else{
+	if(getGeneral2() == NULL){
+		max_hp = getGeneral() != NULL ? getGeneral()->getMaxHp() : 4;
+	}else{
         int first = getGeneral()->getMaxHp();
         int second = getGeneral2()->getMaxHp();
 

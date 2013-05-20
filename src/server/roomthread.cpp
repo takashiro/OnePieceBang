@@ -293,7 +293,7 @@ void RoomThread::run(){
     if (Config.EnableBasara) addTriggerSkill(new BasaraMode(this));
 
     if(room->getScenario() != NULL){
-        const ScenarioRule *rule = room->getScenario()->getRule();
+		const ScenarioRule *rule = room->getScenario()->getRule();
         if(rule)
             addTriggerSkill(rule);
     }
