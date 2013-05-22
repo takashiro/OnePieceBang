@@ -70,7 +70,7 @@ function setInitialTables()
 	sgs.target = 				{loyalist = nil, rebel = nil, renegade = nil } -- obsolete
 	sgs.discard_pile =			global_room:getDiscardPile()
 	sgs.draw_pile = 			global_room:getDrawPile()
-	sgs.lose_equip_skill = 		"xiaoji|xuanfeng|nosxuanfeng"
+	sgs.lose_equip_skill = 		"fretywind"
 	sgs.need_kongcheng = 		"lianying|kongcheng"
 	sgs.masochism_skill = 		"fankui|jieming|yiji|ganglie|enyuan|fangzhu|guixin|quanji"
 	sgs.wizard_skill = 			"forecast"
