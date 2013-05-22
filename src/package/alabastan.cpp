@@ -11,7 +11,7 @@ public:
 
     virtual bool viewFilter(const CardItem *to_select) const{
         const Card *card = to_select->getFilteredCard();
-        return card->inherits("Slash") && !card->isEquipped();
+		return card->isRed();
     }
 
     virtual const Card *viewAs(CardItem *card_item) const{
@@ -23,27 +23,10 @@ public:
     }
 };
 
-class FlameRing: public TriggerSkill{
-public:
-    FlameRing(): TriggerSkill("flamering"){
-        events << Predamage;
-    }
-
-    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-        DamageStruct damage = data.value<DamageStruct>();
-        if(damage.nature != DamageStruct::Fire || !player->askForSkillInvoke(objectName())){
-            return false;
-        }
-
-        damage.to->setChained(true);
-        return false;
-    }
-};
-
 class AntiWar: public TriggerSkill{
 public:
     AntiWar(): TriggerSkill("antiwar"){
-        events << Damaged;
+		events << Damage;
     }
 
     virtual bool triggerable(const ServerPlayer *) const{
@@ -51,22 +34,30 @@ public:
     }
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
+		DamageStruct damage = data.value<DamageStruct>();
+		if(damage.card == NULL || (!damage.card->inherits("Slash") && !damage.card->inherits("Duel")) || damage.from == NULL){
+			return false;
+		}
+
+		const Card *weapon = damage.from->getWeapon();
+		if(weapon == NULL){
+			return false;
+		}
+
         Room *room = target->getRoom();
         foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){
             if(player->isKongcheng()){
                 continue;
             }
 
-            const Card *card = room->askForCard(player, ".black", "#AntiWarPrompt");
+			QString prompt = QString("antiwar-invoke:").append(damage.from->getGeneralName());
+			const Card *card = room->askForCard(player, ".", prompt, data, NonTrigger);
             if(card == NULL){
                 continue;
             }
             room->sendLog("#InvokeSkill", player, objectName());
             room->throwCard(card);
-
-            DamageStruct damage = data.value<DamageStruct>();
-            damage.from->turnOver();
-            damage.to->turnOver();
+			room->throwCard(weapon, damage.from);
         }
 
         return false;
@@ -82,7 +73,7 @@ public:
     }
 
     virtual bool triggerable(const ServerPlayer *target) const{
-        return target->getPhase() != Player::Draw;
+		return target->getPhase() == Player::Play;
     }
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
@@ -90,7 +81,6 @@ public:
         foreach(ServerPlayer *player, room->getOtherPlayers(target)){
 			if(player->hasSkill(objectName()) && player->faceUp() && player->askForSkillInvoke(objectName(), data)){
                 player->drawCards(1);
-				player->turnOver();
             }
         }
 
@@ -588,6 +578,8 @@ AlabastanPackage::AlabastanPackage():Package("Alabastan")
     General *ace = new General(this, "ace", "pirate", 4);
     ace->addSkill(new FirePunch);
     ace->addSkill(new FlameRing);
+	ace->addSkill(new MarkAssignSkill("@flame", 1));
+	addMetaObject<FlameRingCard>();
 
     General *vivi = new General(this, "vivi", "noble", 3, false);
     vivi->addSkill(new AntiWar);
