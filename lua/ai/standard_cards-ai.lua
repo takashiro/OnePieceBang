@@ -635,19 +635,19 @@ function sgs.ai_armor_value.silver_lion(player, self)
 end
 
 sgs.ai_use_priority.OffensiveHorse = 2.69
-sgs.ai_use_priority.Halberd = 2.685
-sgs.ai_use_priority.KylinBow = 2.68
+sgs.ai_use_priority.Yubashiri = 2.685
+sgs.ai_use_priority.Kabuto = 2.68
 sgs.ai_use_priority.SandaiKitetsu = 2.675
 sgs.ai_use_priority.Shusui = 2.67
 sgs.ai_use_priority.OkamaMicrophone =2.665
-sgs.ai_use_priority.Spear = 2.66
-sgs.ai_use_priority.IceSword = 2.65
+sgs.ai_use_priority.Shigure = 2.66
+sgs.ai_use_priority.SoulSolid = 2.65
 sgs.ai_use_priority.WadoIchimonji = 2.645
-sgs.ai_use_priority.Axe = 2.64
+sgs.ai_use_priority.ImpactDial = 2.64
 sgs.ai_use_priority.Hammer = 2.63
 sgs.ai_use_priority.SilverLion = 0.9
 sgs.ai_use_priority.MilkyDial = 0.8
-sgs.ai_use_priority.RenwangShield = 0.7
+sgs.ai_use_priority.Cloak = 0.7
 sgs.ai_use_priority.DefensiveHorse = 0
 
 sgs.dynamic_value.damage_card.ArcheryAttack = true
