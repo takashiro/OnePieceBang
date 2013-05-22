@@ -209,3 +209,26 @@ end
 
 sgs.ai_use_value.LieCard = 11
 sgs.ai_use_priority.LieCard = 7
+
+-- Shark on Tooth
+sgs.ai_skill_invoke.sharkontooth = function(self, data)
+	local room = self.player:getRoom()
+	local friend_count = 0
+	local enemy_count = 0
+
+	for _,target in sgs.qlist(room:getOtherPlayers(self.player)) do
+		if self.player:inMyAttackRange(target) and self:isWeak(target) then
+			if self:isFriend(target) then
+				friend_count = friend_count + 1
+			elseif self:isEnemy(target) then
+				enemy_count = enemy_count + 1
+			end
+		end
+	end
+
+	if friend_count <= enemy_count then
+		return true
+	end
+
+	return false
+end
