@@ -160,3 +160,52 @@ sgs.ai_view_as.blackfeet = function(card, player, card_place)
 		return ("fire_slash:blackfeet[%s:%s]=%d"):format(suit, number, card_id)
 	end
 end
+
+--Lie
+lie_skill={}
+lie_skill.name="lie"
+table.insert(sgs.ai_skills, lie_skill)
+lie_skill.getTurnUseCard = function(self)
+	local card
+	local hcards = self.player:getCards("h")
+	hcards = sgs.QList2Table(hcards)
+	self:sortByUseValue(hcards, true)
+
+	for _, hcard in ipairs(hcards) do
+		if hcard:getSuit() == sgs.Card_Heart then
+			card = hcard
+			break
+		end
+	end
+
+	if card then
+		card = sgs.Card_Parse("@LieCard=" .. card:getEffectiveId())
+		assert(card)
+		return card
+	end
+
+	return nil
+end
+
+sgs.ai_skill_use_func.LieCard=function(card,use,self)
+	local target
+	self:sort(self.friends, "handcard")
+	local friends = self.friends
+	for _, friend in ipairs(friends) do
+		target = friend
+		break
+	end
+
+	use.card=card
+	
+	if use.to then
+		if target then
+			use.to:append(target)
+		else
+			use.to:append(self.player)
+		end
+	end
+end
+
+sgs.ai_use_value.LieCard = 11
+sgs.ai_use_priority.LieCard = 7

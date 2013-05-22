@@ -146,16 +146,29 @@ public:
     }
 };
 
-LieCard::LieCard(Card::Suit suit, int number): SingleTargetTrick(suit, number, false){
-    setObjectName("treasure_chest");
+LieCard::LieCard(){
+	target_fixed = false;
 }
 
 bool LieCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
     return targets.length() < 1;
 }
 
-void LieCard::onEffect(const CardEffectStruct &effect) const{
-    effect.to->drawCards(2);
+bool LieCard::targetsFeasible(const QList<const Player *> &targets, const Player *Self) const{
+	return targets.length() <= 1;
+}
+
+void LieCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
+	const Card *subcard = Bang->getCard(subcards.at(0));
+	TreasureChest *card = new TreasureChest(subcard->getSuit(), subcard->getNumber());
+	card->addSubcard(subcard);
+	card->setSkillName("lie");
+
+	CardUseStruct use;
+	use.from = source;
+	use.to << (targets.isEmpty() ? source : targets.at(0));
+	use.card = card;
+	room->useCard(use);
 }
 
 class Lie: public OneCardViewAsSkill{
@@ -171,7 +184,7 @@ public:
 
     virtual const Card *viewAs(CardItem *card_item) const{
         const Card *subcard = card_item->getCard();
-        LieCard *card = new LieCard(subcard->getSuit(), subcard->getNumber());
+		LieCard *card = new LieCard;
         card->setSkillName(objectName());
         card->addSubcard(subcard);
         return card;
