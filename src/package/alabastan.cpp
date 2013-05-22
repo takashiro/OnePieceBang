@@ -577,9 +577,6 @@ AlabastanPackage::AlabastanPackage():Package("Alabastan")
 {
     General *ace = new General(this, "ace", "pirate", 4);
     ace->addSkill(new FirePunch);
-    ace->addSkill(new FlameRing);
-	ace->addSkill(new MarkAssignSkill("@flame", 1));
-	addMetaObject<FlameRingCard>();
 
     General *vivi = new General(this, "vivi", "noble", 3, false);
     vivi->addSkill(new AntiWar);
