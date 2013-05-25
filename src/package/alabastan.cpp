@@ -175,7 +175,7 @@ public:
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
         CardEffectStruct effect = data.value<CardEffectStruct>();
-        if(effect.card != NULL && effect.card->inherits("NeptunianAttack")){
+		if(effect.card != NULL && (effect.card->inherits("NeptunianAttack") || effect.card->inherits("BusterCall"))){
             player->getRoom()->sendLog("#TriggerSkill", player, objectName());
             return true;
         }
@@ -579,7 +579,7 @@ public:
         if(use.from->isKongcheng())
             draw_card = true;
         else{
-            QString prompt = "okama-microphone-card:" + player->getGeneralName();
+			QString prompt = "witheredflower-discard:" + player->getGeneralName();
             const Card *card = room->askForCard(use.from, ".", prompt, QVariant(), CardDiscarded);
             if(card){
                 room->throwCard(card);

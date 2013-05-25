@@ -102,12 +102,13 @@ protected:
     QMutex m_mutexEnableCards;
 
 private:
-    QPixmap left_pixmap, right_pixmap;
+	QPixmap left_pixmap, right_pixmap;
     QGraphicsRectItem *left, *middle, *right;
     QGraphicsItem *button_widget;
         
-    CardItem *selected;
-    Pixmap *avatar, *small_avatar;
+	CardItem *selected;
+	QGraphicsPixmapItem *avatar_frame;
+	Pixmap *avatar, *small_avatar;
     QGraphicsPixmapItem *kingdom, *ready_item;
     QGraphicsTextItem *mark_item;
     QGraphicsPixmapItem *action_item;

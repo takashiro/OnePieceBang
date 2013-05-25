@@ -21,7 +21,7 @@ const QRect Dashboard::S_JUDGE_CARD_MOVE_REGION(0, -20,
     CardItem::S_NORMAL_CARD_WIDTH * 1.5, CardItem::S_NORMAL_CARD_HEIGHT);
 
 Dashboard::Dashboard(QGraphicsItem *button_widget)
-    :PlayerCardContainer(false), left_pixmap("image/system/dashboard-equip.png"), right_pixmap("image/system/dashboard-avatar.png"),
+	:PlayerCardContainer(false), left_pixmap("image/system/dashboard-equip.png"), right_pixmap("image/system/dashboard-avatar.png"),
     button_widget(button_widget), selected(NULL), avatar(NULL),
     weapon(NULL), armor(NULL), defensive_horse(NULL), offensive_horse(NULL),
     view_as_skill(NULL), filter(NULL)
@@ -95,13 +95,16 @@ void Dashboard::createMiddle(){
 void Dashboard::createRight(){
     right = new QGraphicsRectItem(QRectF(right_pixmap.rect()), this);
 
-    avatar = new Pixmap;
-    avatar->setPos(22, 64);
-    avatar->setParentItem(right);
+	avatar = new Pixmap;
+	avatar->setPos(46, 21);
+	avatar->setParentItem(right);
 
-    small_avatar = new Pixmap;
-    small_avatar->setPos(21, 63);
-    small_avatar->setParentItem(right);
+	small_avatar = new Pixmap;
+	small_avatar->setPos(21, 63);
+	small_avatar->setParentItem(right);
+
+	avatar_frame = new QGraphicsPixmapItem(QPixmap("image/system/dashboard-avatar-frame.png"), right);
+	avatar_frame->setPos(46, 21);
 
     if(button_widget){
         kingdom = new QGraphicsPixmapItem(button_widget);
@@ -119,16 +122,16 @@ void Dashboard::createRight(){
     chain_icon->load("image/system/chain.png");
     chain_icon->setParentItem(right);
     chain_icon->setPos(small_avatar->pos());
-    chain_icon->moveBy(-25 ,-45);
-    chain_icon->hide();
+	chain_icon->moveBy(0, -45);
+	chain_icon->hide();
     chain_icon->setZValue(1.0);
 
     back_icon = new Pixmap;
     back_icon->load("image/system/big-back.png");
     back_icon->setParentItem(right);
-    back_icon->setPos(59, 105);
-    back_icon->setZValue(1.0);
-    back_icon->hide();
+	back_icon->setPos(59, 105);
+	back_icon->setZValue(1.0);
+	back_icon->hide();
 
     QGraphicsPixmapItem *handcard_pixmap = new QGraphicsPixmapItem(right);
     handcard_pixmap->setPixmap(QPixmap("image/system/handcard.png"));
@@ -259,20 +262,22 @@ void Dashboard::updateAvatar(){
     if(success){
         success = avatar->load(general->getPixmapPath("big"));
     }
-    if(!success){
-        QPixmap pixmap(General::BigIconSize);
-        pixmap.fill(Qt::black);
+	if(success){
 
-        QPainter painter(&pixmap);
+	}else{
+		QPixmap pixmap(General::BigIconSize);
+		pixmap.fill(Qt::black);
 
-        painter.setPen(Qt::white);
-        painter.setFont(Config.SmallFont);
-        painter.drawText(0, 0, pixmap.width(), pixmap.height(),
-                         Qt::AlignCenter,
-                         Bang->translate(Self->getGeneralName()));
+		QPainter painter(&pixmap);
 
-        avatar->setPixmap(pixmap);
-    }
+		painter.setPen(Qt::white);
+		painter.setFont(Config.SmallFont);
+		painter.drawText(0, 0, pixmap.width(), pixmap.height(),
+						 Qt::AlignCenter,
+						 Bang->translate(Self->getGeneralName()));
+
+		avatar->setPixmap(pixmap);
+	}
 
     QString folder = button_widget ? "button" : "icon";
     kingdom->setPixmap(QPixmap(QString("image/kingdom/%1/%2.png").arg(folder).arg(Self->getKingdom())));
@@ -534,15 +539,15 @@ void Dashboard::drawHp(QPainter *painter) const{
         zero_magatama = MagatamaWidget::GetMagatama(0);
     }
 
-    qreal total_width = magatama->width() * max_hp;
+	qreal total_width = magatama->width() * max_hp;
     qreal skip = (121 - total_width)/ (max_hp + 1);
-    qreal start_x = left_pixmap.width() + middle->rect().width();
+	qreal start_x = 1325, start_y = 25;
 
     int i;
     for(i=0; i<hp; i++)
-        painter->drawPixmap(start_x + skip *(i+1) + i * magatama->width(), 5, *magatama);
+		painter->drawPixmap(start_x, start_y + skip *(i+1) + i * magatama->width(), *magatama);
     for(i=hp; i<max_hp; i++)
-        painter->drawPixmap(start_x + skip *(i+1) + i * magatama->width(), 5, *zero_magatama);
+		painter->drawPixmap(start_x, start_y + skip *(i+1) + i * magatama->width(), *zero_magatama);
 }
 
 void Dashboard::killPlayer(){
@@ -579,11 +584,11 @@ void Dashboard::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
 
     // draw the left side and right side
     painter->drawPixmap(left->pos(), left_pixmap);
-    painter->drawPixmap(right->pos(), right_pixmap);
+	painter->drawPixmap(right->pos(), right_pixmap);
 
     // draw player's name
     painter->setPen(Qt::white);
-    QRectF name_rect(24 + right->x(), 42 + right->y(), 90, 12);
+	QRectF name_rect(35 + right->x(), 5 + right->y(), 90, 12);
     painter->drawText(name_rect, Config.UserName, QTextOption(Qt::AlignHCenter));
 
     if(!Self)
@@ -797,7 +802,7 @@ QList<CardItem*> Dashboard::removeCardItems(const QList<int> &card_ids, Player::
                 judging_area.removeAt(index);
                 delete delayed_tricks.takeAt(index);
                 for(int i=0; i<delayed_tricks.count(); i++){
-                    delayed_tricks.at(i)->setPos(3 + i * 27, 5);
+					delayed_tricks.at(i)->setPos(3 + i * 27, 0);
                 }
             }
         }else if(place == Player::PlaceTakeoff){

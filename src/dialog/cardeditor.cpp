@@ -146,7 +146,7 @@ CardScene::CardScene()
 
     loadConfig();
 
-	big_avatar_rect = new AvatarRectItem(94, 96);
+	big_avatar_rect = new AvatarRectItem(114, 114);
     big_avatar_rect->hide();
     big_avatar_rect->toCenter(this);
     addItem(big_avatar_rect);
@@ -414,7 +414,7 @@ void CardEditor::updateButtonText(const QFont &font){
 void CardEditor::saveAvatar(const QRectF &rect){
 	QString type;
 	switch((int) rect.height()){
-		case 96:
+		case 114:
 			type = "big";
 			break;
 		case 50:

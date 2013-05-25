@@ -170,6 +170,6 @@ void General::lastWord() const{
     Bang->playEffect(filename);
 }
 
-QSize General::BigIconSize(94, 96);
+QSize General::BigIconSize(114, 114);
 QSize General::SmallIconSize(122, 50);
 QSize General::TinyIconSize(42, 36);
