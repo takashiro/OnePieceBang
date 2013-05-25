@@ -165,7 +165,7 @@ sgs.ai_skill_use_func.FleurCard=function(card,use,self)
 				if self.player:isLord() or sgs.isRolePredictable() then 
 					local friend_maxSlash = findFriend_maxSlash(self,first)
 					if friend_maxSlash then second=friend_maxSlash end
-				elseif not lord:getGeneral():isKongcheng() and (not lord:hasSkill("wuyan")) then 
+				elseif not lord:isKongcheng() and (not lord:hasSkill("wuyan")) then 
 					if (self.role=="rebel") and (not first:isLord()) and self:damageIsEffective(lord, sgs.DamageStruct_Normal, first) then
 						second = lord
 					else
