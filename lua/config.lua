@@ -16,8 +16,8 @@ config = {
         --"Skypiea",
         "Water7",
         "ThrillerBark",
+        "FishmanIsland",
         "Test",
-        --"Sgs","Wind","God", --三国杀，用于测试和参考
 	},
 
 	scene_names = {

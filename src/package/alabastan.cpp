@@ -384,8 +384,10 @@ public:
     virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
         RecoverStruct recover = data.value<RecoverStruct>();
         if(recover.who != NULL && recover.who->hasSkill(objectName())){
-            target->turnOver();
-            target->drawCards(recover.who->getLostHp());
+			for(int i = 0; i < recover.recover; i++){
+				target->turnOver();
+				target->drawCards(recover.who->getLostHp());
+			}
         }
         return false;
     }
@@ -416,7 +418,7 @@ public:
         Room *room = target->getRoom();
 
         foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){
-            if(!player->askForSkillInvoke(objectName())){
+			if(!player->askForSkillInvoke(objectName(), data)){
                 continue;
             }
 
@@ -510,28 +512,47 @@ public:
 class MedicalExpertise: public TriggerSkill{
 public:
     MedicalExpertise(): TriggerSkill("medicalexpertise"){
-        events << AskForVulneraries;
+		events << Dying;
     }
 
-    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-        DyingStruct dying = data.value<DyingStruct>();
-        if(dying.who->isKongcheng() || !player->askForSkillInvoke(objectName())){
-            return false;
-        }
+	virtual bool triggerable(const ServerPlayer *target) const{
+		if(target == NULL){
+			return false;
+		}
 
-        static RecoverStruct recover;
-        recover.who = player;
-        recover.recover = 0;
-        foreach(const Card *card, dying.who->getHandcards()){
-            if(card->isRed()){
-                recover.recover++;
-            }
-        }
-        dying.who->throwAllHandCards();
+		Room *room = target->getRoom();
+		foreach(ServerPlayer *player, room->getAlivePlayers()){
+			if(player->hasSkill(objectName()) && !player->isKongcheng()){
+				return true;
+			}
+		}
 
-        if(recover.recover > 0){
-            player->getRoom()->recover(dying.who, recover);
-        }
+		return false;
+	}
+
+	virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
+		Room *room = target->getRoom();
+
+		foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){
+			DyingStruct dying = data.value<DyingStruct>();
+			if(dying.who->isKongcheng() || !player->askForSkillInvoke(objectName(), data)){
+				return false;
+			}
+
+			static RecoverStruct recover;
+			recover.who = player;
+			recover.recover = 0;
+			foreach(const Card *card, dying.who->getHandcards()){
+				if(card->isRed()){
+					recover.recover++;
+				}
+			}
+			dying.who->throwAllHandCards();
+
+			if(recover.recover > 0){
+				room->recover(dying.who, recover);
+			}
+		}
 
         return false;
     }
@@ -595,9 +616,9 @@ AlabastanPackage::AlabastanPackage():Package("Alabastan")
     bonkure->addSkill(new Imitate);
     bonkure->addSkill(new Skill("okama", Skill::Compulsory));
 
-    General *crockdile = new General(this, "crockdile", "government", 3);
-    crockdile->addSkill(new Corrasion);
-    crockdile->addSkill(new SandStorm);
+	General *crocodile = new General(this, "crocodile", "government", 3);
+	crocodile->addSkill(new Corrasion);
+	crocodile->addSkill(new SandStorm);
 
     General *hiluluk = new General(this, "hiluluk", "citizen", 3);
     hiluluk->addSkill(new Quack);

@@ -1,10 +1,10 @@
 -- Translation for Test Package
 
 return {
-	["Skypiea"] = "空島編",
+	["Skypiea"] = "空岛篇",
 
-	["#enil"] = "空島の偽神",
-	["enil"] = "エニル",
+	["#enil"] = "空岛伪神",
+	["enil"] = "艾尼路",
 	["godthunder"] = "雷神",
 	[":godthunder"] = "<b>锁定技</b>，你造成的伤害均为雷属性伤害；你受到的雷属性伤害均为恢复体力。",
 	["thunderbot"] = "制裁",

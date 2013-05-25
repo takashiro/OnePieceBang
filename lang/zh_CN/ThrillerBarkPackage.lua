@@ -1,16 +1,16 @@
 return {
-	["ThrillerBark"] = "幽霊船編",
+	["ThrillerBark"] = "幽灵船篇",
 
-	["#brook"] = "ソール音楽家",
-	["brook"] = "ブルック",
+	["#brook"] = "灵魂之王",
+	["brook"] = "布鲁克",
 	["musicsoul"] = "乐灵",
 	[":musicsoul"] = "",
 
-	["#moriya"] = "月光モリヤ",
-	["moriya"] = "モリヤ",
+	["#moriya"] = "月光",
+	["moriya"] = "莫利亚",
 
-	["#perona"] = "幽霊姫",
-	["perona"] = "ペローナ",
+	["#perona"] = "幽灵公主",
+	["perona"] = "裴罗娜",
 	["negativehorror"] = "负灵体",
 	[":negativehorror"] = "你可以将一张梅花基本牌或装备牌当作【负灵体】使用。",
 	["ghostrap"] = "魂炸弹",
