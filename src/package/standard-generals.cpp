@@ -400,7 +400,6 @@ class FretyWind: public TriggerSkill{
 public:
     FretyWind():TriggerSkill("fretywind"){
         events << CardLostOnePiece;
-        frequency = Frequent;
     }
 
     virtual bool trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
