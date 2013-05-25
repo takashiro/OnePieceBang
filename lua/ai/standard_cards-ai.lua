@@ -810,8 +810,8 @@ function SmartAI:useCardDuel(duel, use)
 end
 
 sgs.ai_card_intention.Duel=function(card,from,tos,source)
-	if sgs.ai_lijian_effect then 
-		sgs.ai_lijian_effect = false
+	if sgs.ai_fleur_effect then 
+		sgs.ai_fleur_effect = false
 		return
 	end
 	sgs.updateIntentions(from, tos, 80)
