@@ -576,15 +576,15 @@ void NeptunianAttack::onEffect(const CardEffectStruct &effect) const{
 	}
 }
 
-HaouHaki::HaouHaki(Card::Suit suit, int number)
+BusterCall::BusterCall(Card::Suit suit, int number)
 	:AOE(suit, number)
 {
-	setObjectName("haou_haki");
+	setObjectName("buster_call");
 }
 
-void HaouHaki::onEffect(const CardEffectStruct &effect) const{
+void BusterCall::onEffect(const CardEffectStruct &effect) const{
 	Room *room = effect.to->getRoom();
-	const Card *jink = room->askForCard(effect.to, "jink", "haou-haki-jink:" + effect.from->objectName());
+	const Card *jink = room->askForCard(effect.to, "jink", "buster-call-jink:" + effect.from->objectName());
 	if(jink)
 		room->setEmotion(effect.to, "jink");
 	else{
@@ -1453,7 +1453,7 @@ StandardCardPackage::StandardCardPackage()
 	QList<Card*> cards;
 	cards
 	<< new Lightning(Card::Spade, 1) << new AllBlue << new Hammer(Card::Club, 1) << new Hammer(Card::Diamond, 1)
-	<< new Duel(Card::Spade, 1) << new HaouHaki << new Duel(Card::Club, 1) << new Duel(Card::Diamond, 1)
+	<< new Duel(Card::Spade, 1) << new BusterCall << new Duel(Card::Club, 1) << new Duel(Card::Diamond, 1)
 	<< new Shusui(Card::Spade, 1) << new Nullification(Card::Heart, 1) << new SilverLion(Card::Club, 1) << new FlameDial(Card::Diamond, 1)
 
 	<< new MilkyDial(Card::Spade, 2) << new Jink(Card::Heart, 2) << new MilkyDial(Card::Club, 2) << new Jink(Card::Diamond, 2)

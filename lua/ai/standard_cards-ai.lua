@@ -673,8 +673,8 @@ sgs.ai_skill_cardask["neptunian-attack-slash"] = function(self, data, pattern, t
 	return sgs.ai_skill_cardask.aoe(self, data, pattern, target, target2, "neptunian_attack")
 end
 
-sgs.ai_skill_cardask["archery-attack-jink"] = function(self, data, pattern, target)
-	return sgs.ai_skill_cardask.aoe(self, data, pattern, target, target2, "haou_haki")
+sgs.ai_skill_cardask["buster-call-jink"] = function(self, data, pattern, target)
+	return sgs.ai_skill_cardask.aoe(self, data, pattern, target, target2, "buster_call")
 end
 
 sgs.ai_keep_value.Nullification = 3

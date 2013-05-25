@@ -118,11 +118,11 @@ public:
     virtual void onEffect(const CardEffectStruct &effect) const;
 };
 
-class HaouHaki:public AOE{
+class BusterCall:public AOE{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE HaouHaki(Card::Suit suit = Heart, int number = 1);
+    Q_INVOKABLE BusterCall(Card::Suit suit = Heart, int number = 1);
     virtual void onEffect(const CardEffectStruct &effect) const;
 };
 
