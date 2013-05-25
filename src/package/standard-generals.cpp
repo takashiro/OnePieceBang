@@ -405,7 +405,7 @@ public:
 
     virtual bool trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
         CardMoveStar move = data.value<CardMoveStar>();
-        if(move->from_place == Player::Equip && move->to != player){
+        if(move->from_place == Player::EquipArea && move->to != player){
             Room *room = player->getRoom();
             if(room->askForSkillInvoke(player, objectName())){
                 room->playSkillEffect(objectName());
@@ -445,10 +445,10 @@ public:
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
         if(event == CardLostOnePiece){
             CardMoveStar move = data.value<CardMoveStar>();
-			if(move->from_place == Player::Equip && move->to != player && Bang->getCard(move->card_id)->getSubtype() == "weapon" && !player->getPile("sword").isEmpty()){
+			if(move->from_place == Player::EquipArea && move->to != player && Bang->getCard(move->card_id)->getSubtype() == "weapon" && !player->getPile("sword").isEmpty()){
                 int weapon_id = player->getPile("sword").last();
                 Room *room = player->getRoom();
-                room->moveCardTo(Bang->getCard(weapon_id), player, Player::Equip, true);
+                room->moveCardTo(Bang->getCard(weapon_id), player, Player::EquipArea, true);
             }
         }else{
             CardUseStruct use = data.value<CardUseStruct>();
@@ -578,7 +578,7 @@ public:
                 QString prompt = "swordsexpert-return:" + target->getGeneralName();
                 const Card *card = room->askForCard(player, ".Equip", prompt, QVariant(), NonTrigger);
                 if(card != NULL){
-                    room->moveCardTo(card, target, Player::Hand, true);
+                    room->moveCardTo(card, target, Player::HandArea, true);
                 }else{
                     DamageStruct damage;
                     damage.from = target;

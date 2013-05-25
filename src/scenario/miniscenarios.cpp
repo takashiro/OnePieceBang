@@ -181,7 +181,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
             bool ok;
             equip.toInt(&ok);
             if(!ok)room->installEquip(sp,equip);
-            else room->moveCardTo(Bang->getCard(equip.toInt()),sp,Player::Equip);
+            else room->moveCardTo(Bang->getCard(equip.toInt()),sp,Player::EquipArea);
         }
 
         str = this->players.at(i)["judge"];
@@ -190,7 +190,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
             QStringList judges = str.split(",");
             foreach(QString judge,judges)
             {
-                room->moveCardTo(Bang->getCard(judge.toInt()),sp,Player::Judging);
+                room->moveCardTo(Bang->getCard(judge.toInt()),sp,Player::JudgingArea);
             }
         }
 

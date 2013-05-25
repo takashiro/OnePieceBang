@@ -147,7 +147,7 @@ end
 
 --Black Feet
 sgs.ai_view_as.blackfeet = function(card, player, card_place)
-	if card_place ~= sgs.Player_Hand then
+	if card_place ~= sgs.Player_HandArea then
 		return
 	end
 

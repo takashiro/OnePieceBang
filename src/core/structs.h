@@ -69,8 +69,8 @@ struct CardUseStruct{
 struct CardMoveStruct{
     inline CardMoveStruct()
     {
-        from_place = Player::PlaceUnknown;
-        to_place = Player::PlaceUnknown;
+        from_place = Player::UnknownArea;
+        to_place = Player::UnknownArea;
         from = NULL;
         to = NULL;
     }
@@ -108,8 +108,8 @@ struct CardsMoveOneTimeStruct{
 struct CardsMoveStruct{
     inline CardsMoveStruct()
     {
-        from_place = Player::PlaceUnknown;
-        to_place = Player::PlaceUnknown;
+        from_place = Player::UnknownArea;
+        to_place = Player::UnknownArea;
         from = NULL;
         to = NULL;
         countAsOneTime = false;
@@ -117,7 +117,7 @@ struct CardsMoveStruct{
     inline CardsMoveStruct(const QList<int> &ids, Player* to, Player::Place to_place)
     {
         this->card_ids = ids;
-        this->from_place = Player::PlaceUnknown;
+        this->from_place = Player::UnknownArea;
         this->to_place = to_place;
         this->from = NULL;
         this->to = to;

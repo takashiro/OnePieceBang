@@ -31,18 +31,18 @@ int ClientPlayer::getHandcardNum() const{
 
 void ClientPlayer::addCard(const Card *card, Place place){
     switch(place){
-    case Hand: {
+    case HandArea: {
             if(card)
                 known_cards << card;
             handcard_num++;
             break;
         }
-    case Equip: {
+    case EquipArea: {
             const EquipCard *equip = qobject_cast<const EquipCard*>(card);
             setEquip(equip);
             break;
         }
-    case Judging:{
+    case JudgingArea:{
             addDelayedTrick(card);
             break;
         }
@@ -66,18 +66,18 @@ bool ClientPlayer::isLastHandCard(const Card *card) const{
 
 void ClientPlayer::removeCard(const Card *card, Place place){
     switch(place){
-    case Hand: {
+    case HandArea: {
             handcard_num--;
             if(card)
                 known_cards.removeOne(card);
             break;
         }
-    case Equip:{
+    case EquipArea:{
             const EquipCard *equip = qobject_cast<const EquipCard*>(card);
             removeEquip(equip);
             break;
         }
-    case Judging:{
+    case JudgingArea:{
             removeDelayedTrick(card);
             break;
         }

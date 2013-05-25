@@ -81,13 +81,13 @@ void EquipCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *
     case OffensiveHorseLocation: equipped = target->getOffensiveHorse(); break;
     }
 
-    if (room->getCardOwner(getId()) == source && room->getCardPlace(getId()) == Player::Hand)
+    if (room->getCardOwner(getId()) == source && room->getCardPlace(getId()) == Player::HandArea)
         {
             QList<CardsMoveStruct> exchangeMove;
             CardsMoveStruct move1;
             move1.card_ids << getId();
             move1.to = source;
-            move1.to_place = Player::Equip;
+            move1.to_place = Player::EquipArea;
             exchangeMove.push_back(move1);
             if(equipped)
             {
@@ -186,7 +186,7 @@ DelayedTrick::DelayedTrick(Suit suit, int number, bool movable)
 
 void DelayedTrick::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
     ServerPlayer *target = targets.value(0, source);
-    room->moveCardTo(this, target, Player::Judging, true);
+    room->moveCardTo(this, target, Player::JudgingArea, true);
 }
 
 QString DelayedTrick::getSubtype() const{
@@ -230,7 +230,7 @@ void DelayedTrick::onNullified(ServerPlayer *target) const{
             if(room->isProhibited(target, player, this))
                 continue;
 
-            room->moveCardTo(this, player, Player::Judging, true);
+            room->moveCardTo(this, player, Player::JudgingArea, true);
             break;
         }
     }else

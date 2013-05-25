@@ -91,7 +91,7 @@ public:
         Room *room = effect.to->getRoom();
         int card_id = room->askForCardChosen(effect.from, effect.to, "hej", "scene_27_effect");
 
-        room->obtainCard(effect.from, card_id, room->getCardPlace(card_id) != Player::Hand);
+        room->obtainCard(effect.from, card_id, room->getCardPlace(card_id) != Player::HandArea);
     }
 };
 
@@ -163,7 +163,7 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
                     prevp.prepend(prevp.takeLast());
                     for(int i = 0; i < prevp.count(); i++) {
                         if(cardToMove[i]) {
-                            room->moveCardTo(cardToMove[i], prevp[i], Player::Hand, false);
+                            room->moveCardTo(cardToMove[i], prevp[i], Player::HandArea, false);
                             room->getThread()->delay();
                         }
                     }
@@ -234,7 +234,7 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
                     prevp.append(prevp.takeFirst());
                     for(int i = 0; i < prevp.count(); i++) {
                         if(cardToMove[i]) {
-                            room->moveCardTo(cardToMove[i], prevp[i], Player::Hand, false);
+                            room->moveCardTo(cardToMove[i], prevp[i], Player::HandArea, false);
                             room->getThread()->delay();
                         }
                     }

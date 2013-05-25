@@ -24,7 +24,7 @@ end
 从上面的例子可以看到，我们需要对这个表进行的操作是给表里的一个以技能名命名的元素赋值。
 所赋的值为一个函数，函数原型为 function(card, card_place)
 其中 card 表示需要处理的卡牌，而 card_place 表示卡牌所处的位置。
-card_place 为 sgs.Player_Hand 或 sgs.Player_Equip，分别表示手牌与装备区。
+card_place 为 sgs.Player_HandArea 或 sgs.Player_EquipArea，分别表示手牌与装备区。
 返回值则为一个将会传递给 sgs.Card_Parse 函数的字符串。
 该字符串经 sgs.Card_Parse 函数处理之后得到实际的卡牌。
 
@@ -80,7 +80,7 @@ sgs.ai_view_as.qingguo = function(card, player, card_place)
 	local suit = card:getSuitString()
 	local number = card:getNumberString()
 	local card_id = card:getEffectiveId()
-	if card:isBlack() and card_place ~= sgs.Player_Equip then -- 如果是黑色牌且不在装备区
+	if card:isBlack() and card_place ~= sgs.Player_EquipArea then -- 如果是黑色牌且不在装备区
 		return ("jink:qingguo[%s:%s]=%d"):format(suit, number, card_id)
 	end
 end
