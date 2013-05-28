@@ -762,7 +762,7 @@
     <message>
         <location filename="src/dialog/configdialog.ui" line="505"/>
         <source>Never nullify my single target trick</source>
-        <translation>从不无懈自己的单体锦囊</translation>
+        <translation>从不无懈自己的单体特技</translation>
     </message>
     <message>
         <location filename="src/dialog/configdialog.ui" line="521"/>
