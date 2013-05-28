@@ -742,6 +742,25 @@ public:
     }
 };
 
+class TopSwordman: public TriggerSkill{
+public:
+	TopSwordman(): TriggerSkill("topswordman"){
+		events << SlashProceed << Predamaged;
+	}
+
+	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+		if(event == Predamaged){
+			DamageStruct damage = data.value<DamageStruct>();
+			if(damage.from && damage.from->getWeapon()){
+				player->getRoom()->sendLog("#TriggerSkill", player, objectName());
+				return true;
+			}
+		}
+
+		return false;
+	}
+};
+
 void StandardPackage::addGenerals()
 {
     General *luffy = new General(this, "luffy", "pirate", 4);
@@ -791,4 +810,7 @@ void StandardPackage::addGenerals()
 	General *garp = new General(this, "garp", "government", 4);
 
 	General *bellmere = new General(this, "bellmere", "government", 3, false);
+
+	General *mihawk = new General(this, "mihawk", "government", 4);
+	mihawk->addSkill(new TopSwordman);
 }

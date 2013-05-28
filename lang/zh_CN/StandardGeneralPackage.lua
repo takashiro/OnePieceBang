@@ -74,7 +74,20 @@ return {
 
 	["#garp"] = "铁拳",
 	["garp"] = "卡普",
+	["ironpunch"] = "若你的装备区内没有武器牌，你可以将1张牌当作【杀】使用或打出。",
+	["garp:designer"] = "淬毒",
 
 	["#bellmere"] = "橘子与爱",
 	["bellmere"] = "贝尔梅尔",
+
+	["#mihawk"] = "最强剑士",
+	["mihawk"] = "米霍克",
+	["topswordman"] = "剑豪",
+	[":topswordman"] = "<b>锁定技</b>，你防止装备区内有武器牌的角色对你造成的伤害。",
+	[":mihawkeye"] = "鹰眼",
+	[":mihawkeye"] = "弃牌阶段，你每弃置1张牌，可以观看一名其他角色的手牌。",
+	["mihawk:designer"] = "淬毒",
+
+	["#shanks"] = "红发",
+	["shanks"] = "香克斯",
 }
