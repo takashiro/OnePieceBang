@@ -132,5 +132,5 @@ return {
 	["#TrickDirection"] = "%from 选择了 %arg 作为锦囊的顺序",
 	["custom"] = "自定义模式",
 	["UnknowNick"] = "无称号",
-	["DefaultIllustrator"] = "KayaK",
+	["DefaultIllustrator"] = "尾田栄一郎",
 }
