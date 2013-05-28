@@ -488,7 +488,7 @@ public:
         if(selected.length() == 0){
             return to_select->getCard()->isNDTrick();
         }else if(selected.length() == 1){
-            return to_select->getCard()->getSuit() == Card::Diamond;
+			return to_select->getCard()->isRed();
         }
 
         return false;
