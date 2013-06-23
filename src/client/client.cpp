@@ -110,8 +110,8 @@ Client::Client(QObject *parent, const QString &filename)
     //callbacks["askForDirection"] = &Client::askForDirection;
     m_interactions[S_COMMAND_EXCHANGE_CARD] = &Client::askForExchange;
     //callbacks["askForExchange"] = &Client::askForExchange;
-    m_interactions[S_COMMAND_ASK_VULNERARY] = &Client::askForSingleVulnerary;
-    //callbacks["askForSingleVulnerary"] = &Client::askForSingleVulnerary;
+    m_interactions[S_COMMAND_ASK_WINE] = &Client::askForSingleWine;
+    //callbacks["askForSingleWine"] = &Client::askForSingleWine;
     m_interactions[S_COMMAND_SKILL_GUANXING] = &Client::askForGuanxing;
     //callbacks["doGuanxing"] = &Client::doGuanxing;
     m_interactions[S_COMMAND_SKILL_GONGXIN] = &Client::askForGongxin;
@@ -1362,20 +1362,20 @@ void Client::clearAG(const QString &){
     emit ag_cleared();
 }
 
-void Client::askForSingleVulnerary(const Json::Value &arg){
+void Client::askForSingleWine(const Json::Value &arg){
     
     if (!arg.isArray() || arg.size() != 2 || !arg[0].isString() || !arg[1].isInt()) return;
 
     ClientPlayer *dying = getPlayer(toQString(arg[0]));
-	int vulnerary_num = arg[1].asInt();
+	int wine_num = arg[1].asInt();
 
     if(dying == Self){
-		prompt_doc->setHtml(tr("You are dying, please provide %1 vulnerary(es)(or analeptic) to save yourself").arg(vulnerary_num));
-		card_pattern = "vulnerary";
+		prompt_doc->setHtml(tr("You are dying, please provide %1 wine(es)(or analeptic) to save yourself").arg(wine_num));
+		card_pattern = "wine";
     }else{
         QString dying_general = Bang->translate(dying->getGeneralName());
-		prompt_doc->setHtml(tr("%1 is dying, please provide %2 vulnerary(es) to save him").arg(dying_general).arg(vulnerary_num));
-        card_pattern = "vulnerary";
+		prompt_doc->setHtml(tr("%1 is dying, please provide %2 wine(es) to save him").arg(dying_general).arg(wine_num));
+        card_pattern = "wine";
     }
 
     m_isDiscardActionRefusable = true;

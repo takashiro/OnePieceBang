@@ -204,7 +204,7 @@ void Replayer::initCommandPair(){
         m_commandMapping["askForAssign"]        = S_COMMAND_CHOOSE_ROLE;
         m_commandMapping["askForDirection"]     = S_COMMAND_CHOOSE_DIRECTION;
         m_commandMapping["askForExchange"]      = S_COMMAND_EXCHANGE_CARD;
-        m_commandMapping["askForSingleVulnerary"]   = S_COMMAND_ASK_VULNERARY;
+        m_commandMapping["askForSingleWine"]   = S_COMMAND_ASK_WINE;
         m_commandMapping["doGuanxing"]          = S_COMMAND_SKILL_GUANXING;
         m_commandMapping["askForYiji"]          = S_COMMAND_SKILL_YIJI;
         m_commandMapping["activate"]            = S_COMMAND_PLAY_CARD;
@@ -230,7 +230,7 @@ void Replayer::initCommandPair(){
                 << S_COMMAND_CHOOSE_ROLE
                 << S_COMMAND_CHOOSE_DIRECTION
                 << S_COMMAND_EXCHANGE_CARD
-                << S_COMMAND_ASK_VULNERARY
+                << S_COMMAND_ASK_WINE
                 << S_COMMAND_SKILL_GUANXING
                 << S_COMMAND_SKILL_GONGXIN
                 << S_COMMAND_SKILL_YIJI

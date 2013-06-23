@@ -91,7 +91,7 @@ public:
     virtual QString getEffectPath(bool is_male) const;
 
 private:
-    TriggerSkill *grab_vulnerary;
+    TriggerSkill *grab_wine;
 };
 
 class GaleShell:public Armor{

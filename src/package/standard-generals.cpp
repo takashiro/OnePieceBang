@@ -404,7 +404,7 @@ public:
 
     virtual bool trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
         CardMoveStar move = data.value<CardMoveStar>();
-        if(move->from_place == Player::EquipArea && move->to != player){
+		if(move->from_place == Player::EquipArea){
             Room *room = player->getRoom();
             if(room->askForSkillInvoke(player, objectName())){
                 room->playSkillEffect(objectName());
@@ -444,7 +444,7 @@ public:
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
         if(event == CardLostOnePiece){
             CardMoveStar move = data.value<CardMoveStar>();
-			if(move->from_place == Player::EquipArea && move->to != player && Bang->getCard(move->card_id)->getSubtype() == "weapon" && !player->getPile("sword").isEmpty()){
+			if(move->from_place == Player::EquipArea && Bang->getCard(move->card_id)->getSubtype() == "weapon" && player->getWeapon() == NULL && !player->getPile("sword").isEmpty()){
                 int weapon_id = player->getPile("sword").last();
                 Room *room = player->getRoom();
                 room->moveCardTo(Bang->getCard(weapon_id), player, Player::EquipArea, true);
@@ -506,7 +506,7 @@ public:
         case Client::Responsing:{
             if(ClientInstance->getPattern() == "slash"){
                 return card->inherits("Jink");
-            }else if( ClientInstance->getPattern() == "vulnerary"){
+            }else if( ClientInstance->getPattern() == "wine"){
                 return card->inherits("Slash") && card->getSuit() == Card::Club;
             }
         }
@@ -520,7 +520,7 @@ public:
     }
 
     virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
-        return pattern == "slash" || pattern.contains("vulnerary");
+        return pattern == "slash" || pattern.contains("wine");
     }
 
     virtual const Card *viewAs(CardItem *card_item) const{
@@ -529,7 +529,7 @@ public:
         if(sub->inherits("Jink")){
             card = new FireSlash(sub->getSuit(), sub->getNumber());
         }else if(sub->inherits("Slash") && sub->getSuit() == Card::Club){
-            card = new Vulnerary(sub->getSuit(), sub->getNumber());
+            card = new Wine(sub->getSuit(), sub->getNumber());
         }
 
         if(card != NULL){
@@ -745,19 +745,55 @@ public:
 class TopSwordman: public TriggerSkill{
 public:
 	TopSwordman(): TriggerSkill("topswordman"){
-		events << SlashProceed << Predamaged;
+		events << Predamaged << Predamage;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 		if(event == Predamaged){
 			DamageStruct damage = data.value<DamageStruct>();
-			if(damage.from && damage.from->getWeapon()){
+			if(damage.from && damage.from->getWeapon() && damage.card && damage.card->inherits("Slash")){
+				damage.damage--;
+				data = QVariant::fromValue(damage);
+
 				player->getRoom()->sendLog("#TriggerSkill", player, objectName());
-				return true;
+			}
+		}else if(event == Predamage){
+			DamageStruct damage = data.value<DamageStruct>();
+			if(player->getWeapon() && damage.nature == DamageStruct::Normal && damage.card && damage.card->inherits("Slash")){
+				damage.damage++;
+				data = QVariant::fromValue(damage);
+
+				player->getRoom()->sendLog("#TriggerSkill", player, objectName());
 			}
 		}
 
 		return false;
+	}
+};
+
+class IronPunch: public OneCardViewAsSkill{
+public:
+	IronPunch(): OneCardViewAsSkill("ironpunch"){
+
+	}
+
+	virtual bool viewFilter(const CardItem *) const{
+		return Self->getWeapon() == NULL;
+	}
+
+	virtual bool isEnabledAtPlay(const Player *player) const{
+		return Slash::IsAvailable(player);
+	}
+
+	virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
+		return pattern == "slash";
+	}
+
+	virtual const Card *viewAs(CardItem *card_item) const{
+		const Card *subcard = card_item->getCard();
+		Slash *slash = new Slash(subcard->getSuit(), subcard->getNumber());
+		slash->setSkillName(objectName());
+		return slash;
 	}
 };
 
@@ -808,6 +844,7 @@ void StandardPackage::addGenerals()
     smoker->addSkill(new Justice);
 
 	General *garp = new General(this, "garp", "government", 4);
+	garp->addSkill(new IronPunch);
 
 	General *bellmere = new General(this, "bellmere", "government", 3, false);
 

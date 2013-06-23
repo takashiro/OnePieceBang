@@ -80,7 +80,7 @@ function setInitialTables()
 	sgs.exclusive_skill = 		"huilei|duanchang|enyuan|wuhun|buqu|yiji|ganglie|guixin|jieming|miji"
 	sgs.cardneed_skill =        "paoxiao|tianyi|xianzhen|shuangxiong|jizhi|guose|duanliang|qixi|qingnang|" ..
 								"jieyin|renjie|zhiheng|rende|jujian|guicai|guidao|jilve|longhun|wusheng|longdan"
-	sgs.drawvulnerary_skill =   "tuxi|qiaobian"
+	sgs.drawwine_skill =   "tuxi|qiaobian"
 	sgs.recover_skill =         "rende|kuanggu|zaiqi|jieyin|qingnang|yinghun"
 	
 	for _, aplayer in sgs.qlist(global_room:getAllPlayers()) do
@@ -276,7 +276,7 @@ function SmartAI:getUseValue(card)
 			v = v+self:getCardsNum("Slash")
 		elseif card:inherits("Jink") then
 			if self:getCardsNum("Jink") > 1 then v = v-6 end
-		elseif card:inherits("Vulnerary") then
+		elseif card:inherits("Wine") then
 			if self.player:isWounded() then v = v + 6 end
 		elseif card:inherits("Shit") and self.player:hasSkill("kuanggu") and card:getSuit()~= sgs.Card_Spade then
 			v = 0.1
@@ -417,7 +417,7 @@ function SmartAI:getDynamicUsePriority(card)
 						end
 					end
 				end
-			elseif use_card:inherits("Vulnerary") then
+			elseif use_card:inherits("Wine") then
 				dynamic_value = 7.85
 			elseif use_card:inherits("QingnangCard") and self:getCardsNum("Snatch") > 0 and good_null >= bad_null then
 				dynamic_value = 6.55
@@ -439,7 +439,7 @@ function SmartAI:getDynamicUsePriority(card)
 
 			for _, enemy in sgs.qlist(others) do
 				if self:isEnemy(enemy) and (enemy:getHp() <= 2 or enemy:isKongcheng())
-					and self:getCardsNum("Analeptic", enemy) == 0 and self:getCardsNum("Vulnerary", enemy) == 0 then
+					and self:getCardsNum("Analeptic", enemy) == 0 and self:getCardsNum("Wine", enemy) == 0 then
 					table.insert(dummy_use.probably_hit, enemy)
 					break
 				end
@@ -488,7 +488,7 @@ function SmartAI:cardNeed(card)
 	local class_name = card:className()
 	local suit_string = card:getSuitString()
 	local value
-	if card:inherits("Vulnerary") then
+	if card:inherits("Wine") then
 		self:sort(self.friends,"hp")
 		if self.friends[1]:getHp() < 2 then return 10 end
 		if (self.player:getHp() < 3 or self.player:getLostHp() > 1 and not self:hasSkill("longhun")) or self:hasSkills("kurou|benghuai") then return 14 end
@@ -1821,7 +1821,7 @@ function SmartAI:askForNullification(trick, from, to, positive)
 				end
 				if self.player:objectName() == to:objectName() then
 					if self:hasSkills("jieming|yiji|guixin", self.player) and 
-						(self.player:getHp() > 1 or self:getCardsNum("Vulnerary") > 0 or self:getCardsNum("Analeptic") > 0) then
+						(self.player:getHp() > 1 or self:getCardsNum("Wine") > 0 or self:getCardsNum("Analeptic") > 0) then
 						return nil
 					elseif not self:canAvoidAOE(trick) then
 						return null_card
@@ -1839,7 +1839,7 @@ function SmartAI:askForNullification(trick, from, to, positive)
 			if trick:inherits("Duel") and not from:hasSkill("wuyan") then
 				if self.player:objectName() == to:objectName() then
 					if self:hasSkills(sgs.masochism_skill, self.player) and 
-						(self.player:getHp() > 1 or self:getCardsNum("Vulnerary") > 0 or self:getCardsNum("Analeptic") > 0) then
+						(self.player:getHp() > 1 or self:getCardsNum("Wine") > 0 or self:getCardsNum("Analeptic") > 0) then
 						return nil
 					elseif self:getCardsNum("Slash") == 0 then
 						return null_card
@@ -2137,7 +2137,7 @@ function SmartAI:askForAG(card_ids, refusable, reason)
 		table.insert(cards, sgs.Bang:getCard(id))
 	end
 	for _, card in ipairs(cards) do
-		if card:inherits("Vulnerary") then return card:getEffectiveId() end
+		if card:inherits("Wine") then return card:getEffectiveId() end
 	end
 	for _, card in ipairs(cards) do
 		if card:inherits("NegativeSoul") and not (self:isWeak() and self:getCardsNum("Jink") == 0) then return card:getEffectiveId() end
@@ -2273,7 +2273,7 @@ function SmartAI:getCardNeedPlayer(cards)
 				if self:isWeak(friend) and not (friend:containsTrick("negative_soul") and not friend:getGeneralName() == cannulname) and 
 					friend:getHandcardNum() < 3 then
 					for _, hcard in ipairs(cards) do
-						if hcard:inherits("Vulnerary") or hcard:inherits("Jink") or hcard:inherits("Analeptic") then
+						if hcard:inherits("Wine") or hcard:inherits("Jink") or hcard:inherits("Analeptic") then
 							return hcard, friend
 						end
 					end
@@ -2427,7 +2427,7 @@ function SmartAI:getCardNeedPlayer(cards)
 	if #self.friends > 1 then
 		for _, hcard in ipairs(cards) do
 			if not hcard:inherits("Shit") then
-				if hcard:inherits("Analeptic") or hcard:inherits("Vulnerary") then
+				if hcard:inherits("Analeptic") or hcard:inherits("Wine") then
 					self:sort(friends, "hp")
 					if #self.friends>1 and self.friends_noself[1]:getHp() == 1 then
 						return hcard, self.friends_noself[1]
@@ -2607,9 +2607,9 @@ function SmartAI:askForPlayerChosen(targets, reason)
 	end
 end
 
-function SmartAI:askForSingleVulnerary(dying)
+function SmartAI:askForSingleWine(dying)
 	local card_str
-	local forbid = sgs.Bang:cloneCard("vulnerary", sgs.Card_NoSuit, 0)
+	local forbid = sgs.Bang:cloneCard("wine", sgs.Card_NoSuit, 0)
 	if self.player:isLocked(forbid) or dying:isLocked(forbid) then return "." end
 	if self:isFriend(dying) then
 		if self:needDeath(dying) then return "." end
@@ -2630,9 +2630,9 @@ function SmartAI:askForSingleVulnerary(dying)
 		if (self.player:objectName() == dying:objectName()) then
 			card_str = self:getCardId("Analeptic")
 			if not card_str then 
-			 card_str = self:getCardId("Vulnerary") end
+			 card_str = self:getCardId("Wine") end
 		elseif dying:isLord() then
-			card_str = self:getCardId("Vulnerary")
+			card_str = self:getCardId("Wine")
 		elseif self:doNotSave(dying) then return "." 
 		else
 			for _, friend in ipairs(self.friends_noself) do
@@ -2641,8 +2641,8 @@ function SmartAI:askForSingleVulnerary(dying)
 			for _, enemy in ipairs(self.enemies) do
 				if enemy:getHp() == 1 and enemy:isLord() and not enemy:hasSkill("buqu") and self.player:getRole() == "renegade" then weaklord = weaklord + 1 end
 			end
-			if weaklord < 1 or self:getAllVulneraryNum() > 1 then
-				card_str = self:getCardId("Vulnerary") 
+			if weaklord < 1 or self:getAllWineNum() > 1 then
+				card_str = self:getCardId("Wine") 
 			end
 		end
 	end
@@ -2717,7 +2717,7 @@ function SmartAI:getTurnUse()
 				if card:inherits("OffensiveHorse") then self.predictNewHorse = true end
 				if card:objectName() == "hammer" then slashAvail = 100 end
 				if card:inherits("Snatch") then i = i-1 end
-				if card:inherits("Vulnerary") then i = i+2 end
+				if card:inherits("Wine") then i = i+2 end
 				if card:inherits("Collateral") then i = i-1 end
 				if card:inherits("AmazingGrace") then i = i-1 end
 				if card:inherits("TreasureChest") then i = i-2 end
@@ -2860,9 +2860,9 @@ end
 function SmartAI:getRetrialCardId(cards, judge)
 	local can_use = {}
 	for _, card in ipairs(cards) do
-		if self:isFriend(judge.who) and judge:isGood(card) and not (self:getFinalRetrial() == 2 and card:inherits("Vulnerary")) then
+		if self:isFriend(judge.who) and judge:isGood(card) and not (self:getFinalRetrial() == 2 and card:inherits("Wine")) then
 			table.insert(can_use, card)
-		elseif self:isEnemy(judge.who) and not judge:isGood(card) and not (self:getFinalRetrial() == 2 and card:inherits("Vulnerary")) then
+		elseif self:isEnemy(judge.who) and not judge:isGood(card) and not (self:getFinalRetrial() == 2 and card:inherits("Wine")) then
 			table.insert(can_use, card)
 		end
 	end
@@ -3089,14 +3089,14 @@ function getCardsNum(class_name, player)
 		local cards = sgs.QList2Table(player:getHandcards())
 		local num = 0
 		local shownum = 0
-		local redvulnerary = 0
+		local redwine = 0
 		local redslash = 0
 		local blackcard = 0
 		local blacknull = 0
 		local equipnull = 0
 		local equipcard = 0
 		local heartslash = 0
-		local heartvulnerary = 0
+		local heartwine = 0
 		local spadenull = 0
 		local spadewine = 0
 		local diamondcard = 0
@@ -3118,8 +3118,8 @@ function getCardsNum(class_name, player)
 					if not card:inherits("Slash") then
 						redslash = redslash + 1
 					end
-					if not card:inherits("Vulnerary") then
-						redvulnerary = redvulnerary + 1
+					if not card:inherits("Wine") then
+						redwine = redwine + 1
 					end
 				end
 				if card:isBlack() then
@@ -3132,8 +3132,8 @@ function getCardsNum(class_name, player)
 					if not card:inherits("Slash") then
 						heartslash = heartslash + 1
 					end
-					if not card:inherits("Vulnerary") then
-						heartvulnerary = heartvulnerary + 1
+					if not card:inherits("Wine") then
+						heartwine = heartwine + 1
 					end
 				end
 				if card:getSuit() == sgs.Card_Spade then
@@ -3160,11 +3160,11 @@ function getCardsNum(class_name, player)
 			equipnull = equipnull + 1
 		end			
 		if card:isRed() then 
-			redvulnerary = redvulnerary + 1
+			redwine = redwine + 1
 			redslash = redslash + 1 
 		end
 		if card:getSuit() == sgs.Card_Heart then
-			heartvulnerary = heartvulnerary + 1
+			heartwine = heartwine + 1
 		end
 		if card:getSuit() == sgs.Card_Spade then
 			spadecard = spadecard + 1
@@ -3201,11 +3201,11 @@ function getCardsNum(class_name, player)
 		else 
 			return num+(player:getHandcardNum()-shownum)/3
 		end
-	elseif class_name == "Vulnerary" then
+	elseif class_name == "Wine" then
 		if player:hasSkill("jijiu") then
-			return num + redvulnerary + (player:getHandcardNum()-shownum)/1.2
+			return num + redwine + (player:getHandcardNum()-shownum)/1.2
 		elseif player:hasSkill("longhun") then
-			return num+heartvulnerary+(player:getHandcardNum()-shownum)/3
+			return num+heartwine+(player:getHandcardNum()-shownum)/3
 		else 
 			return num
 		end 
@@ -3267,11 +3267,11 @@ function SmartAI:getCardsNum(class_name, player, flag, selfonly)
 	return n
 end
 
-function SmartAI:getAllVulneraryNum(player)
+function SmartAI:getAllWineNum(player)
 	player = player or self.player
 	local n = 0
 	for _, friend in ipairs(self:getFriends(player)) do
-		n = n + self:getCardsNum("Vulnerary")
+		n = n + self:getCardsNum("Wine")
 	end
 	return n
 end
@@ -3337,7 +3337,7 @@ function SmartAI:evaluatePlayerCardsNum(class_name, player)
 	local modified = 1;
 	if class_name == "Jink" then modified = 1.23
 	elseif class_name == "Analeptic" then modified = 1.17
-	elseif class_name == "Vulnerary" then modified = 1.19
+	elseif class_name == "Wine" then modified = 1.19
 	elseif class_name == "Slash" then modified = 1.09
 	end
 	
@@ -3437,12 +3437,12 @@ function SmartAI:useSkillCard(card,use)
 			if sgs.Bang:getCard(card):inherits("Shit") then shit = shit + 1 end
 		end
 	end
-	if shit - self.player:getHp() > self:getAllVulneraryNum() then use.card = nil end
+	if shit - self.player:getHp() > self:getAllWineNum() then use.card = nil end
 end
 
 function SmartAI:useBasicCard(card, use)
 	if self.player:hasSkill("chengxiang") and self.player:getHandcardNum() < 8 and card:getNumber() < 7 then return end
-	if not (card:inherits("Vulnerary") and self.player:getLostHp() > 1) and self:needBear() then return end
+	if not (card:inherits("Wine") and self.player:getLostHp() > 1) and self:needBear() then return end
 	self:useCardByClassName(card, use)
 end
 
@@ -3582,7 +3582,7 @@ function SmartAI:getAoeValueTo(card, to , from)
 	end
 
 	if self:aoeIsEffective(card, to) then
-		if to:getHp() > 1 or (self:getCardsNum("Vulnerary", to) + self:getCardsNum("Analeptic", to) > 0) then
+		if to:getHp() > 1 or (self:getCardsNum("Wine", to) + self:getCardsNum("Analeptic", to) > 0) then
 			if to:hasSkill("yiji") or to:hasSkill("jianxiong") then
 				value = value + 20
 			end
@@ -3619,7 +3619,7 @@ function SmartAI:getAoeValueTo(card, to , from)
 
 		if self:isFriend(from, to) then
 			if (to:isLord() or from:isLord()) and not (to:hasSkill("buqu") and to:getPile("buqu"):length() < 5) then
-				if to:getHp() <= 1 and self:getCardsNum("Vulnerary", from) == 0 and sj_num == 0 then
+				if to:getHp() <= 1 and self:getCardsNum("Wine", from) == 0 and sj_num == 0 then
 					if sgs.evaluatePlayerRole(to) == "renegade" then
 						value = value - 50
 					else
@@ -3627,9 +3627,9 @@ function SmartAI:getAoeValueTo(card, to , from)
 					end
 				end
 			end
-			value = value + self:getCardsNum("Vulnerary", from) * 2
+			value = value + self:getCardsNum("Wine", from) * 2
 		elseif sgs.evaluatePlayerRole(to) == "rebel" or (to:isLord() and sgs.evaluatePlayerRole(from) == "rebel") then
-			if to:getHp() <= 1 and self:getCardsNum("Vulnerary", to) == 0 and sj_num == 0 then
+			if to:getHp() <= 1 and self:getCardsNum("Wine", to) == 0 and sj_num == 0 then
 				value = value - 50
 			end
 		end
@@ -3879,7 +3879,7 @@ function SmartAI:damageMinusHp(self, enemy, type)
 		local cards = self.player:getCards("he")
 		cards = sgs.QList2Table(cards)
 		for _, acard in ipairs(cards) do
-			if acard:getTypeId() == sgs.Card_Basic and not acard:inherits("Vulnerary") then basicnum = basicnum + 1 end
+			if acard:getTypeId() == sgs.Card_Basic and not acard:inherits("Wine") then basicnum = basicnum + 1 end
 		end
 		for _, acard in ipairs(cards) do
 			if ((acard:inherits("Duel") or acard:inherits("SavageAssault") or acard:inherits("ArcheryAttack") or acard:inherits("FireAttack")) 
@@ -3949,7 +3949,7 @@ function SmartAI:cantbeHurt(player)
 		end
 	elseif player:hasSkill("tianxiang") then
 		for _, friend in ipairs(self.friends) do
-			if friend:getHp() < 2 and self:getCardsNum("Vulnerary") == 0 then
+			if friend:getHp() < 2 and self:getCardsNum("Wine") == 0 then
 				dyingfriend = dyingfriend + 1
 			end
 		end

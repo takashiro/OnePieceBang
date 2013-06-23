@@ -300,12 +300,12 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
             DyingStruct dying = data.value<DyingStruct>();
 
             while(dying.who->getHp() <= 0){
-                const Card *vulnerary = room->askForSingleVulnerary(player, dying.who);
-                if(vulnerary == NULL)
+                const Card *wine = room->askForSingleWine(player, dying.who);
+                if(wine == NULL)
                     break;
 
                 CardUseStruct use;
-                use.card = vulnerary;
+                use.card = wine;
                 use.from = player;
                 if(player != dying.who)
                     use.to << dying.who;

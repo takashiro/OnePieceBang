@@ -251,9 +251,9 @@ void MudSlide::takeEffect(ServerPlayer *target) const{
     }
 }
 
-class GrabVulnerary: public TriggerSkill{
+class GrabWine: public TriggerSkill{
 public:
-    GrabVulnerary():TriggerSkill("grab_vulnerary"){
+    GrabWine():TriggerSkill("grab_wine"){
         events << CardUsed;
     }
 
@@ -263,13 +263,13 @@ public:
 
     virtual bool trigger(TriggerEvent , ServerPlayer *player, QVariant &data) const{
         CardUseStruct use = data.value<CardUseStruct>();
-        if(use.card->inherits("Vulnerary")){
+        if(use.card->inherits("Wine")){
             Room *room = player->getRoom();
             QList<ServerPlayer *> players = room->getOtherPlayers(player);
 
             foreach(ServerPlayer *p, players){
                 if(p->getOffensiveHorse() == parent() &&
-                   p->askForSkillInvoke("grab_vulnerary", data))
+                   p->askForSkillInvoke("grab_wine", data))
                 {
                     room->throwCard(p->getOffensiveHorse());
                     p->playCardEffect(objectName());
@@ -287,12 +287,12 @@ public:
 Monkey::Monkey(Card::Suit suit, int number)
 	:OffensiveHorse(suit, number, "money")
 {
-    grab_vulnerary = new GrabVulnerary;
-    grab_vulnerary->setParent(this);
+    grab_wine = new GrabWine;
+    grab_wine->setParent(this);
 }
 
 void Monkey::onInstall(ServerPlayer *player) const{
-    player->getRoom()->getThread()->addTriggerSkill(grab_vulnerary);
+    player->getRoom()->getThread()->addTriggerSkill(grab_wine);
 }
 
 void Monkey::onUninstall(ServerPlayer *player) const{

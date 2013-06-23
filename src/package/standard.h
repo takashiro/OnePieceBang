@@ -339,11 +339,11 @@ public:
     virtual bool isAvailable(const Player *player) const;
 };
 
-class Vulnerary: public BasicCard{
+class Wine: public BasicCard{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE Vulnerary(Card::Suit suit, int number);
+    Q_INVOKABLE Wine(Card::Suit suit, int number);
     virtual QString getSubtype() const;
     virtual QString getEffectPath(bool is_male) const;
     virtual void onUse(Room *room, const CardUseStruct &card_use) const;

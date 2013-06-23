@@ -11,8 +11,8 @@ function SmartAI:useCardShit(card, use)
 		end
 		if sgs[self.player:getGeneralName() .. "_suit_value"] and
 			(sgs[self.player:getGeneralName() .. "_suit_value"][card:getSuitString()] or 0) > 0 then return end
-		local vulnerary = self:getCard("Vulnerary")
-		if vulnerary then
+		local wine = self:getCard("Wine")
+		if wine then
 			self:sort(self.friends, "hp")
 			if not self:isWeak(self.friends[1]) then
 				use.card = card
@@ -25,7 +25,7 @@ end
 sgs.ai_use_value.Shit = -10
 sgs.ai_keep_value.Shit = 6
 
-sgs.ai_skill_invoke.grab_vulnerary = function(self, data)
+sgs.ai_skill_invoke.grab_wine = function(self, data)
 	local struct = data:toCardUse()
 	return self:isEnemy(struct.from) and (struct.to:isEmpty() or self:isEnemy(struct.to:first()))
 end

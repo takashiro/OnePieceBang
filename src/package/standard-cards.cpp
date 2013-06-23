@@ -92,20 +92,20 @@ bool Jink::isAvailable(const Player *) const{
 	return false;
 }
 
-Vulnerary::Vulnerary(Suit suit, int number):BasicCard(suit, number){
-	setObjectName("vulnerary");
+Wine::Wine(Suit suit, int number):BasicCard(suit, number){
+	setObjectName("wine");
 	target_fixed = true;
 }
 
-QString Vulnerary::getSubtype() const{
+QString Wine::getSubtype() const{
 	return "recover_card";
 }
 
-QString Vulnerary::getEffectPath(bool ) const{
+QString Wine::getEffectPath(bool ) const{
 	return Card::getEffectPath();
 }
 
-void Vulnerary::onUse(Room *room, const CardUseStruct &card_use) const{
+void Wine::onUse(Room *room, const CardUseStruct &card_use) const{
 	CardUseStruct use = card_use;
 	if(use.to.isEmpty()){
 		use.to << use.from;
@@ -113,18 +113,18 @@ void Vulnerary::onUse(Room *room, const CardUseStruct &card_use) const{
 	BasicCard::onUse(room, use);
 }
 
-void Vulnerary::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
+void Wine::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
 	room->throwCard(this);
 
 	foreach(ServerPlayer *tmp, targets)
 		room->cardEffect(this, source, tmp);
 }
 
-void Vulnerary::onEffect(const CardEffectStruct &effect) const{
+void Wine::onEffect(const CardEffectStruct &effect) const{
 	Room *room = effect.to->getRoom();
 
 	// do animation
-	room->broadcastInvoke("animate", QString("vulnerary:%1:%2")
+	room->broadcastInvoke("animate", QString("wine:%1:%2")
 						  .arg(effect.from->objectName())
 						  .arg(effect.to->objectName()));
 
@@ -136,7 +136,7 @@ void Vulnerary::onEffect(const CardEffectStruct &effect) const{
 	room->recover(effect.to, recover);
 }
 
-bool Vulnerary::isAvailable(const Player *player) const{
+bool Wine::isAvailable(const Player *player) const{
 	return player->isWounded();
 }
 
@@ -1458,34 +1458,34 @@ StandardCardPackage::StandardCardPackage()
 
 	<< new MilkyDial(Card::Spade, 2) << new Jink(Card::Heart, 2) << new MilkyDial(Card::Club, 2) << new Jink(Card::Diamond, 2)
 	<< new OkamaMicrophone(Card::Spade, 2) << new Jink(Card::Heart, 2) << new Slash(Card::Club, 2) << new Jink(Card::Diamond, 2)
-	<< new Vine(Card::Spade, 2) << new FireAttack(Card::Heart, 2) << new Vine(Card::Club, 2) << new Vulnerary(Card::Diamond, 2)
+	<< new Vine(Card::Spade, 2) << new FireAttack(Card::Heart, 2) << new Vine(Card::Club, 2) << new Wine(Card::Diamond, 2)
 	<< new SoulSolid(Card::Spade, 2) << new Rain(Card::Heart, 2) << new Cloak(Card::Club, 2) << new Tornado(Card::Diamond, 2)
 
-	<< new Dismantlement(Card::Spade, 3) << new Vulnerary(Card::Heart, 3) << new Dismantlement(Card::Club, 3) << new Jink(Card::Diamond, 3)
+	<< new Dismantlement(Card::Spade, 3) << new Wine(Card::Heart, 3) << new Dismantlement(Card::Club, 3) << new Jink(Card::Diamond, 3)
 	<< new Snatch(Card::Spade, 3) << new AllBlue(Card::Heart, 3) << new Slash(Card::Club, 3) << new Snatch(Card::Diamond, 3)
-	<< new BusouHaki(Card::Spade, 3) << new FireAttack(Card::Heart, 3) << new BusouHaki(Card::Club, 3) << new Vulnerary(Card::Diamond, 3)
+	<< new BusouHaki(Card::Spade, 3) << new FireAttack(Card::Heart, 3) << new BusouHaki(Card::Club, 3) << new Wine(Card::Diamond, 3)
 
-	<< new Dismantlement(Card::Spade, 4) << new Vulnerary(Card::Heart, 4) << new Dismantlement(Card::Club, 4) << new Jink(Card::Diamond, 4)
+	<< new Dismantlement(Card::Spade, 4) << new Wine(Card::Heart, 4) << new Dismantlement(Card::Club, 4) << new Jink(Card::Diamond, 4)
 	<< new Snatch(Card::Spade, 4) << new AllBlue(Card::Heart, 4) << new Slash(Card::Club, 4) << new Snatch(Card::Diamond, 4)
 	<< new ThunderSlash(Card::Spade, 4) << new FireSlash(Card::Heart, 4) << new SupplyShortage(Card::Club, 4) << new FireSlash(Card::Diamond, 4)
 
 	<< new SandaiKitetsu << new Kabuto << new DefensiveHorse(Card::Club, 5, "waver") << new Jink(Card::Diamond, 5)
 	<< new DefensiveHorse(Card::Spade, 5, "waver") << new OffensiveHorse(Card::Heart, 5, "mini_merry") << new Slash(Card::Club, 5) << new ImpactDial
-	<< new ThunderSlash(Card::Spade, 5) << new Vulnerary(Card::Heart, 5) << new ThunderSlash(Card::Club, 5) << new FireSlash(Card::Diamond, 5)
+	<< new ThunderSlash(Card::Spade, 5) << new Wine(Card::Heart, 5) << new ThunderSlash(Card::Club, 5) << new FireSlash(Card::Diamond, 5)
 
-	<< new NegativeSoul(Card::Spade, 6) << new Vulnerary(Card::Heart, 6) << new NegativeSoul(Card::Club, 6) << new Jink(Card::Diamond, 6)
+	<< new NegativeSoul(Card::Spade, 6) << new Wine(Card::Heart, 6) << new NegativeSoul(Card::Club, 6) << new Jink(Card::Diamond, 6)
 	<< new WadoIchimonji << new NegativeSoul(Card::Heart, 6) << new Slash(Card::Club, 6) << new Slash(Card::Diamond, 6)
-	<< new ThunderSlash(Card::Spade, 6) << new Vulnerary(Card::Heart, 6) << new ThunderSlash(Card::Club, 6) << new Jink(Card::Diamond, 6)
+	<< new ThunderSlash(Card::Spade, 6) << new Wine(Card::Heart, 6) << new ThunderSlash(Card::Club, 6) << new Jink(Card::Diamond, 6)
 
-	<< new NeptunianAttack(Card::Spade, 7) << new Vulnerary(Card::Heart, 7) << new NeptunianAttack(Card::Club, 7) << new Jink(Card::Diamond, 7)
+	<< new NeptunianAttack(Card::Spade, 7) << new Wine(Card::Heart, 7) << new NeptunianAttack(Card::Club, 7) << new Jink(Card::Diamond, 7)
 	<< new Slash(Card::Spade, 7) << new TreasureChest(Card::Heart, 7) << new Slash(Card::Club, 7) << new Slash(Card::Diamond, 7)
 	<< new ThunderSlash(Card::Spade, 7) << new FireSlash(Card::Heart, 7) << new ThunderSlash(Card::Club, 7) << new Jink(Card::Diamond, 7)
 
-	<< new Slash(Card::Spade, 8) << new Vulnerary(Card::Heart, 8) << new Slash(Card::Club, 8) << new Jink(Card::Diamond, 8)
+	<< new Slash(Card::Spade, 8) << new Wine(Card::Heart, 8) << new Slash(Card::Club, 8) << new Jink(Card::Diamond, 8)
 	<< new Slash(Card::Spade, 8) << new TreasureChest(Card::Heart, 8) << new Slash(Card::Club, 8) << new Slash(Card::Diamond, 8)
 	<< new ThunderSlash(Card::Spade, 8) << new Jink(Card::Heart, 8) << new ThunderSlash(Card::Club, 8) << new Jink(Card::Diamond, 8)
 
-	<< new Slash(Card::Spade, 9) << new Vulnerary(Card::Heart, 9) << new Slash(Card::Club, 9) << new Jink(Card::Diamond, 9)
+	<< new Slash(Card::Spade, 9) << new Wine(Card::Heart, 9) << new Slash(Card::Club, 9) << new Jink(Card::Diamond, 9)
 	<< new Slash(Card::Spade, 9) << new TreasureChest(Card::Heart, 9) << new Slash(Card::Club, 9) << new Slash(Card::Diamond, 9)
 	<< new BusouHaki(Card::Spade, 9) << new Jink(Card::Heart, 9) << new BusouHaki(Card::Club, 9) << new BusouHaki(Card::Diamond, 9)
 
@@ -1497,7 +1497,7 @@ StandardCardPackage::StandardCardPackage()
 	<< new Snatch(Card::Spade, 11) << new TreasureChest(Card::Heart, 11) << new Slash(Card::Club, 11) << new Jink(Card::Diamond, 11)
 	<< new IronChain(Card::Spade, 11) << new Jink(Card::Heart, 11) << new IronChain(Card::Club, 11) << new Jink(Card::Diamond, 11)
 
-	<< new Shigure << new Vulnerary(Card::Heart, 12) << new Collateral(Card::Club, 12) << new Vulnerary(Card::Diamond, 12)
+	<< new Shigure << new Wine(Card::Heart, 12) << new Collateral(Card::Club, 12) << new Wine(Card::Diamond, 12)
 	<< new Dismantlement(Card::Spade, 12) << new Dismantlement(Card::Heart, 12) << new Nullification(Card::Club, 12) << new Yubashiri
 	<< new IronChain(Card::Spade, 12) << new Jink(Card::Heart, 12) << new IronChain(Card::Club, 12) << new FireAttack(Card::Diamond, 12)
 	<< new Rain(Card::Spade, 12) << new Lightning(Card::Heart, 12) << new Tornado(Card::Club, 12) << new Nullification(Card::Diamond, 12)

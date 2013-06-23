@@ -345,7 +345,7 @@ public:
         QList<ServerPlayer *> players = room->getOtherPlayers(lord);
         foreach(ServerPlayer *player, players){
             JudgeStruct judge;
-            judge.pattern = QRegExp("(Vulnerary|BusouHaki):(.*):(.*)");
+            judge.pattern = QRegExp("(Wine|BusouHaki):(.*):(.*)");
             judge.good = true;
             judge.who = player;
 

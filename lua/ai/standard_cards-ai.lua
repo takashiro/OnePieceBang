@@ -92,7 +92,7 @@ function SmartAI:useCardSlash(card, use)
 	local cards = self.player:getCards("he")
 	cards = sgs.QList2Table(cards)
 	for _, acard in ipairs(cards) do
-		if acard:getTypeId() == sgs.Card_Basic and not acard:inherits("Vulnerary") then basicnum = basicnum + 1 end
+		if acard:getTypeId() == sgs.Card_Basic and not acard:inherits("Wine") then basicnum = basicnum + 1 end
 	end
 	local no_distance = self.slash_distance_limit
 	self.slash_targets = 1
@@ -315,28 +315,28 @@ sgs.ai_use_value.Slash = 4.6
 sgs.ai_keep_value.Slash = 2
 sgs.ai_use_priority.Slash = 2.4
 
-function SmartAI:useCardVulnerary(card, use)
-	local mustusevulnerary = false
+function SmartAI:useCardWine(card, use)
+	local mustusewine = false
 	if not self.player:isWounded() then return end
 	if self.player:hasSkill("longhun") and not self.player:isLord() and
 		math.min(self.player:getMaxCards(), self.player:getHandcardNum()) + self.player:getCards("e"):length() > 3 then return end
-	local vulneraryes = 0
+	local winees = 0
 	local cards = self.player:getHandcards()
 	cards = sgs.QList2Table(cards)
 	for _,card in ipairs(cards) do
-		if card:inherits("Vulnerary") then vulneraryes = vulneraryes+1 end
+		if card:inherits("Wine") then winees = winees+1 end
 	end
 	if self.player:isLord() and (self.player:hasSkill("hunzi") and not self.player:hasSkill("yingzi")) 
-		and self.player:getHp() < 4 and self.player:getHp() > vulneraryes then return end
+		and self.player:getHp() < 4 and self.player:getHp() > winees then return end
 	for _, friend in ipairs(self.enemies) do
-		if (self:hasSkills(sgs.drawvulnerary_skill,enemy) and self.player:getHandcardNum() < 3) or (self.player:hasSkill("buqu") and self.player:getHp() < 1) then
-			mustusevulnerary = true
+		if (self:hasSkills(sgs.drawwine_skill,enemy) and self.player:getHandcardNum() < 3) or (self.player:hasSkill("buqu") and self.player:getHp() < 1) then
+			mustusewine = true
 		end
 	end
 	for _, friend in ipairs(self.friends_noself) do
-		if not mustusevulnerary then
-			if friend:isLord() and friend:getHp() == 1 and not friend:hasSkill("buqu") and vulneraryes < 2 then return end
-			if (self.player:getHp()-friend:getHp() > vulneraryes) and (friend:getHp() < 3) and not friend:hasSkill("buqu") then return end
+		if not mustusewine then
+			if friend:isLord() and friend:getHp() == 1 and not friend:hasSkill("buqu") and winees < 2 then return end
+			if (self.player:getHp()-friend:getHp() > winees) and (friend:getHp() < 3) and not friend:hasSkill("buqu") then return end
 		end
 	end
 
@@ -356,16 +356,16 @@ function SmartAI:useCardVulnerary(card, use)
 	use.card = card
 end
 
-sgs.ai_card_intention.Vulnerary = -120
+sgs.ai_card_intention.Wine = -120
 
-sgs.ai_use_value.Vulnerary = 6
-sgs.ai_keep_value.Vulnerary = 5
-sgs.ai_use_priority.Vulnerary = 4.1
+sgs.ai_use_value.Wine = 6
+sgs.ai_keep_value.Wine = 5
+sgs.ai_use_priority.Wine = 4.1
 
 sgs.ai_use_value.Jink = 8.9
 sgs.ai_keep_value.Jink = 4
 
-sgs.dynamic_value.benefit.Vulnerary = true
+sgs.dynamic_value.benefit.Wine = true
 
 sgs.weapon_range.Hammer = 1
 sgs.weapon_range.OkamaMicrophone = 2
@@ -517,7 +517,7 @@ function sgs.ai_cardsview.spear(class_name, player)
 		cards=sgs.QList2Table(cards)
 		local newcards = {}
 		for _, card in ipairs(cards) do
-			if not card:inherits("Vulnerary") then table.insert(newcards, card) end
+			if not card:inherits("Wine") then table.insert(newcards, card) end
 		end
 		if #newcards<(player:getHp()+1) then return nil end
 		if #newcards<2 then return nil end
@@ -666,7 +666,7 @@ sgs.ai_skill_cardask.aoe = function(self, data, pattern, target, target2, name)
 	if self.player:hasSkill("wuyan") then return "." end
 	if target:hasSkill("wuyan") and not (menghuo and aoe:inherits("SavageAssault")) then return "." end
 	if self.player:hasSkill("jianxiong") and self:getAoeValue(aoe) > -10 and
-		(self.player:getHp()>1 or self:getAllVulneraryNum()>0) and not self.player:containsTrick("negative_soul") then return "." end
+		(self.player:getHp()>1 or self:getAllWineNum()>0) and not self.player:containsTrick("negative_soul") then return "." end
 end
 
 sgs.ai_skill_cardask["neptunian-attack-slash"] = function(self, data, pattern, target, target2)
@@ -827,7 +827,7 @@ sgs.ai_skill_cardask["duel-slash"] = function(self, data, pattern, target)
 	if target:hasSkill("wuyan") then return "." end
 	if self:isFriend(target) and target:hasSkill("rende") and self.player:hasSkill("jieming") then return "." end
 	if (not self:isFriend(target) and self:getCardsNum("Slash")*2 >= target:getHandcardNum())
-		or (target:getHp() > 2 and self.player:getHp() <= 1 and self:getCardsNum("Vulnerary") == 0 and not self.player:hasSkill("buqu")) then
+		or (target:getHp() > 2 and self.player:getHp() <= 1 and self:getCardsNum("Wine") == 0 and not self.player:hasSkill("buqu")) then
 		return self:getCardId("Slash")
 	else return "." end
 end

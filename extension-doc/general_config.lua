@@ -1,7 +1,7 @@
 sgs.ai_keep_value = {
 	Shit = 6,
 
-	Vulnerary = 5,
+	Wine = 5,
 
 	Analeptic = 4.5,
 	Jink = 4,
@@ -51,7 +51,7 @@ sgs.ai_use_value =
 	Nullification = 8,
 	SupplyShortage=7,
 
-	Vulnerary = 6,
+	Wine = 6,
 	Dismantlement=5.6,
 	IronChain = 5.4,
 
@@ -105,7 +105,7 @@ sgs.ai_use_priority = {
 --
 
 
-	Vulnerary = 4.1,
+	Wine = 4.1,
 
 	Dismantlement=4.4,
 	Snatch=4.3,

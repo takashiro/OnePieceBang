@@ -76,7 +76,7 @@ return {
 	["#Damage"] = "%from 对 %to 造成了 %arg 点伤害[%arg2]",
 	["#DamageNoSource"] = "%to 受到了 %arg 点伤害[%arg2]",
 	["#Recover"] = "%from 恢复了 %arg 点体力",
-	["#AskForVulneraries"] = "%from 向 %to 求救，一共需要 %arg 个【伤药】",
+	["#AskForVulneraries"] = "%from 向 %to 求救，一共需要 %arg 个【酒】",
 	["#ChooseKingdom"] = "%from 选择了 %arg 作为他的国籍",
 	["#NullificationDetails"] = "无懈的对象是 %from 对 %to 的特技 %arg",
 	["#SkillAvoid"] = "%from 的 %arg 技能被触发，这张 %arg2 不能指定其作为目标",

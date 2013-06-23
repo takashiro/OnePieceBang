@@ -902,7 +902,7 @@ public:
 	bool askForYiji(ServerPlayer *guojia, QList<int> &cards);
 	const Card *askForPindian(ServerPlayer *player, ServerPlayer *from, ServerPlayer *to, const char *reason);
 	ServerPlayer *askForPlayerChosen(ServerPlayer *player, const QList<ServerPlayer *> &targets, const char *reason);
-	const Card *askForSingleVulnerary(ServerPlayer *player, ServerPlayer *dying);
+	const Card *askForSingleWine(ServerPlayer *player, ServerPlayer *dying);
 };
 
 %extend Room {

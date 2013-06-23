@@ -40,7 +40,7 @@ sgs.dynamic_value = {
 	},
 	benefit = 
 	{
-		Vulnerary = true,
+		Wine = true,
 		Analeptic = true,
 		IronChain = true,
 		TreasureChest = true,
@@ -56,7 +56,7 @@ sgs.dynamic_value = {
 
 sgs.zhangfei_keep_value = 
 {
-	Vulnerary = 6,
+	Wine = 6,
 	Analeptic = 5.8,
 	Jink = 5.7,
 	FireSlash = 5.6,
@@ -67,7 +67,7 @@ sgs.zhangfei_keep_value =
 
 sgs.zhaoyun_keep_value = 
 {
-	Vulnerary = 6,
+	Wine = 6,
 	Analeptic = 5.8,
 	Jink = 5.7,
 	FireSlash = 5.7,
@@ -78,7 +78,7 @@ sgs.zhaoyun_keep_value =
 
 sgs.huangyueying_keep_value = 
 {
-	Vulnerary 		= 6,
+	Wine 		= 6,
 	Analeptic 	= 5.9,
 	Jink 		= 5.8,
 	TreasureChest	= 5.7,
@@ -95,7 +95,7 @@ sgs.huangyueying_keep_value =
 
 sgs.xuchu_keep_value = 
 {
-	Vulnerary 			= 6,
+	Wine 			= 6,
 	Analeptic 		= 5.8,
 	Jink 			= 5.7,
 	FireSlash 		= 5.6,
@@ -113,7 +113,7 @@ sgs.xuchu_keep_value =
 
 sgs.sunshangxiang_keep_value = 
 {
-	Vulnerary = 6,
+	Wine = 6,
 	Jink = 5.1,
 	Hammer = 5,
 	SandaiKitetsu = 5,
@@ -133,7 +133,7 @@ sgs.sunshangxiang_keep_value =
 
 sgs.xiahouyuan_keep_value = 
 {
-	Vulnerary = 6,
+	Wine = 6,
 	Jink = 5.1,
 	Hammer = 5,
 	SandaiKitetsu = 5,

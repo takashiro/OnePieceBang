@@ -403,7 +403,7 @@ StandardPackage::StandardPackage()
 
     patterns["slash"] = new ExpPattern("Slash");
     patterns["jink"] = new ExpPattern("Jink");
-    patterns["vulnerary"] = new  ExpPattern("Vulnerary");
+    patterns["wine"] = new  ExpPattern("Wine");
     patterns["nullification"] = new ExpPattern("Nullification");
 }
 

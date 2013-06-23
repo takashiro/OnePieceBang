@@ -194,7 +194,7 @@ public:
     }
 
     virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
-        return  pattern.contains("vulnerary") && player->getPhase() == Player::NotActive;
+        return  pattern.contains("wine") && player->getPhase() == Player::NotActive;
     }
 
     virtual bool viewFilter(const CardItem *to_select) const{
@@ -203,10 +203,10 @@ public:
 
     virtual const Card *viewAs(CardItem *card_item) const{
         const Card *first = card_item->getCard();
-        Vulnerary *vulnerary = new Vulnerary(first->getSuit(), first->getNumber());
-        vulnerary->addSubcard(first->getId());
-        vulnerary->setSkillName(objectName());
-        return vulnerary;
+        Wine *wine = new Wine(first->getSuit(), first->getNumber());
+        wine->addSubcard(first->getId());
+        wine->setSkillName(objectName());
+        return wine;
     }
 };
 
@@ -231,7 +231,7 @@ public:
             data = QVariant::fromValue(damage);
         }else{
             CardEffectStruct effect = data.value<CardEffectStruct>();
-            if(effect.card->inherits("Vulnerary")){
+            if(effect.card->inherits("Wine")){
                 room->sendLog("#TriggerSkill", player, objectName());
 
                 RecoverStruct recover;

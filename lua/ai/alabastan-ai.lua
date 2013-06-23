@@ -27,14 +27,14 @@ sgs.ai_skill_cardask["antiwar-invoke"] = function(self, data)
 end
 
 --Leechcraft
-sgs.ai_view_as.Leechcraft = function(card, player, card_place)
+sgs.ai_view_as.leechcraft = function(card, player, card_place)
 	if player:getPhase() ~= sgs.Phase_NotActive then return end
 
 	if card:getSuit() == sgs.Card_Club then
 		local suit = card:getSuitString()
 		local number = card:getNumberString()
 		local card_id = card:getEffectiveId()
-		return ("vulnerary:leechcraft[%s:%s]=%d"):format(suit, number, card_id)
+		return ("wine:leechcraft[%s:%s]=%d"):format(suit, number, card_id)
 	end
 end
 
@@ -74,7 +74,7 @@ fleur_skill.getTurnUseCard=function(self)
 			
 			for _, acard in ipairs(cards) do
 				if (acard:inherits("BasicCard") or acard:inherits("EquipCard") or acard:inherits("AllBlue"))
-					and not acard:inherits("Vulnerary") and not acard:inherits("Shit") then 
+					and not acard:inherits("Wine") and not acard:inherits("Shit") then 
 					card_id = acard:getEffectiveId()
 					break
 				end
@@ -91,7 +91,7 @@ fleur_skill.getTurnUseCard=function(self)
 			cards=sgs.QList2Table(self.player:getHandcards())
 			for _, acard in ipairs(cards) do
 				if (acard:inherits("BasicCard") or acard:inherits("EquipCard") or acard:inherits("AllBlue"))
-					and not acard:inherits("Vulnerary") and not acard:inherits("Shit") then 
+					and not acard:inherits("Wine") and not acard:inherits("Shit") then 
 					card_id = acard:getEffectiveId()
 					break
 				end

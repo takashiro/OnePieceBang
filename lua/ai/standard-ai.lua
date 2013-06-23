@@ -155,7 +155,7 @@ sgs.ai_view_as.blackfeet = function(card, player, card_place)
 	local number = card:getNumberString()
 	local card_id = card:getEffectiveId()
 	if card:inherits("Slash") and card:getSuit() == sgs.Card_Club then
-		return ("vulnerary:blackfeet[%s:%s]=%d"):format(suit, number, card_id)
+		return ("wine:blackfeet[%s:%s]=%d"):format(suit, number, card_id)
 	elseif card:inherits("Jink") then
 		return ("fire_slash:blackfeet[%s:%s]=%d"):format(suit, number, card_id)
 	end
@@ -231,4 +231,14 @@ sgs.ai_skill_invoke.sharkontooth = function(self, data)
 	end
 
 	return false
+end
+
+--IronPunch
+sgs.ai_view_as.ironpunch = function(card, player, card_place)
+	if player:getWeapon() then return end
+
+	local suit = card:getSuitString()
+	local number = card:getNumberString()
+	local card_id = card:getEffectiveId()
+	return ("slash:ironpunch[%s:%s]=%d"):format(suit, number, card_id)
 end

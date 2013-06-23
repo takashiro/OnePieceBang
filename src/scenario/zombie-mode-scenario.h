@@ -29,11 +29,11 @@ public:
     Q_INVOKABLE GanranEquip(Card::Suit suit, int number);
 };
 
-class VulneraryingCard: public SkillCard{
+class WineingCard: public SkillCard{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE VulneraryingCard();
+    Q_INVOKABLE WineingCard();
     virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
 };
 

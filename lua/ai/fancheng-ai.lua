@@ -13,7 +13,7 @@ zhiyuan_skill.getTurnUseCard=function(self)
 		if card:getTypeId()==sgs.Card_Basic then
 			if card:inherits("Slash") and (self:getCardsNum("Slash")<=1)then
 			elseif card:inherits("Jink") and (self:getCardsNum("Jink")<=1)then
-			elseif card:inherits("Vulnerary") and (self.player:getHp()<=2)then
+			elseif card:inherits("Wine") and (self.player:getHp()<=2)then
 			else
 				basic_card = card
 				break

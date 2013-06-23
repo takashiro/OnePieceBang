@@ -874,7 +874,7 @@ void RoomScene::keyReleaseEvent(QKeyEvent *event){
 
     case Qt::Key_S: dashboard->selectCard("slash");  break;
     case Qt::Key_J: dashboard->selectCard("jink"); break;
-    case Qt::Key_P: dashboard->selectCard("vulnerary"); break;
+    case Qt::Key_P: dashboard->selectCard("wine"); break;
 
     case Qt::Key_E: dashboard->selectCard("equip"); break;
     case Qt::Key_W: dashboard->selectCard("weapon"); break;
@@ -3478,7 +3478,7 @@ void RoomScene::animatePopup(const QString &name, const QStringList &args)
 void RoomScene::doAppearingAnimation(const QString &name, const QStringList &args){
 
     if(name == "analeptic"
-            || name == "vulnerary")
+            || name == "wine")
     {
         setEmotion(args.at(0),name);
         return;
@@ -3582,7 +3582,7 @@ void RoomScene::doIndicate(const QString &, const QStringList &args){
 void RoomScene::doAnimation(const QString &name, const QStringList &args){
     static QMap<QString, AnimationFunc> map;
     if(map.isEmpty()){
-        map["vulnerary"] = &RoomScene::doAppearingAnimation;
+        map["wine"] = &RoomScene::doAppearingAnimation;
         map["jink"] = &RoomScene::animatePopup;
         map["nullification"] = &RoomScene::doMovingAnimation;
 

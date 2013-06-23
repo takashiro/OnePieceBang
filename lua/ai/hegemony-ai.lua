@@ -28,7 +28,7 @@ if sgs.GetConfig("EnableHegemony", false) then
 			local damage = data:toDamage()
 			for _, player in ipairs(players) do
 				if self:hasSkills(sgs.masochism_skill, player) and self:isEnemy(damage.from) then return "yes" end
-				if damage.damage > self.player:getHp() + self:getAllVulneraryNum() then return "yes" end
+				if damage.damage > self.player:getHp() + self:getAllWineNum() then return "yes" end
 			end
 		elseif event == sgs.CardEffected then
 			local effect = data:toCardEffect()

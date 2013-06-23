@@ -414,7 +414,7 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
         CardUseStruct use = data.value<CardUseStruct>();
         switch(room->getTag("SceneID").toInt()) {
         case 16:
-            if(use.card->inherits("Vulnerary") && player->getPhase() == Player::Play) {
+            if(use.card->inherits("Wine") && player->getPhase() == Player::Play) {
                 ServerPlayer *effectTo = room->askForPlayerChosen(player, room->getOtherPlayers(player), "Scene16");
                 RecoverStruct recover;
                 recover.who = effectTo;

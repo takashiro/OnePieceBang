@@ -173,7 +173,7 @@ void TrustAI::activate(CardUseStruct &card_use){
 }
 
 bool TrustAI::useCard(const Card *card){
-    if(card->inherits("Vulnerary"))
+    if(card->inherits("Wine"))
         return self->isWounded();
     else if(card->inherits("EquipCard")){
         const EquipCard *equip = qobject_cast<const EquipCard *>(card);
@@ -327,11 +327,11 @@ ServerPlayer *TrustAI::askForPlayerChosen(const QList<ServerPlayer *> &targets, 
     return targets.at(r);
 }
 
-const Card *TrustAI::askForSingleVulnerary(ServerPlayer *dying) {
+const Card *TrustAI::askForSingleWine(ServerPlayer *dying) {
     if(isFriend(dying)){
         QList<const Card *> cards = self->getHandcards();
         foreach(const Card *card, cards){
-            if(card->inherits("Vulnerary"))
+            if(card->inherits("Wine"))
                 return card;
 
             if(card->inherits("BusouHaki") && dying == self)
@@ -361,10 +361,10 @@ const Card *TrustAI::askForSingleVulnerary(ServerPlayer *dying) {
             cards = self->getCards("he");
             foreach(const Card *card, cards){
                 if(card->isRed()){
-                    Vulnerary *vulnerary = new Vulnerary(card->getSuit(), card->getNumber());
-                    vulnerary->addSubcard(card);
-                    vulnerary->setSkillName("jijiu");
-                    return vulnerary;
+                    Wine *wine = new Wine(card->getSuit(), card->getNumber());
+                    wine->addSubcard(card);
+                    wine->setSkillName("jijiu");
+                    return wine;
                 }
             }
         }

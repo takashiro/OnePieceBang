@@ -123,18 +123,18 @@ sgs.ai_skill_discard.ganglie = function(self, discard_num, optional, include_equ
 		-- 这一句不可省略，否则 table.insert(to_discard, ...) 会报错
 		local cards = self.player:getHandcards() -- 获得所有手牌
 		local index = 0
-		local all_vulneraryes = 0
+		local all_winees = 0
 		for _, card in sgs.qlist(cards) do
-			if card:inherits("Vulnerary") then
-				all_vulneraryes = all_vulneraryes + 1 -- 计算出手牌中【伤药】的总数。
+			if card:inherits("Wine") then
+				all_winees = all_winees + 1 -- 计算出手牌中【酒】的总数。
 			end
 		end
-		if all_vulneraryes >= 2 then return {} end -- 若至少有 2 张【伤药】，则不弃牌。
+		if all_winees >= 2 then return {} end -- 若至少有 2 张【酒】，则不弃牌。
 
 		for _, card in sgs.qlist(cards) do
-			if not card:inherits("Vulnerary") then
+			if not card:inherits("Wine") then
 				table.insert(to_discard, card:getEffectiveId())
-				-- 把不是【伤药】的牌的 ID 加入到弃牌列表之中
+				-- 把不是【酒】的牌的 ID 加入到弃牌列表之中
 				index = index + 1
 				if index == 2 then break end -- 若弃牌列表中已经有两张牌的 ID，则中止循环
 				-- 此处去除局部变量 index 而改用 #to_discard 会使代码更为简洁
@@ -289,7 +289,7 @@ end
 % 元素名称：reason，其中所有的短横 "-" 要用下划线 "_" 取代。
 % 元素：函数，原型为 function(self, card_ids)。
 %% card_ids, 返回值：与 SmartAI.askForAG 含义相同。
-% 例子：wind-ai.lua 第 258 行关于不屈吃伤药的时候选择要去掉的不屈牌的代码。]]
+% 例子：wind-ai.lua 第 258 行关于不屈吃酒的时候选择要去掉的不屈牌的代码。]]
 sgs.ai_skill_askforag.buqu = function(self, card_ids)
 	for i, card_id in ipairs(card_ids) do
 		for j, card_id2 in ipairs(card_ids) do
@@ -388,7 +388,7 @@ sgs.ai_skill_playerchosen.quhu = sgs.ai_skill_playerchosen.damage -- 驱虎
 sgs.ai_skill_playerchosen.xuanfeng_damage = sgs.ai_skill_playerchosen.damage
 sgs.ai_skill_playerchosen.xuanfeng_slash = sgs.ai_skill_playerchosen.zero_card_as_slash
 --[[
-! SmartAI:askForSingleVulnerary(dying)：用于响应 Room::askForSingleVulnerary 的函数
-该函数用于响应濒死求伤药的请求。在用户界面上表现为 “XX 正在死亡线上挣扎” 的提示框。
+! SmartAI:askForSingleWine(dying)：用于响应 Room::askForSingleWine 的函数
+该函数用于响应濒死求酒的请求。在用户界面上表现为 “XX 正在死亡线上挣扎” 的提示框。
 % dying: ServerPlayer*，处于濒死状态的角色
 % 返回值：字符串，经 Card::Parse 之后得到实际的卡牌。]]
