@@ -155,7 +155,7 @@ end
 先介绍这些函数的原型。
 ? SmartAI:useSkillCard(card,use)：使用技能卡
 ? SmartAI:useBasicCard(card,use)：使用基本牌
-? SmartAI:useTrickCard(card,use)：使用特技牌
+? SmartAI:useTrickCard(card,use)：使用效果牌
 ? SmartAI:useEquipCard(card,use)：使用装备牌
 它们的参数的含义都是相同的：
 % card：Card*，表示使用的卡牌

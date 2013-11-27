@@ -16,8 +16,8 @@ GameRule::GameRule(QObject *)
     //setParent(parent);
 
     events << GameStart << TurnStart << PhaseChange << CardUsed << CardFinished
-            << CardEffected << HpRecover << HpLost << AskForVulnerariesDone
-            << AskForVulneraries << Death << Dying << GameOverJudge
+            << CardEffected << HpRecover << HpLost << AskForWineDone
+            << AskForWine << Death << Dying << GameOverJudge
             << SlashHit << SlashMissed << SlashEffected << SlashProceed
             << DamageDone << DamageComplete
             << StartJudge << FinishJudge << Pindian;
@@ -276,7 +276,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
             DyingStruct dying = data.value<DyingStruct>();
 
             LogMessage log;
-            log.type = "#AskForVulneraries";
+            log.type = "#AskForWine";
             log.from = player;
             log.to = dying.savers;
             log.arg = QString::number(1 - player->getHp());
@@ -287,16 +287,16 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
                 if(player->getHp() > 0)
                     break;
 
-                thread->trigger(AskForVulneraries, saver, data);
+                thread->trigger(AskForWine, saver, data);
             }
 
             player->setFlags("-dying");
-            thread->trigger(AskForVulnerariesDone, player, data);
+            thread->trigger(AskForWineDone, player, data);
 
             break;
         }
 
-    case AskForVulneraries:{
+    case AskForWine:{
             DyingStruct dying = data.value<DyingStruct>();
 
             while(dying.who->getHp() <= 0){
@@ -319,7 +319,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
             break;
         }
 
-    case AskForVulnerariesDone:{
+    case AskForWineDone:{
             if(player->getHp() <= 0 && player->isAlive()){
                 DyingStruct dying = data.value<DyingStruct>();
                 room->killPlayer(player, dying.damage);

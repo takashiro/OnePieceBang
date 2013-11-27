@@ -121,7 +121,7 @@ sgs.refreshLoyalty("sgs7", -100) --[[ 对象名为 sgs7 的玩家的忠诚度减
 % 例子：]]
 sgs.updateIntention(huatuo, sunquan, -80) --[[华佗对孙权执行了一个友善的行为，仇恨值为 -80
 
-为了简化诸如多目标特技的 sgs.updateIntention 的调用流程，另设了一个辅助函数：]]
+为了简化诸如多目标效果的 sgs.updateIntention 的调用流程，另设了一个辅助函数：]]
 function sgs.updateIntentions(from, tos, intention, card)
 -- % from, intention, card, 返回值：含义同 sgs.updateIntention
 -- % tos：表，包含所有行为对象

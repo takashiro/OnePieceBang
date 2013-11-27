@@ -72,9 +72,9 @@ sgs.ai_use_priority.XinzhanCard = 9.2
 * sgs.dynamic_value：包含卡牌类型的表，这些类型用于调整其它卡牌的优先级。
 该表包括以下几个子表，各子表的元素名称均为卡牌的类名，值则只取 true。
 damage_card：能造成伤害的牌
-control_usecard：类似乐不思蜀的延时类特技
+control_usecard：类似乐不思蜀的延时类效果
 control_card：不直接造成伤害但是能造成负面效果的牌，如过河拆桥
-lucky_chance：类似闪电的延时类特技
+lucky_chance：类似闪电的延时类效果
 benefit：能造成正面效果的牌，如酒。
 例子可见 maneuvering-ai.lua 第 133 行：]]
 sgs.dynamic_value.control_usecard.SupplyShortage = true

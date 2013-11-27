@@ -52,9 +52,9 @@ void RubberPistolCard::use(Room *room, ServerPlayer *source, const QList<ServerP
         use.to = targets;
         use.card = slash;
 
-        room->useCard(use, true);
+        room->useCard(use, false);
     }else{
-        room->setPlayerFlag(source, "slash_forbidden");
+        room->setPlayerFlag(source, "rubberpistol_forbidden");
     }
 }
 
@@ -65,7 +65,7 @@ public:
     }
 
     virtual bool isEnabledAtPlay(const Player *player) const{
-        return Slash::IsAvailable(player);
+        return !player->hasFlag("slash_forbidden") && !player->hasFlag("rubberpistol_forbidden");
     }
 
     virtual const Card *viewAs() const{
@@ -191,23 +191,23 @@ public:
     }
 };
 
-class Shoot: public SlashBuffSkill{
+class Shoot: public TriggerSkill{
 public:
-    Shoot(): SlashBuffSkill("shoot"){
+    Shoot(): TriggerSkill("shoot"){
+        events << Predamage;
         frequency = Compulsory;
     }
 
-    virtual bool buff(const SlashEffectStruct &effect) const{
-        if(effect.from->distanceTo(effect.to) <= 1){
-            return false;
-        }
+    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+        DamageStruct damage = data.value<DamageStruct>();
 
-        if(effect.to->distanceTo(effect.from) > effect.to->getHandcardNum()){
-            Room *room = effect.from->getRoom();
+        if(damage.from && damage.to && damage.to->distanceTo(damage.from) > damage.from->getHandcardNum()){
+            Room *room = damage.from->getRoom();
             room->playSkillEffect(objectName());
-            room->sendLog("#TriggerSkill", effect.from, objectName());
-            room->slashResult(effect, NULL);
-            return true;
+            room->sendLog("#TriggerSkill", damage.from, objectName());
+
+            damage.damage++;
+            data = QVariant::fromValue(damage);
         }
 
         return false;
@@ -351,14 +351,12 @@ public:
 		const Card *card = room->askForCard(player, "@forecast-card", prompt, data);
 
         if(card){
-            const Card *oldJudge = judge->card;
             judge->card = Bang->getCard(card->getEffectiveId());
             CardsMoveStruct move(QList<int>(), NULL, Player::DiscardPile);
             move.card_ids.append(card->getEffectiveId());
             QList<CardsMoveStruct> moves;
             moves.append(move);
             room->moveCardsAtomic(moves, true);
-            player->obtainCard(oldJudge);
 
             LogMessage log;
             log.type = "$ChangedJudge";
@@ -406,10 +404,18 @@ public:
         CardMoveStar move = data.value<CardMoveStar>();
 		if(move->from_place == Player::EquipArea){
             Room *room = player->getRoom();
-            if(room->askForSkillInvoke(player, objectName())){
+
+            QList<ServerPlayer *> targets;
+            foreach(ServerPlayer *target, room->getOtherPlayers(player)){
+                if(player->inMyAttackRange(target)){
+                    targets.append(player);
+                }
+            }
+
+            if(!targets.isEmpty() && room->askForSkillInvoke(player, objectName())){
                 room->playSkillEffect(objectName());
 
-                ServerPlayer *target = room->askForPlayerChosen(player, room->getOtherPlayers(player), objectName());
+                ServerPlayer *target = room->askForPlayerChosen(player, targets, objectName());
                 if(target != NULL){
                     CardUseStruct use;
 
@@ -445,8 +451,12 @@ public:
         if(event == CardLostOnePiece){
             CardMoveStar move = data.value<CardMoveStar>();
 			if(move->from_place == Player::EquipArea && Bang->getCard(move->card_id)->getSubtype() == "weapon" && player->getWeapon() == NULL && !player->getPile("sword").isEmpty()){
-                int weapon_id = player->getPile("sword").last();
                 Room *room = player->getRoom();
+
+                QList<int> swords = player->getPile("sword");
+                room->fillAG(swords, player);
+                int weapon_id = room->askForAG(player, swords, false, "triplesword");
+                room->broadcastInvoke("clearAG");
                 room->moveCardTo(Bang->getCard(weapon_id), player, Player::EquipArea, true);
             }
         }else{
@@ -506,8 +516,8 @@ public:
         case Client::Responsing:{
             if(ClientInstance->getPattern() == "slash"){
                 return card->inherits("Jink");
-            }else if( ClientInstance->getPattern() == "wine"){
-                return card->inherits("Slash") && card->getSuit() == Card::Club;
+            }else if(ClientInstance->getPattern() == "wine"){
+                return card->inherits("Slash");
             }
         }
         }
@@ -644,49 +654,50 @@ public:
     }
 };
 
-SixSwordCard::SixSwordCard(){
+WaltzCard::WaltzCard(){
     once = true;
+    target_fixed = true;
 }
 
-bool SixSwordCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
-    return targets.length() < subcards.length() && Self->inMyAttackRange(to_select);
-}
+void WaltzCard::onUse(Room *room, const CardUseStruct &card_use) const{
+    CardUseStruct use = card_use;
 
-bool SixSwordCard::targetsFeasible(const QList<const Player *> &targets, const Player *Self) const{
-    return targets.length() == subcards.length();
-}
-
-void SixSwordCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
-    room->throwCard(this, source);
-
-    foreach(ServerPlayer *target, targets){
-        QString prompt = "sixsword-target:" + source->getGeneralName();
-        const Card *card = room->askForCard(target, ".Equip", prompt, QVariant(), NonTrigger);
-        if(card){
-            room->throwCard(card, target);
-        }else{
-            source->drawCards(1);
+    use.to.clear();
+    foreach(ServerPlayer *target, room->getOtherPlayers(use.from)){
+        if(use.from->inMyAttackRange(target)){
+            use.to << target;
         }
     }
+
+    SkillCard::onUse(room, use);
 }
 
-class SixSword: public ViewAsSkill{
+void WaltzCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
+    CardUseStruct use;
+    use.from = source;
+    use.to = targets;
+    use.card = Bang->getCard(subcards.at(0));
+
+    room->useCard(use, false);
+}
+
+class Waltz: public OneCardViewAsSkill{
 public:
-    SixSword(): ViewAsSkill("sixsword"){
+    Waltz(): OneCardViewAsSkill("waltz"){
 
     }
 
-    virtual bool viewFilter(const QList<CardItem *> &selected, const CardItem *to_select) const{
-        return selected.length() > 0 && to_select->getCard()->inherits("Slash");
+    virtual bool viewFilter(const CardItem *to_select) const{
+        return to_select->getCard()->inherits("Slash");
     }
 
     virtual bool isEnabledAtPlay(const Player *player) const{
-        return !player->hasUsed("SixSwordCard");
+        return !player->hasUsed("WaltzCard");
     }
 
-    virtual const Card *viewAs(const QList<CardItem *> &cards) const{
-        SixSwordCard *card = new SixSwordCard();
-        card->addSubcards(cards);
+    virtual const Card *viewAs(CardItem *card_item) const{
+        WaltzCard *card = new WaltzCard;
+        card->addSubcard(card_item->getCard());
         card->setSkillName(objectName());
         return card;
     }
@@ -771,32 +782,6 @@ public:
 	}
 };
 
-class IronPunch: public OneCardViewAsSkill{
-public:
-	IronPunch(): OneCardViewAsSkill("ironpunch"){
-
-	}
-
-	virtual bool viewFilter(const CardItem *) const{
-		return Self->getWeapon() == NULL;
-	}
-
-	virtual bool isEnabledAtPlay(const Player *player) const{
-		return Slash::IsAvailable(player);
-	}
-
-	virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
-		return pattern == "slash";
-	}
-
-	virtual const Card *viewAs(CardItem *card_item) const{
-		const Card *subcard = card_item->getCard();
-		Slash *slash = new Slash(subcard->getSuit(), subcard->getNumber());
-		slash->setSkillName(objectName());
-		return slash;
-	}
-};
-
 void StandardPackage::addGenerals()
 {
     General *luffy = new General(this, "luffy", "pirate", 4);
@@ -832,8 +817,8 @@ void StandardPackage::addGenerals()
     arlong->addSkill(new SharkOnTooth);
 
     General *hatchan = new General(this, "hatchan", "pirate", 4);
-    hatchan->addSkill(new SixSword);
-    addMetaObject<SixSwordCard>();
+    hatchan->addSkill(new Waltz);
+    addMetaObject<WaltzCard>();
 
     General *tashigi = new General(this, "tashigi", "government", 3, false);
     tashigi->addSkill(new SwordsExpert);
@@ -842,9 +827,6 @@ void StandardPackage::addGenerals()
     General *smoker = new General(this, "smoker", "government", 3);
     smoker->addSkill(new FogBarrier);
     smoker->addSkill(new Justice);
-
-	General *garp = new General(this, "garp", "government", 4);
-	garp->addSkill(new IronPunch);
 
 	General *bellmere = new General(this, "bellmere", "government", 3, false);
 

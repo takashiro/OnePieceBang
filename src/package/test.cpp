@@ -3,33 +3,48 @@
 class GodThunder: public TriggerSkill{
 public:
     GodThunder(): TriggerSkill("godthunder"){
-        events << Predamage << Predamaged;
-        frequency = Compulsory;
+        events << Predamaged;
     }
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
         Room *room = player->getRoom();
 
         DamageStruct damage = data.value<DamageStruct>();
-        if(event == Predamage){
-            if(damage.nature != DamageStruct::Thunder){
-                room->sendLog("#TriggerSkill", player, objectName());
+        if(damage.nature == DamageStruct::Thunder){
+            room->sendLog("#TriggerSkill", player, objectName());
 
-                damage.nature = DamageStruct::Thunder;
-                data = QVariant::fromValue(damage);
-            }
-        }else{
-            if(damage.nature == DamageStruct::Thunder){
-                room->sendLog("#TriggerSkill", player, objectName());
+            RecoverStruct recover;
+            recover.card = damage.card;
+            recover.who = damage.from;
+            recover.recover = damage.damage;
+            room->recover(player, recover);
 
-                RecoverStruct recover;
-                recover.card = damage.card;
-                recover.who = damage.from;
-                recover.recover = damage.damage;
-                room->recover(player, recover);
+            return true;
+        }
 
-                return true;
-            }
+        return false;
+    }
+};
+
+class GodThunderEx: public TriggerSkill{
+public:
+    GodThunderEx(): TriggerSkill("#godthunderex"){
+        events << Predamaged;
+    }
+
+    virtual bool triggerable(const ServerPlayer *target) const{
+        return true;
+    }
+
+    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+        Room *room = player->getRoom();
+
+        DamageStruct damage = data.value<DamageStruct>();
+        if(damage.card && damage.card->inherits("Lightning")){
+            room->sendLog("#TriggerSkill", player, "godthunder");
+
+            damage.from = room->findPlayerBySkillName("godthunder");
+            data = QVariant::fromValue(damage);
         }
 
         return false;
@@ -60,7 +75,8 @@ public:
             DamageStruct damage;
             damage.from = player;
             damage.to = room->askForPlayerChosen(player, room->getAlivePlayers(), "thunderbot-invoke");
-            damage.damage = qMax(player->getLostHp(), 1);
+            damage.damage = player->getLostHp();
+            damage.nature = DamageStruct::Thunder;
             room->damage(damage);
         }
 
@@ -198,8 +214,10 @@ TestPackage::TestPackage():Package("Test")
     law->addSkill(new OperatingRoom);
     addMetaObject<OperatingRoomCard>();
 
-    General *enil = new General(this, "enil", "citizen", 4);
+    General *enil = new General(this, "enil", "citizen", 3);
     enil->addSkill(new GodThunder);
+    enil->addSkill(new GodThunderEx);
+    related_skills.insertMulti("godthunder", "#godthunderex");
     enil->addSkill(new ThunderBot);
 
     General *blackbear = new General(this, "blackbear", "pirate", 3);

@@ -46,13 +46,12 @@ public:
 	virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const;
 };
 
-class SixSwordCard: public SkillCard{
+class WaltzCard: public SkillCard{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE SixSwordCard();
-    virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
-    virtual bool targetsFeasible(const QList<const Player *> &targets, const Player *Self) const;
+    Q_INVOKABLE WaltzCard();
+    virtual void onUse(Room *room, const CardUseStruct &card_use) const;
     virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &) const;
 };
 

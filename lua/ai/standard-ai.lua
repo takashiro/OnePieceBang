@@ -8,7 +8,7 @@ local rubberpistol_skill={}
 rubberpistol_skill.name="rubberpistol"
 table.insert(sgs.ai_skills, rubberpistol_skill)
 rubberpistol_skill.getTurnUseCard=function(self)
-	if not self:slashIsAvailable() then return end
+	if self.player:hasFlag("rubberpistol_forbidden") then return end
 	return sgs.Card_Parse("@RubberPistolCard=.")
 end
 
@@ -154,7 +154,7 @@ sgs.ai_view_as.blackfeet = function(card, player, card_place)
 	local suit = card:getSuitString()
 	local number = card:getNumberString()
 	local card_id = card:getEffectiveId()
-	if card:inherits("Slash") and card:getSuit() == sgs.Card_Club then
+	if card:inherits("Slash") then
 		return ("wine:blackfeet[%s:%s]=%d"):format(suit, number, card_id)
 	elseif card:inherits("Jink") then
 		return ("fire_slash:blackfeet[%s:%s]=%d"):format(suit, number, card_id)

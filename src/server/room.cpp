@@ -1123,7 +1123,7 @@ const Card *Room::askForCardShow(ServerPlayer *player, ServerPlayer *requestor, 
 const Card *Room::askForSingleWine(ServerPlayer *player, ServerPlayer *dying){
     notifyMoveFocus(player, S_COMMAND_ASK_WINE);
     //@todo: put this into AI!!!!!!!!!!!!!!!!!
-    if(player->isKongcheng()){
+    /*if(player->isKongcheng()){
         // jijiu special case
         if(player->hasSkill("jijiu") && player->getPhase() == Player::NotActive){
             bool has_red = false;
@@ -1150,7 +1150,7 @@ const Card *Room::askForSingleWine(ServerPlayer *player, ServerPlayer *dying){
                 return NULL;
         }else
             return NULL;
-    }
+    }*/
 
     const Card * card;
     bool continuable = false;

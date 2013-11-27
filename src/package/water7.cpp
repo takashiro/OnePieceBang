@@ -1,4 +1,32 @@
 #include "water7.h"
+#include "client.h"
+#include "carditem.h"
+
+class IronPunch: public OneCardViewAsSkill{
+public:
+    IronPunch(): OneCardViewAsSkill("ironpunch"){
+
+    }
+
+    virtual bool viewFilter(const CardItem *) const{
+        return Self->getWeapon() == NULL;
+    }
+
+    virtual bool isEnabledAtPlay(const Player *player) const{
+        return Slash::IsAvailable(player);
+    }
+
+    virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
+        return pattern == "slash";
+    }
+
+    virtual const Card *viewAs(CardItem *card_item) const{
+        const Card *subcard = card_item->getCard();
+        Slash *slash = new Slash(subcard->getSuit(), subcard->getNumber());
+        slash->setSkillName(objectName());
+        return slash;
+    }
+};
 
 class Dream: public TriggerSkill{
 public:
@@ -103,6 +131,9 @@ public:
 
 Water7Package::Water7Package():Package("Water7")
 {
+    General *garp = new General(this, "garp", "government", 4);
+    garp->addSkill(new IronPunch);
+
     General *coby = new General(this, "coby", "citizen", 3);
     coby->addSkill(new Dream);
     coby->addSkill(new Will);

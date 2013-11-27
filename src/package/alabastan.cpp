@@ -131,6 +131,7 @@ void FleurCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *
         room->sendLog(log);
     }else{
         Duel *duel = new Duel(Card::NoSuit, 0);
+        duel->setSkillName("fleur");
         CardUseStruct use;
         use.card = duel;
 
@@ -252,7 +253,7 @@ public:
     }
 
     virtual bool triggerable(const ServerPlayer *target) const{
-        return TriggerSkill::triggerable(target) && (target->getPhase() == Player::Start || target->getPhase() == Player::Finish);
+        return TriggerSkill::triggerable(target) && target->getPhase() == Player::Start;
     }
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
@@ -286,6 +287,69 @@ public:
                 room->setPlayerProperty(player, "gender", target->getGenderString());
                 room->setPlayerProperty(player, "kingdom", target->getKingdom());
             }
+        }
+
+        return false;
+    }
+};
+
+class Memoir: public OneCardViewAsSkill{
+public:
+    Memoir(): OneCardViewAsSkill("memoir"){
+
+    }
+
+    virtual bool isEnabledAtPlay(const Player *player) const{
+        return Slash::IsAvailable(player);
+    }
+
+    virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
+        return pattern == "slash" || pattern == "jink";
+    }
+
+    virtual bool viewFilter(const CardItem *to_select) const{
+        Card::Suit suit = to_select->getCard()->getSuit();
+        return suit == Card::Club || suit == Card::Diamond;
+    }
+
+    virtual const Card *viewAs(CardItem *card_item) const{
+        const Card *subcard = card_item->getCard();
+
+        Card *card = NULL;
+        if(subcard->getSuit() == Card::Club){
+            card = new Jink(Card::Club, subcard->getNumber());
+        }else if(subcard->getSuit() == Card::Diamond){
+            card = new Slash(Card::Diamond, subcard->getNumber());
+        }
+
+        if(card){
+            card->addSubcard(subcard);
+            card->setSkillName(objectName());
+        }
+
+        return card;
+    }
+};
+
+class MemoirEx: public TriggerSkill{
+public:
+    MemoirEx(): TriggerSkill("#memoirex"){
+        events << CardUsed;
+    }
+
+    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+        CardUseStruct use = data.value<CardUseStruct>();
+        if(player && use.card && use.card->getSkillName() == "memoir"){
+            Room *room = player->getRoom();
+            QString skill_name = use.from->tag.value("imitated_skill_name").toString();
+
+            LogMessage log;
+            log.type = "#MemoirLoseSkill";
+            log.from = player;
+            log.arg = skill_name;
+            room->sendLog(log);
+
+            room->detachSkillFromPlayer(player, skill_name);
         }
 
         return false;
@@ -383,8 +447,11 @@ public:
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
         RecoverStruct recover = data.value<RecoverStruct>();
+        Room *room = target->getRoom();
+
         if(recover.who != NULL && recover.who->hasSkill(objectName())){
-			for(int i = 0; i < recover.recover; i++){
+            room->sendLog("#TriggerSkill", recover.who, objectName());
+            for(int i = 0; i < recover.recover; i++){
 				target->turnOver();
 				target->drawCards(recover.who->getLostHp());
 			}
@@ -429,8 +496,14 @@ public:
 
             foreach(const Card *card, player->getHandcards()){
                 if(card->getSuit() == Card::Club){
-                    room->throwCard(card, player);
-                    room->recover(target, recover);
+                    Wine *wine = new Wine(card->getSuit(), card->getNumber());
+                    wine->addSubcard(card);
+
+                    CardUseStruct use;
+                    use.from = player;
+                    use.to << target;
+                    use.card = wine;
+                    room->useCard(use, true);
                 }
             }
         }
@@ -614,6 +687,9 @@ AlabastanPackage::AlabastanPackage():Package("Alabastan")
 
     General *bonkure = new General(this, "bonkure", "pirate", 3);
     bonkure->addSkill(new Imitate);
+    bonkure->addSkill(new Memoir);
+    bonkure->addSkill(new MemoirEx);
+    related_skills.insertMulti("memoir", "#memoirex");
     bonkure->addSkill(new Skill("okama", Skill::Compulsory));
 
 	General *crocodile = new General(this, "crocodile", "government", 3);

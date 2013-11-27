@@ -473,8 +473,8 @@ enum TriggerEvent{
     DamageComplete,
 
     Dying,
-    AskForVulneraries,
-    AskForVulnerariesDone,
+    AskForWine,
+    AskForWineDone,
     Death,
     GameOverJudge,
 

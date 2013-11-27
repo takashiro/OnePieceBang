@@ -48,7 +48,7 @@
 * sgs.ai_trick_prohibit：表，用于 SmartAI.trickProhibit
 % 元素名称：技能名
 % 元素：function(card, self, to)
-%% 返回值：布尔值，表示是否存在由特技牌 card 对含有由元素名称所描述的技能的对象 to 的禁止技
+%% 返回值：布尔值，表示是否存在由效果牌 card 对含有由元素名称所描述的技能的对象 to 的禁止技
 加入这一表之后，随着日后 AI 的进一步完善，帷幕等技能将不用修改 SmartAI（目前仍存在一定的缺陷）
 
 * sgs.ai_slash_weaponfilter：表，用于 SmartAI.useCardSlash

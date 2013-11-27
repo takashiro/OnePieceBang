@@ -151,14 +151,14 @@ end -- 其它情况，按照默认行为（弃牌阶段的策略）弃牌。
 
 ! SmartAI:askForNullification(trick_name, from, to, positive)：
 响应 Room::askForNullification 的函数，该函数用于响应“是否使用【无懈可击】”的请求。
-% trick_name：Card* 类型，表示对何张特技牌使用无懈可击
+% trick_name：Card* 类型，表示对何张效果牌使用无懈可击
 （本变量名易使人误以为是字符串类型，将在以后修改）
 % from：ServerPlayer*，trick_name 的使用者（不是【无懈可击】的使用者）
 % to: ServerPlayer*，trick_name 的使用对象
 % positive：为 true 时，本【无懈可击】使 trick_name 失效，否则本【无懈可击】使 trick_name 生效
 % 返回值：Card*，决定使用的【无懈可击】。如果为 nil，表示不使用【无懈可击】
 % 相关的表：无
-% 默认行为：较复杂，简单地说就是根据特技是否对己方有利决定是否使用。
+% 默认行为：较复杂，简单地说就是根据效果是否对己方有利决定是否使用。
 有兴趣的可参见 smart-ai.lua 中的源代码。
 
 ! SmartAI:askForCardChosen(who, flags, reason)：响应 Room::askForCardChosen 的函数

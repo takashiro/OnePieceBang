@@ -131,7 +131,8 @@ SOURCES += \
     src/package/alabastan.cpp \
     src/package/thrillerbark.cpp \
     src/package/water7.cpp \
-    src/package/fishmanisland.cpp
+    src/package/fishmanisland.cpp \
+    src/package/summitwar.cpp
 HEADERS += \
         src/client/aux-skills.h \
         src/client/client.h \
@@ -248,7 +249,8 @@ HEADERS += \
     src/package/alabastan.h \
     src/package/thrillerbark.h \
     src/package/water7.h \
-    src/package/fishmanisland.h
+    src/package/fishmanisland.h \
+    src/package/summitwar.h
 
 FORMS += \
         src/dialog/cardoverview.ui \

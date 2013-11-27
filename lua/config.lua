@@ -17,6 +17,7 @@ config = {
         "Water7",
         "ThrillerBark",
         "FishmanIsland",
+        "SummitWar",
         "Test",
 	},
 
