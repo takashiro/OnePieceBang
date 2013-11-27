@@ -706,28 +706,47 @@ public:
 class FogBarrier: public TriggerSkill{
 public:
     FogBarrier(): TriggerSkill("fogbarrier"){
-        events << PhaseChange << CardEffected << Predamaged;
+        events << PhaseChange;
     }
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-        if(event == PhaseChange){
-            if(player->getPhase() == Player::Start){
-                player->setFlags("-fogbarrier");
-            }else if(player->getPhase() == Player::Finish && player->askForSkillInvoke(objectName())){
-                player->setFlags("fogbarrier");
-            }
+        Room *room = player->getRoom();
 
-        }else if(event == CardEffected){
+        if(player->getPhase() == Player::Start){
+            foreach(ServerPlayer *player, room->getAllPlayers()){
+                room->setPlayerMark(player, "@fogbarrier", 0);
+            }
+        }else if(player->getPhase() == Player::Finish && player->askForSkillInvoke(objectName())){
+            ServerPlayer *target = room->askForPlayerChosen(player, room->getAllPlayers(), objectName());
+            room->setPlayerMark(target, "@fogbarrier", 1);
+        }
+
+        return false;
+    }
+};
+
+class FogBarrierEffect: public TriggerSkill{
+public:
+    FogBarrierEffect(): TriggerSkill("#fogbarriereffect"){
+        events << CardEffected << Predamaged;
+    }
+
+    virtual bool triggerable(const ServerPlayer *target) const{
+        return target->getMark("@fogbarrier") > 0;
+    }
+
+    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+        if(event == CardEffected){
             CardEffectStruct effect = data.value<CardEffectStruct>();
-            if(player->hasFlag("fogbarrier") && effect.card && effect.card->isNDTrick()){
-                player->getRoom()->sendLog("#TriggerSkill", player, objectName());
+            if(effect.card && effect.card->isNDTrick()){
+                player->getRoom()->sendLog("#TriggerSkill", player, "fogbarrier");
                 return true;
             }
 
         }else if(event == Predamaged){
             DamageStruct damage = data.value<DamageStruct>();
-            if(player->hasFlag("fogbarrier") && damage.nature != DamageStruct::Normal){
-                player->getRoom()->sendLog("#TriggerSkill", player, objectName());
+            if(damage.nature != DamageStruct::Normal){
+                player->getRoom()->sendLog("#TriggerSkill", player, "fogbarrier");
                 damage.damage++;
                 data = QVariant::fromValue(damage);
             }
@@ -827,6 +846,8 @@ void StandardPackage::addGenerals()
     General *smoker = new General(this, "smoker", "government", 3);
     smoker->addSkill(new FogBarrier);
     smoker->addSkill(new Justice);
+    smoker->addSkill(new FogBarrierEffect);
+    related_skills.insert("fogbarrier", "#fogbarriereffect");
 
 	General *bellmere = new General(this, "bellmere", "government", 3, false);
 
