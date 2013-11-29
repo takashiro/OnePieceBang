@@ -277,6 +277,10 @@ int Weapon::getRange() const{
     return range;
 }
 
+bool Weapon::attachSkill() const{
+    return attach_skill;
+}
+
 QString Weapon::getSubtype() const{
     return "weapon";
 }

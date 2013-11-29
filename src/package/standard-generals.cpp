@@ -402,15 +402,8 @@ public:
 
     virtual bool trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
         CardMoveStar move = data.value<CardMoveStar>();
-		if(move->from_place == Player::EquipArea){
+        if(move->from_place == Player::EquipArea && move->to != move->from){
             Room *room = player->getRoom();
-
-            QList<ServerPlayer *> targets;
-            foreach(ServerPlayer *target, room->getOtherPlayers(player)){
-                if(player->inMyAttackRange(target)){
-                    targets.append(player);
-                }
-            }
 
             if(!targets.isEmpty() && room->askForSkillInvoke(player, objectName())){
                 room->playSkillEffect(objectName());
@@ -450,7 +443,7 @@ public:
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
         if(event == CardLostOnePiece){
             CardMoveStar move = data.value<CardMoveStar>();
-			if(move->from_place == Player::EquipArea && Bang->getCard(move->card_id)->getSubtype() == "weapon" && player->getWeapon() == NULL && !player->getPile("sword").isEmpty()){
+            if(move->to != move->from && move->from_place == Player::EquipArea && Bang->getCard(move->card_id)->getSubtype() == "weapon" && player->getWeapon() == NULL && !player->getPile("sword").isEmpty()){
                 Room *room = player->getRoom();
 
                 QList<int> swords = player->getPile("sword");
@@ -463,7 +456,8 @@ public:
             CardUseStruct use = data.value<CardUseStruct>();
             if(use.card && use.card->getSubtype() == "weapon"){
                 const Card *weapon = player->getWeapon();
-                if(weapon != NULL){
+                Room *room = player->getRoom();
+                if(weapon != NULL && player->getPile("sword").length() < 2){
                     player->addToPile("sword", weapon);
                 }
             }
