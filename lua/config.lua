@@ -9,7 +9,7 @@ config = {
 	kingdoms = {"pirate", "government", "citizen"},
 	package_names = {
 	"StandardCard",
-        "Disaster",
+        --"Disaster",
 
         "Standard",
         "Alabastan",
