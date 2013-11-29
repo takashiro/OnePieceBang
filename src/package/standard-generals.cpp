@@ -839,7 +839,7 @@ public:
     }
 
     bool triggerable(const ServerPlayer *target) const{
-        return target->getPhase() == Player::Finish && target->isWounded();
+        return TriggerSkill::triggerable(target) && target->getPhase() == Player::Finish && target->isWounded();
     }
 
     bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
