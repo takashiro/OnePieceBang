@@ -599,7 +599,6 @@ class Kento: public TriggerSkill{
 public:
     Kento(): TriggerSkill("kento"){
         events << Damaged;
-        frequency = Frequent;
     }
 
     virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
@@ -607,10 +606,18 @@ public:
             return false;
         }
 
-        player->drawCards(qMin(player->getLostHp(), 2));
-        QList<Player::Phase> phases = player->getPhases();
-        phases.prepend(Player::Play);
-        player->play(phases);
+        player->drawCards(1);
+
+        DamageStruct damage = data.value<DamageStruct>();
+        if(damage.from){
+            CardUseStruct use;
+            use.from = player;
+            use.to << damage.from;
+            use.card = new Duel(Card::NoSuit, 0);
+
+            Room *room = player->getRoom();
+            room->useCard(use);
+        }
 
         return false;
     }
