@@ -18,7 +18,7 @@ return {
 	["Scene6"] = "蓄势待发",
 	["Scene6Effect"] = "本轮所有角色跳过其出牌阶段和弃牌阶段",
 	["Scene7"] = "无计可施",
-	["Scene7Effect"] = "本轮所有非延时性效果无效",
+	["Scene7Effect"] = "本轮所有即时性效果无效",
 	["#Scene7CardInvalid"] = "无计可施的场景效果被触发，%from 使用的效果无效。",
 	["Scene8"] = "知己知彼",
 	["Scene8Effect"] = "当此场景生效时，所有角色须选择观看任意一名其他角色的全部手牌",
