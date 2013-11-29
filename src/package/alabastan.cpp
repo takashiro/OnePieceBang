@@ -313,6 +313,7 @@ public:
                 player->drawCards(1, true, objectName());
                 if(player->tag.contains("imitated_skill_name")){
                     room->detachSkillFromPlayer(player, player->tag.value("imitated_skill_name").toString());
+                    player->tag.remove("imitated_skill_name");
                 }
             }
         }
