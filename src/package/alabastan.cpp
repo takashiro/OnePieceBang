@@ -672,7 +672,7 @@ AlabastanPackage::AlabastanPackage():Package("Alabastan")
     General *ace = new General(this, "ace", "pirate", 4);
     ace->addSkill(new FirePunch);
 
-    General *vivi = new General(this, "vivi", "noble", 3, false);
+    General *vivi = new General(this, "vivi", "citizen", 3, false);
     vivi->addSkill(new AntiWar);
     vivi->addSkill(new Alliance);
 

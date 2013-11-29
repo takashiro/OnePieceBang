@@ -64,7 +64,7 @@ public:
 
 FishmanIslandPackage::FishmanIslandPackage():Package("FishmanIsland")
 {
-	General *shirahoshi = new General(this, "shirahoshi", "noble", 3, false);
+    General *shirahoshi = new General(this, "shirahoshi", "citizen", 3, false);
 	shirahoshi->addSkill(new SeaQueen);
 	shirahoshi->addSkill(new NeptunianAttackAvoid("seaqueen"));
 	related_skills.insertMulti("seaqueen", "#na_avoid_seaqueen");

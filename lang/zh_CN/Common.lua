@@ -59,8 +59,7 @@ return {
 
 	["pirate"] = "海贼",
 	["government"] = "政府",
-	["noble"] = "贵族",
-	["citizen"] = "平民",
+	["citizen"] = "国民",
 
 	["#Murder"] = "%to【%arg】死亡，凶手是 %from",
 	["#Suicide"] = "%to【%arg】自杀身亡",
