@@ -284,7 +284,6 @@ public:
                 room->acquireSkill(player, skill);
                 player->tag["imitated_skill_name"] = skill;
 
-                room->setPlayerProperty(player, "gender", target->getGenderString());
                 room->setPlayerProperty(player, "kingdom", target->getKingdom());
             }
         }
@@ -293,63 +292,29 @@ public:
     }
 };
 
-class Memoir: public OneCardViewAsSkill{
+class Memoir: public TriggerSkill{
 public:
-    Memoir(): OneCardViewAsSkill("memoir"){
-
+    Memoir(): TriggerSkill("memoir"){
+        events << CardLostOneTime;
     }
 
-    virtual bool isEnabledAtPlay(const Player *player) const{
-        return Slash::IsAvailable(player);
+    virtual bool triggerable(const ServerPlayer *target) const{
+        return target->isKongcheng() && target->isAlive();
     }
 
-    virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
-        return pattern == "slash" || pattern == "jink";
-    }
+    virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
+        Room *room = target->getRoom();
+        foreach(ServerPlayer *player, room->getOtherPlayers(target)){
+            if(player->hasSkill(objectName()) && player->askForSkillInvoke(objectName(), data)){
+                foreach(int card_id, player->handCards()){
+                    room->obtainCard(target, card_id, false);
+                }
 
-    virtual bool viewFilter(const CardItem *to_select) const{
-        Card::Suit suit = to_select->getCard()->getSuit();
-        return suit == Card::Club || suit == Card::Diamond;
-    }
-
-    virtual const Card *viewAs(CardItem *card_item) const{
-        const Card *subcard = card_item->getCard();
-
-        Card *card = NULL;
-        if(subcard->getSuit() == Card::Club){
-            card = new Jink(Card::Club, subcard->getNumber());
-        }else if(subcard->getSuit() == Card::Diamond){
-            card = new Slash(Card::Diamond, subcard->getNumber());
-        }
-
-        if(card){
-            card->addSubcard(subcard);
-            card->setSkillName(objectName());
-        }
-
-        return card;
-    }
-};
-
-class MemoirEx: public TriggerSkill{
-public:
-    MemoirEx(): TriggerSkill("#memoirex"){
-        events << CardUsed;
-    }
-
-    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-        CardUseStruct use = data.value<CardUseStruct>();
-        if(player && use.card && use.card->getSkillName() == "memoir"){
-            Room *room = player->getRoom();
-            QString skill_name = use.from->tag.value("imitated_skill_name").toString();
-
-            LogMessage log;
-            log.type = "#MemoirLoseSkill";
-            log.from = player;
-            log.arg = skill_name;
-            room->sendLog(log);
-
-            room->detachSkillFromPlayer(player, skill_name);
+                player->drawCards(1, true, objectName());
+                if(player->tag.contains("imitated_skill_name")){
+                    room->detachSkillFromPlayer(player, player->tag.value("imitated_skill_name").toString());
+                }
+            }
         }
 
         return false;
@@ -498,6 +463,7 @@ public:
                 if(card->getSuit() == Card::Club){
                     Wine *wine = new Wine(card->getSuit(), card->getNumber());
                     wine->addSubcard(card);
+                    wine->setSkillName(objectName());
 
                     CardUseStruct use;
                     use.from = player;
@@ -688,8 +654,6 @@ AlabastanPackage::AlabastanPackage():Package("Alabastan")
     General *bonkure = new General(this, "bonkure", "pirate", 3);
     bonkure->addSkill(new Imitate);
     bonkure->addSkill(new Memoir);
-    bonkure->addSkill(new MemoirEx);
-    related_skills.insertMulti("memoir", "#memoirex");
     bonkure->addSkill(new Skill("okama", Skill::Compulsory));
 
 	General *crocodile = new General(this, "crocodile", "government", 3);
