@@ -803,6 +803,69 @@ public:
 	}
 };
 
+class Upright: public TriggerSkill{
+public:
+    Upright(): TriggerSkill("upright"){
+        events << CardEffected;
+    }
+
+    bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+        CardEffectStruct effect = data.value<CardEffectStruct>();
+        if(effect.from == player || !(effect.card->inherits("Slash") || effect.card->isNDTrick())){
+            return false;
+        }
+
+        if(player->askForSkillInvoke(objectName(), data)){
+            Room *room = player->getRoom();
+            room->loseHp(player, 1);
+
+            if(effect.from){
+                int card_id = room->askForCardChosen(player, effect.from, "he", objectName());
+                room->throwCard(card_id, player);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+};
+
+class Protect: public TriggerSkill{
+public:
+    Protect(): TriggerSkill("protect"){
+        events << PhaseChange;
+        frequency = Frequent;
+    }
+
+    bool triggerable(const ServerPlayer *target) const{
+        return target->getPhase() == Player::Finish && target->isWounded();
+    }
+
+    bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+        if(player->askForSkillInvoke(objectName(), data)){
+            Room *room = player->getRoom();
+
+            QList<int> cards = room->getNCards(player->getLostHp(), false);
+
+            CardsMoveStruct move;
+            move.card_ids = cards;
+            move.from = NULL;
+            move.from_place = Player::HandlingArea;
+            move.to = player;
+            move.to_player_name = player->objectName();
+            move.to_place = Player::HandArea;
+            room->moveCards(move, false);
+
+            while(room->askForYiji(player, cards)){
+
+            }
+        }
+
+        return false;
+    }
+};
+
 void StandardPackage::addGenerals()
 {
     General *luffy = new General(this, "luffy", "pirate", 4);
@@ -852,6 +915,8 @@ void StandardPackage::addGenerals()
     related_skills.insert("fogbarrier", "#fogbarriereffect");
 
 	General *bellmere = new General(this, "bellmere", "government", 3, false);
+    bellmere->addSkill(new Upright);
+    bellmere->addSkill(new Protect);
 
 	General *mihawk = new General(this, "mihawk", "government", 4);
 	mihawk->addSkill(new TopSwordman);
