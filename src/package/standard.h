@@ -418,11 +418,11 @@ public:
     Q_INVOKABLE Shusui(Card::Suit suit, int number);
 };
 
-class Vine: public Armor{
+class CandleWall: public Armor{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE Vine(Card::Suit suit, int number);
+    Q_INVOKABLE CandleWall(Card::Suit suit, int number);
 };
 
 class SilverLion: public Armor{
@@ -434,11 +434,11 @@ public:
     virtual void onUninstall(ServerPlayer *player) const;
 };
 
-class IronChain: public TrickCard{
+class TamaDragon: public TrickCard{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE IronChain(Card::Suit suit, int number);
+    Q_INVOKABLE TamaDragon(Card::Suit suit, int number);
 
     virtual QString getSubtype() const;
     virtual QString getEffectPath(bool is_male) const;

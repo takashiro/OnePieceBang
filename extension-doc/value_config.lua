@@ -42,7 +42,7 @@ sgs.dynamic_value = {
 	{
 		Wine = true,
 		Analeptic = true,
-		IronChain = true,
+		TamaDragon = true,
 		TreasureChest = true,
 		AllBlue = true,
 		
@@ -84,7 +84,7 @@ sgs.huangyueying_keep_value =
 	TreasureChest	= 5.7,
 	Snatch 		= 5.7,
 	Dismantlement = 5.6,
-	IronChain 	= 5.5,
+	TamaDragon 	= 5.5,
 	SavageAssault=5.4,
 	Duel 		= 5.3,
 	ArcheryAttack = 5.2,

@@ -328,7 +328,7 @@ function SmartAI:getUsePriority(card)
 		if card:inherits("Slash") then
 			v = 4
 
-		elseif card:inherits("Collateral") or card:inherits("Dismantlement") or card:inherits("Snatch") or card:inherits("IronChain") then v = 0
+		elseif card:inherits("Collateral") or card:inherits("Dismantlement") or card:inherits("Snatch") or card:inherits("TamaDragon") then v = 0
 		end
 		if v then return v else return sgs.ai_use_priority[class_name] end
 	end
@@ -1780,13 +1780,13 @@ function SmartAI:askForNullification(trick, from, to, positive)
 	if positive then
 		if from and self:isEnemy(from) and (sgs.evaluateRoleTrends(from) ~= "neutral" or sgs.isRolePredictable()) then
 			if trick:inherits("TreasureChest") and (self:isWeak(from) or self:hasSkills(sgs.cardneed_skill,from)) then return null_card end 
-			if trick:inherits("IronChain") and not self:isEquip("Vine", to) then return nil end
+			if trick:inherits("TamaDragon") and not self:isEquip("CandleWall", to) then return nil end
 			if self:isFriend(to) then
 				if trick:inherits("Dismantlement") then 
 					if self:getDangerousCard(to) or self:getValuableCard(to) or (to:getHandcardNum() == 1 and not self:needKongcheng(to)) then return null_card end
 				else
 					if trick:inherits("Snatch") then return null_card end
-					if trick:inherits("FireAttack") and (self:isEquip("Vine", to) or to:getMark("@kuangfeng") > 0 or (to:isChained() and not self:isGoodChainTarget(to))) 
+					if trick:inherits("FireAttack") and (self:isEquip("CandleWall", to) or to:getMark("@kuangfeng") > 0 or (to:isChained() and not self:isGoodChainTarget(to))) 
 						and from:objectName() ~= to:objectName() and not from:hasSkill("wuyan") then return null_card end
 					if self:isWeak(to)  then 
 						if trick:inherits("Duel") and not from:hasSkill("wuyan") then
@@ -3451,7 +3451,7 @@ function SmartAI:aoeIsEffective(card, to)
 	players = sgs.QList2Table(players)
 
 	local armor = to:getArmor()
-	if armor and armor:inherits("Vine") then
+	if armor and armor:inherits("CandleWall") then
 		return false
 	end
 	if self.room:isProhibited(self.player, to, card) then
@@ -3692,7 +3692,7 @@ end
 
 function SmartAI:useTrickCard(card, use)
 	if self.player:hasSkill("chengxiang") and self.player:getHandcardNum() < 8 and card:getNumber() < 7 then return end
-	if self:needBear() and not ("amazing_grace|treasure_chest|snatch|iron_chain"):match(card:objectName()) then return end
+	if self:needBear() and not ("amazing_grace|treasure_chest|snatch|tama_dragon"):match(card:objectName()) then return end
 	if self.player:hasSkill("wumou") and self.player:getMark("@wrath") < 6 then
 		if not (card:inherits("AOE") or card:inherits("DelayedTrick")) then return end
 	end

@@ -15,7 +15,7 @@ function SmartAI:slashProhibit(card,enemy)
 
 	if self:isFriend(enemy) then
 		if card:inherits("FireSlash") or self.player:hasWeapon("flame_dial") or self.player:hasSkill("zonghuo") then
-			if self:isEquip("Vine", enemy) and not (enemy:isChained() and self:isGoodChainTarget(enemy)) then return true end
+			if self:isEquip("CandleWall", enemy) and not (enemy:isChained() and self:isGoodChainTarget(enemy)) then return true end
 		end
 		if enemy:isChained() and (card:inherits("NatureSlash") or self.player:hasSkill("zonghuo")) and not self:isGoodChainTarget(enemy) and
 			self:slashIsEffective(card,enemy) then return true end
@@ -71,7 +71,7 @@ function SmartAI:slashIsEffective(slash, to)
 	if armor then
 		if armor:objectName() == "cloak" then
 			return not slash:isBlack()
-		elseif armor:objectName() == "vine" then
+		elseif armor:objectName() == "candle_wall" then
 			return nature ~= sgs.DamageStruct_Normal or self.player:hasWeapon("flame_dial")
 		end
 	end
@@ -567,7 +567,7 @@ end
 
 function sgs.ai_slash_weaponfilter.flame_dial(to)
 	local armor = to:getArmor()
-	return armor and (armor:inherits("Vine") or armor:inherits("GaleShell"))
+	return armor and (armor:inherits("CandleWall") or armor:inherits("GaleShell"))
 end
 
 sgs.ai_skill_invoke.kylin_bow = function(self, data)

@@ -53,7 +53,7 @@ sgs.ai_use_value =
 
 	Wine = 6,
 	Dismantlement=5.6,
-	IronChain = 5.4,
+	TamaDragon = 5.4,
 
 	--retain_value=5
 
@@ -118,7 +118,7 @@ sgs.ai_use_priority = {
 
 
 	Duel=2.9,
-	IronChain = 2.8,
+	TamaDragon = 2.8,
 
 	Collateral=2.75,
 
@@ -150,7 +150,7 @@ sgs.ai_use_priority = {
 	SilverLion=0.9,
 	MilkyDial=0.8,
 	RenwangShield=0.7,
-	Vine=0.6,
+	CandleWall=0.6,
 	GaleShell=0.9,
 
 	DefensiveHorse = 0,

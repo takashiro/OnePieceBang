@@ -309,7 +309,7 @@ public:
 };
 
 GanranEquip::GanranEquip(Card::Suit suit, int number)
-    :IronChain(suit, number)
+    :TamaDragon(suit, number)
 {
 
 }

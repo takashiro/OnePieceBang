@@ -268,7 +268,7 @@ SmartAI.filterEvent 除了会处理 sgs.ChoiceMade，以及如前所述在一系
 sgs.ai_card_intention.QingnangCard = -100 -- 青囊的使用者对使用对象的仇恨值为 -100
 
 -- 例子 2：maneuvering-ai.lua 第 180 至 188 行关于铁索连环的代码。
-sgs.ai_card_intention.IronChain=function(card,from,tos,source)
+sgs.ai_card_intention.TamaDragon=function(card,from,tos,source)
 	for _, to in ipairs(tos) do -- tos 是一个表
 		if to:isChained() then -- 若使用对象处于连环状态
 		-- 注意这里指的是铁索连环使用完之后的状态

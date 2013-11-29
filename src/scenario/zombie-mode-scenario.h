@@ -22,7 +22,7 @@ private:
     QStringList females;
 };
 
-class GanranEquip: public IronChain{
+class GanranEquip: public TamaDragon{
     Q_OBJECT
 
 public:

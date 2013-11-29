@@ -368,7 +368,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
                         room->setPlayerProperty(chained_player, "chained", false);
 
                         LogMessage log;
-                        log.type = "#IronChainDamage";
+                        log.type = "#TamaDragonDamage";
                         log.from = chained_player;
                         room->sendLog(log);
 

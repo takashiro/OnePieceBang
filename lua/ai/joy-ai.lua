@@ -3,7 +3,7 @@ function SmartAI:useCardShit(card, use)
 		#(self:getChainedFriends()) > #(self:getChainedEnemies()) then return end
 	if self.player:getHp()>3 and self.player:hasSkill("shenfen") and self.player:hasSkill("kuangbao") then use.card = card return end
 	if self.player:hasSkill("kuanggu") and card:getSuitString() ~= "spade" then use.card = card return end
-	if card:getSuit() == sgs.Card_Heart and (self:isEquip("GaleShell") or self:isEquip("Vine")) then return end
+	if card:getSuit() == sgs.Card_Heart and (self:isEquip("GaleShell") or self:isEquip("CandleWall")) then return end
 	if not self.player:isWounded() then
 		if self:hasSkills(sgs.need_kongcheng) and self.player:getHandcardNum() == 1 then
 			use.card = card
@@ -57,7 +57,7 @@ sgs.weapon_range.YxSword = 3
 sgs.ai_skill_invoke.yx_sword = function(self, data)
 	local damage= data:toDamage()
 	local dmg = damage.damage
-	if damage.to:getArmor() and damage.to:getArmor():objectName() == "vine" and damage.nature == sgs.DamageStruct_Fire then dmg = dmg + 1 end
+	if damage.to:getArmor() and damage.to:getArmor():objectName() == "candle_wall" and damage.nature == sgs.DamageStruct_Fire then dmg = dmg + 1 end
 	if damage.to:getArmor() and damage.to:getArmor():objectName() == "silver_lion" then dmg = 1 end
 
 	if (damage.to:hasSkill("duanchang") and damage.to:getHp() - dmg < 1) or self:hasSkills("ganglie|fankui|enyuan", damage.to) then

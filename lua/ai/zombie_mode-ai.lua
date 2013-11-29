@@ -1,7 +1,7 @@
 if sgs.GetConfig("GameMode", ""):match("zombie") then
 	function sgs.ai_filterskill_filter.ganran(card, card_place)
 		if card:getTypeId() == sgs.Card_Equip then
-			return ("iron_chain:ganran[%s:%s]=%d"):format(
+			return ("tama_dragon:ganran[%s:%s]=%d"):format(
 				card:getSuitString(),
 				card:getNumberString(),
 				card:getEffectiveId()

@@ -20,7 +20,7 @@ sgs.ai_use_priority.FireSlash = 2.6
 
 sgs.weapon_range.FlameDial = 4
 sgs.ai_use_priority.FlameDial = 2.655
-sgs.ai_use_priority.Vine = 0.6
+sgs.ai_use_priority.CandleWall = 0.6
 
 	
 sgs.ai_skill_invoke.flame_dial = function(self, data)
@@ -69,10 +69,10 @@ fan_skill.getTurnUseCard=function(self)
 end
 
 function sgs.ai_weapon_value.flame_dial(self, enemy)
-	if enemy and (self:isEquip("Vine", enemy) or self:isEquip("GaleShell", enemy)) then return 3 end
+	if enemy and (self:isEquip("CandleWall", enemy) or self:isEquip("GaleShell", enemy)) then return 3 end
 end
 
-function sgs.ai_armor_value.vine(player, self)
+function sgs.ai_armor_value.candle_wall(player, self)
 	for _, enemy in ipairs(self:getEnemies(player)) do
 		if (enemy:canSlash(player) and self:isEquip("FlameDial", enemy)) or self:hasSkills("firepunch", enemy) then return -1 end
 		if enemy:objectName() == self.player:objectName() and (self:getCardId("FireSlash", enemy) or self:getCardId("FireAttack",enemy)) then return -1 end
@@ -254,7 +254,7 @@ function SmartAI:isGoodChainTarget(who)
 end
 
 
-function SmartAI:useCardIronChain(card, use)    
+function SmartAI:useCardTamaDragon(card, use)    
 	use.card = card
 	if #self.enemies == 1 and #(self:getChainedFriends()) <= 1 then return end
 	if self:needBear() then return end
@@ -299,7 +299,7 @@ function SmartAI:useCardIronChain(card, use)
 	if use.to then assert(use.to:length() < 3) end
 end
 
-sgs.ai_card_intention.IronChain=function(card,from,tos)
+sgs.ai_card_intention.TamaDragon=function(card,from,tos)
 	for _, to in ipairs(tos) do
 		if to:isChained() then
 			sgs.updateIntention(from, to, 80)
@@ -309,10 +309,10 @@ sgs.ai_card_intention.IronChain=function(card,from,tos)
 	end
 end
 
-sgs.ai_use_value.IronChain = 5.4
-sgs.ai_use_priority.IronChain = 2.8
+sgs.ai_use_value.TamaDragon = 5.4
+sgs.ai_use_priority.TamaDragon = 2.8
 
-sgs.dynamic_value.benefit.IronChain = true
+sgs.dynamic_value.benefit.TamaDragon = true
 
 function SmartAI:useCardFireAttack(fire_attack, use)  
 	if self.player:hasSkill("wuyan") then return end
@@ -354,7 +354,7 @@ function SmartAI:useCardFireAttack(fire_attack, use)
 			end
 
 			if success  then
-				if self:isEquip("Vine", enemy) or enemy:getMark("@kuangfeng") > 0 or (enemy:isChained() and self:isGoodChainTarget(enemy)) then
+				if self:isEquip("CandleWall", enemy) or enemy:getMark("@kuangfeng") > 0 or (enemy:isChained() and self:isGoodChainTarget(enemy)) then
 					table.insert(targets_succ, 1, enemy)
 					break
 				else

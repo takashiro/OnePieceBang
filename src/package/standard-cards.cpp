@@ -1223,9 +1223,9 @@ Shusui::Shusui(Suit suit, int number):Weapon(suit, number, 2){
 	skill = new ShusuiSkill;
 }
 
-class VineSkill: public ArmorSkill{
+class CandleWallSkill: public ArmorSkill{
 public:
-	VineSkill():ArmorSkill("vine"){
+	CandleWallSkill():ArmorSkill("candle_wall"){
 		events << Predamaged << SlashEffected << CardEffected;
 	}
 
@@ -1258,7 +1258,7 @@ public:
 			DamageStruct damage = data.value<DamageStruct>();
 			if(damage.nature == DamageStruct::Fire){
 				LogMessage log;
-				log.type = "#VineDamage";
+				log.type = "#CandleWallDamage";
 				log.from = player;
 				log.arg = QString::number(damage.damage);
 				log.arg2 = QString::number(damage.damage + 1);
@@ -1273,9 +1273,9 @@ public:
 	}
 };
 
-Vine::Vine(Suit suit, int number):Armor(suit, number){
-	setObjectName("vine");
-	skill = new VineSkill;
+CandleWall::CandleWall(Suit suit, int number):Armor(suit, number){
+	setObjectName("candle_wall");
+	skill = new CandleWallSkill;
 }
 
 class SilverLionSkill: public ArmorSkill{
@@ -1359,35 +1359,35 @@ void FireAttack::onEffect(const CardEffectStruct &effect) const{
 		delete card;
 }
 
-IronChain::IronChain(Card::Suit suit, int number)
+TamaDragon::TamaDragon(Card::Suit suit, int number)
 	:TrickCard(suit, number, false)
 {
-	setObjectName("iron_chain");
+	setObjectName("tama_dragon");
 }
 
-QString IronChain::getSubtype() const{
+QString TamaDragon::getSubtype() const{
 	return "damage_spread";
 }
 
-QString IronChain::getEffectPath(bool is_male) const{
+QString TamaDragon::getEffectPath(bool is_male) const{
 	return QString();
 }
 
-bool IronChain::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
+bool TamaDragon::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
 	if(targets.length() >= 2)
 		return false;
 
 	return true;
 }
 
-bool IronChain::targetsFeasible(const QList<const Player *> &targets, const Player *Self) const{
+bool TamaDragon::targetsFeasible(const QList<const Player *> &targets, const Player *Self) const{
 	if(getSkillName() == "guhuo")
 		return targets.length() == 1 || targets.length() == 2;
 	else
 		return targets.length() <= 2;
 }
 
-void IronChain::onUse(Room *room, const CardUseStruct &card_use) const{
+void TamaDragon::onUse(Room *room, const CardUseStruct &card_use) const{
 	if(card_use.to.isEmpty()){
 		room->throwCard(this);
 		card_use.from->playCardEffect("@recast");
@@ -1396,14 +1396,14 @@ void IronChain::onUse(Room *room, const CardUseStruct &card_use) const{
 		TrickCard::onUse(room, card_use);
 }
 
-void IronChain::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
+void TamaDragon::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
 	room->throwCard(this);
 
 	source->playCardEffect("@tiesuo");
 	TrickCard::use(room, source, targets);
 }
 
-void IronChain::onEffect(const CardEffectStruct &effect) const{
+void TamaDragon::onEffect(const CardEffectStruct &effect) const{
 	bool chained = ! effect.to->isChained();
 	effect.to->setChained(chained);
 
@@ -1458,7 +1458,7 @@ StandardCardPackage::StandardCardPackage()
 
 	<< new MilkyDial(Card::Spade, 2) << new Jink(Card::Heart, 2) << new MilkyDial(Card::Club, 2) << new Jink(Card::Diamond, 2)
 	<< new OkamaMicrophone(Card::Spade, 2) << new Jink(Card::Heart, 2) << new Slash(Card::Club, 2) << new Jink(Card::Diamond, 2)
-	<< new Vine(Card::Spade, 2) << new FireAttack(Card::Heart, 2) << new Vine(Card::Club, 2) << new Wine(Card::Diamond, 2)
+	<< new CandleWall(Card::Spade, 2) << new FireAttack(Card::Heart, 2) << new CandleWall(Card::Club, 2) << new Wine(Card::Diamond, 2)
 	<< new SoulSolid(Card::Spade, 2) << new Rain(Card::Heart, 2) << new Cloak(Card::Club, 2) << new Tornado(Card::Diamond, 2)
 
 	<< new Dismantlement(Card::Spade, 3) << new Wine(Card::Heart, 3) << new Dismantlement(Card::Club, 3) << new Jink(Card::Diamond, 3)
@@ -1491,20 +1491,20 @@ StandardCardPackage::StandardCardPackage()
 
 	<< new Slash(Card::Spade, 10) << new Slash(Card::Heart, 10) << new Slash(Card::Club, 10) << new Jink(Card::Diamond, 10)
 	<< new Slash(Card::Spade, 10) << new Slash(Card::Heart, 10) << new Slash(Card::Club, 10) << new Slash(Card::Diamond, 10)
-	<< new SupplyShortage(Card::Spade, 10) << new FireSlash(Card::Heart, 10) << new IronChain(Card::Club, 10) << new Jink(Card::Diamond, 10)
+	<< new SupplyShortage(Card::Spade, 10) << new FireSlash(Card::Heart, 10) << new TamaDragon(Card::Club, 10) << new Jink(Card::Diamond, 10)
 
 	<< new Nullification(Card::Spade, 11) << new Slash(Card::Heart, 11) << new Slash(Card::Club, 11) << new Jink(Card::Diamond, 11)
 	<< new Snatch(Card::Spade, 11) << new TreasureChest(Card::Heart, 11) << new Slash(Card::Club, 11) << new Jink(Card::Diamond, 11)
-	<< new IronChain(Card::Spade, 11) << new Jink(Card::Heart, 11) << new IronChain(Card::Club, 11) << new Jink(Card::Diamond, 11)
+	<< new TamaDragon(Card::Spade, 11) << new Jink(Card::Heart, 11) << new TamaDragon(Card::Club, 11) << new Jink(Card::Diamond, 11)
 
 	<< new Shigure << new Wine(Card::Heart, 12) << new Collateral(Card::Club, 12) << new Wine(Card::Diamond, 12)
 	<< new Dismantlement(Card::Spade, 12) << new Dismantlement(Card::Heart, 12) << new Nullification(Card::Club, 12) << new Yubashiri
-	<< new IronChain(Card::Spade, 12) << new Jink(Card::Heart, 12) << new IronChain(Card::Club, 12) << new FireAttack(Card::Diamond, 12)
+	<< new TamaDragon(Card::Spade, 12) << new Jink(Card::Heart, 12) << new TamaDragon(Card::Club, 12) << new FireAttack(Card::Diamond, 12)
 	<< new Rain(Card::Spade, 12) << new Lightning(Card::Heart, 12) << new Tornado(Card::Club, 12) << new Nullification(Card::Diamond, 12)
 
 	<< new OffensiveHorse(Card::Spade, 13, "mini_merry") << new DefensiveHorse(Card::Heart, 13, "waver") << new Collateral(Card::Club, 13) << new Slash(Card::Diamond, 13)
 	<< new NeptunianAttack(Card::Spade, 13) << new Jink(Card::Heart, 13) << new Nullification(Card::Club, 13) << new OffensiveHorse(Card::Diamond, 13, "mini_merry")
-	<< new Nullification(Card::Spade, 13) << new Nullification(Card::Heart, 13) << new IronChain(Card::Club, 13) << new DefensiveHorse(Card::Diamond, 13, "waver");
+	<< new Nullification(Card::Spade, 13) << new Nullification(Card::Heart, 13) << new TamaDragon(Card::Club, 13) << new DefensiveHorse(Card::Diamond, 13, "waver");
 
 	foreach(Card *card, cards)
 		card->setParent(this);

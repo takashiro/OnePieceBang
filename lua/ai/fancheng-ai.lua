@@ -149,7 +149,7 @@ ganran_skill.getTurnUseCard=function(self)
 			local suit = card:getSuitString()
 			local number = card:getNumberString()
 			local card_id = card:getEffectiveId()
-			local card_str = ("iron_chain:ganran[%s:%s]=%d"):format(suit, number, card_id)
+			local card_str = ("tama_dragon:ganran[%s:%s]=%d"):format(suit, number, card_id)
 			local thecard=sgs.Card_Parse(card_str)
 			return thecard
 		end
