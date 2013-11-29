@@ -405,6 +405,7 @@ public:
         if(move->from_place == Player::EquipArea && move->to != move->from){
             Room *room = player->getRoom();
 
+            QList<ServerPlayer *> targets = room->getOtherPlayers(player);
             if(!targets.isEmpty() && room->askForSkillInvoke(player, objectName())){
                 room->playSkillEffect(objectName());
 
