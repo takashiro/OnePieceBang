@@ -533,7 +533,7 @@ public:
         Card *card = NULL;
         if(sub->inherits("Jink")){
             card = new FireSlash(sub->getSuit(), sub->getNumber());
-        }else if(sub->inherits("Slash") && sub->getSuit() == Card::Club){
+        }else if(sub->inherits("Slash")){
             card = new Wine(sub->getSuit(), sub->getNumber());
         }
 
