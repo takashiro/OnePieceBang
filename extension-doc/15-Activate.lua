@@ -269,7 +269,7 @@ end
 这一函数为 SmartAI.useBasicCard 和 SmartAI.useTrickCard 提供了接口。
 例如，要告诉 AI 如何使用【酒】，就需要写一个函数 SmartAI.useCardWine
 （该函数位于 standard_cards-ai.lua）
-要告诉 AI 如何使用【兵粮寸断】，就需要写一个函数 SmartAI.useCardSupplyShortage
+要告诉 AI 如何使用【无空世界】，就需要写一个函数 SmartAI.useCardSupplyShortage
 （该函数位于 maneuvering-ai.lua）
 这些函数的编写基本方法与原则与 sgs.ai_skill_use_func 里面的函数的编写相同，不再赘述。
 
