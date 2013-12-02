@@ -342,18 +342,18 @@ const Card *TrustAI::askForSingleWine(ServerPlayer *dying) {
             if(self->hasSkill("jiuchi")){
                 foreach(const Card *card, cards){
                     if(card->getSuit() == Card::Spade){
-                        BusouHaki *analeptic = new BusouHaki(Card::Spade, card->getNumber());
-                        analeptic->addSubcard(card);
-                        analeptic->setSkillName("jiuchi");
-                        return analeptic;
+                        BusouHaki *busou_haki = new BusouHaki(Card::Spade, card->getNumber());
+                        busou_haki->addSubcard(card);
+                        busou_haki->setSkillName("jiuchi");
+                        return busou_haki;
                     }
                 }
             }
 
             if(self->hasSkill("jiushi") && self->faceUp()){
-                BusouHaki *analeptic = new BusouHaki(Card::NoSuit, 0);
-                analeptic->setSkillName("jiushi");
-                return analeptic;
+                BusouHaki *busou_haki = new BusouHaki(Card::NoSuit, 0);
+                busou_haki->setSkillName("jiushi");
+                return busou_haki;
             }
         }
 

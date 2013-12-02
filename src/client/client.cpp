@@ -1370,7 +1370,7 @@ void Client::askForSingleWine(const Json::Value &arg){
 	int wine_num = arg[1].asInt();
 
     if(dying == Self){
-		prompt_doc->setHtml(tr("You are dying, please provide %1 wine(es)(or analeptic) to save yourself").arg(wine_num));
+        prompt_doc->setHtml(tr("You are dying, please provide %1 wine(es) to save yourself").arg(wine_num));
 		card_pattern = "wine";
     }else{
         QString dying_general = Bang->translate(dying->getGeneralName());

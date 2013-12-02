@@ -2471,7 +2471,7 @@ void RoomScene::changeHp(const QString &who, int delta, DamageStruct::Nature nat
         else if(nature == DamageStruct::Thunder)
             doAnimation("lightning", QStringList() << who);
 
-    }else{
+    }else if(delta > 0){
         QString type = "#Recover";
         QString from_general = ClientInstance->getPlayer(who)->getGeneralName();
         QString n = QString::number(delta);
@@ -3477,8 +3477,7 @@ void RoomScene::animatePopup(const QString &name, const QStringList &args)
 
 void RoomScene::doAppearingAnimation(const QString &name, const QStringList &args){
 
-    if(name == "analeptic"
-            || name == "wine")
+    if(name == "busou_haki" || name == "wine")
     {
         setEmotion(args.at(0),name);
         return;
@@ -3586,7 +3585,7 @@ void RoomScene::doAnimation(const QString &name, const QStringList &args){
         map["jink"] = &RoomScene::animatePopup;
         map["nullification"] = &RoomScene::doMovingAnimation;
 
-        map["analeptic"] = &RoomScene::doAppearingAnimation;
+        map["busou_haki"] = &RoomScene::doAppearingAnimation;
         map["fire"] = &RoomScene::doAppearingAnimation;
         map["lightning"] = &RoomScene::doAppearingAnimation;
         map["typhoon"] = &RoomScene::doAppearingAnimation;

@@ -395,13 +395,19 @@ public:
     Q_INVOKABLE FireSlash(Card::Suit suit, int number);
 };
 
-class BusouHaki: public SingleTargetTrick{
+class BusouHaki: public BasicCard{
     Q_OBJECT
 
 public:
     Q_INVOKABLE BusouHaki(Card::Suit suit, int number);
 
+    virtual QString getSubtype() const;
+    virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const;
+    virtual void onUse(Room *room, const CardUseStruct &card_use) const;
     virtual void onEffect(const CardEffectStruct &effect) const;
+    virtual bool isAvailable(const Player *player) const;
+
+    static bool IsAvailable(const Player *player);
 };
 
 class FlameDial: public Weapon{

@@ -19,7 +19,7 @@ GameRule::GameRule(QObject *)
             << CardEffected << HpRecover << HpLost << AskForWineDone
             << AskForWine << Death << Dying << GameOverJudge
             << SlashHit << SlashMissed << SlashEffected << SlashProceed
-            << DamageDone << DamageComplete
+            << Predamaged << DamageDone << DamageComplete
             << StartJudge << FinishJudge << Pindian;
 }
 
@@ -170,8 +170,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
     }
 
     // Handle global events
-    if (player == NULL)
-    {      
+    if (player == NULL){
         if(event == GameStart){
             foreach (ServerPlayer* player, room->getPlayers())
             {
@@ -195,364 +194,381 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 
     switch(event){
     case TurnStart:{
-            player = room->getCurrent();
-            if(!player->faceUp())
-                player->turnOver();
-            else if(player->isAlive())
-                player->play();
+        player = room->getCurrent();
+        if(!player->faceUp())
+            player->turnOver();
+        else if(player->isAlive())
+            player->play();
 
-            break;
-        }
+        break;
+    }
 
     case PhaseChange: onPhaseChange(player); break;
+
     case CardUsed: {
-            if(data.canConvert<CardUseStruct>()){
-                RoomThread *thread = room->getThread();
-                CardUseStruct card_use = data.value<CardUseStruct>();
+        if(data.canConvert<CardUseStruct>()){
+            RoomThread *thread = room->getThread();
+            CardUseStruct card_use = data.value<CardUseStruct>();
 
-                if(thread->trigger(TargetSelecting, card_use.from, data)){
-                    break;
-                }
-
-                foreach(ServerPlayer *target, card_use.to){
-                    thread->trigger(TargetSelected, target, data);
-                }
-
-                card_use = data.value<CardUseStruct>();
-                const Card *card = card_use.card;
-
-                card_use.from->playCardEffect(card);
-                card->use(room, card_use.from, card_use.to);
+            if(thread->trigger(TargetSelecting, card_use.from, data)){
+                break;
             }
 
-            break;
+            foreach(ServerPlayer *target, card_use.to){
+                thread->trigger(TargetSelected, target, data);
+            }
+
+            card_use = data.value<CardUseStruct>();
+            const Card *card = card_use.card;
+
+            card_use.from->playCardEffect(card);
+            card->use(room, card_use.from, card_use.to);
         }
 
-    case CardFinished: {
-            CardUseStruct use = data.value<CardUseStruct>();
-            room->clearCardFlag(use.card);
+        break;
+    }
 
-            break;
+    case CardFinished: {
+        CardUseStruct use = data.value<CardUseStruct>();
+        room->clearCardFlag(use.card);
+
+        break;
     }
 
     case HpRecover:{
-            RecoverStruct recover_struct = data.value<RecoverStruct>();
-            int recover = recover_struct.recover;
+        RecoverStruct recover_struct = data.value<RecoverStruct>();
+        int recover = recover_struct.recover;
 
-            room->setPlayerStatistics(player, "recover", recover);
+        room->setPlayerStatistics(player, "recover", recover);
 
-            int new_hp = qMin(player->getHp() + recover, player->getMaxHp());
-            room->setPlayerProperty(player, "hp", new_hp);
-            room->broadcastInvoke("hpChange", QString("%1:%2").arg(player->objectName()).arg(recover));
+        int new_hp = qMin(player->getHp() + recover, player->getMaxHp());
+        room->setPlayerProperty(player, "hp", new_hp);
+        room->broadcastInvoke("hpChange", QString("%1:%2").arg(player->objectName()).arg(recover));
 
-            break;
-        }
+        break;
+    }
 
     case HpLost:{
-            int lose = data.toInt();
+        int lose = data.toInt();
 
-            LogMessage log;
-            log.type = "#LoseHp";
-            log.from = player;
-            log.arg = QString::number(lose);
-            room->sendLog(log);
+        LogMessage log;
+        log.type = "#LoseHp";
+        log.from = player;
+        log.arg = QString::number(lose);
+        room->sendLog(log);
 
-            room->setPlayerProperty(player, "hp", player->getHp() - lose);
-            QString str = QString("%1:%2L").arg(player->objectName()).arg(-lose);
-            room->broadcastInvoke("hpChange", str);
+        room->setPlayerProperty(player, "hp", player->getHp() - lose);
+        QString str = QString("%1:%2L").arg(player->objectName()).arg(-lose);
+        room->broadcastInvoke("hpChange", str);
 
-            if(player->getHp() <= 0)
-                room->enterDying(player, NULL);
+        if(player->getHp() <= 0)
+            room->enterDying(player, NULL);
 
-            break;
+        break;
     }
 
     case Dying:{
-            if(player->getHp() > 0){
-                player->setFlags("-dying");
-                break;
-            }
-
-            DyingStruct dying = data.value<DyingStruct>();
-
-            LogMessage log;
-            log.type = "#AskForWine";
-            log.from = player;
-            log.to = dying.savers;
-            log.arg = QString::number(1 - player->getHp());
-            room->sendLog(log);
-
-            RoomThread *thread = room->getThread();
-            foreach(ServerPlayer *saver, dying.savers){
-                if(player->getHp() > 0)
-                    break;
-
-                thread->trigger(AskForWine, saver, data);
-            }
-
+        if(player->getHp() > 0){
             player->setFlags("-dying");
-            thread->trigger(AskForWineDone, player, data);
-
             break;
         }
+
+        DyingStruct dying = data.value<DyingStruct>();
+
+        LogMessage log;
+        log.type = "#AskForWine";
+        log.from = player;
+        log.to = dying.savers;
+        log.arg = QString::number(1 - player->getHp());
+        room->sendLog(log);
+
+        RoomThread *thread = room->getThread();
+        foreach(ServerPlayer *saver, dying.savers){
+            if(player->getHp() > 0)
+                break;
+
+            thread->trigger(AskForWine, saver, data);
+        }
+
+        player->setFlags("-dying");
+        thread->trigger(AskForWineDone, player, data);
+
+        break;
+    }
 
     case AskForWine:{
-            DyingStruct dying = data.value<DyingStruct>();
+        DyingStruct dying = data.value<DyingStruct>();
 
-            while(dying.who->getHp() <= 0){
-                const Card *wine = room->askForSingleWine(player, dying.who);
-                if(wine == NULL)
-                    break;
-
-                CardUseStruct use;
-                use.card = wine;
-                use.from = player;
-                if(player != dying.who)
-                    use.to << dying.who;
-
-                room->useCard(use, false);
-
-                if(player != dying.who && dying.who->getHp() > 0)
-                    room->setPlayerStatistics(player, "save", 1);
-            }
-
-            break;
-        }
-
-    case AskForWineDone:{
-            if(player->getHp() <= 0 && player->isAlive()){
-                DyingStruct dying = data.value<DyingStruct>();
-                room->killPlayer(player, dying.damage);
-
-                if(dying.damage && dying.damage->from)
-                    room->setPlayerStatistics(dying.damage->from, "kill", 1);
-            }
-
-            break;
-        }
-
-    case DamageDone:{
-            DamageStruct damage = data.value<DamageStruct>();
-            room->sendDamageLog(damage);
-
-            if(damage.from)
-                room->setPlayerStatistics(damage.from, "damage", damage.damage);
-
-            room->applyDamage(player, damage);
-            if(player->getHp() <= 0){
-                room->enterDying(player, &damage);
-            }
-
-            break;
-        }
-
-    case DamageComplete:{
-            if(room->getMode() == "02_1v1" && player->isDead()){
-                QString new_general = player->tag["1v1ChangeGeneral"].toString();
-                if(!new_general.isEmpty())
-                    changeGeneral1v1(player);
-            }
-
-            bool chained = player->isChained();
-            if(!chained)
+        while(dying.who->getHp() <= 0){
+            const Card *wine = room->askForSingleWine(player, dying.who);
+            if(wine == NULL)
                 break;
 
-            DamageStruct damage = data.value<DamageStruct>();
-            if(damage.nature != DamageStruct::Normal){
-                room->setPlayerProperty(player, "chained", false);
+            CardUseStruct use;
+            use.card = wine;
+            use.from = player;
+            if(player != dying.who)
+                use.to << dying.who;
 
-                // iron chain effect
-                QList<ServerPlayer *> chained_players = room->getAlivePlayers();
-                foreach(ServerPlayer *chained_player, chained_players){
-                    if(chained_player->isChained()){
-                        room->setPlayerProperty(chained_player, "chained", false);
+            room->useCard(use, false);
 
-                        LogMessage log;
-                        log.type = "#TamaDragonDamage";
-                        log.from = chained_player;
-                        room->sendLog(log);
-
-                        DamageStruct chain_damage = damage;
-                        chain_damage.to = chained_player;
-                        chain_damage.chain = true;
-
-                        room->damage(chain_damage);
-                    }
-                }
-            }
-
-            break;
+            if(player != dying.who && dying.who->getHp() > 0)
+                room->setPlayerStatistics(player, "save", 1);
         }
 
-    case CardEffected:{
-            if(data.canConvert<CardEffectStruct>()){
-                CardEffectStruct effect = data.value<CardEffectStruct>();
-                if(room->isCanceled(effect))
-                    return true;
+        break;
+    }
 
-                effect.card->onEffect(effect);
-            }
+    case AskForWineDone:{
+        if(player->getHp() <= 0 && player->isAlive()){
+            DyingStruct dying = data.value<DyingStruct>();
+            room->killPlayer(player, dying.damage);
 
-            break;
+            if(dying.damage && dying.damage->from)
+                room->setPlayerStatistics(dying.damage->from, "kill", 1);
         }
 
-    case SlashEffected:{
-            SlashEffectStruct effect = data.value<SlashEffectStruct>();
+        break;
+    }
 
-            QVariant data = QVariant::fromValue(effect);
-            room->getThread()->trigger(SlashProceed, effect.from, data);
-
-            break;
-        }
-
-    case SlashProceed:{
-            SlashEffectStruct effect = data.value<SlashEffectStruct>();
-
-            QString slasher = effect.from->objectName();
-            const Card *jink = room->askForCard(effect.to, "jink", "slash-jink:" + slasher, data, JinkUsed);
-            room->slashResult(effect, jink);
-
-            break;
-        }
-
-    case SlashHit:{
-            SlashEffectStruct effect = data.value<SlashEffectStruct>();
-
-            DamageStruct damage;
-            damage.card = effect.slash;
-
-            damage.damage = 1;
-            if(effect.drank){
+    case Predamaged:{
+        DamageStruct damage = data.value<DamageStruct>();
+        if(damage.to != NULL){
+            const Card *haki = room->askForCard(damage.to, "busou_haki", "damage-busou-haki:" + QString::number(damage.damage), data);
+            if(haki != NULL){
                 LogMessage log;
-                log.type = "#BusouHakiBuff";
-                log.from = effect.from;
-                log.to << effect.to;
-                log.arg = "analeptic";
+                log.type = "#BusouHakiDefense";
+                log.from = damage.to;
+                log.arg = haki->objectName();
                 room->sendLog(log);
 
-                damage.damage++;
+                damage.damage--;
+                data = QVariant::fromValue(damage);
             }
+        }
+        break;
+    }
 
-            damage.from = effect.from;
-            damage.to = effect.to;
-            damage.nature = effect.nature;
+    case DamageDone:{
+        DamageStruct damage = data.value<DamageStruct>();
+        room->sendDamageLog(damage);
 
-            room->damage(damage);
+        if(damage.from)
+            room->setPlayerStatistics(damage.from, "damage", damage.damage);
 
-            effect.to->removeMark("qinggang");
-
-            break;
+        room->applyDamage(player, damage);
+        if(player->getHp() <= 0){
+            room->enterDying(player, &damage);
         }
 
-    case SlashMissed:{
-            SlashEffectStruct effect = data.value<SlashEffectStruct>();
-            effect.to->removeMark("qinggang");
+        break;
+    }
 
-            break;
+    case DamageComplete:{
+        if(room->getMode() == "02_1v1" && player->isDead()){
+            QString new_general = player->tag["1v1ChangeGeneral"].toString();
+            if(!new_general.isEmpty())
+                changeGeneral1v1(player);
         }
 
-    case GameOverJudge:{            
-            if(room->getMode() == "02_1v1"){
-                QStringList list = player->tag["1v1Arrange"].toStringList();
-
-                if(!list.isEmpty())
-                    return false;
-            }
-
-            QString winner = getWinner(player);
-            if(!winner.isNull()){
-                player->bury();
-                room->gameOver(winner);
-                return true;
-            }
-
+        bool chained = player->isChained();
+        if(!chained)
             break;
-        }
 
-    case Death:{
-            player->bury();
+        DamageStruct damage = data.value<DamageStruct>();
+        if(damage.nature != DamageStruct::Normal){
+            room->setPlayerProperty(player, "chained", false);
 
-            if(room->getTag("SkipNormalDeathProcess").toBool())
-                return false;
+            // iron chain effect
+            QList<ServerPlayer *> chained_players = room->getAlivePlayers();
+            foreach(ServerPlayer *chained_player, chained_players){
+                if(chained_player->isChained()){
+                    room->setPlayerProperty(chained_player, "chained", false);
 
-            DamageStar damage = data.value<DamageStar>();
-            ServerPlayer *killer = damage ? damage->from : NULL;
-            if(killer){
-                rewardAndPunish(killer, player);
-            }
+                    LogMessage log;
+                    log.type = "#TamaDragonDamage";
+                    log.from = chained_player;
+                    room->sendLog(log);
 
-            setGameProcess(room);
+                    DamageStruct chain_damage = damage;
+                    chain_damage.to = chained_player;
+                    chain_damage.chain = true;
 
-            if(room->getMode() == "02_1v1"){
-                QStringList list = player->tag["1v1Arrange"].toStringList();
-
-                if(!list.isEmpty()){
-                    player->tag["1v1ChangeGeneral"] = list.takeFirst();
-                    player->tag["1v1Arrange"] = list;
-
-                    DamageStar damage = data.value<DamageStar>();
-
-                    if(damage == NULL){
-                        changeGeneral1v1(player);
-                        return false;
-                    }
+                    room->damage(chain_damage);
                 }
             }
-
-            break;
         }
+
+        break;
+    }
+
+    case CardEffected:{
+        if(data.canConvert<CardEffectStruct>()){
+            CardEffectStruct effect = data.value<CardEffectStruct>();
+            if(room->isCanceled(effect))
+                return true;
+
+            effect.card->onEffect(effect);
+        }
+
+        break;
+    }
+
+    case SlashEffected:{
+        SlashEffectStruct effect = data.value<SlashEffectStruct>();
+
+        QVariant data = QVariant::fromValue(effect);
+        room->getThread()->trigger(SlashProceed, effect.from, data);
+
+        break;
+    }
+
+    case SlashProceed:{
+        SlashEffectStruct effect = data.value<SlashEffectStruct>();
+
+        QString slasher = effect.from->objectName();
+        const Card *jink = room->askForCard(effect.to, "jink", "slash-jink:" + slasher, data, JinkUsed);
+        room->slashResult(effect, jink);
+
+        break;
+    }
+
+    case SlashHit:{
+        SlashEffectStruct effect = data.value<SlashEffectStruct>();
+
+        DamageStruct damage;
+        damage.card = effect.slash;
+
+        damage.damage = 1;
+        if(effect.drank){
+            LogMessage log;
+            log.type = "#BusouHakiBuff";
+            log.from = effect.from;
+            log.to << effect.to;
+            log.arg = "busou_haki";
+            room->sendLog(log);
+
+            damage.damage++;
+        }
+
+        damage.from = effect.from;
+        damage.to = effect.to;
+        damage.nature = effect.nature;
+
+        room->damage(damage);
+
+        effect.to->removeMark("qinggang");
+        break;
+    }
+
+    case SlashMissed:{
+        SlashEffectStruct effect = data.value<SlashEffectStruct>();
+        effect.to->removeMark("qinggang");
+        break;
+    }
+
+    case GameOverJudge:{            
+        if(room->getMode() == "02_1v1"){
+            QStringList list = player->tag["1v1Arrange"].toStringList();
+
+            if(!list.isEmpty())
+                return false;
+        }
+
+        QString winner = getWinner(player);
+        if(!winner.isNull()){
+            player->bury();
+            room->gameOver(winner);
+            return true;
+        }
+
+        break;
+    }
+
+    case Death:{
+        player->bury();
+
+        if(room->getTag("SkipNormalDeathProcess").toBool())
+            return false;
+
+        DamageStar damage = data.value<DamageStar>();
+        ServerPlayer *killer = damage ? damage->from : NULL;
+        if(killer){
+            rewardAndPunish(killer, player);
+        }
+
+        setGameProcess(room);
+
+        if(room->getMode() == "02_1v1"){
+            QStringList list = player->tag["1v1Arrange"].toStringList();
+
+            if(!list.isEmpty()){
+                player->tag["1v1ChangeGeneral"] = list.takeFirst();
+                player->tag["1v1Arrange"] = list;
+
+                DamageStar damage = data.value<DamageStar>();
+
+                if(damage == NULL){
+                    changeGeneral1v1(player);
+                    return false;
+                }
+            }
+        }
+
+        break;
+    }
 
     case StartJudge:{
-            int card_id = room->drawCard();
+        int card_id = room->drawCard();
 
-            JudgeStar judge = data.value<JudgeStar>();
-            judge->card = Bang->getCard(card_id);
-            room->moveCardTo(judge->card, NULL, Player::DiscardPile);
+        JudgeStar judge = data.value<JudgeStar>();
+        judge->card = Bang->getCard(card_id);
+        room->moveCardTo(judge->card, NULL, Player::DiscardPile);
 
-            LogMessage log;
-            log.type = "$InitialJudge";
-            log.from = player;
-            log.card_str = judge->card->getEffectIdString();
-            room->sendLog(log);
+        LogMessage log;
+        log.type = "$InitialJudge";
+        log.from = player;
+        log.card_str = judge->card->getEffectIdString();
+        room->sendLog(log);
 
-            room->sendJudgeResult(judge);
+        room->sendJudgeResult(judge);
 
-            break;
-        }
+        break;
+    }
 
     case FinishJudge:{
-            JudgeStar judge = data.value<JudgeStar>();
-            room->throwCard(judge->card);
+        JudgeStar judge = data.value<JudgeStar>();
+        room->throwCard(judge->card);
 
-            LogMessage log;
-            log.type = "$JudgeResult";
-            log.from = player;
-            log.card_str = judge->card->getEffectIdString();
-            room->sendLog(log);
+        LogMessage log;
+        log.type = "$JudgeResult";
+        log.from = player;
+        log.card_str = judge->card->getEffectIdString();
+        room->sendLog(log);
 
-            room->sendJudgeResult(judge);
-            break;
-        }
+        room->sendJudgeResult(judge);
+        break;
+    }
 
     case Pindian:{
-            PindianStar pindian = data.value<PindianStar>();
+        PindianStar pindian = data.value<PindianStar>();
 
-            LogMessage log;
+        LogMessage log;
 
-            room->throwCard(pindian->from_card);
-            log.type = "$PindianResult";
-            log.from = pindian->from;
-            log.card_str = pindian->from_card->getEffectIdString();
-            room->sendLog(log);
+        room->throwCard(pindian->from_card);
+        log.type = "$PindianResult";
+        log.from = pindian->from;
+        log.card_str = pindian->from_card->getEffectIdString();
+        room->sendLog(log);
 
-            room->throwCard(pindian->to_card);
-            log.type = "$PindianResult";
-            log.from = pindian->to;
-            log.card_str = pindian->to_card->getEffectIdString();
-            room->sendLog(log);
+        room->throwCard(pindian->to_card);
+        log.type = "$PindianResult";
+        log.from = pindian->to;
+        log.card_str = pindian->to_card->getEffectIdString();
+        room->sendLog(log);
 
-            break;
-        }
+        break;
+    }
 
     default:
         ;

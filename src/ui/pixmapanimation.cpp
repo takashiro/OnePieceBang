@@ -69,7 +69,7 @@ PixmapAnimation* PixmapAnimation::GetPixmapAnimation(QGraphicsObject *parent, co
                 emotion == "slash_black" ||
                 emotion == "thunder_slash" ||
                 emotion == "wine" ||
-                emotion == "analeptic")
+                emotion == "busou_haki")
         {
             pma->moveBy(pma->boundingRect().width()*0.15,
                         pma->boundingRect().height()*0.15);

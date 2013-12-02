@@ -1120,11 +1120,26 @@ FireSlash::FireSlash(Suit suit, int number)
 }
 
 BusouHaki::BusouHaki(Card::Suit suit, int number)
-	:SingleTargetTrick(suit, number, false)
+    :BasicCard(suit, number)
 {
 	setObjectName("busou_haki");
 	target_fixed = true;
 	once = true;
+}
+
+QString BusouHaki::getSubtype() const{
+    return "buff_card";
+}
+
+void BusouHaki::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
+    BasicCard::use(room, source, targets);
+}
+
+void BusouHaki::onUse(Room *room, const CardUseStruct &card_use) const{
+    CardUseStruct use = card_use;
+    if (use.to.isEmpty())
+        use.to << use.from;
+    BasicCard::onUse(room, use);
 }
 
 void BusouHaki::onEffect(const CardEffectStruct &effect) const{
@@ -1136,6 +1151,14 @@ void BusouHaki::onEffect(const CardEffectStruct &effect) const{
 	room->sendLog(log);
 
 	room->setPlayerFlag(effect.to, "drank");
+}
+
+bool BusouHaki::isAvailable(const Player *player) const{
+    return IsAvailable(player) && BasicCard::isAvailable(player);
+}
+
+bool BusouHaki::IsAvailable(const Player *player){
+    return !player->hasUsed("BusouHaki");
 }
 
 class FlameDialSkill: public WeaponSkill{
