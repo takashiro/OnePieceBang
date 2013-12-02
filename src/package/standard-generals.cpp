@@ -506,7 +506,7 @@ public:
         const Card *card = to_select->getCard();
         switch(ClientInstance->getStatus()){
         case Client::Playing:{
-            return (Slash::IsAvailable(Self) && card->inherits("Jink")) || (Self->isWounded() && card->inherits("Slash") && card->getSuit() == Card::Club);
+            return (Slash::IsAvailable(Self) && card->inherits("Jink")) || (Self->isWounded() && card->inherits("Slash"));
         }
         case Client::Responsing:{
             if(ClientInstance->getPattern() == "slash"){
