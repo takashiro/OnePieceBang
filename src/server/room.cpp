@@ -980,8 +980,7 @@ const Card *Room::askForCard(ServerPlayer *player, const QString &pattern, const
         }
     }
 
-    if(card == NULL)
-    {
+    if(card == NULL){
         QVariant decisionData = QVariant::fromValue("cardResponsed:"+pattern+":"+prompt+":_"+"nil"+"_");
         thread->trigger(ChoiceMade, player, decisionData);
         return NULL;

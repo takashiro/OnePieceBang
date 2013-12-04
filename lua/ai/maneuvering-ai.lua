@@ -97,7 +97,7 @@ function SmartAI:searchForAnaleptic(use,enemy,slash)
 	local allcards = self.player:getCards("he")
 	allcards = sgs.QList2Table(allcards)
 
-	if enemy:getArmor() and enemy:getArmor():objectName() == "silver_lion" then
+	if enemy:getArmor() and enemy:getArmor():objectName() == "diamond_armor" then
 		return
 	end
 
@@ -370,7 +370,7 @@ function SmartAI:useCardFireAttack(fire_attack, use)
 		use.card = fire_attack
 		if use.to then use.to:append(targets_succ[1]) end
 	elseif self.player:isChained() and self:isGoodChainTarget(self.player) and (self:isGoodChainPartner(self.player) 
-	or (self:isEquip("SilverLion") and self:hasSkill("fankui"))) and self.player:getHandcardNum() > 1 then
+	or (self:isEquip("DiamondArmor") and self:hasSkill("fankui"))) and self.player:getHandcardNum() > 1 then
 		use.card = fire_attack
 		if use.to then use.to:append(self.player) end
 	elseif #targets_fail > 0 and self:getOverflow(self.player) > 0 then

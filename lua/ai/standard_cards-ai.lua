@@ -167,7 +167,7 @@ function SmartAI:useCardSlash(card, use)
 			local usecard = card
 			if not use.to or use.to:isEmpty() then
 				local anal = self:searchForAnaleptic(use,target,card)
-				if anal and not self:isEquip("SilverLion", target) and not self:isWeak() then
+				if anal and not self:isEquip("DiamondArmor", target) and not self:isWeak() then
 					if anal:getEffectiveId() ~= card:getEffectiveId() then use.card = anal return end
 				end
 				local equips = self:getCards("EquipCard", self.player, "h")
@@ -625,7 +625,7 @@ function sgs.ai_armor_value.renwang_shield()
 	return 4
 end
 
-function sgs.ai_armor_value.silver_lion(player, self)
+function sgs.ai_armor_value.diamond_armor(player, self)
 	if self:hasWizard(self:getEnemies(player), true) then
 		for _, player in sgs.qlist(self.room:getAlivePlayers()) do
 			if player:containsTrick("lightning") then return 5 end
@@ -645,7 +645,7 @@ sgs.ai_use_priority.SoulSolid = 2.65
 sgs.ai_use_priority.WadoIchimonji = 2.645
 sgs.ai_use_priority.ImpactDial = 2.64
 sgs.ai_use_priority.Hammer = 2.63
-sgs.ai_use_priority.SilverLion = 0.9
+sgs.ai_use_priority.DiamondArmor = 0.9
 sgs.ai_use_priority.MilkyDial = 0.8
 sgs.ai_use_priority.Cloak = 0.7
 sgs.ai_use_priority.DefensiveHorse = 0
@@ -901,7 +901,7 @@ function SmartAI:getValuableCard(who)
 	end
 
 	if armor and self:evaluateArmor(armor, who)>0
-		and not (armor:inherits("SilverLion") and who:isWounded()) then
+		and not (armor:inherits("DiamondArmor") and who:isWounded()) then
 		return armor:getEffectiveId()
 	end
 
@@ -992,7 +992,7 @@ function SmartAI:useCardSnatchOrDismantlement(card, use)
 			end
 			return
 		end
-		if self:isEquip("SilverLion", friend) and self:hasTrickEffective(card, friend) and 
+		if self:isEquip("DiamondArmor", friend) and self:hasTrickEffective(card, friend) and 
 		friend:isWounded() and not self:hasSkills("longhun|duanliang|qixi|guidao|lijian|jujian",friend) then
 			hasLion = true
 			target = friend

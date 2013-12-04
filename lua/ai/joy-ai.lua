@@ -58,7 +58,7 @@ sgs.ai_skill_invoke.yx_sword = function(self, data)
 	local damage= data:toDamage()
 	local dmg = damage.damage
 	if damage.to:getArmor() and damage.to:getArmor():objectName() == "candle_wall" and damage.nature == sgs.DamageStruct_Fire then dmg = dmg + 1 end
-	if damage.to:getArmor() and damage.to:getArmor():objectName() == "silver_lion" then dmg = 1 end
+	if damage.to:getArmor() and damage.to:getArmor():objectName() == "diamond_armor" then dmg = 1 end
 
 	if (damage.to:hasSkill("duanchang") and damage.to:getHp() - dmg < 1) or self:hasSkills("ganglie|fankui|enyuan", damage.to) then
 		return true

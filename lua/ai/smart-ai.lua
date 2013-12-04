@@ -1514,7 +1514,7 @@ sgs.ai_choicemade_filter.Nullification.general = function(player, promptlist)
 	elseif sgs.dynamic_value.benefit[className] then intention = -40
 	elseif (className == "Snatch" or className == "Dismantlement") and
 		(to:getCards("j"):isEmpty() and
-		not (to:getArmor() and (to:getArmor():inherits("GaleShell") or to:getArmor():inherits("SilverLion")))) then
+		not (to:getArmor() and (to:getArmor():inherits("GaleShell") or to:getArmor():inherits("DiamondArmor")))) then
 		intention = 80
 	end
 	if positive then intention = -intention end
@@ -1590,7 +1590,7 @@ function SmartAI:filterEvent(event, player, data)
 			sgs.ai_snat_disma_effect = true
 			sgs.ai_snat_dism_from = struct.from
 			if to:getCards("j"):isEmpty() and
-				not (to:getArmor() and (to:getArmor():inherits("GaleShell") or to:getArmor():inherits("SilverLion"))) then
+				not (to:getArmor() and (to:getArmor():inherits("GaleShell") or to:getArmor():inherits("DiamondArmor"))) then
 				sgs.updateIntention(from, to, 80)
 			end
 		end
@@ -1656,7 +1656,7 @@ function SmartAI:filterEvent(event, player, data)
 			if place == sgs.Player_JudgingArea then
 				if not card:inherits("Disaster") then intention = -intention else intention = 0 end
 			elseif place == sgs.Player_EquipArea then
-				if player:getLostHp() > 1 and card:inherits("SilverLion") then intention = -intention end
+				if player:getLostHp() > 1 and card:inherits("DiamondArmor") then intention = -intention end
 				if self:hasSkills(sgs.lose_equip_skill, player) or card:inherits("GaleShell") then intention = 0 end
 			end
 			sgs.updateIntention(sgs.ai_snat_dism_from, from, intention)
@@ -1737,7 +1737,7 @@ function SmartAI:askForDiscard(reason, discard_num, optional, include_equip)
 		local place = self.room:getCardPlace(card:getEffectiveId())
 		if place == sgs.Player_EquipArea then
 			if card:inherits("GaleShell") then return -2
-			elseif card:inherits("SilverLion") and self.player:isWounded() then return -2
+			elseif card:inherits("DiamondArmor") and self.player:isWounded() then return -2
 			elseif card:inherits("YitianSword") then return -1
 			elseif card:inherits("OffensiveHorse") then return 1
 			elseif card:inherits("Weapon") then return 2
@@ -1877,7 +1877,7 @@ function SmartAI:getCardRandomly(who, flags)
 	if cards:isEmpty() then return end
 	local r = math.random(0, cards:length()-1)
 	local card = cards:at(r)
-	if self:isEquip("SilverLion", who) then
+	if self:isEquip("DiamondArmor", who) then
 		if self:isEnemy(who) and who:isWounded() and card == who:getArmor() then
 			if r ~= (cards:length()-1) then
 				card = cards:at(r+1)
@@ -1946,7 +1946,7 @@ function SmartAI:askForCardChosen(who, flags, reason)
 
 		if flags:match("e") then
 			local zhangjiao = self.room:findPlayerBySkillName("leiji")
-			if who:isWounded() and self:isEquip("SilverLion", who) and (not zhangjiao or self:isFriend(zhangjiao))
+			if who:isWounded() and self:isEquip("DiamondArmor", who) and (not zhangjiao or self:isFriend(zhangjiao))
 				and not self:hasSkills("qixi|duanliang", who) then return who:getArmor():getId() end
 			if self:evaluateArmor(who:getArmor(), who)<-5 then return who:getArmor():getId() end
 			if self:hasSkills(sgs.lose_equip_skill, who) then
@@ -2003,7 +2003,7 @@ function SmartAI:askForCardChosen(who, flags, reason)
 
 		if flags:match("e") then
 			if who:getArmor() and self:evaluateArmor(who:getArmor(), who)>0
-				and not (who:getArmor():inherits("SilverLion") and self:isWeak(who)) then
+				and not (who:getArmor():inherits("DiamondArmor") and self:isWeak(who)) then
 				return who:getArmor():getId()
 			end
 
@@ -3847,8 +3847,8 @@ function SmartAI:useEquipCard(card, use)
 		end
 	elseif card:inherits("Armor") then
 			if self:needBear() and self.player:getLostHp() == 0 then return end
-		local lion = self:getCard("SilverLion")
-		if lion and self.player:isWounded() and not self:isEquip("SilverLion") and not card:inherits("SilverLion") and
+		local lion = self:getCard("DiamondArmor")
+		if lion and self.player:isWounded() and not self:isEquip("DiamondArmor") and not card:inherits("DiamondArmor") and
 			not (self:hasSkills("bazhen|yizhong") and not self.player:getArmor()) then
 			use.card = lion
 			return
@@ -3897,12 +3897,12 @@ function SmartAI:damageMinusHp(self, enemy, type)
 				and (self.player:distanceTo(enemy) <= self.player:getAttackRange()) then
 				if not (enemy:hasSkill("xiangle") and basicnum < 2) then slash_damagenum = slash_damagenum + 1 end
 				if self:getCardsNum("Analeptic") > 0 and analepticpowerup == 0 and 
-					not ((self:isEquip("SilverLion", enemy) or self:isEquip("MilkyDial", enemy) or 
+					not ((self:isEquip("DiamondArmor", enemy) or self:isEquip("MilkyDial", enemy) or 
 						(not enemy:getArmor() and enemy:hasSkill("bazhen"))) and not self:isEquip("WadoIchimonji", self.player)) then 
 						slash_damagenum = slash_damagenum + 1 
 						analepticpowerup = analepticpowerup + 1 
 				end
-				if self:isEquip("Shusui", self.player) and enemy:isKongcheng() and not self:isEquip("SilverLion", enemy) then
+				if self:isEquip("Shusui", self.player) and enemy:isKongcheng() and not self:isEquip("DiamondArmor", enemy) then
 					slash_damagenum = slash_damagenum + 1 
 				end
 			end

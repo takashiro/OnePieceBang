@@ -71,7 +71,7 @@ clima_skill.getTurnUseCard = function(self, inclusive)
 
 			if card:inherits("Armor") then
 				if not self.player:getArmor() then shouldUse = false 
-				elseif self:hasEquip(card) and not (card:inherits("SilverLion") and self.player:isWounded()) then shouldUse = false
+				elseif self:hasEquip(card) and not (card:inherits("DiamondArmor") and self.player:isWounded()) then shouldUse = false
 				end
 			end
 

@@ -1301,9 +1301,9 @@ CandleWall::CandleWall(Suit suit, int number):Armor(suit, number){
 	skill = new CandleWallSkill;
 }
 
-class SilverLionSkill: public ArmorSkill{
+class DiamondArmorSkill: public ArmorSkill{
 public:
-	SilverLionSkill():ArmorSkill("silver_lion"){
+	DiamondArmorSkill():ArmorSkill("diamond_armor"){
 		events << Predamaged;
 	}
 
@@ -1311,7 +1311,7 @@ public:
 		DamageStruct damage = data.value<DamageStruct>();
 		if(damage.damage > 1){
 			LogMessage log;
-			log.type = "#SilverLion";
+			log.type = "#DiamondArmor";
 			log.from = player;
 			log.arg = QString::number(damage.damage);
 			log.arg2 = objectName();
@@ -1325,12 +1325,12 @@ public:
 	}
 };
 
-SilverLion::SilverLion(Suit suit, int number):Armor(suit, number){
-	setObjectName("silver_lion");
-	skill = new SilverLionSkill;
+DiamondArmor::DiamondArmor(Suit suit, int number):Armor(suit, number){
+	setObjectName("diamond_armor");
+	skill = new DiamondArmorSkill;
 }
 
-void SilverLion::onUninstall(ServerPlayer *player) const{
+void DiamondArmor::onUninstall(ServerPlayer *player) const{
 	if(player->isAlive() && player->getMark("qinggang") == 0){
 		RecoverStruct recover;
 		recover.card = this;
@@ -1477,7 +1477,7 @@ StandardCardPackage::StandardCardPackage()
 	cards
 	<< new Lightning(Card::Spade, 1) << new AllBlue << new Hammer(Card::Club, 1) << new Hammer(Card::Diamond, 1)
 	<< new Duel(Card::Spade, 1) << new BusterCall << new Duel(Card::Club, 1) << new Duel(Card::Diamond, 1)
-	<< new Shusui(Card::Spade, 1) << new Nullification(Card::Heart, 1) << new SilverLion(Card::Club, 1) << new FlameDial(Card::Diamond, 1)
+	<< new Shusui(Card::Spade, 1) << new Nullification(Card::Heart, 1) << new DiamondArmor(Card::Club, 1) << new FlameDial(Card::Diamond, 1)
 
 	<< new MilkyDial(Card::Spade, 2) << new Jink(Card::Heart, 2) << new MilkyDial(Card::Club, 2) << new Jink(Card::Diamond, 2)
 	<< new OkamaMicrophone(Card::Spade, 2) << new Jink(Card::Heart, 2) << new Slash(Card::Club, 2) << new Jink(Card::Diamond, 2)

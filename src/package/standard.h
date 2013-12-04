@@ -431,11 +431,11 @@ public:
     Q_INVOKABLE CandleWall(Card::Suit suit, int number);
 };
 
-class SilverLion: public Armor{
+class DiamondArmor: public Armor{
     Q_OBJECT
 
 public:
-    Q_INVOKABLE SilverLion(Card::Suit suit, int number);
+    Q_INVOKABLE DiamondArmor(Card::Suit suit, int number);
 
     virtual void onUninstall(ServerPlayer *player) const;
 };

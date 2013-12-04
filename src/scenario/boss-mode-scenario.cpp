@@ -366,7 +366,7 @@ public:
 
                     removeLordSkill(player);
 
-                    room->installEquip(player, "silver_lion");
+                    room->installEquip(player, "diamond_armor");
                     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
                     if((qrand() % 2) == 1){
                         room->acquireSkill(player, "silue");

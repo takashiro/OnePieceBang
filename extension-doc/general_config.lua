@@ -147,7 +147,7 @@ sgs.ai_use_priority = {
 	AmazingGrace=1.0,
 
 
-	SilverLion=0.9,
+	DiamondArmor=0.9,
 	MilkyDial=0.8,
 	RenwangShield=0.7,
 	CandleWall=0.6,
