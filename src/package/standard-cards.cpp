@@ -1485,11 +1485,11 @@ StandardCardPackage::StandardCardPackage()
 	<< new SoulSolid(Card::Spade, 2) << new Rain(Card::Heart, 2) << new Cloak(Card::Club, 2) << new Tornado(Card::Diamond, 2)
 
 	<< new Dismantlement(Card::Spade, 3) << new Wine(Card::Heart, 3) << new Dismantlement(Card::Club, 3) << new Jink(Card::Diamond, 3)
-	<< new Snatch(Card::Spade, 3) << new AllBlue(Card::Heart, 3) << new Slash(Card::Club, 3) << new Snatch(Card::Diamond, 3)
+    << new Snatch(Card::Spade, 3) << new AmazingGrace(Card::Heart, 3) << new Slash(Card::Club, 3) << new Snatch(Card::Diamond, 3)
 	<< new BusouHaki(Card::Spade, 3) << new FireAttack(Card::Heart, 3) << new BusouHaki(Card::Club, 3) << new Wine(Card::Diamond, 3)
 
 	<< new Dismantlement(Card::Spade, 4) << new Wine(Card::Heart, 4) << new Dismantlement(Card::Club, 4) << new Jink(Card::Diamond, 4)
-	<< new Snatch(Card::Spade, 4) << new AllBlue(Card::Heart, 4) << new Slash(Card::Club, 4) << new Snatch(Card::Diamond, 4)
+    << new Snatch(Card::Spade, 4) << new AmazingGrace(Card::Heart, 4) << new Slash(Card::Club, 4) << new Snatch(Card::Diamond, 4)
 	<< new ThunderSlash(Card::Spade, 4) << new FireSlash(Card::Heart, 4) << new SupplyShortage(Card::Club, 4) << new FireSlash(Card::Diamond, 4)
 
 	<< new SandaiKitetsu << new Kabuto << new DefensiveHorse(Card::Club, 5, "waver") << new Jink(Card::Diamond, 5)
