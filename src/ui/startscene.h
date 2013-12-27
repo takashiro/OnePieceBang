@@ -10,20 +10,20 @@
 #include <QTextEdit>
 
 class StartScene: public QGraphicsScene{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    StartScene();
-    void addButton(QAction *action);
-    void setServerLogBackground();
-    void switchToServer(Server *server);
+	StartScene();
+	void addButton(QAction *action);
+	void setServerLogBackground();
+	void switchToServer(Server *server);
 
 private:
-    void printServerInfo();
+	void printServerInfo();
 
-    Pixmap *logo;
-    QTextEdit *server_log;
-    QList<Button*> buttons;
+	Pixmap *logo;
+	QTextEdit *server_log;
+	QList<Button*> buttons;
 };
 
 #endif // STARTSCENE_H

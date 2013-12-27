@@ -9,23 +9,23 @@ class ServerPlayer;
 
 class RoomThread1v1 : public QThread
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit RoomThread1v1(Room *room);
-    void takeGeneral(ServerPlayer *player, const QString &name);
-    void arrange(ServerPlayer *player, const QStringList &arranged);
+	explicit RoomThread1v1(Room *room);
+	void takeGeneral(ServerPlayer *player, const QString &name);
+	void arrange(ServerPlayer *player, const QStringList &arranged);
 
 protected:
-    virtual void run();
+	virtual void run();
 
 private:
-    Room *room;
-    QStringList general_names;
-    QStringList unknown_list;
+	Room *room;
+	QStringList general_names;
+	QStringList unknown_list;
 
-    void askForTakeGeneral(ServerPlayer *player);
-    void startArrange(ServerPlayer *player);
+	void askForTakeGeneral(ServerPlayer *player);
+	void startArrange(ServerPlayer *player);
 };
 
 #endif // ROOMTHREAD1V1_H

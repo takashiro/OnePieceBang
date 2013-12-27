@@ -8,7 +8,7 @@
 class ThrillerBarkPackage : public Package
 {
 public:
-    ThrillerBarkPackage();
+	ThrillerBarkPackage();
 };
 
 #endif // THRILLERBARK_H

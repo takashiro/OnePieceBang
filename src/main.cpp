@@ -14,70 +14,70 @@
 
 int main(int argc, char *argv[])
 {    
-    QApplication a(argc, argv);
+	QApplication a(argc, argv);
 
 #ifdef Q_OS_MAC
 #ifdef QT_NO_DEBUG
 
-    QDir::setCurrent(qApp->applicationDirPath());
+	QDir::setCurrent(qApp->applicationDirPath());
 
 #endif
 #endif
 
-    // initialize random seed for later use
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+	// initialize random seed for later use
+	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
-    QTranslator qt_translator, translator;
-    qt_translator.load("qt_zh_CN.qm");
-    translator.load("zh_CN.qm");
+	QTranslator qt_translator, translator;
+	qt_translator.load("qt_zh_CN.qm");
+	translator.load("zh_CN.qm");
 
-    qApp->installTranslator(&qt_translator);
-    qApp->installTranslator(&translator);
+	qApp->installTranslator(&qt_translator);
+	qApp->installTranslator(&translator);
 
-    Bang = new Engine;
-    Config.init();
-    BanPair::loadBanPairs();
+	Bang = new Engine;
+	Config.init();
+	BanPair::loadBanPairs();
 
-    if(qApp->arguments().contains("-server")){
-        Server *server = new Server(qApp);
-        printf("Server is starting on port %u\n", Config.ServerPort);
+	if(qApp->arguments().contains("-server")){
+		Server *server = new Server(qApp);
+		printf("Server is starting on port %u\n", Config.ServerPort);
 
-        if(server->listen())
-            printf("Starting successfully\n");
-        else
-            printf("Starting failed!\n");
+		if(server->listen())
+			printf("Starting successfully\n");
+		else
+			printf("Starting failed!\n");
 
-        return qApp->exec();
-    }
+		return qApp->exec();
+	}
 
-    QFile file("bang.qss");
-    if(file.open(QIODevice::ReadOnly)){
-        QTextStream stream(&file);
-        qApp->setStyleSheet(stream.readAll());
-    }
+	QFile file("bang.qss");
+	if(file.open(QIODevice::ReadOnly)){
+		QTextStream stream(&file);
+		qApp->setStyleSheet(stream.readAll());
+	}
 
 #ifdef AUDIO_SUPPORT
 
-    Audio::init();
+	Audio::init();
 
 #endif
 
-    MainWindow main_window;
+	MainWindow main_window;
 
-    Bang->setParent(&main_window);
-    main_window.show();
+	Bang->setParent(&main_window);
+	main_window.show();
 
-    foreach(QString arg, qApp->arguments()){
-        if(arg.startsWith("-connect:")){
-            arg.remove("-connect:");
-            Config.HostAddress = arg;
-            Config.setValue("HostAddress", arg);
+	foreach(QString arg, qApp->arguments()){
+		if(arg.startsWith("-connect:")){
+			arg.remove("-connect:");
+			Config.HostAddress = arg;
+			Config.setValue("HostAddress", arg);
 
-            main_window.startConnection();
+			main_window.startConnection();
 
-            break;
-        }
-    }
+			break;
+		}
+	}
 
-    return qApp->exec();
+	return qApp->exec();
 }

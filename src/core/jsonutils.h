@@ -10,26 +10,26 @@
 
 namespace QSanProtocol
 {
-    namespace Utils
-    {        
-        inline QString toQString(const Json::Value& value)
-        {
-            Q_ASSERT(value.isString());
-            return QString(value.asCString());
-        }
-        inline Json::Value toJsonString(const QString& s)
-        {            
-            return Json::Value(s.toLocal8Bit().constData());
-        }
-        Json::Value toJsonArray(const QString& s1, const QString& s2);
-        Json::Value toJsonArray(const QString& s1, const Json::Value& s2);
-        Json::Value toJsonArray(const QString& s1, const QString& s2, const QString& s3);
-        Json::Value toJsonArray(const QList<int>&);
-        Json::Value toJsonArray(const QList<QString>&);
-        Json::Value toJsonArray(const QStringList&);
-        bool tryParse(const Json::Value&, QList<int> &);
-        bool tryParse(const Json::Value&, QStringList &);
-    }
+	namespace Utils
+	{        
+		inline QString toQString(const Json::Value& value)
+		{
+			Q_ASSERT(value.isString());
+			return QString(value.asCString());
+		}
+		inline Json::Value toJsonString(const QString& s)
+		{            
+			return Json::Value(s.toLocal8Bit().constData());
+		}
+		Json::Value toJsonArray(const QString& s1, const QString& s2);
+		Json::Value toJsonArray(const QString& s1, const Json::Value& s2);
+		Json::Value toJsonArray(const QString& s1, const QString& s2, const QString& s3);
+		Json::Value toJsonArray(const QList<int>&);
+		Json::Value toJsonArray(const QList<QString>&);
+		Json::Value toJsonArray(const QStringList&);
+		bool tryParse(const Json::Value&, QList<int> &);
+		bool tryParse(const Json::Value&, QStringList &);
+	}
 }
 
 #endif

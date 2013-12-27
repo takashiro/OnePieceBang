@@ -5,26 +5,26 @@
 #include "card.h"
 
 class SPPackage: public Package{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    SPPackage();
+	SPPackage();
 };
 
 class WeidiCard: public SkillCard{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Q_INVOKABLE WeidiCard();
+	Q_INVOKABLE WeidiCard();
 
-    virtual void onUse(Room *room, const CardUseStruct &card_use) const;
+	virtual void onUse(Room *room, const CardUseStruct &card_use) const;
 };
 
 class SPCardPackage: public Package{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    SPCardPackage();
+	SPCardPackage();
 };
 
 #endif // SPPACKAGE_H

@@ -1120,7 +1120,7 @@ FireSlash::FireSlash(Suit suit, int number)
 }
 
 BusouHaki::BusouHaki(Card::Suit suit, int number)
-    :BasicCard(suit, number)
+	:BasicCard(suit, number)
 {
 	setObjectName("busou_haki");
 	target_fixed = true;
@@ -1128,18 +1128,18 @@ BusouHaki::BusouHaki(Card::Suit suit, int number)
 }
 
 QString BusouHaki::getSubtype() const{
-    return "buff_card";
+	return "buff_card";
 }
 
 void BusouHaki::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
-    BasicCard::use(room, source, targets);
+	BasicCard::use(room, source, targets);
 }
 
 void BusouHaki::onUse(Room *room, const CardUseStruct &card_use) const{
-    CardUseStruct use = card_use;
-    if (use.to.isEmpty())
-        use.to << use.from;
-    BasicCard::onUse(room, use);
+	CardUseStruct use = card_use;
+	if (use.to.isEmpty())
+		use.to << use.from;
+	BasicCard::onUse(room, use);
 }
 
 void BusouHaki::onEffect(const CardEffectStruct &effect) const{
@@ -1154,11 +1154,11 @@ void BusouHaki::onEffect(const CardEffectStruct &effect) const{
 }
 
 bool BusouHaki::isAvailable(const Player *player) const{
-    return IsAvailable(player) && BasicCard::isAvailable(player);
+	return IsAvailable(player) && BasicCard::isAvailable(player);
 }
 
 bool BusouHaki::IsAvailable(const Player *player){
-    return !player->hasUsed("BusouHaki");
+	return !player->hasUsed("BusouHaki");
 }
 
 class FlameDialSkill: public WeaponSkill{
@@ -1485,11 +1485,11 @@ StandardCardPackage::StandardCardPackage()
 	<< new SoulSolid(Card::Spade, 2) << new Rain(Card::Heart, 2) << new Cloak(Card::Club, 2) << new Tornado(Card::Diamond, 2)
 
 	<< new Dismantlement(Card::Spade, 3) << new Wine(Card::Heart, 3) << new Dismantlement(Card::Club, 3) << new Jink(Card::Diamond, 3)
-    << new Snatch(Card::Spade, 3) << new AmazingGrace(Card::Heart, 3) << new Slash(Card::Club, 3) << new Snatch(Card::Diamond, 3)
+	<< new Snatch(Card::Spade, 3) << new AmazingGrace(Card::Heart, 3) << new Slash(Card::Club, 3) << new Snatch(Card::Diamond, 3)
 	<< new BusouHaki(Card::Spade, 3) << new FireAttack(Card::Heart, 3) << new BusouHaki(Card::Club, 3) << new Wine(Card::Diamond, 3)
 
 	<< new Dismantlement(Card::Spade, 4) << new Wine(Card::Heart, 4) << new Dismantlement(Card::Club, 4) << new Jink(Card::Diamond, 4)
-    << new Snatch(Card::Spade, 4) << new AmazingGrace(Card::Heart, 4) << new Slash(Card::Club, 4) << new Snatch(Card::Diamond, 4)
+	<< new Snatch(Card::Spade, 4) << new AmazingGrace(Card::Heart, 4) << new Slash(Card::Club, 4) << new Snatch(Card::Diamond, 4)
 	<< new ThunderSlash(Card::Spade, 4) << new FireSlash(Card::Heart, 4) << new SupplyShortage(Card::Club, 4) << new FireSlash(Card::Diamond, 4)
 
 	<< new SandaiKitetsu << new Kabuto << new DefensiveHorse(Card::Club, 5, "waver") << new Jink(Card::Diamond, 5)

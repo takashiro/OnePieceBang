@@ -127,41 +127,41 @@ typedef struct lua_TValue {
 
 #define setsvalue(L,obj,x) \
   { TValue *i_o=(obj); \
-    i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TSTRING; \
-    checkliveness(G(L),i_o); }
+	i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TSTRING; \
+	checkliveness(G(L),i_o); }
 
 #define setuvalue(L,obj,x) \
   { TValue *i_o=(obj); \
-    i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TUSERDATA; \
-    checkliveness(G(L),i_o); }
+	i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TUSERDATA; \
+	checkliveness(G(L),i_o); }
 
 #define setthvalue(L,obj,x) \
   { TValue *i_o=(obj); \
-    i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TTHREAD; \
-    checkliveness(G(L),i_o); }
+	i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TTHREAD; \
+	checkliveness(G(L),i_o); }
 
 #define setclvalue(L,obj,x) \
   { TValue *i_o=(obj); \
-    i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TFUNCTION; \
-    checkliveness(G(L),i_o); }
+	i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TFUNCTION; \
+	checkliveness(G(L),i_o); }
 
 #define sethvalue(L,obj,x) \
   { TValue *i_o=(obj); \
-    i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TTABLE; \
-    checkliveness(G(L),i_o); }
+	i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TTABLE; \
+	checkliveness(G(L),i_o); }
 
 #define setptvalue(L,obj,x) \
   { TValue *i_o=(obj); \
-    i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TPROTO; \
-    checkliveness(G(L),i_o); }
+	i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TPROTO; \
+	checkliveness(G(L),i_o); }
 
 
 
 
 #define setobj(L,obj1,obj2) \
   { const TValue *o2=(obj2); TValue *o1=(obj1); \
-    o1->value = o2->value; o1->tt=o2->tt; \
-    checkliveness(G(L),o1); }
+	o1->value = o2->value; o1->tt=o2->tt; \
+	checkliveness(G(L),o1); }
 
 
 /*
@@ -199,10 +199,10 @@ typedef TValue *StkId;  /* index to stack elements */
 typedef union TString {
   L_Umaxalign dummy;  /* ensures maximum alignment for strings */
   struct {
-    CommonHeader;
-    lu_byte reserved;
-    unsigned int hash;
-    size_t len;
+	CommonHeader;
+	lu_byte reserved;
+	unsigned int hash;
+	size_t len;
   } tsv;
 } TString;
 
@@ -215,10 +215,10 @@ typedef union TString {
 typedef union Udata {
   L_Umaxalign dummy;  /* ensures maximum alignment for `local' udata */
   struct {
-    CommonHeader;
-    struct Table *metatable;
-    struct Table *env;
-    size_t len;
+	CommonHeader;
+	struct Table *metatable;
+	struct Table *env;
+	size_t len;
   } uv;
 } Udata;
 
@@ -275,11 +275,11 @@ typedef struct UpVal {
   CommonHeader;
   TValue *v;  /* points to stack or to its own value */
   union {
-    TValue value;  /* the value (when closed) */
-    struct {  /* double linked list (when open) */
-      struct UpVal *prev;
-      struct UpVal *next;
-    } l;
+	TValue value;  /* the value (when closed) */
+	struct {  /* double linked list (when open) */
+	  struct UpVal *prev;
+	  struct UpVal *next;
+	} l;
   } u;
 } UpVal;
 
@@ -322,8 +322,8 @@ typedef union Closure {
 
 typedef union TKey {
   struct {
-    TValuefields;
-    struct Node *next;  /* for chaining */
+	TValuefields;
+	struct Node *next;  /* for chaining */
   } nk;
   TValue tvk;
 } TKey;
@@ -372,7 +372,7 @@ LUAI_FUNC int luaO_fb2int (int x);
 LUAI_FUNC int luaO_rawequalObj (const TValue *t1, const TValue *t2);
 LUAI_FUNC int luaO_str2d (const char *s, lua_Number *result);
 LUAI_FUNC const char *luaO_pushvfstring (lua_State *L, const char *fmt,
-                                                       va_list argp);
+													   va_list argp);
 LUAI_FUNC const char *luaO_pushfstring (lua_State *L, const char *fmt, ...);
 LUAI_FUNC void luaO_chunkid (char *out, const char *source, size_t len);
 

@@ -8,42 +8,42 @@
 #include <QTextEdit>
 
 class MetaInfoWidget: public QGroupBox{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    MetaInfoWidget(bool load_config);
-    void saveToSettings(QSettings &settings);
-    void showSettings(const QSettings *settings);
+	MetaInfoWidget(bool load_config);
+	void saveToSettings(QSettings &settings);
+	void showSettings(const QSettings *settings);
 
 private:
-    QTextEdit *description_edit;
+	QTextEdit *description_edit;
 };
 
 class PackagingEditor : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit PackagingEditor(QWidget *parent = 0);
+	explicit PackagingEditor(QWidget *parent = 0);
 
 private:
-    QListWidget *package_list;
-    MetaInfoWidget *package_list_meta;
+	QListWidget *package_list;
+	MetaInfoWidget *package_list_meta;
 
-    QListWidget *file_list;
-    MetaInfoWidget *file_list_meta;
+	QListWidget *file_list;
+	MetaInfoWidget *file_list_meta;
 
-    QWidget *createManagerTab();
-    QWidget *createPackagingTab();
-    void loadPackageList();
+	QWidget *createManagerTab();
+	QWidget *createPackagingTab();
+	void loadPackageList();
 
 private slots:
-    void installPackage();
-    void uninstallPackage();
-    void rescanPackage();
-    void browseFiles();
-    void makePackage();
-    void done7zProcess(int exit_code);
-    void updateMetaInfo(QListWidgetItem *item);
+	void installPackage();
+	void uninstallPackage();
+	void rescanPackage();
+	void browseFiles();
+	void makePackage();
+	void done7zProcess(int exit_code);
+	void updateMetaInfo(QListWidgetItem *item);
 };
 
 #endif // PACKAGINGEDITOR_H

@@ -198,7 +198,7 @@ OP_FORLOOP,/*	A sBx	R(A)+=R(A+2);
 OP_FORPREP,/*	A sBx	R(A)-=R(A+2); pc+=sBx				*/
 
 OP_TFORLOOP,/*	A C	R(A+3), ... ,R(A+2+C) := R(A)(R(A+1), R(A+2)); 
-                        if R(A+3) ~= nil then R(A+2)=R(A+3) else pc++	*/ 
+						if R(A+3) ~= nil then R(A+2)=R(A+3) else pc++	*/ 
 OP_SETLIST,/*	A B C	R(A)[(C-1)*FPF+i] := R(A+i), 1 <= i <= B	*/
 
 OP_CLOSE,/*	A 	close all variables in the stack up to (>=) R(A)*/
@@ -215,19 +215,19 @@ OP_VARARG/*	A B	R(A), R(A+1), ..., R(A+B-1) = vararg		*/
 /*===========================================================================
   Notes:
   (*) In OP_CALL, if (B == 0) then B = top. C is the number of returns - 1,
-      and can be 0: OP_CALL then sets `top' to last_result+1, so
-      next open instruction (OP_CALL, OP_RETURN, OP_SETLIST) may use `top'.
+	  and can be 0: OP_CALL then sets `top' to last_result+1, so
+	  next open instruction (OP_CALL, OP_RETURN, OP_SETLIST) may use `top'.
 
   (*) In OP_VARARG, if (B == 0) then use actual number of varargs and
-      set top (like in OP_CALL with C == 0).
+	  set top (like in OP_CALL with C == 0).
 
   (*) In OP_RETURN, if (B == 0) then return up to `top'
 
   (*) In OP_SETLIST, if (B == 0) then B = `top';
-      if (C == 0) then next `instruction' is real C
+	  if (C == 0) then next `instruction' is real C
 
   (*) For comparisons, A specifies what condition the test should accept
-      (true or false).
+	  (true or false).
 
   (*) All `skips' (pc++) assume that next instruction is a jump
 ===========================================================================*/

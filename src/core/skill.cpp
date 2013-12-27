@@ -9,367 +9,367 @@
 #include <QFile>
 
 Skill::Skill(const QString &name, Frequency frequency)
-    :frequency(frequency), default_choice("no")
+	:frequency(frequency), default_choice("no")
 {
-    static QChar lord_symbol('$');
+	static QChar lord_symbol('$');
 
-    if(name.endsWith(lord_symbol)){
-        QString copy = name;
-        copy.remove(lord_symbol);
-        setObjectName(copy);
-        lord_skill = true;
-    }else{
-        setObjectName(name);
-        lord_skill = false;
-    }
+	if(name.endsWith(lord_symbol)){
+		QString copy = name;
+		copy.remove(lord_symbol);
+		setObjectName(copy);
+		lord_skill = true;
+	}else{
+		setObjectName(name);
+		lord_skill = false;
+	}
 }
 
 bool Skill::isLordSkill() const{
-    return lord_skill;
+	return lord_skill;
 }
 
 QString Skill::getDescription() const{
-    return Bang->translate(":" + objectName());
+	return Bang->translate(":" + objectName());
 }
 
 QString Skill::getText() const{
-    QString skill_name = Bang->translate(objectName());
+	QString skill_name = Bang->translate(objectName());
 
-    switch(frequency){
-    case Skill::NotFrequent:
-    case Skill::Frequent: break;
-    case Skill::Limited: skill_name.append(tr(" [Limited]")); break;
-    case Skill::Compulsory: skill_name.append(tr(" [Compulsory]")); break;
-    case Skill::Wake: skill_name.append(tr(" [Wake]")); break;
-    }
+	switch(frequency){
+	case Skill::NotFrequent:
+	case Skill::Frequent: break;
+	case Skill::Limited: skill_name.append(tr(" [Limited]")); break;
+	case Skill::Compulsory: skill_name.append(tr(" [Compulsory]")); break;
+	case Skill::Wake: skill_name.append(tr(" [Wake]")); break;
+	}
 
-    return skill_name;
+	return skill_name;
 }
 
 bool Skill::isVisible() const{
-    return ! objectName().startsWith("#");
+	return ! objectName().startsWith("#");
 }
 
 QString Skill::getDefaultChoice(ServerPlayer *) const{
-    return default_choice;
+	return default_choice;
 }
 
 int Skill::getEffectIndex(const ServerPlayer *, const Card *) const{
-    return -1;
+	return -1;
 }
 
 void Skill::initMediaSource(){
-    sources.clear();
+	sources.clear();
 
-    int i;
-    for(i=1; ;i++){
-        QString effect_file = QString("audio/skill/%1%2.ogg").arg(objectName()).arg(i);
-        if(QFile::exists(effect_file))
-            sources << effect_file;
-        else
-            break;
-    }
+	int i;
+	for(i=1; ;i++){
+		QString effect_file = QString("audio/skill/%1%2.ogg").arg(objectName()).arg(i);
+		if(QFile::exists(effect_file))
+			sources << effect_file;
+		else
+			break;
+	}
 
-    if(sources.isEmpty()){
-        QString effect_file = QString("audio/skill/%1.ogg").arg(objectName());
-        if(QFile::exists(effect_file))
-            sources << effect_file;
-    }
+	if(sources.isEmpty()){
+		QString effect_file = QString("audio/skill/%1.ogg").arg(objectName());
+		if(QFile::exists(effect_file))
+			sources << effect_file;
+	}
 }
 
 Skill::Location Skill::getLocation() const{
-    return parent() ? Right : Left;
+	return parent() ? Right : Left;
 }
 
 void Skill::playEffect(int index) const{
-    if(!sources.isEmpty()){
-        if(index == -1)
-            index = qrand() % sources.length();
-        else
-            index--;
+	if(!sources.isEmpty()){
+		if(index == -1)
+			index = qrand() % sources.length();
+		else
+			index--;
 
-        // check length
-        QString filename;
-        if(index >= 0 && index < sources.length())
-            filename = sources.at(index);
-        else
-            filename = sources.first();
+		// check length
+		QString filename;
+		if(index >= 0 && index < sources.length())
+			filename = sources.at(index);
+		else
+			filename = sources.first();
 
-        Bang->playEffect(filename);
-        if(ClientInstance)
-            ClientInstance->setLines(filename);
-    }
+		Bang->playEffect(filename);
+		if(ClientInstance)
+			ClientInstance->setLines(filename);
+	}
 }
 
 void Skill::setFlag(ServerPlayer *player) const{
-    player->getRoom()->setPlayerFlag(player, objectName());
+	player->getRoom()->setPlayerFlag(player, objectName());
 }
 
 void Skill::unsetFlag(ServerPlayer *player) const{
-    player->getRoom()->setPlayerFlag(player, "-" + objectName());
+	player->getRoom()->setPlayerFlag(player, "-" + objectName());
 }
 
 Skill::Frequency Skill::getFrequency() const{
-    return frequency;
+	return frequency;
 }
 
 QStringList Skill::getSources() const{
-    return sources;
+	return sources;
 }
 
 QDialog *Skill::getDialog() const{
-    return NULL;
+	return NULL;
 }
 
 ViewAsSkill::ViewAsSkill(const QString &name)
-    :Skill(name)
+	:Skill(name)
 {
 
 }
 
 bool ViewAsSkill::isAvailable() const{
-    switch(ClientInstance->getStatus()){
-    case Client::Playing: return isEnabledAtPlay(Self);
-    case Client::Responsing: return isEnabledAtResponse(Self, ClientInstance->getPattern());
-    default:
-        return false;
-    }
+	switch(ClientInstance->getStatus()){
+	case Client::Playing: return isEnabledAtPlay(Self);
+	case Client::Responsing: return isEnabledAtResponse(Self, ClientInstance->getPattern());
+	default:
+		return false;
+	}
 }
 
 bool ViewAsSkill::isEnabledAtPlay(const Player *) const{
-    return true;
+	return true;
 }
 
 bool ViewAsSkill::isEnabledAtResponse(const Player *, const QString &) const{
-    return false;
+	return false;
 }
 
 ZeroCardViewAsSkill::ZeroCardViewAsSkill(const QString &name)
-    :ViewAsSkill(name)
+	:ViewAsSkill(name)
 {
 
 }
 
 const Card *ZeroCardViewAsSkill::viewAs(const QList<CardItem *> &cards) const{
-    if(cards.isEmpty())
-        return viewAs();
-    else
-        return NULL;
+	if(cards.isEmpty())
+		return viewAs();
+	else
+		return NULL;
 }
 
 bool ZeroCardViewAsSkill::viewFilter(const QList<CardItem *> &, const CardItem *) const{
-    return false;
+	return false;
 }
 
 OneCardViewAsSkill::OneCardViewAsSkill(const QString &name)
-    :ViewAsSkill(name)
+	:ViewAsSkill(name)
 {
 
 }
 
 bool OneCardViewAsSkill::viewFilter(const QList<CardItem *> &selected, const CardItem *to_select) const{
-    return selected.isEmpty() && viewFilter(to_select);
+	return selected.isEmpty() && viewFilter(to_select);
 }
 
 const Card *OneCardViewAsSkill::viewAs(const QList<CardItem *> &cards) const{
-    if(cards.length() != 1)
-        return NULL;
-    else
-        return viewAs(cards.first());
+	if(cards.length() != 1)
+		return NULL;
+	else
+		return viewAs(cards.first());
 }
 
 FilterSkill::FilterSkill(const QString &name)
-    :OneCardViewAsSkill(name)
+	:OneCardViewAsSkill(name)
 {
-    frequency = Compulsory;
+	frequency = Compulsory;
 }
 
 TriggerSkill::TriggerSkill(const QString &name)
-    :Skill(name), view_as_skill(NULL)
+	:Skill(name), view_as_skill(NULL)
 {
 
 }
 
 const ViewAsSkill *TriggerSkill::getViewAsSkill() const{
-    return view_as_skill;
+	return view_as_skill;
 }
 
 QList<TriggerEvent> TriggerSkill::getTriggerEvents() const{
-    return events;
+	return events;
 }
 
 int TriggerSkill::getPriority() const{
-    switch(frequency){
-    case Compulsory:
-    case Wake: return 2;
-    default:
-        return 1;
-    }
+	switch(frequency){
+	case Compulsory:
+	case Wake: return 2;
+	default:
+		return 1;
+	}
 }
 
 bool TriggerSkill::triggerable(const ServerPlayer *target) const{
-    return target != NULL && target->isAlive() && target->hasSkill(objectName());
+	return target != NULL && target->isAlive() && target->hasSkill(objectName());
 }
 
 ScenarioRule::ScenarioRule(Scenario *scenario)
-    :TriggerSkill(scenario->objectName())
+	:TriggerSkill(scenario->objectName())
 {
-    setParent(scenario);
+	setParent(scenario);
 }
 
 int ScenarioRule::getPriority() const{
-    return 3;
+	return 3;
 }
 
 bool ScenarioRule::triggerable(const ServerPlayer *) const{
-    return true;
+	return true;
 }
 
 MasochismSkill::MasochismSkill(const QString &name)
-    :TriggerSkill(name)
+	:TriggerSkill(name)
 {
-    events << Damaged;
+	events << Damaged;
 }
 
 int MasochismSkill::getPriority() const{
-    return -1;
+	return -1;
 }
 
 bool MasochismSkill::trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
-    DamageStruct damage = data.value<DamageStruct>();
+	DamageStruct damage = data.value<DamageStruct>();
 
-    if(player->isAlive())
-        onDamaged(player, damage);
+	if(player->isAlive())
+		onDamaged(player, damage);
 
-    return false;
+	return false;
 }
 
 PhaseChangeSkill::PhaseChangeSkill(const QString &name)
-    :TriggerSkill(name)
+	:TriggerSkill(name)
 {
-    events << PhaseChange;
+	events << PhaseChange;
 }
 
 bool PhaseChangeSkill::trigger(TriggerEvent, ServerPlayer *player, QVariant &) const{
-    bool skipped = onPhaseChange(player);
-    if(skipped)
-        player->skip(player->getPhase());
+	bool skipped = onPhaseChange(player);
+	if(skipped)
+		player->skip(player->getPhase());
 
-    return skipped;
+	return skipped;
 }
 
 DrawCardsSkill::DrawCardsSkill(const QString &name)
-    :TriggerSkill(name)
+	:TriggerSkill(name)
 {
-    events << DrawNCards;
+	events << DrawNCards;
 }
 
 bool DrawCardsSkill::trigger(TriggerEvent , ServerPlayer *player, QVariant &data) const{
-    int n = data.toInt();
-    data = getDrawNum(player, n);
-    return false;
+	int n = data.toInt();
+	data = getDrawNum(player, n);
+	return false;
 }
 
 SlashBuffSkill::SlashBuffSkill(const QString &name)
-    :TriggerSkill(name)
+	:TriggerSkill(name)
 {
-    events << SlashProceed;
+	events << SlashProceed;
 }
 
 bool SlashBuffSkill::trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
-    if(data.canConvert<SlashEffectStruct>()){
-        SlashEffectStruct effect = data.value<SlashEffectStruct>();
+	if(data.canConvert<SlashEffectStruct>()){
+		SlashEffectStruct effect = data.value<SlashEffectStruct>();
 
-        if(player->isAlive())
-            return buff(effect);
-    }
+		if(player->isAlive())
+			return buff(effect);
+	}
 
-    return false;
+	return false;
 }
 
 GameStartSkill::GameStartSkill(const QString &name)
-    :TriggerSkill(name)
+	:TriggerSkill(name)
 {
-    events << GameStart;
+	events << GameStart;
 }
 
 bool GameStartSkill::trigger(TriggerEvent, ServerPlayer *player, QVariant &) const{
-    onGameStart(player);
-    return false;
+	onGameStart(player);
+	return false;
 }
 
 SPConvertSkill::SPConvertSkill(const QString &name, const QString &from, const QString &to)
-    :GameStartSkill(name), from(from), to(to)
+	:GameStartSkill(name), from(from), to(to)
 {
-    frequency = Limited;
+	frequency = Limited;
 }
 
 bool SPConvertSkill::triggerable(const ServerPlayer *target) const{
-    if (target == NULL || Bang->getGeneral(to) == NULL) return false;
-    QString package = Bang->getGeneral(to)->getPackage();
-    if(Bang->getBanPackages().contains(package)) return false;
-    return GameStartSkill::triggerable(target) && target->getGeneralName() == from;
+	if (target == NULL || Bang->getGeneral(to) == NULL) return false;
+	QString package = Bang->getGeneral(to)->getPackage();
+	if(Bang->getBanPackages().contains(package)) return false;
+	return GameStartSkill::triggerable(target) && target->getGeneralName() == from;
 }
 
 void SPConvertSkill::onGameStart(ServerPlayer *player) const{
-    const General *general = Bang->getGeneral(to);
-    if(general == NULL){
-        return;
-    }
+	const General *general = Bang->getGeneral(to);
+	if(general == NULL){
+		return;
+	}
 
-    if(player->askForSkillInvoke(objectName())){
-        Room *room = player->getRoom();
-        room->setPlayerProperty(player, "general", to);
+	if(player->askForSkillInvoke(objectName())){
+		Room *room = player->getRoom();
+		room->setPlayerProperty(player, "general", to);
 
-        const QString kingdom = general->getKingdom();
-        if(kingdom != player->getKingdom())
-            room->setPlayerProperty(player, "kingdom", kingdom);
-    }
+		const QString kingdom = general->getKingdom();
+		if(kingdom != player->getKingdom())
+			room->setPlayerProperty(player, "kingdom", kingdom);
+	}
 }
 
 ProhibitSkill::ProhibitSkill(const QString &name)
-    :Skill(name, Skill::Compulsory)
+	:Skill(name, Skill::Compulsory)
 {
 }
 
 DistanceSkill::DistanceSkill(const QString &name)
-    :Skill(name, Skill::Compulsory)
+	:Skill(name, Skill::Compulsory)
 {
 
 }
 
 PropertySkill::PropertySkill(const QString &name)
-    :Skill(name, Skill::Compulsory)
+	:Skill(name, Skill::Compulsory)
 {
 
 }
 
 WeaponSkill::WeaponSkill(const QString &name)
-    :TriggerSkill(name)
+	:TriggerSkill(name)
 {
 }
 
 bool WeaponSkill::triggerable(const ServerPlayer *target) const{
-    if (target == NULL) return false;
-    return target->hasWeapon(objectName());
+	if (target == NULL) return false;
+	return target->hasWeapon(objectName());
 }
 
 ArmorSkill::ArmorSkill(const QString &name)
-    :TriggerSkill(name)
+	:TriggerSkill(name)
 {
 
 }
 
 bool ArmorSkill::triggerable(const ServerPlayer *target) const{
-    if (target == NULL) return false;
-    return target->hasArmorEffect(objectName()) && target->getArmor()->getSkill() == this;
+	if (target == NULL) return false;
+	return target->hasArmorEffect(objectName()) && target->getArmor()->getSkill() == this;
 }
 
 MarkAssignSkill::MarkAssignSkill(const QString &mark, int n)
-    :GameStartSkill(QString("#%1-%2").arg(mark).arg(n)), mark_name(mark), n(n)
+	:GameStartSkill(QString("#%1-%2").arg(mark).arg(n)), mark_name(mark), n(n)
 {
 }
 
 void MarkAssignSkill::onGameStart(ServerPlayer *player) const{
-    player->gainMark(mark_name, n);
+	player->gainMark(mark_name, n);
 }

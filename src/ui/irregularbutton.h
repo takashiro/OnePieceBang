@@ -7,54 +7,54 @@
 
 class IrregularButton : public QGraphicsObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit IrregularButton(const QString &name);
-    void click();
+	explicit IrregularButton(const QString &name);
+	void click();
 
-    virtual QRectF boundingRect() const;
+	virtual QRectF boundingRect() const;
 
 protected:
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+	virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+	virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+	virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
-    enum State { Normal, Hover, Down };
-    State state;
+	enum State { Normal, Hover, Down };
+	State state;
 
-    QPixmap normal, hover, down, disabled;
-    QRegion mask;
+	QPixmap normal, hover, down, disabled;
+	QRegion mask;
 
-    void changeState(State state);
-    bool inMask(const QPointF &pos) const;
+	void changeState(State state);
+	bool inMask(const QPointF &pos) const;
 
 signals:
-    void clicked();
+	void clicked();
 };
 
 class TrustButton : public QGraphicsObject{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit TrustButton();
+	explicit TrustButton();
 
-    virtual QRectF boundingRect() const;
+	virtual QRectF boundingRect() const;
 
 protected:
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
-    QPixmap trust, untrust;
-    QRegion mask;
+	QPixmap trust, untrust;
+	QRegion mask;
 
 signals:
-    void clicked();
+	void clicked();
 };
 
 #endif // IRREGULARBUTTON_H

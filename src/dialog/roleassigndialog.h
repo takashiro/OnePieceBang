@@ -8,25 +8,25 @@
 #include <QMap>
 
 class RoleAssignDialog: public QDialog{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    RoleAssignDialog(QWidget *parent);
+	RoleAssignDialog(QWidget *parent);
 
 protected:
-    virtual void accept();
-    virtual void reject();
+	virtual void accept();
+	virtual void reject();
 
 private:
-    QListWidget *list;
-    QComboBox *role_combobox;
-    QMap<QString, QString> role_mapping;
+	QListWidget *list;
+	QComboBox *role_combobox;
+	QMap<QString, QString> role_mapping;
 
 private slots:
-    void updateRole(int index);
-    void updateRole(QListWidgetItem *current);
-    void moveUp();
-    void moveDown();
+	void updateRole(int index);
+	void updateRole(QListWidgetItem *current);
+	void moveUp();
+	void moveDown();
 };
 
 #endif // ROLEASSIGNDIALOG_H

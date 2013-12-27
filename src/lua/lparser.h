@@ -37,8 +37,8 @@ typedef enum {
 typedef struct expdesc {
   expkind k;
   union {
-    struct { int info, aux; } s;
-    lua_Number nval;
+	struct { int info, aux; } s;
+	lua_Number nval;
   } u;
   int t;  /* patch list of `exit when true' */
   int f;  /* patch list of `exit when false' */
@@ -76,7 +76,7 @@ typedef struct FuncState {
 
 
 LUAI_FUNC Proto *luaY_parser (lua_State *L, ZIO *z, Mbuffer *buff,
-                                            const char *name);
+											const char *name);
 
 
 #endif

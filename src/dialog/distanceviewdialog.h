@@ -8,17 +8,17 @@ class ClientPlayer;
 struct DistanceViewDialogUI;
 
 class DistanceViewDialog : public QDialog {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    DistanceViewDialog(QWidget *parent = 0);
-    ~DistanceViewDialog();
+	DistanceViewDialog(QWidget *parent = 0);
+	~DistanceViewDialog();
 
 private:
-    DistanceViewDialogUI *ui;
+	DistanceViewDialogUI *ui;
 
 private slots:
-    void showDistance();
+	void showDistance();
 };
 
 #endif // DISTANCEVIEWDIALOG_H

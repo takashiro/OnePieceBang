@@ -6,188 +6,188 @@
 #include "engine.h"
 
 DiscardSkill::DiscardSkill()
-    :ViewAsSkill("discard"), card(new DummyCard),
-    num(0), include_equip(false)
+	:ViewAsSkill("discard"), card(new DummyCard),
+	num(0), include_equip(false)
 {
-    card->setParent(this);
+	card->setParent(this);
 }
 
 void DiscardSkill::setNum(int num){
-    this->num = num;
+	this->num = num;
 }
 
 void DiscardSkill::setMinNum(int minnum){
-    this->minnum = minnum;
+	this->minnum = minnum;
 }
 
 void DiscardSkill::setIncludeEquip(bool include_equip){
-    this->include_equip = include_equip;
+	this->include_equip = include_equip;
 }
 
 bool DiscardSkill::viewFilter(const QList<CardItem *> &selected, const CardItem *to_select) const{
-    if(selected.length() >= num)
-        return false;
+	if(selected.length() >= num)
+		return false;
 
-    if(!include_equip && to_select->isEquipped())
-        return false;
+	if(!include_equip && to_select->isEquipped())
+		return false;
 
-    if(Self->isJilei(to_select->getFilteredCard()))
-        return false;
+	if(Self->isJilei(to_select->getFilteredCard()))
+		return false;
 
-    return true;
+	return true;
 }
 
 const Card *DiscardSkill::viewAs(const QList<CardItem *> &cards) const{
-    if(cards.length() >= minnum){
-        card->clearSubcards();
-        card->addSubcards(cards);
-        return card;
-    }else
-        return NULL;
+	if(cards.length() >= minnum){
+		card->clearSubcards();
+		card->addSubcards(cards);
+		return card;
+	}else
+		return NULL;
 }
 
 // -------------------------------------------
 
 ResponseSkill::ResponseSkill()
-    :OneCardViewAsSkill("response-skill")
+	:OneCardViewAsSkill("response-skill")
 {
 
 }
 
 void ResponseSkill::setPattern(const QString &pattern){
-    this->pattern = Bang->getPattern(pattern);
+	this->pattern = Bang->getPattern(pattern);
 }
 
 bool ResponseSkill::matchPattern(const Player *player, const Card *card) const{
-    if(player->isJilei(card))
-        return false;
+	if(player->isJilei(card))
+		return false;
 
-    return pattern && pattern->match(player, card);
+	return pattern && pattern->match(player, card);
 }
 
 bool ResponseSkill::viewFilter(const CardItem *to_select) const{
-    const Card *card = to_select->getFilteredCard();
-    return matchPattern(Self, card);
+	const Card *card = to_select->getFilteredCard();
+	return matchPattern(Self, card);
 }
 
 const Card *ResponseSkill::viewAs(CardItem *card_item) const{
-    return card_item->getFilteredCard();
+	return card_item->getFilteredCard();
 }
 
 // -------------------------------------------
 
 FreeDiscardSkill::FreeDiscardSkill(QObject *parent)
-    :ViewAsSkill("free-discard")
+	:ViewAsSkill("free-discard")
 {
-    setParent(parent);
-    card = new DummyCard;
+	setParent(parent);
+	card = new DummyCard;
 }
 
 bool FreeDiscardSkill::isEnabledAtPlay(const Player *) const{
-    return true;
+	return true;
 }
 
 bool FreeDiscardSkill::viewFilter(const QList<CardItem *> &, const CardItem *) const{
-    return true;
+	return true;
 }
 
 const Card *FreeDiscardSkill::viewAs(const QList<CardItem *> &cards) const{
-    if(!cards.isEmpty()){
+	if(!cards.isEmpty()){
 
-        card->clearSubcards();
-        card->addSubcards(cards);
+		card->clearSubcards();
+		card->addSubcards(cards);
 
-        return card;
-    }else
-        return NULL;
+		return card;
+	}else
+		return NULL;
 }
 
 RendeCard::RendeCard(){
-    will_throw = false;
+	will_throw = false;
 }
 
 void RendeCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
-    ServerPlayer *target = NULL;
-    if(targets.isEmpty()){
-        foreach(ServerPlayer *player, room->getAlivePlayers()){
-            if(player != source){
-                target = player;
-                break;
-            }
-        }
-    }else
-        target = targets.first();
+	ServerPlayer *target = NULL;
+	if(targets.isEmpty()){
+		foreach(ServerPlayer *player, room->getAlivePlayers()){
+			if(player != source){
+				target = player;
+				break;
+			}
+		}
+	}else
+		target = targets.first();
 
-    room->obtainCard(target, this, false);
+	room->obtainCard(target, this, false);
 
-    int old_value = source->getMark("rende");
-    int new_value = old_value + subcards.length();
-    room->setPlayerMark(source, "rende", new_value);
+	int old_value = source->getMark("rende");
+	int new_value = old_value + subcards.length();
+	room->setPlayerMark(source, "rende", new_value);
 
-    if(old_value < 2 && new_value >= 2){
-        RecoverStruct recover;
-        recover.card = this;
-        recover.who = source;
-        room->recover(source, recover);
-    }
+	if(old_value < 2 && new_value >= 2){
+		RecoverStruct recover;
+		recover.card = this;
+		recover.who = source;
+		room->recover(source, recover);
+	}
 }
 
 YijiViewAsSkill::YijiViewAsSkill()
-    :ViewAsSkill("yiji")
+	:ViewAsSkill("yiji")
 {
-    card = new RendeCard;
+	card = new RendeCard;
 }
 
 void YijiViewAsSkill::setCards(const QString &card_str){
-    QStringList cards = card_str.split("+");
-    ids = Card::StringsToIds(cards);
+	QStringList cards = card_str.split("+");
+	ids = Card::StringsToIds(cards);
 }
 
 bool YijiViewAsSkill::viewFilter(const QList<CardItem *> &, const CardItem *to_select) const{
-    return ids.contains(to_select->getCard()->getId());
+	return ids.contains(to_select->getCard()->getId());
 }
 
 const Card *YijiViewAsSkill::viewAs(const QList<CardItem *> &cards) const{
-    if(cards.isEmpty())
-        return NULL;
+	if(cards.isEmpty())
+		return NULL;
 
-    card->clearSubcards();
-    card->addSubcards(cards);
+	card->clearSubcards();
+	card->addSubcards(cards);
 
-    return card;
+	return card;
 }
 
 // ------------------------------------------------
 
 class ChoosePlayerCard: public DummyCard{
 public:
-    ChoosePlayerCard(){
-        target_fixed = false;
-    }
+	ChoosePlayerCard(){
+		target_fixed = false;
+	}
 
-    void setPlayerNames(const QStringList &names){
-        set = names.toSet();
-    }
+	void setPlayerNames(const QStringList &names){
+		set = names.toSet();
+	}
 
-    virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *) const{
-        return targets.isEmpty() && set.contains(to_select->objectName());
-    }
+	virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *) const{
+		return targets.isEmpty() && set.contains(to_select->objectName());
+	}
 
 private:
-    QSet<QString> set;
+	QSet<QString> set;
 };
 
 ChoosePlayerSkill::ChoosePlayerSkill()
-    :ZeroCardViewAsSkill("choose_player")
+	:ZeroCardViewAsSkill("choose_player")
 {
-    card = new ChoosePlayerCard;
-    card->setParent(this);
+	card = new ChoosePlayerCard;
+	card->setParent(this);
 }
 
 void ChoosePlayerSkill::setPlayerNames(const QStringList &names){
-    card->setPlayerNames(names);
+	card->setPlayerNames(names);
 }
 
 const Card *ChoosePlayerSkill::viewAs() const{
-    return card;
+	return card;
 }

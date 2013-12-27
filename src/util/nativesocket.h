@@ -6,46 +6,46 @@
 class QUdpSocket;
 
 class NativeServerSocket: public ServerSocket{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    NativeServerSocket();
+	NativeServerSocket();
 
-    virtual bool listen();
-    virtual void daemonize();
+	virtual bool listen();
+	virtual void daemonize();
 
 private slots:
-    void processNewConnection();
-    void processNewDatagram();
+	void processNewConnection();
+	void processNewDatagram();
 
 private:
-    QTcpServer *server;
-    QUdpSocket *daemon;
+	QTcpServer *server;
+	QUdpSocket *daemon;
 };
 
 
 class NativeClientSocket: public ClientSocket{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    NativeClientSocket();
-    NativeClientSocket(QTcpSocket *socket);
+	NativeClientSocket();
+	NativeClientSocket(QTcpSocket *socket);
 
-    virtual void connectToHost();
-    virtual void disconnectFromHost();
-    virtual void send(const QString &message);
-    virtual bool isConnected() const;
-    virtual QString peerName() const;
-    virtual QString peerAddress() const;
+	virtual void connectToHost();
+	virtual void disconnectFromHost();
+	virtual void send(const QString &message);
+	virtual bool isConnected() const;
+	virtual QString peerName() const;
+	virtual QString peerAddress() const;
 
 private slots:
-    void getMessage();
-    void raiseError(QAbstractSocket::SocketError socket_error);
+	void getMessage();
+	void raiseError(QAbstractSocket::SocketError socket_error);
 
 private:
-    QTcpSocket * const socket;
+	QTcpSocket * const socket;
 
-    void init();
+	void init();
 };
 
 #endif // NATIVESOCKET_H

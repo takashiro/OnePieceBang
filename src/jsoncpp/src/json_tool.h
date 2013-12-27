@@ -24,29 +24,29 @@ codePointToUTF8(unsigned int cp)
 
    if (cp <= 0x7f) 
    {
-      result.resize(1);
-      result[0] = static_cast<char>(cp);
+	  result.resize(1);
+	  result[0] = static_cast<char>(cp);
    } 
    else if (cp <= 0x7FF) 
    {
-      result.resize(2);
-      result[1] = static_cast<char>(0x80 | (0x3f & cp));
-      result[0] = static_cast<char>(0xC0 | (0x1f & (cp >> 6)));
+	  result.resize(2);
+	  result[1] = static_cast<char>(0x80 | (0x3f & cp));
+	  result[0] = static_cast<char>(0xC0 | (0x1f & (cp >> 6)));
    } 
    else if (cp <= 0xFFFF) 
    {
-      result.resize(3);
-      result[2] = static_cast<char>(0x80 | (0x3f & cp));
-      result[1] = 0x80 | static_cast<char>((0x3f & (cp >> 6)));
-      result[0] = 0xE0 | static_cast<char>((0xf & (cp >> 12)));
+	  result.resize(3);
+	  result[2] = static_cast<char>(0x80 | (0x3f & cp));
+	  result[1] = 0x80 | static_cast<char>((0x3f & (cp >> 6)));
+	  result[0] = 0xE0 | static_cast<char>((0xf & (cp >> 12)));
    }
    else if (cp <= 0x10FFFF) 
    {
-      result.resize(4);
-      result[3] = static_cast<char>(0x80 | (0x3f & cp));
-      result[2] = static_cast<char>(0x80 | (0x3f & (cp >> 6)));
-      result[1] = static_cast<char>(0x80 | (0x3f & (cp >> 12)));
-      result[0] = static_cast<char>(0xF0 | (0x7 & (cp >> 18)));
+	  result.resize(4);
+	  result[3] = static_cast<char>(0x80 | (0x3f & cp));
+	  result[2] = static_cast<char>(0x80 | (0x3f & (cp >> 6)));
+	  result[1] = static_cast<char>(0x80 | (0x3f & (cp >> 12)));
+	  result[0] = static_cast<char>(0xF0 | (0x7 & (cp >> 18)));
    }
 
    return result;
@@ -77,13 +77,13 @@ typedef char UIntToStringBuffer[uintToStringBufferSize];
  */
 static inline void 
 uintToString( LargestUInt value, 
-              char *&current )
+			  char *&current )
 {
    *--current = 0;
    do
    {
-      *--current = char(value % 10) + '0';
-      value /= 10;
+	  *--current = char(value % 10) + '0';
+	  value /= 10;
    }
    while ( value != 0 );
 }

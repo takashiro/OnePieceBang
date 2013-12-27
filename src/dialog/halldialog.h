@@ -8,31 +8,31 @@ class MainWindow;
 
 class HallDialog : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static HallDialog *GetInstance(MainWindow *main_window);
+	static HallDialog *GetInstance(MainWindow *main_window);
 
-    void refreshRooms(int page);
-    void joinRoom(int room_id);
+	void refreshRooms(int page);
+	void joinRoom(int room_id);
 
-    void roomBegin(int total, int pagelimit);
-    void room(int room_id, int joined, const QString &setup_string);
-    void roomEnd();
+	void roomBegin(int total, int pagelimit);
+	void room(int room_id, int joined, const QString &setup_string);
+	void roomEnd();
 
 private:
-    explicit HallDialog(MainWindow *main_window);
+	explicit HallDialog(MainWindow *main_window);
 
-    MainWindow *main_window;
-    QTableWidget *table;
-    int current_page;
-    int room_row;
+	MainWindow *main_window;
+	QTableWidget *table;
+	int current_page;
+	int room_row;
 
 private slots:
-    void pageUp();
-    void pageDown();
-    void join();
-    void createRoom();
-    void toggleDisplay(bool only_nonful);
+	void pageUp();
+	void pageDown();
+	void join();
+	void createRoom();
+	void toggleDisplay(bool only_nonful);
 };
 
 #endif // HALLDIALOG_H

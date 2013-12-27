@@ -7,17 +7,17 @@ class QListWidget;
 class QTextEdit;
 
 class ScenarioOverview: public QDialog{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    ScenarioOverview(QWidget *parent);
+	ScenarioOverview(QWidget *parent);
 
 private:
-    QListWidget *list;
-    QTextEdit *content_box;
+	QListWidget *list;
+	QTextEdit *content_box;
 
 private slots:
-    void loadContent(int row);
+	void loadContent(int row);
 };
 
 #endif // SCENARIOOVERVIEW_H

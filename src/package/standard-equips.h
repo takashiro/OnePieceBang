@@ -4,87 +4,87 @@
 #include "standard.h"
 
 class Hammer:public Weapon{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Q_INVOKABLE Hammer(Card::Suit suit, int number = 1);
+	Q_INVOKABLE Hammer(Card::Suit suit, int number = 1);
 };
 
 class OkamaMicrophone:public Weapon{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Q_INVOKABLE OkamaMicrophone(Card::Suit suit = Spade, int number = 2);
+	Q_INVOKABLE OkamaMicrophone(Card::Suit suit = Spade, int number = 2);
 };
 
 class WadoIchimonji:public Weapon{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Q_INVOKABLE WadoIchimonji(Card::Suit suit = Spade, int number = 6);
+	Q_INVOKABLE WadoIchimonji(Card::Suit suit = Spade, int number = 6);
 };
 
 class SandaiKitetsu:public Weapon{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Q_INVOKABLE SandaiKitetsu(Card::Suit suit = Spade, int number = 5);
+	Q_INVOKABLE SandaiKitetsu(Card::Suit suit = Spade, int number = 5);
 };
 
 class Shigure:public Weapon{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Q_INVOKABLE Shigure(Card::Suit suit = Spade, int number = 12);
+	Q_INVOKABLE Shigure(Card::Suit suit = Spade, int number = 12);
 };
 
 class ImpactDial:public Weapon{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Q_INVOKABLE ImpactDial(Card::Suit suit = Diamond, int number = 5);
+	Q_INVOKABLE ImpactDial(Card::Suit suit = Diamond, int number = 5);
 };
 
 class Yubashiri:public Weapon{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Q_INVOKABLE Yubashiri(Card::Suit suit = Diamond, int number = 12);
+	Q_INVOKABLE Yubashiri(Card::Suit suit = Diamond, int number = 12);
 };
 
 class Kabuto:public Weapon{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Q_INVOKABLE Kabuto(Card::Suit suit = Heart, int number = 5);
+	Q_INVOKABLE Kabuto(Card::Suit suit = Heart, int number = 5);
 };
 
 class MilkyDial:public Armor{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Q_INVOKABLE MilkyDial(Card::Suit suit, int number = 2);
+	Q_INVOKABLE MilkyDial(Card::Suit suit, int number = 2);
 };
 
 class SoulSolid: public Weapon{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Q_INVOKABLE SoulSolid(Card::Suit suit, int number);
+	Q_INVOKABLE SoulSolid(Card::Suit suit, int number);
 };
 
 class Cloak: public Armor{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Q_INVOKABLE Cloak(Card::Suit suit, int number);
+	Q_INVOKABLE Cloak(Card::Suit suit, int number);
 };
 
 class StandardCardPackage: public Package{
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    StandardCardPackage();
+	StandardCardPackage();
 };
 
 #endif // STANDARDEQUIPS_H

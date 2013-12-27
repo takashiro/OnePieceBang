@@ -8,6 +8,6 @@
 class Water7Package : public Package
 {
 public:
-    Water7Package();
+	Water7Package();
 };
 #endif // WATER7PACKAGE_H
