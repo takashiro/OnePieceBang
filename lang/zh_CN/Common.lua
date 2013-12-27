@@ -17,7 +17,7 @@ return {
 
 	["lord"] = "船长",
 	["loyalist"] = "船员",
-	["rebel"] = "反逆者",
+	["rebel"] = "外敌",
 	["renegade"] = "内奸",
 	["spade_char"] = "♠",
 	["club_char"] = "♣",

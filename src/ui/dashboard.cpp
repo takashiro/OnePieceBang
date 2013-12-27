@@ -31,8 +31,10 @@ Dashboard::Dashboard(QGraphicsItem *button_widget)
     createRight();
     death_item = NULL;
 
-    if(button_widget)
+    if(button_widget){
         button_widget->setParentItem(this);
+        button_widget->moveBy(0, 1);
+    }
 
     int middle_width = middle->rect().width();
     setMiddleWidth(middle_width);
@@ -96,7 +98,7 @@ void Dashboard::createRight(){
     right = new QGraphicsRectItem(QRectF(right_pixmap.rect()), this);
 
 	avatar = new Pixmap;
-	avatar->setPos(46, 21);
+    avatar->setPos(8, 21);
 	avatar->setParentItem(right);
 
 	small_avatar = new Pixmap;
@@ -104,18 +106,13 @@ void Dashboard::createRight(){
 	small_avatar->setParentItem(right);
 
 	avatar_frame = new QGraphicsPixmapItem(QPixmap("image/system/dashboard-avatar-frame.png"), right);
-	avatar_frame->setPos(46, 21);
+    avatar_frame->setPos(8, 21);
 
-    if(button_widget){
-        kingdom = new QGraphicsPixmapItem(button_widget);
-        kingdom->setPos(57, 0);
-    }else{
-        kingdom = new QGraphicsPixmapItem(right);
-        kingdom->setPos(91, 54);
-    }
+    kingdom = new QGraphicsPixmapItem(right);
+    kingdom->setPos(125, 0);
 
     ready_item = new QGraphicsPixmapItem(QPixmap("image/system/ready.png"), avatar);
-    ready_item->setPos(2, 43);
+    ready_item->setPos(65, 58);
     ready_item->hide();
 
     chain_icon = new Pixmap;
@@ -279,8 +276,7 @@ void Dashboard::updateAvatar(){
 		avatar->setPixmap(pixmap);
 	}
 
-    QString folder = button_widget ? "button" : "icon";
-    kingdom->setPixmap(QPixmap(QString("image/kingdom/%1/%2.png").arg(folder).arg(Self->getKingdom())));
+    kingdom->setPixmap(QPixmap(QString("image/kingdom/%1.png").arg(Self->getKingdom())));
 
     avatar->show();
     kingdom->show();
@@ -588,7 +584,7 @@ void Dashboard::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
 
     // draw player's name
     painter->setPen(Qt::white);
-	QRectF name_rect(35 + right->x(), 5 + right->y(), 90, 12);
+    QRectF name_rect(20 + right->x(), 3 + right->y(), 90, 15);
     painter->drawText(name_rect, Config.UserName, QTextOption(Qt::AlignHCenter));
 
     if(!Self)

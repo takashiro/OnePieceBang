@@ -433,20 +433,20 @@ RoomScene::RoomScene(QMainWindow *main_window)
 
 void RoomScene::createControlButtons(){
     ok_button = new IrregularButton("ok");
-    ok_button->setPos(5, 3);
+    ok_button->setPos(5, 1);
 
     cancel_button = new IrregularButton("cancel");
-    cancel_button->setPos(5, 92);
+    cancel_button->setPos(5, 64);
 
     discard_button = new IrregularButton("discard");
-    discard_button->setPos(70, 45);
+    discard_button->setPos(57, 18);
 
     connect(ok_button, SIGNAL(clicked()), this, SLOT(doOkButton()));
     connect(cancel_button, SIGNAL(clicked()), this, SLOT(doCancelButton()));
     connect(discard_button, SIGNAL(clicked()), this, SLOT(doDiscardButton()));
 
     trust_button = new TrustButton;
-    trust_button->setPos(69, 133);
+    trust_button->setPos(57, 102);
     connect(trust_button, SIGNAL(clicked()), ClientInstance, SLOT(trust()));
     connect(Self, SIGNAL(state_changed()), this, SLOT(updateTrustButton()));
 

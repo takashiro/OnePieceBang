@@ -96,7 +96,6 @@ void IrregularButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
 TrustButton::TrustButton(){
     trust.load("image/system/button/irregular/trust.png");
     untrust.load("image/system/button/irregular/untrust.png");
-    mask = QRegion(QBitmap("image/system/button/irregular/trust-mask.png"));
 }
 
 QRectF TrustButton::boundingRect() const{
@@ -115,8 +114,5 @@ void TrustButton::mousePressEvent(QGraphicsSceneMouseEvent *event){
 }
 
 void TrustButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
-    QPointF pos = mapToParent(event->pos());
-    if(mask.contains(QPoint(pos.x(), pos.y()))){
-        emit clicked();
-    }
+    emit clicked();
 }

@@ -2628,7 +2628,7 @@
     <message>
         <location filename="src/dialog/roleassigndialog.cpp" line="59"/>
         <source>Rebel</source>
-        <translation>反逆者</translation>
+        <translation>外敌</translation>
     </message>
     <message>
         <location filename="src/dialog/roleassigndialog.cpp" line="61"/>

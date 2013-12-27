@@ -333,8 +333,8 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 
     case Predamaged:{
         DamageStruct damage = data.value<DamageStruct>();
-        if(damage.to != NULL){
-            const Card *haki = room->askForCard(damage.to, "busou_haki", "damage-busou-haki:" + QString::number(damage.damage), data);
+        if(damage.to != NULL && damage.damage > 1){
+            const Card *haki = room->askForCard(damage.to, "busou_haki", "damage-busou-haki", data);
             if(haki != NULL){
                 LogMessage log;
                 log.type = "#BusouHakiDefense";
@@ -342,8 +342,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
                 log.arg = haki->objectName();
                 room->sendLog(log);
 
-                damage.damage--;
-                data = QVariant::fromValue(damage);
+                return true;
             }
         }
         break;
