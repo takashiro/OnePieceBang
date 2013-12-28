@@ -118,7 +118,7 @@ void Photo::revivePlayer(){
 
 void Photo::createRoleCombobox(){
 	role_combobox = new RoleCombobox(this);
-	role_combobox->setPos(S_NORMAL_PHOTO_WIDTH - RoleCombobox::S_ROLE_COMBO_BOX_WIDTH, 0);
+    role_combobox->setPos(S_NORMAL_PHOTO_WIDTH - RoleCombobox::S_ROLE_COMBO_BOX_WIDTH, 22);
 	
 	QString role = player->getRole();
 	if(!ServerInfo.EnableHegemony && !role.isEmpty())
