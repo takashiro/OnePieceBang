@@ -1,12 +1,11 @@
-Open Source QPirate (MOD based on Moligaloo/QSanguosha)
+Open Source One Piece Bang
 ==========
 
 Introduction
 ----------
 
-* Sanguosha is both a popular board game and online game, this project tries to create a new game base on Sanguosha and the anime named One Piece.
+* Sanguosha is both a popular board game and online game, this project tries to create a new game base on Sanguosha and the anime named One Piece. The project is a MOD base on Moligaloo's QSanguosha.
                         --Takashiro
-QPirate Official Website: inu.3-a.net
 
 * The whole project is written in C++, using Qt's graphics view framework as the game engine.
 I've tried many other open source game engines, such as SDL, HGE, Clanlib and others, but many of them lack some important features. Although Qt is an application framework instead of a game engine, its graphics view framework is suitable for my game developing.
