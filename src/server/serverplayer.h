@@ -127,14 +127,14 @@ public:
 	}
 	inline QString getClientReplyString(){return m_clientResponseString;}
 	inline void setClientReplyString(const QString &val){m_clientResponseString = val;}
-	inline Json::Value getClientReply(){return _m_clientResponse;}
-	inline void setClientReply(const Json::Value &val){_m_clientResponse = val;}    
+	inline QJsonValue getClientReply(){return _m_clientResponse;}
+	inline void setClientReply(const QJsonValue &val){_m_clientResponse = val;}    
 	unsigned int m_expectedReplySerial; // Suggest the acceptable serial number of an expected response.
 	bool m_isClientResponseReady; //Suggest whether a valid player's reponse has been received.
 	bool m_isWaitingReply; // Suggest if the server player is waiting for client's response.
-	Json::Value m_cheatArgs; // Store the cheat code received from client.
+	QJsonValue m_cheatArgs; // Store the cheat code received from client.
 	QSanProtocol::CommandType m_expectedReplyCommand; // Store the command to be sent to the client.
-	Json::Value m_commandArgs; // Store the command args to be sent to the client.
+	QJsonValue m_commandArgs; // Store the command args to be sent to the client.
 
 
 protected:    
@@ -156,7 +156,7 @@ private:
 	QStringList selected; // 3v3 mode use only
 	QDateTime test_time;
 	QString m_clientResponseString;
-	Json::Value _m_clientResponse;    
+	QJsonValue _m_clientResponse;    
 
 private slots:
 	void getMessage(char *message);

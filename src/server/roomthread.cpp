@@ -9,7 +9,6 @@
 #include "settings.h"
 
 #include <QTime>
-#include <json/json.h>
 
 using namespace QSanProtocol::Utils;
 
@@ -136,18 +135,19 @@ bool CardUseStruct::isValid() const{
 	return card != NULL;
 }
 
-bool CardUseStruct::tryParse(const Json::Value &usage, Room *room){
+bool CardUseStruct::tryParse(const QJsonValue &usage_data, Room *room){
+    QJsonArray usage = usage_data.toArray();
 	if (usage.size() < 2 || !usage[0].isString() || !usage[1].isArray())
 		return false;
 
-	card = Card::Parse(toQString(usage[0]));
+    card = Card::Parse(usage[0].toString());
 
-	const Json::Value &targets = usage[1];
+    const QJsonArray targets = usage[1].toArray();
 
 	for (unsigned int i = 0; i < targets.size(); i++)
 	{
 		if (!targets[i].isString()) return false;
-		this->to << room->findChild<ServerPlayer *>(toQString(targets[i]));
+        this->to << room->findChild<ServerPlayer *>(targets[i].toString());
 	}
 	return true;
 }

@@ -1,34 +1,24 @@
 #ifndef _QSAN_JSON_UTILS_H
 #define _QSAN_JSON_UTILS_H
 
-#include <string>
-#include <list>
-#include <json/json.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qlist.h>
+#include <QString>
+#include <QStringList>
+#include <QList>
+#include <QJsonArray>
+#include <QJsonValue>
 
 namespace QSanProtocol
 {
 	namespace Utils
-	{        
-		inline QString toQString(const Json::Value& value)
-		{
-			Q_ASSERT(value.isString());
-			return QString(value.asCString());
-		}
-		inline Json::Value toJsonString(const QString& s)
-		{            
-			return Json::Value(s.toLocal8Bit().constData());
-		}
-		Json::Value toJsonArray(const QString& s1, const QString& s2);
-		Json::Value toJsonArray(const QString& s1, const Json::Value& s2);
-		Json::Value toJsonArray(const QString& s1, const QString& s2, const QString& s3);
-		Json::Value toJsonArray(const QList<int>&);
-		Json::Value toJsonArray(const QList<QString>&);
-		Json::Value toJsonArray(const QStringList&);
-		bool tryParse(const Json::Value&, QList<int> &);
-		bool tryParse(const Json::Value&, QStringList &);
+    {
+        QJsonArray toJsonArray(const QString& s1, const QString& s2);
+        QJsonArray toJsonArray(const QString& s1, const QJsonValue& s2);
+        QJsonArray toJsonArray(const QString& s1, const QString& s2, const QString& s3);
+        QJsonArray toJsonArray(const QList<int>&);
+        QJsonArray toJsonArray(const QList<QString>&);
+        QJsonArray toJsonArray(const QStringList&);
+		bool tryParse(const QJsonValue&, QList<int> &);
+		bool tryParse(const QJsonValue&, QStringList &);
 	}
 }
 

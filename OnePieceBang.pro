@@ -119,12 +119,6 @@ SOURCES += \
         src/lua/lbaselib.c \
         src/lua/lauxlib.c \
         src/lua/lapi.c \
-        src/jsoncpp/src/json_writer.cpp \
-        src/jsoncpp/src/json_valueiterator.inl \
-        src/jsoncpp/src/json_value.cpp \
-        src/jsoncpp/src/json_reader.cpp \
-        src/jsoncpp/src/json_internalmap.inl \
-        src/jsoncpp/src/json_internalarray.inl \
         swig/bang_wrap.cxx \
     src/package/standard-generals.cpp \
     src/package/test.cpp \

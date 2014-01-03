@@ -15,7 +15,7 @@ const int ServerPlayer::S_NUM_SEMAPHORES = 6;
 ServerPlayer::ServerPlayer(Room *room)
 	: Player(room), m_isClientResponseReady(false), m_isWaitingReply(false),
 	socket(NULL), room(room),
-	ai(NULL), trust_ai(new TrustAI(this)), recorder(NULL), next(NULL), _m_clientResponse(Json::nullValue)
+    ai(NULL), trust_ai(new TrustAI(this)), recorder(NULL), next(NULL), _m_clientResponse()
 {
 	semas = new QSemaphore*[S_NUM_SEMAPHORES];
 	for(int i=0; i< S_NUM_SEMAPHORES; i++){
@@ -305,7 +305,7 @@ void ServerPlayer::castMessage(const QString &message){
 
 void ServerPlayer::invoke(const QSanPacket* packet)
 {
-	unicast(QString(packet->toString().c_str()));
+    unicast(packet->toString());
 }
 
 void ServerPlayer::invoke(const char *method, const QString &arg){

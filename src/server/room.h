@@ -26,7 +26,7 @@ public:
 
 	typedef void (Room::*Callback)(ServerPlayer *, const QString &);
 	typedef bool (Room::*CallBack)(ServerPlayer *, const QSanProtocol::QSanGeneralPacket*);
-	typedef bool (Room::*ResponseVerifyFunction)(ServerPlayer*, const Json::Value&, void*);
+	typedef bool (Room::*ResponseVerifyFunction)(ServerPlayer*, const QJsonValue&, void*);
 
 	explicit Room(QObject *parent, const QString &mode);
 	ServerPlayer *addSocket(ClientSocket *socket);
@@ -113,8 +113,8 @@ public:
 	//    command only once in all with broadcast = true if the poll is to everypody).
 	// 2. Call getResult(player, timeout) on each player to retrieve the result. Read manual for getResults
 	//    before you use.
-	bool doRequest(ServerPlayer* player, QSanProtocol::CommandType command, const Json::Value &arg, time_t timeOut, bool wait);
-	bool doRequest(ServerPlayer* player, QSanProtocol::CommandType command, const Json::Value &arg, bool wait);
+	bool doRequest(ServerPlayer* player, QSanProtocol::CommandType command, const QJsonValue &arg, time_t timeOut, bool wait);
+	bool doRequest(ServerPlayer* player, QSanProtocol::CommandType command, const QJsonValue &arg, bool wait);
 
 	// Broadcast a request to a list of players and get the client responses. Call is blocking until all client
 	// replies or server times out, whichever is earlier. Check each player's m_isClientResponseReady to see if a valid
@@ -144,13 +144,13 @@ public:
 	// Notify a player of a event by sending S_SERVER_NOTIFICATION packets. No reply should be expected from
 	// the client for S_SERVER_NOTIFICATION as it's a one way notice. Any message from the client in reply to this call
 	// will be rejected.
-	bool doNotify(ServerPlayer* player, QSanProtocol::CommandType command, const Json::Value &arg); 
+	bool doNotify(ServerPlayer* player, QSanProtocol::CommandType command, const QJsonValue &arg); 
 
 	// Broadcast a event to a list of players by sending S_SERVER_NOTIFICATION packets. No replies should be expected from
 	// the clients for S_SERVER_NOTIFICATION as it's a one way notice. Any message from the client in reply to this call
 	// will be rejected.    
-	bool doBroadcastNotify(QSanProtocol::CommandType command, const Json::Value &arg);
-	bool doBroadcastNotify(const QList<ServerPlayer*> &players, QSanProtocol::CommandType command, const Json::Value &arg);
+	bool doBroadcastNotify(QSanProtocol::CommandType command, const QJsonValue &arg);
+	bool doBroadcastNotify(const QList<ServerPlayer*> &players, QSanProtocol::CommandType command, const QJsonValue &arg);
 	
 	// Ask a server player to wait for the client response. Call is blocking until client replies or server times out, 
 	// whichever is earlier.
@@ -172,7 +172,7 @@ public:
 								ResponseVerifyFunction validateFunc = NULL, void* funcArg = NULL);
 
 	// Verification functions
-	bool verifyNullificationResponse(ServerPlayer*, const Json::Value&, void*);
+	bool verifyNullificationResponse(ServerPlayer*, const QJsonValue&, void*);
 
 	// Notification functions
 	bool notifyMoveFocus(ServerPlayer* player);

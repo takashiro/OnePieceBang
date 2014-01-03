@@ -11,7 +11,7 @@ class GameRule;
 #include "serverplayer.h"
 
 #include <QVariant>
-#include <json/json.h>
+#include <QJsonDocument>
 
 struct DamageStruct{
 	DamageStruct();
@@ -59,7 +59,7 @@ struct CardUseStruct{
 	CardUseStruct();
 	bool isValid() const;
 	void parse(const QString &str, Room *room);
-	bool tryParse(const Json::Value&, Room *room);
+	bool tryParse(const QJsonValue&, Room *room);
 
 	const Card *card;
 	ServerPlayer *from;
@@ -80,8 +80,8 @@ struct CardMoveStruct{
 	QString from_pile_name, to_pile_name;
 	Player *from, *to;
 	bool open;    
-	bool tryParse(const Json::Value&);
-	Json::Value toJsonValue() const;
+	bool tryParse(const QJsonValue&);
+	QJsonValue toJsonValue() const;
 	inline bool isRelevant(Player* player)
 	{
 		return (player != NULL && (from == player || to == player));
@@ -139,8 +139,8 @@ struct CardsMoveStruct{
 	Player *from, *to;
 	bool open; // helper to prevent sending card_id to unrelevant clients
 	bool countAsOneTime; // helper to identify distinct move counted as one time
-	bool tryParse(const Json::Value&);
-	Json::Value toJsonValue() const;
+	bool tryParse(const QJsonValue&);
+	QJsonValue toJsonValue() const;
 	inline bool isRelevant(const Player* player)
 	{
 		return (player != NULL && (from == player || to == player));
