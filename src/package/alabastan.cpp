@@ -2,6 +2,7 @@
 #include "skill.h"
 #include "carditem.h"
 #include "engine.h"
+#include "client.h"
 
 FirePunchCard::FirePunchCard(){
 
@@ -43,12 +44,24 @@ public:
         return Slash::IsAvailable(player);
     }
 
+    virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
+        return pattern == "slash" || pattern == "fireslash";
+    }
+
 	virtual const Card *viewAs(CardItem *card_item) const{
-		const Card *sub = card_item->getCard();
-        FirePunchCard *slash = new FirePunchCard;
-		slash->setSkillName(objectName());
-		slash->addSubcard(sub);
-		return slash;
+        if(ClientInstance->getStatus() == Client::Responsing){
+            const Card *sub = card_item->getCard();
+            FireSlash *slash = new FireSlash(sub->getSuit(), sub->getNumber());
+            slash->setSkillName(objectName());
+            slash->addSubcard(sub);
+            return slash;
+        }else{
+            const Card *sub = card_item->getCard();
+            FirePunchCard *slash = new FirePunchCard;
+            slash->setSkillName(objectName());
+            slash->addSubcard(sub);
+            return slash;
+        }
 	}
 };
 

@@ -125,16 +125,16 @@ namespace QSanProtocol
 				|| m_type == S_COUNTDOWN_USE_DEFAULT)
 			{
                 QJsonArray val;
-				val[0] = S_COUNTDOWN_MAGIC;
-				val[1] = (int)m_type;                
+                val.append(S_COUNTDOWN_MAGIC);
+                val.append((int)m_type);
 				return val;                
 			}
 			else
 			{
                 QJsonArray val;
-                val[0] = S_COUNTDOWN_MAGIC;
-				val[1] = (int)m_current;
-				val[2] = (int)m_max;
+                val.append(S_COUNTDOWN_MAGIC);
+                val.append((int)m_current);
+                val.append((int)m_max);
 				return val;
 			}
 		}

@@ -501,51 +501,51 @@ void Client::onPlayerChooseGeneral(const QString &item_name){
 void Client::requestCheatRunScript(const QString& script)
 {
     QJsonArray cheatReq, cheatArg;
-	cheatReq[0] = (int)S_CHEAT_RUN_SCRIPT;    
-    cheatReq[1] = script;
+    cheatReq.append((int)S_CHEAT_RUN_SCRIPT);
+    cheatReq.append(script);
 	requestToServer(S_COMMAND_CHEAT, cheatReq);
 }
 
 void Client::requestCheatRevive(const QString& name)
 {
-    QJsonArray cheatReq, cheatArg;
-	cheatReq[0] = (int)S_CHEAT_REVIVE_PLAYER;    
-    cheatReq[1] = name;
+    QJsonArray cheatReq;
+    cheatReq.append((int)S_CHEAT_REVIVE_PLAYER);
+    cheatReq.append(name);
 	requestToServer(S_COMMAND_CHEAT, cheatReq);
 }
 
 void Client::requestCheatDamage(const QString& source, const QString& target, DamageStruct::Nature nature, int points)
 {
     QJsonArray cheatReq, cheatArg;
-    cheatArg[0] = source;
-    cheatArg[1] = target;
-	cheatArg[2] = (int)nature;
-	cheatArg[3] = points;    
+    cheatArg.append(source);
+    cheatArg.append(target);
+    cheatArg.append((int)nature);
+    cheatArg.append(points);
 
-	cheatReq[0] = (int)S_CHEAT_MAKE_DAMAGE;    
-	cheatReq[1] = cheatArg;
+    cheatReq.append((int)S_CHEAT_MAKE_DAMAGE);
+    cheatReq.append(cheatArg);
 	requestToServer(S_COMMAND_CHEAT, cheatReq);
 }
 
 void Client::requestCheatKill(const QString& killer, const QString& victim)
 {
     QJsonArray cheatArg;
-	cheatArg[0] = (int)S_CHEAT_KILL_PLAYER;
-	cheatArg[1] = toJsonArray(killer, victim);
+    cheatArg.append((int)S_CHEAT_KILL_PLAYER);
+    cheatArg.append(toJsonArray(killer, victim));
 	requestToServer(S_COMMAND_CHEAT, cheatArg);
 }
 
 void Client::requestCheatGetOneCard(int card_id){
     QJsonArray cheatArg;
-	cheatArg[0] = (int)S_CHEAT_GET_ONE_CARD;
-	cheatArg[1] = card_id;
+    cheatArg.append((int)S_CHEAT_GET_ONE_CARD);
+    cheatArg.append(card_id);
 	requestToServer(S_COMMAND_CHEAT, cheatArg);
 }
 
 void Client::requestCheatChangeGeneral(QString name){
     QJsonArray cheatArg;
-	cheatArg[0] = (int)S_CHEAT_CHANGE_GENERAL;
-    cheatArg[1] = name;
+    cheatArg.append((int)S_CHEAT_CHANGE_GENERAL);
+    cheatArg.append(name);
 	requestToServer(S_COMMAND_CHEAT, cheatArg);
 }
 
@@ -1509,8 +1509,8 @@ void Client::onPlayerAssignRole(const QList<QString> &names, const QList<QString
 {
 	Q_ASSERT(names.size() == roles.size());
     QJsonArray reply;
-	reply[0] = toJsonArray(names);
-	reply[1] = toJsonArray(roles);    
+    reply.append(toJsonArray(names));
+    reply.append(toJsonArray(roles));
 	replyToServer(S_COMMAND_CHOOSE_ROLE, reply);
 }
 
@@ -1607,8 +1607,8 @@ void Client::onPlayerReplyYiji(const Card *card, const Player *to){
 	QJsonValue req;
     if(card){
         QJsonArray arr;
-        arr[0] = toJsonArray(card->getSubcards());
-        arr[1] = to->objectName();
+        arr.append(toJsonArray(card->getSubcards()));
+        arr.append(to->objectName());
         req = arr;
     }
 	replyToServer(S_COMMAND_SKILL_YIJI, req);
@@ -1618,8 +1618,8 @@ void Client::onPlayerReplyYiji(const Card *card, const Player *to){
 
 void Client::onPlayerReplyGuanxing(const QList<int> &up_cards, const QList<int> &down_cards){
     QJsonArray decks;
-	decks[0] = toJsonArray(up_cards);
-	decks[1] = toJsonArray(down_cards);
+    decks.append(toJsonArray(up_cards));
+    decks.append(toJsonArray(down_cards));
 
 	replyToServer(S_COMMAND_SKILL_GUANXING, decks);
 	//request(QString("replyGuanxing %1:%2").arg(up_items.join("+")).arg(down_items.join("+")));

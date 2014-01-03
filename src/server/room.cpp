@@ -3574,9 +3574,9 @@ void Room::doGongxin(ServerPlayer *shenlvmeng, ServerPlayer *target){
 	}
 
     QJsonArray gongxinArgs;
-    gongxinArgs[0] = target->objectName();
-	gongxinArgs[1] = true;
-	gongxinArgs[2] = toJsonArray(target->handCards());
+    gongxinArgs.append(target->objectName());
+    gongxinArgs.append(true);
+    gongxinArgs.append(toJsonArray(target->handCards()));
 	bool success = doRequest(shenlvmeng, S_COMMAND_SKILL_GONGXIN, gongxinArgs, true);
 	QJsonValue clientReply = shenlvmeng->getClientReply();
     if (!success || !clientReply.isDouble()
