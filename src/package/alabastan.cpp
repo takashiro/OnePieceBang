@@ -3,6 +3,31 @@
 #include "carditem.h"
 #include "engine.h"
 
+FirePunchCard::FirePunchCard(){
+
+}
+
+bool FirePunchCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
+    return targets.length() < 2 && Self->canSlash(to_select);
+}
+
+bool FirePunchCard::targetsFeasible(const QList<const Player *> &targets, const Player *Self) const{
+    return targets.length() == 1 || targets.length() == 2;
+}
+
+void FirePunchCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
+    const Card *subcard = Bang->getCard(subcards.at(0));
+    FireSlash *slash = new FireSlash(subcard->getSuit(), subcard->getNumber());
+    slash->setSkillName("firepunch");
+    slash->addSubcard(subcard);
+
+    CardUseStruct use;
+    use.from = source;
+    use.card = slash;
+    use.to = targets;
+    room->useCard(use);
+}
+
 class FirePunch: public OneCardViewAsSkill{
 public:
 	FirePunch(): OneCardViewAsSkill("firepunch"){
@@ -11,12 +36,16 @@ public:
 
 	virtual bool viewFilter(const CardItem *to_select) const{
 		const Card *card = to_select->getFilteredCard();
-		return card->isRed();
+        return card->getSuit() == Card::Spade;
 	}
+
+    virtual bool isEnabledAtPlay(const Player *player) const{
+        return Slash::IsAvailable(player);
+    }
 
 	virtual const Card *viewAs(CardItem *card_item) const{
 		const Card *sub = card_item->getCard();
-		FireSlash *slash = new FireSlash(sub->getSuit(), sub->getNumber());
+        FirePunchCard *slash = new FirePunchCard;
 		slash->setSkillName(objectName());
 		slash->addSubcard(sub);
 		return slash;
@@ -579,19 +608,22 @@ public:
 				return false;
 			}
 
+            room->showAllCards(dying.who);
+
 			static RecoverStruct recover;
 			recover.who = player;
-			recover.recover = 0;
+            recover.recover = 1;
 			foreach(const Card *card, dying.who->getHandcards()){
 				if(card->isRed()){
-					recover.recover++;
-				}
+                    room->throwCard(card, dying.who);
+                    room->recover(dying.who, recover);
+                }
 			}
-			dying.who->throwAllHandCards();
 
-			if(recover.recover > 0){
-				room->recover(dying.who, recover);
-			}
+            int card_id = room->askForCardChosen(player, dying.who, "he", objectName());
+            if(card_id > 0){
+                room->obtainCard(player, card_id);
+            }
 		}
 
 		return false;
@@ -638,6 +670,7 @@ AlabastanPackage::AlabastanPackage():Package("Alabastan")
 {
 	General *ace = new General(this, "ace", "pirate", 4);
 	ace->addSkill(new FirePunch);
+    addMetaObject<FirePunchCard>();
 
 	General *vivi = new General(this, "vivi", "citizen", 3, false);
 	vivi->addSkill(new AntiWar);

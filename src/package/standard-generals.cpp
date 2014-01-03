@@ -596,32 +596,19 @@ public:
 	}
 };
 
-class Kento: public TriggerSkill{
+class Myopia: public DistanceSkill{
 public:
-	Kento(): TriggerSkill("kento"){
-		events << Damaged;
-	}
+    Myopia(): DistanceSkill("myopia"){
 
-	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-		if(!player->askForSkillInvoke(objectName())){
-			return false;
-		}
+    }
 
-		player->drawCards(1);
+    virtual int getCorrect(const Player *from, const Player *to) const{
+        if(to->hasSkill(objectName()) && !to->inMyAttackRange(from)){
+            return 1;
+        }
 
-		DamageStruct damage = data.value<DamageStruct>();
-		if(damage.from){
-			CardUseStruct use;
-			use.from = player;
-			use.to << damage.from;
-			use.card = new Duel(Card::NoSuit, 0);
-
-			Room *room = player->getRoom();
-			room->useCard(use);
-		}
-
-		return false;
-	}
+        return 0;
+    }
 };
 
 class SharkOnTooth: public TriggerSkill{
@@ -631,25 +618,26 @@ public:
 	}
 
 	virtual bool trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
-		Room *room = player->getRoom();
-
-		static DamageStruct damage;
-		damage.from = player;
+        SlashEffectStruct effect = data.value<SlashEffectStruct>();
+        if(!effect.slash || !effect.slash->isBlack()){
+            return false;
+        }
 
 		if(player->askForSkillInvoke(objectName())){
-			foreach(ServerPlayer *target, room->getOtherPlayers(player)){
-				if(!player->inMyAttackRange(target)){
-					continue;
-				}
+            Room *room = player->getRoom();
 
-				const Card *card = room->askForCard(target, "jink", objectName());
-				if(card != NULL){
-					room->throwCard(card);
-				}else{
-					damage.to = target;
-					room->damage(damage);
+            Slash *slash = new Slash(Card::NoSuit, 0);
+            CardUseStruct use;
+            use.from = player;
+            use.card = slash;
+
+            foreach(ServerPlayer *target, room->getOtherPlayers(player)){
+                if(player->inMyAttackRange(target)){
+                    use.to << target;
 				}
 			}
+
+            room->useCard(use);
 		}
 
 		return false;
@@ -803,64 +791,91 @@ public:
 	}
 };
 
+
 class Upright: public TriggerSkill{
 public:
-	Upright(): TriggerSkill("upright"){
-		events << CardEffected;
-	}
+    Upright(): TriggerSkill("upright"){
+        events << Damaged;
+    }
 
-	bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-		CardEffectStruct effect = data.value<CardEffectStruct>();
-		if(effect.from == player || !(effect.card->inherits("Slash") || effect.card->isNDTrick())){
-			return false;
-		}
+    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+        if(!player->askForSkillInvoke(objectName())){
+            return false;
+        }
 
-		if(player->askForSkillInvoke(objectName(), data)){
-			Room *room = player->getRoom();
-			room->loseHp(player, 1);
+        player->drawCards(1);
 
-			if(effect.from){
-				int card_id = room->askForCardChosen(player, effect.from, "he", objectName());
-				room->throwCard(card_id, player);
-			}
+        DamageStruct damage = data.value<DamageStruct>();
+        if(damage.from){
+            CardUseStruct use;
+            use.from = player;
+            use.to << damage.from;
+            use.card = new Duel(Card::NoSuit, 0);
 
-			return true;
-		}
+            Room *room = player->getRoom();
+            room->useCard(use);
+        }
 
-		return false;
-	}
+        return false;
+    }
 };
 
 class Protect: public TriggerSkill{
 public:
 	Protect(): TriggerSkill("protect"){
-		events << PhaseChange;
-		frequency = Frequent;
+        events << TargetSelecting;
 	}
 
 	bool triggerable(const ServerPlayer *target) const{
-		return TriggerSkill::triggerable(target) && target->getPhase() == Player::Finish && target->isWounded();
+        if(target == NULL){
+            return false;
+        }
+
+        Room *room = target->getRoom();
+        foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){
+            if(!target->inMyAttackRange(player) || target == player){
+                continue;
+            }
+
+            if(player->hasSkill(objectName())){
+                return true;
+            }
+        }
+
+        return false;
 	}
 
-	bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-		if(player->askForSkillInvoke(objectName(), data)){
-			Room *room = player->getRoom();
+    bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
+        CardUseStruct use = data.value<CardUseStruct>();
+        if(!use.card->inherits("Slash")){
+            return false;
+        }
 
-			QList<int> cards = room->getNCards(player->getLostHp(), false);
+        Room *room = target->getRoom();
+        foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){
+            if(!target->inMyAttackRange(player) || target == player){
+                continue;
+            }
 
-			CardsMoveStruct move;
-			move.card_ids = cards;
-			move.from = NULL;
-			move.from_place = Player::HandlingArea;
-			move.to = player;
-			move.to_player_name = player->objectName();
-			move.to_place = Player::HandArea;
-			room->moveCards(move, false);
+            if(player->hasSkill(objectName())){
+                if(use.to.length() == 1 && use.to.contains(player)){
+                    continue;
+                }
 
-			while(room->askForYiji(player, cards)){
+                if(player->askForSkillInvoke(objectName())){
+                    use.to.clear();
+                    use.to << player;
+                    data = QVariant::fromValue(use);
 
-			}
-		}
+                    LogMessage log;
+                    log.type = "#ProtectTargetChange";
+                    log.from = target;
+                    log.to << player;
+                    log.arg = use.card->objectName();
+                    room->sendLog(log);
+                }
+            }
+        }
 
 		return false;
 	}
@@ -906,7 +921,7 @@ void StandardPackage::addGenerals()
 
 	General *tashigi = new General(this, "tashigi", "government", 3, false);
 	tashigi->addSkill(new SwordsExpert);
-	tashigi->addSkill(new Kento);
+    tashigi->addSkill(new Myopia);
 
 	General *smoker = new General(this, "smoker", "government", 3);
 	smoker->addSkill(new FogBarrier);
