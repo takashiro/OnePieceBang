@@ -201,7 +201,7 @@ public:
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 		DamageStruct damage = data.value<DamageStruct>();
 
-		if(damage.from && damage.to && damage.to->distanceTo(damage.from) > damage.from->getHandcardNum()){
+        if(damage.from && damage.to && damage.card && damage.card->inherits("Slash") && damage.to->distanceTo(damage.from) > damage.from->getHandcardNum()){
 			Room *room = damage.from->getRoom();
 			room->playSkillEffect(objectName());
 			room->sendLog("#TriggerSkill", damage.from, objectName());
