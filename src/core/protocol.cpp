@@ -1,18 +1,13 @@
 #include "protocol.h"
-#include <sstream>
 #include <algorithm>
-#include <QDebug>
 
-using namespace std;
 using namespace QSanProtocol;
 
 unsigned int QSanProtocol::QSanGeneralPacket::_m_globalSerial = 0;
-const unsigned int QSanProtocol::QSanGeneralPacket::S_MAX_PACKET_SIZE = 1000;
 const QString QSanProtocol::Countdown::S_COUNTDOWN_MAGIC = "MG_COUNTDOWN";
 
 bool QSanProtocol::Countdown::tryParse(QJsonValue valdata)
 {
-    if(!valdata.isArray()) return false;
     QJsonArray val = valdata.toArray();
     if ((val.size() != 2 && val.size() != 3) || !val[0].isString() || val[0].toString() != S_COUNTDOWN_MAGIC)
 		return false;
@@ -38,7 +33,6 @@ bool QSanProtocol::Countdown::tryParse(QJsonValue valdata)
 
 bool QSanProtocol::Utils::isStringArray(const QJsonValue &jsonObjectData, unsigned int startIndex, unsigned int endIndex)
 {
-    if(!jsonObjectData.isArray()) return false;
     QJsonArray jsonObject = jsonObjectData.toArray();
     if (jsonObject.size() <= endIndex)
 	{
@@ -55,7 +49,6 @@ bool QSanProtocol::Utils::isStringArray(const QJsonValue &jsonObjectData, unsign
 
 bool QSanProtocol::Utils::isIntArray(const QJsonValue &jsonObjectData, unsigned int startIndex, unsigned int endIndex)
 {
-    if(!jsonObjectData.isArray()) return false;
     QJsonArray jsonObject = jsonObjectData.toArray();
     if (jsonObject.size() <= endIndex)
 	{
@@ -71,20 +64,8 @@ bool QSanProtocol::Utils::isIntArray(const QJsonValue &jsonObjectData, unsigned 
 	return true;
 }
 
-bool QSanProtocol::QSanGeneralPacket::tryParse(const QString &s, int &val)
-{
-    istringstream iss(s.toStdString());
-	iss >> val;
-	return true;
-}
-
 bool QSanProtocol::QSanGeneralPacket::parse(const QByteArray &s)
 {
-    if (s.length() > S_MAX_PACKET_SIZE)
-	{
-		return false;
-	}
-
     QJsonDocument doc = QJsonDocument::fromJson(s);
     if(doc.isNull() || !doc.isArray()){
         return false;
@@ -119,9 +100,5 @@ QString QSanProtocol::QSanGeneralPacket::toString() const
     QJsonDocument doc(result);
     QString msg = doc.toJson(QJsonDocument::Compact);
 
-    //truncate too long messages
-    if(msg.length() > S_MAX_PACKET_SIZE){
-        return msg.left(S_MAX_PACKET_SIZE);
-    }
 	return msg;
 }

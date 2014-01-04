@@ -185,10 +185,6 @@ namespace QSanProtocol
 		QJsonValue m_msgBody;
 		inline virtual bool parseBody(const QJsonValue &value) { m_msgBody = value; return true; }
 		virtual const QJsonValue& constructBody() const { return m_msgBody; }
-
-		//helper functions                
-        static bool tryParse(const QString &result, int &val);
-		static const unsigned int S_MAX_PACKET_SIZE;
 	};    
 }
 
