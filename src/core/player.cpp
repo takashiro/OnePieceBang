@@ -723,7 +723,7 @@ bool Player::isProhibited(const Player *to, const Card *card) const{
 }
 
 bool Player::canSlashWithoutHammer() const{
-	if(hasSkill("paoxiao"))
+    if(hasFlag("slash_count_unlimited"))
 		return true;
 
 	return getSlashCount() < 1 + this->getMark("#@slash_extra_count");

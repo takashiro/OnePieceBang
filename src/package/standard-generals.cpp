@@ -881,6 +881,36 @@ public:
 	}
 };
 
+class MassiveAxe: public TriggerSkill{
+public:
+    MassiveAxe(): TriggerSkill("massiveaxe"){
+        events << SlashMissed << Predamage << PhaseChange << HpChanged;
+    }
+
+    virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+        Room *room = player->getRoom();
+        if(event == SlashMissed){
+            room->setPlayerFlag(player, "massiveaxe_enabled");
+        }else if(event == PhaseChange || event == HpChanged){
+            if(player->getPhase() == Player::Play){
+                if(player->isWounded()){
+                    room->setPlayerFlag(player, "slash_count_unlimited");
+                }else{
+                    room->setPlayerFlag(player, "-slash_count_unlimited");
+                }
+            }
+        }else{
+            if(player->hasFlag("massiveaxe_enabled")){
+                DamageStruct damage = data.value<DamageStruct>();
+                damage.damage++;
+                data = QVariant::fromValue(damage);
+
+                room->sendLog("#TriggerSkill", player);
+            }
+        }
+    }
+};
+
 void StandardPackage::addGenerals()
 {
 	General *luffy = new General(this, "luffy", "pirate", 4);
@@ -935,4 +965,7 @@ void StandardPackage::addGenerals()
 
 	General *mihawk = new General(this, "mihawk", "government", 4);
 	mihawk->addSkill(new TopSwordman);
+
+    General *morgan = new General(this, "morgan", "government", 4);
+    morgan->addSkill(new MassiveAxe);
 }
