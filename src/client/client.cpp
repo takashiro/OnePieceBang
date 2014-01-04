@@ -219,8 +219,7 @@ void Client::networkDelayTest(const QString &){
 }
 
 void Client::replyToServer(CommandType command, const QJsonValue &arg){    
-	if(socket)
-	{
+	if(socket){
 		QSanGeneralPacket packet(S_CLIENT_REPLY, command);
 		packet.m_localSerial = _m_lastServerSerial;
 		packet.setMessageBody(arg);
@@ -229,8 +228,7 @@ void Client::replyToServer(CommandType command, const QJsonValue &arg){
 }
 
 void Client::requestToServer(CommandType command, const QJsonValue &arg){    
-	if(socket)
-	{
+	if(socket){
 		QSanGeneralPacket packet(S_CLIENT_REQUEST, command);        
 		packet.setMessageBody(arg);
         socket->send(packet.toString());
@@ -500,7 +498,7 @@ void Client::onPlayerChooseGeneral(const QString &item_name){
 
 void Client::requestCheatRunScript(const QString& script)
 {
-    QJsonArray cheatReq, cheatArg;
+    QJsonArray cheatReq;
     cheatReq.append((int)S_CHEAT_RUN_SCRIPT);
     cheatReq.append(script);
 	requestToServer(S_COMMAND_CHEAT, cheatReq);

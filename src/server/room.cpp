@@ -1703,13 +1703,11 @@ void Room::trustCommand(ServerPlayer *player, const QString &){
 bool Room::processRequestCheat(ServerPlayer *player, const QSanProtocol::QSanGeneralPacket *packet)
 {
     if(!Config.FreeChoose) return false;
-    QJsonValue argdata = packet->getMessageBody();
-    if(!argdata.isArray()) return false;
-    QJsonArray arg = argdata.toArray();
-    if(!arg[0].isDouble()) return false;
+    QJsonArray arg = packet->getMessageBody().toArray();
+    if(arg.isEmpty() || !arg[0].isDouble()) return false;
 	//@todo: synchronize this
 	player->m_cheatArgs = arg;
-	player->releaseLock(ServerPlayer::SEMA_COMMAND_INTERACTIVE);
+    player->releaseLock(ServerPlayer::SEMA_COMMAND_INTERACTIVE);
 	return true;
 }
 
@@ -2355,18 +2353,13 @@ void Room::processResponse(ServerPlayer *player, const QSanGeneralPacket *packet
 	}
 	else success = true; 
 
-	if (!success)
-	{
+	if (!success){
 		player->releaseLock(ServerPlayer::SEMA_MUTEX);
 		return;
-	}
-	else
-	{               
-		_m_semRoomMutex.acquire();
-		if (_m_raceStarted)
-		{     
-
-			player->setClientReply(packet->getMessageBody());
+    }else{
+        _m_semRoomMutex.acquire();
+		if (_m_raceStarted){     
+            player->setClientReply(packet->getMessageBody());
 			player->m_isClientResponseReady = true; 
 			// Warning: the statement below must be the last one before releasing the lock!!!
 			// Any statement after this statement will totally compromise the synchronization
@@ -2376,7 +2369,7 @@ void Room::processResponse(ServerPlayer *player, const QSanGeneralPacket *packet
 			// @todo: Find a Qt atomic semantic or use _asm to ensure the following line is atomic
 			// on a multi-core machine. This is the core to the whole synchornization mechanism for
 			// broadcastRaceRequest.
-			_m_raceWinner = player;           
+            _m_raceWinner = player;
 			// the _m_semRoomMutex.release() signal is in getRaceResult();            
 			_m_semRaceRequest.release();
 		}
@@ -3713,34 +3706,24 @@ bool Room::makeCheat(ServerPlayer* player){
     QJsonArray arg = player->m_cheatArgs.toArray();
     if (arg.isEmpty() || !arg[0].isDouble()) return false;
     QJsonArray arg1 = arg[1].toArray();
-    CheatCode code = (CheatCode)arg[0].toDouble();
-	if (code == S_CHEAT_KILL_PLAYER)
-	{
+    CheatCode code = (CheatCode) arg[0].toDouble();
+    if(code == S_CHEAT_KILL_PLAYER){
 		if (!isStringArray(arg[1], 0, 1)) return false;
         makeKilling(arg1[0].toString(), arg1[1].toString());
-	}
-	else if (code == S_CHEAT_MAKE_DAMAGE)
-	{
+    }else if(code == S_CHEAT_MAKE_DAMAGE){
         if (arg1.size() != 4 || !isStringArray(arg[1], 0, 1)
             || !arg1[2].isDouble() || !arg1[3].isDouble())
 			return false;
-        makeDamage(arg1[0].toString(), arg1[1].toString(),
-            (QSanProtocol::CheatCategory)arg1[2].toDouble(), arg1[3].toDouble());
-	}
-	else if (code == S_CHEAT_REVIVE_PLAYER)
-	{
+        makeDamage(arg1[0].toString(), arg1[1].toString(), (QSanProtocol::CheatCategory)arg1[2].toDouble(), arg1[3].toDouble());
+    }else if(code == S_CHEAT_REVIVE_PLAYER){
 		if (!arg[1].isString()) return false;
         makeReviving(arg[1].toString());
-	}
-	else if (code == S_CHEAT_RUN_SCRIPT)
-	{
+    }else if (code == S_CHEAT_RUN_SCRIPT){
 		if (!arg[1].isString()) return false;
         QByteArray data = QByteArray::fromBase64(arg[1].toString().toLatin1());
 		data = qUncompress(data);
-		doScript(data);
-	}
-	else if (code == S_CHEAT_GET_ONE_CARD)
-	{
+        doScript(data);
+    }else if(code == S_CHEAT_GET_ONE_CARD){
         if (!arg[1].isDouble()) return false;
         int card_id = arg[1].toDouble();
 
@@ -3751,13 +3734,12 @@ bool Room::makeCheat(ServerPlayer* player){
 		sendLog(log);
 
 		obtainCard(player, card_id);
-	}
-	else if (code == S_CHEAT_CHANGE_GENERAL)
-	{
+    }else if(code == S_CHEAT_CHANGE_GENERAL){
 		if (!arg[1].isString()) return false;
         QString generalName = arg[1].toString();
 		transfigure(player, generalName, false, true);
-	}
+    }
+    player->m_cheatArgs = QJsonValue();
     return true;
 }
 
@@ -3938,12 +3920,11 @@ bool Room::askForYiji(ServerPlayer *guojia, QList<int> &cards){
 
 		//Validate client response
         QJsonArray clientReply = guojia->getClientReply().toArray();
-        if(!success || clientReply.isEmpty() || clientReply.size() != 2)
+        if(!success || clientReply.size() != 2)
 			return false;
 
 		QList<int> ids;
-		if (!tryParse(clientReply[0], ids)
-			|| !clientReply[1].isString()) return false;
+        if (!tryParse(clientReply[0], ids) || !clientReply[1].isString()) return false;
 
 		foreach (int id, ids)        
 			if (!cards.contains(id)) return false;
