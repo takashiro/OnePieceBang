@@ -32,7 +32,7 @@ public:
 		AskForPlayerChoose,
 		AskForYiji,
 		AskForGuanxing,
-        AskForGongxin
+		AskForGongxin
 	};
 
 	explicit Client(QObject *parent, const QString &filename = QString());
@@ -56,8 +56,8 @@ public:
 	void requestSurrender();
 
 	void disconnectFromHost();
-    void replyToServer(QSanProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
-    void requestToServer(QSanProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
+	void replyToServer(QSanProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
+	void requestToServer(QSanProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
 	void request(const QString &message);
 	void onPlayerUseCard(const Card *card, const QList<const Player *> &targets = QList<const Player *>());
 	void setStatus(Status status);
@@ -105,15 +105,15 @@ public:
 	void playAudio(const QString &name);
 	void resetPiles(const QString &);
 	void setPileNumber(const QString &pile_num);
-    void gameOver(const QJsonValue &);
-    void loseCards(const QJsonValue &data);
-    void getCards(const QJsonValue &data);
+	void gameOver(const QJsonValue &);
+	void loseCards(const QJsonValue &data);
+	void getCards(const QJsonValue &data);
 	void killPlayer(const QString &player_name);
 	void revivePlayer(const QString &player_name);
 	void warn(const QString &);
 	void setMark(const QString &mark_str);
 	void doFilter(const QString &);
-    void showCard(const QJsonValue &data);
+	void showCard(const QJsonValue &data);
 	void log(const QString &log_str);
 	void speak(const QString &speak_data);
 	void addHistory(const QString &card);
@@ -138,30 +138,30 @@ public:
 	void clearAG(const QString &);
 
 	//interactive server callbacks
-    void askForCard(const QJsonValue &);
-    void askForUseCard(const QJsonValue &);
+	void askForCard(const QJsonValue &);
+	void askForUseCard(const QJsonValue &);
 	void askForAG(const QJsonValue&);
-    void askForSingleWine(const QJsonValue &);
+	void askForSingleWine(const QJsonValue &);
 	void askForCardShow(const QJsonValue &);
-    void askForSkillInvoke(const QJsonValue &);
+	void askForSkillInvoke(const QJsonValue &);
 	void askForChoice(const QJsonValue &);
-    void askForDiscard(const QJsonValue &);
+	void askForDiscard(const QJsonValue &);
 	void askForExchange(const QJsonValue &);
 	void askForSuit(const QJsonValue &);
 	void askForKingdom(const QJsonValue &);
-    void askForNullification(const QJsonValue &);
-    void askForPindian(const QJsonValue &data);
+	void askForNullification(const QJsonValue &);
+	void askForPindian(const QJsonValue &data);
 	void askForCardChosen(const QJsonValue &);
 	void askForPlayerChosen(const QJsonValue &);
 	void askForGeneral(const QJsonValue &);
-    void askForYiji(const QJsonValue &data);
-    void askForGuanxing(const QJsonValue &data);
-    void askForGongxin(const QJsonValue &data);
+	void askForYiji(const QJsonValue &data);
+	void askForGuanxing(const QJsonValue &data);
+	void askForGongxin(const QJsonValue &data);
 	void askForAssign(const QJsonValue &); // Assign roles at the beginning of game
 	void askForSurrender(const QJsonValue &);
 	//3v3 & 1v1
 	void askForOrder(const QJsonValue &);
-    void askForRole3v3(const QJsonValue &);
+	void askForRole3v3(const QJsonValue &);
 	void askForDirection(const QJsonValue &);    
 
 	// 3v3 & 1v1 methods
@@ -245,7 +245,7 @@ private:
 	void setPromptList(const QStringList &text);
 	void commandFormatWarning(const QString &str, const QRegExp &rx, const char *command);
 
-    void _askForCardOrUseCard(const QJsonValue&);
+	void _askForCardOrUseCard(const QJsonValue&);
 	bool _loseSingleCard(int card_id, CardsMoveStruct move);
 	bool _getSingleCard(int card_id, CardsMoveStruct move);
 

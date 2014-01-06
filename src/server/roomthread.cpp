@@ -136,18 +136,18 @@ bool CardUseStruct::isValid() const{
 }
 
 bool CardUseStruct::tryParse(const QJsonValue &usage_data, Room *room){
-    QJsonArray usage = usage_data.toArray();
+	QJsonArray usage = usage_data.toArray();
 	if (usage.size() < 2 || !usage[0].isString() || !usage[1].isArray())
 		return false;
 
-    card = Card::Parse(usage[0].toString());
+	card = Card::Parse(usage[0].toString());
 
-    const QJsonArray targets = usage[1].toArray();
+	const QJsonArray targets = usage[1].toArray();
 
 	for (unsigned int i = 0; i < targets.size(); i++)
 	{
 		if (!targets[i].isString()) return false;
-        this->to << room->findChild<ServerPlayer *>(targets[i].toString());
+		this->to << room->findChild<ServerPlayer *>(targets[i].toString());
 	}
 	return true;
 }

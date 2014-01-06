@@ -5,6 +5,7 @@
 #include "client.h"
 #include "room.h"
 #include "carditem.h"
+#include "skill.h"
 
 Slash::Slash(Suit suit, int number): BasicCard(suit, number)
 {
@@ -69,13 +70,19 @@ bool Slash::targetsFeasible(const QList<const Player *> &targets, const Player *
 }
 
 bool Slash::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
-	int slash_targets = 1 + Self->getMark("@#slash_extra_targets");
+	int slash_targets = 1;
+	/*foreach(const Skill *skill, Self->getVisibleSkillList()){
+		if(skill->inherits("PropertySkill")){
+		slash_targets += ((PropertySkill *) skill)->getCorrect("slash_extra_target");
+		}
+	}*/
+
 	if(targets.length() >= slash_targets)
 		return false;
 
 	bool distance_limit = !Self->hasFlag("@slash_distance_unlimited");
 
-	return Self->canSlash(to_select, distance_limit);
+	return Self->canSlash(to_select, distance_limit, this);
 }
 
 Jink::Jink(Suit suit, int number):BasicCard(suit, number){

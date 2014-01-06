@@ -598,17 +598,25 @@ int Player::getMark(const QString &mark) const{
 	return marks.value(mark, 0);
 }
 
-bool Player::canSlash(const Player *other, bool distance_limit) const{
-	if(other->hasSkill("kongcheng") && other->isKongcheng())
+bool Player::canSlash(const Player *other, bool distance_limit, const Card *slash) const{
+	foreach(const Skill *skill, other->getVisibleSkillList()){
+		if(skill->inherits("ProhibitSkill")){
+		const ProhibitSkill *prohibit_skill = (const ProhibitSkill *) skill;
+		if(prohibit_skill->isProhibited(this, other, slash)){
 		return false;
+		}
+		}
+	}
 
-	if(other == this)
+	if(other == this){
 		return false;
+	}
 
-	if(distance_limit)
+	if(distance_limit){
 		return distanceTo(other) <= getAttackRange();
-	else
+	}else{
 		return true;
+	}
 }
 
 int Player::getCardCount(bool include_equip) const{
@@ -723,7 +731,7 @@ bool Player::isProhibited(const Player *to, const Card *card) const{
 }
 
 bool Player::canSlashWithoutHammer() const{
-    if(hasFlag("slash_count_unlimited"))
+	if(hasFlag("slash_count_unlimited"))
 		return true;
 
 	return getSlashCount() < 1 + this->getMark("#@slash_extra_count");

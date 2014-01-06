@@ -9,8 +9,8 @@ namespace QSanProtocol
 {
 	namespace Utils
 	{
-        bool isStringArray(const QJsonValue &jsonObject, unsigned int startIndex, unsigned int endIndex);
-        bool isIntArray(const QJsonValue &jsonObject, unsigned int startIndex, unsigned int endIndex);
+		bool isStringArray(const QJsonValue &jsonObject, unsigned int startIndex, unsigned int endIndex);
+		bool isIntArray(const QJsonValue &jsonObject, unsigned int startIndex, unsigned int endIndex);
 	}
 
 	enum PacketType
@@ -113,28 +113,28 @@ namespace QSanProtocol
 			S_COUNTDOWN_USE_SPECIFIED,
 			S_COUNTDOWN_USE_DEFAULT           
 		} m_type;
-        static const QString S_COUNTDOWN_MAGIC;
+		static const QString S_COUNTDOWN_MAGIC;
 		time_t m_current;
 		time_t m_max;
 		inline Countdown(CountdownType type = S_COUNTDOWN_NO_LIMIT, time_t current = 0, time_t max = 0):
 			m_type(type), m_current(current), m_max(max) {}
-        bool tryParse(QJsonValue val);
-        inline QJsonValue toJsonValue()
+		bool tryParse(QJsonValue val);
+		inline QJsonValue toJsonValue()
 		{
 			if (m_type == S_COUNTDOWN_NO_LIMIT
 				|| m_type == S_COUNTDOWN_USE_DEFAULT)
 			{
-                QJsonArray val;
-                val.append(S_COUNTDOWN_MAGIC);
-                val.append((int)m_type);
+		QJsonArray val;
+		val.append(S_COUNTDOWN_MAGIC);
+		val.append((int)m_type);
 				return val;                
 			}
 			else
 			{
-                QJsonArray val;
-                val.append(S_COUNTDOWN_MAGIC);
-                val.append((int)m_current);
-                val.append((int)m_max);
+		QJsonArray val;
+		val.append(S_COUNTDOWN_MAGIC);
+		val.append((int)m_current);
+		val.append((int)m_max);
 				return val;
 			}
 		}
@@ -150,8 +150,8 @@ namespace QSanProtocol
 	class QSanPacket
 	{
 	public:
-        virtual bool parse(const QByteArray &) = 0;
-        virtual QString toString() const = 0;
+		virtual bool parse(const QByteArray &) = 0;
+		virtual QString toString() const = 0;
 		virtual PacketType getPacketType() const = 0;
 		virtual CommandType getCommandType() const = 0;        
 	};
@@ -169,13 +169,13 @@ namespace QSanProtocol
 			m_localSerial = 0;
 			m_packetType = packetType;
 			m_command = command;
-            m_msgBody = QJsonValue();
+		m_msgBody = QJsonValue();
 		}
-        inline void setMessageBody(const QJsonValue &value){m_msgBody = value;}
+		inline void setMessageBody(const QJsonValue &value){m_msgBody = value;}
 		inline QJsonValue& getMessageBody(){return m_msgBody;}
 		inline const QJsonValue& getMessageBody() const {return m_msgBody;}
-        virtual bool parse(const QByteArray &);
-        virtual QString toString() const;
+		virtual bool parse(const QByteArray &);
+		virtual QString toString() const;
 		inline virtual PacketType getPacketType() const { return m_packetType; }
 		inline virtual CommandType getCommandType() const { return m_command; }
 	protected:
