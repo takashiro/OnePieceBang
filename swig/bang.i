@@ -200,7 +200,6 @@ public:
 	QList<const Skill *> getVisibleSkillList() const;
 	QSet<QString> getAcquiredSkills() const;
 
-	virtual bool isProhibited(const Player *to, const Card *card) const;
 	bool canSlashWithoutHammer() const;
 	virtual bool isLastHandCard(const Card *card) const = 0;
 
@@ -696,7 +695,6 @@ public:
 	void playEffect(const char *filename) const;
 	void playSkillEffect(const char *skill_name, int index) const;
 
-	const ProhibitSkill *isProhibited(const Player *from, const Player *to, const Card *card) const;
 	int correctDistance(const Player *from, const Player *to) const;
 };
 
@@ -863,8 +861,6 @@ public:
 	void setVirtual();
 	void copyFrom(Room* rRoom);
 	Room* duplicate();
-
-	const ProhibitSkill *isProhibited(const Player *from, const Player *to, const Card *card) const;
 
 	void setTag(const char *key, const QVariant &value);
 	QVariant getTag(const char *key) const;

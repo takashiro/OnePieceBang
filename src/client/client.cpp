@@ -358,8 +358,7 @@ void Client::processReply(char *reply){
 
 		static QSet<QString> deprecated;
 		if(deprecated.isEmpty()){
-			deprecated << "increaseSlashCount" // replaced by addHistory
-					<< "addProhibitSkill"; // add all prohibit skill at game start
+			deprecated << "increaseSlashCount"; // replaced by addHistory
 		}
 
 		Callback callback = callbacks.value(method, NULL);

@@ -22,17 +22,6 @@ public:
 	int priority;
 };
 
-class LuaProhibitSkill: public ProhibitSkill{
-	Q_OBJECT
-
-public:
-	LuaProhibitSkill(const char *name);
-
-	virtual bool isProhibited(const Player *from, const Player *to, const Card *card) const;
-
-	LuaFunction is_prohibited;
-};
-
 class LuaViewAsSkill: public ViewAsSkill{
 	Q_OBJECT
 

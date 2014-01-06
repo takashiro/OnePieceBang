@@ -139,9 +139,6 @@ bool AOE::isAvailable(const Player *player) const{
 		if(p->isDead())
 			continue;
 
-		if(player->isProhibited(p, this))
-			continue;
-
 		return true;
 	}
 
@@ -150,22 +147,7 @@ bool AOE::isAvailable(const Player *player) const{
 
 void AOE::onUse(Room *room, const CardUseStruct &card_use) const{
 	ServerPlayer *source = card_use.from;
-	QList<ServerPlayer *> targets, other_players = room->getOtherPlayers(source);
-	foreach(ServerPlayer *player, other_players){
-		const ProhibitSkill *skill = room->isProhibited(source, player, this);
-		if(skill){
-			LogMessage log;
-			log.type = "#SkillAvoid";
-			log.from = player;
-			log.arg = skill->objectName();
-			log.arg2 = objectName();
-			room->sendLog(log);
-
-			room->playSkillEffect(skill->objectName());
-		}else
-			targets << player;
-	}
-
+	QList<ServerPlayer *> targets = room->getOtherPlayers(source);
 	CardUseStruct use = card_use;
 	use.to = targets;
 	TrickCard::onUse(room, use);
@@ -225,9 +207,6 @@ void DelayedTrick::onNullified(ServerPlayer *target) const{
 
 		foreach(ServerPlayer *player, players){
 			if(player->containsTrick(objectName()))
-				continue;
-
-			if(room->isProhibited(target, player, this))
 				continue;
 
 			room->moveCardTo(this, player, Player::JudgingArea, true);

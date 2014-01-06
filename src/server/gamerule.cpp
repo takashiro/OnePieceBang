@@ -980,20 +980,6 @@ bool BasaraMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &dat
 				if(ces.card->inherits("TrickCard") ||
 						ces.card->inherits("Slash"))
 				playerShowed(player);
-
-			const ProhibitSkill* prohibit = room->isProhibited(ces.from,ces.to,ces.card);
-			if(prohibit)
-			{
-				LogMessage log;
-				log.type = "#SkillAvoid";
-				log.from = ces.to;
-				log.arg  = prohibit->objectName();
-				log.arg2 = ces.card->objectName();
-
-				room->sendLog(log);
-
-				return true;
-			}
 		}
 		break;
 	}

@@ -195,7 +195,6 @@ public:
 	QList<const Skill *> getVisibleSkillList() const;
 	QSet<QString> getAcquiredSkills() const;
 
-	virtual bool isProhibited(const Player *to, const Card *card) const;
 	bool canSlashWithoutHammer() const;
 	virtual bool isLastHandCard(const Card *card) const = 0;
 

@@ -18,12 +18,6 @@ int LuaTriggerSkill::getPriority() const{
 	return priority;
 }
 
-LuaProhibitSkill::LuaProhibitSkill(const char *name)
-	:ProhibitSkill(name), is_prohibited(0)
-{
-
-}
-
 LuaViewAsSkill::LuaViewAsSkill(const char *name)
 	:ViewAsSkill(name), view_filter(0), view_as(0),
 	  enabled_at_play(0), enabled_at_response(0), enabled_at_nullification(0)

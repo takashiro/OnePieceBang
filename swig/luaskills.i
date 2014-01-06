@@ -21,13 +21,6 @@ public:
 	virtual void onGameStart(ServerPlayer *player) const = 0;
 };
 
-class ProhibitSkill: public Skill{
-public:
-	ProhibitSkill(const QString &name);
-
-	virtual bool isProhibited(const Player *from, const Player *to, const Card *card) const = 0;
-};
-
 class SPConvertSkill: public GameStartSkill{
 public:
 	SPConvertSkill(const QString &name, const QString &from, const QString &to);
@@ -41,15 +34,6 @@ public:
 	DistanceSkill(const QString &name);
 
 	virtual int getCorrect(const Player *from, const Player *to) const = 0;
-};
-
-class LuaProhibitSkill: public ProhibitSkill{
-public:
-	LuaProhibitSkill(const char *name);
-
-	virtual bool isProhibited(const Player *from, const Player *to, const Card *card) const;
-
-	LuaFunction is_prohibited;
 };
 
 class ViewAsSkill:public Skill{
@@ -202,30 +186,6 @@ static void Error(lua_State *L){
 	QMessageBox::warning(NULL, "Lua script error!", error_string);
 }
 
-bool LuaProhibitSkill::isProhibited(const Player *from, const Player *to, const Card *card) const{
-	if(is_prohibited == 0)
-		return false;
-
-	lua_State *L = Bang->getLuaState();
-
-	lua_rawgeti(L, LUA_REGISTRYINDEX, is_prohibited);
-
-	SWIG_NewPointerObj(L, this, SWIGTYPE_p_LuaProhibitSkill, 0);
-	SWIG_NewPointerObj(L, from, SWIGTYPE_p_Player, 0);
-	SWIG_NewPointerObj(L, to, SWIGTYPE_p_Player, 0);
-	SWIG_NewPointerObj(L, card, SWIGTYPE_p_Card, 0);
-
-	int error = lua_pcall(L, 4, 1, 0);
-	if(error){
-		Error(L);
-		return false;
-	}
-
-	bool result = lua_toboolean(L, -1);
-	lua_pop(L, 1);
-	return result;
-}
-
 int LuaDistanceSkill::getCorrect(const Player *from, const Player *to) const{
 	if(correct_func == 0)
 		return 0;
@@ -234,7 +194,6 @@ int LuaDistanceSkill::getCorrect(const Player *from, const Player *to) const{
 
 	lua_rawgeti(L, LUA_REGISTRYINDEX, correct_func);
 
-	SWIG_NewPointerObj(L, this, SWIGTYPE_p_LuaDistanceSkill, 0);
 	SWIG_NewPointerObj(L, from, SWIGTYPE_p_Player, 0);
 	SWIG_NewPointerObj(L, to, SWIGTYPE_p_Player, 0);
 

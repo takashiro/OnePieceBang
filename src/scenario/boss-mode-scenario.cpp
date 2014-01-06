@@ -237,13 +237,26 @@ public:
 	}
 };
 
-class Duduan: public ProhibitSkill{
+class Duduan: public TriggerSkill{
 public:
-	Duduan():ProhibitSkill("duduan"){
+	Duduan():TriggerSkill("duduan"){
+		events << CardEffected;
 	}
 
-	virtual bool isProhibited(const Player *from, const Player *to, const Card *card) const{
-		return card->inherits("DelayedTrick");
+	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+		CardEffectStruct effect = data.value<CardEffectStruct>();
+		if(effect.card && effect.card->inherits("DelayedTrick")){
+			LogMessage log;
+			log.type = "#SkillAvoid";
+			log.from = player;
+			log.arg  = objectName();
+			log.arg2 = effect.card->objectName();
+
+			player->getRoom()->sendLog(log);
+			return true;
+		}
+
+		return false;
 	}
 };
 

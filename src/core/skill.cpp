@@ -327,11 +327,6 @@ void SPConvertSkill::onGameStart(ServerPlayer *player) const{
 	}
 }
 
-ProhibitSkill::ProhibitSkill(const QString &name)
-	:Skill(name, Skill::Compulsory)
-{
-}
-
 DistanceSkill::DistanceSkill(const QString &name)
 	:Skill(name, Skill::Compulsory)
 {

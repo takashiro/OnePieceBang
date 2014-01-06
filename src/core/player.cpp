@@ -599,15 +599,6 @@ int Player::getMark(const QString &mark) const{
 }
 
 bool Player::canSlash(const Player *other, bool distance_limit, const Card *slash) const{
-	foreach(const Skill *skill, other->getVisibleSkillList()){
-		if(skill->inherits("ProhibitSkill")){
-		const ProhibitSkill *prohibit_skill = (const ProhibitSkill *) skill;
-		if(prohibit_skill->isProhibited(this, other, slash)){
-		return false;
-		}
-		}
-	}
-
 	if(other == this){
 		return false;
 	}
@@ -724,10 +715,6 @@ QList<const Skill *> Player::getVisibleSkillList() const{
 
 QSet<QString> Player::getAcquiredSkills() const{
 	return acquired_skills;
-}
-
-bool Player::isProhibited(const Player *to, const Card *card) const{
-	return Bang->isProhibited(this, to, card);
 }
 
 bool Player::canSlashWithoutHammer() const{

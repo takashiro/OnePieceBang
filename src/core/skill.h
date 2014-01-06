@@ -198,15 +198,6 @@ private:
 	QString from, to;
 };
 
-class ProhibitSkill: public Skill{
-	Q_OBJECT
-
-public:
-	ProhibitSkill(const QString &name);
-
-	virtual bool isProhibited(const Player *from, const Player *to, const Card *card) const = 0;
-};
-
 class DistanceSkill: public Skill{
 	Q_OBJECT
 

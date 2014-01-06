@@ -1492,10 +1492,6 @@ void Room::reverseFor3v3(const Card *card, ServerPlayer *player, QList<ServerPla
 	}
 }
 
-const ProhibitSkill *Room::isProhibited(const Player *from, const Player *to, const Card *card) const{
-	return Bang->isProhibited(from, to, card);
-}
-
 int Room::drawCard(){
 	if(draw_pile->isEmpty())
 		swapPile();

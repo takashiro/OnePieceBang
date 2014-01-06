@@ -1659,8 +1659,7 @@ void RoomScene::updateTargetsEnablity(const Card *card){
 			continue;
 
 		bool enabled;
-		if(card)enabled= !Bang->isProhibited(Self, player, card)
-					   && card->targetFilter(selected_targets, player, Self);
+		if(card) enabled = card->targetFilter(selected_targets, player, Self);
 		else enabled = true;
 
 		if(enabled)animations->effectOut(item);

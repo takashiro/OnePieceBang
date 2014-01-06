@@ -918,7 +918,7 @@ bool Disaster::isAvailable(const Player *player) const{
 	if(player->containsTrick(objectName()))
 		return false;
 
-	return !player->isProhibited(player, this);
+	return true;
 }
 
 Lightning::Lightning(Suit suit, int number):Disaster(suit, number){
