@@ -112,6 +112,34 @@ QSet<const Skill *> General::getVisibleSkills() const{
 	return skills;
 }
 
+
+QList<const Skill *> General::getSkillList() const{
+	QList<const Skill *> skills = findChildren<const Skill *>();
+
+	foreach(const QString &skill_name, extra_set){
+		const Skill *skill = Bang->getSkill(skill_name);
+		if(skill){
+			skills << skill;
+		}
+	}
+
+	return skills;
+}
+
+QSet<const Skill *> General::getSkills() const{
+	QSet<const Skill *> skills;
+	foreach(const Skill *skill, findChildren<const Skill *>()){
+		skills << skill;
+	}
+
+	foreach(QString skill_name, extra_set){
+		const Skill *skill = Bang->getSkill(skill_name);
+		skills << skill;
+	}
+
+	return skills;
+}
+
 QSet<const TriggerSkill *> General::getTriggerSkills() const{
 	QSet<const TriggerSkill *> skills = findChildren<const TriggerSkill *>().toSet();
 

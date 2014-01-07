@@ -213,7 +213,8 @@ class PropertySkill: public Skill{
 public:
 	PropertySkill(const QString &name);
 
-	virtual int getCorrect(const QString &property) const = 0;
+	virtual QVariant getCorrect(const QString &property) const;
+	virtual QVariant getCorrect(const Player *player, const Card *card, const QString &property) const;
 };
 
 class WeaponSkill: public TriggerSkill{

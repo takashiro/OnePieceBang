@@ -71,11 +71,11 @@ bool Slash::targetsFeasible(const QList<const Player *> &targets, const Player *
 
 bool Slash::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
 	int slash_targets = 1;
-	/*foreach(const Skill *skill, Self->getVisibleSkillList()){
+	foreach(const ::Skill *skill, Self->getSkillList()){
 		if(skill->inherits("PropertySkill")){
-		slash_targets += ((PropertySkill *) skill)->getCorrect("slash_extra_target");
+			slash_targets += ((PropertySkill *) skill)->getCorrect(Self, this, "slash_extra_target").toInt();
 		}
-	}*/
+	}
 
 	if(targets.length() >= slash_targets)
 		return false;
@@ -387,7 +387,25 @@ Yubashiri::Yubashiri(Suit suit, int number)
 	:Weapon(suit, number, 4)
 {
 	setObjectName("yubashiri");
+	attach_skill = true;
 }
+
+class YubashiriSkill: public PropertySkill{
+public:
+	YubashiriSkill(): PropertySkill("yubashiri"){
+
+	}
+
+	virtual QVariant getCorrect(const Player *player, const Card *card, const QString &property) const{
+		int correct = 0;
+
+		if(property == "slash_extra_target" && card->inherits("Slash") && player->isLastHandCard(card)){
+			correct += 2;
+		}
+
+		return correct;
+	}
+};
 
 class KabutoSkill: public WeaponSkill{
 public:
@@ -1539,7 +1557,7 @@ StandardCardPackage::StandardCardPackage()
 	foreach(Card *card, cards)
 		card->setParent(this);
 
-	skills << new ShigureSkill << new ImpactDialViewAsSkill
+	skills << new ShigureSkill << new ImpactDialViewAsSkill << new YubashiriSkill
 		   << MilkyDialSkill::GetInstance() << new RainEffect
 		   << new RainEffectEx << new FlameDialViewAsSkill
 		   << new HorseSkill;

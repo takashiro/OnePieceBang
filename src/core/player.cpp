@@ -490,7 +490,7 @@ int Player::getMaxCards() const{
 
 	foreach(const Skill *skill, getVisibleSkillList()){
 		if(skill->inherits("PropertySkill")){
-			extra += ((PropertySkill *) skill)->getCorrect("max_cards");
+			extra += ((PropertySkill *) skill)->getCorrect("max_cards").toInt();
 		}
 	}
 
@@ -708,6 +708,26 @@ QList<const Skill *> Player::getVisibleSkillList() const{
 		const Skill *skill = Bang->getSkill(skill_name);
 		if(skill->isVisible())
 			skills << skill;
+	}
+
+	return skills;
+}
+
+QSet<const Skill *> Player::getSkills() const{
+	return getSkillList().toSet();
+}
+
+QList<const Skill *> Player::getSkillList() const{
+	QList<const Skill *> skills;
+	if(general)
+		skills << general->getSkillList();
+
+	if(general2)
+		skills << general2->getSkillList();
+
+	foreach(QString skill_name, acquired_skills){
+		const Skill *skill = Bang->getSkill(skill_name);
+		skills << skill;
 	}
 
 	return skills;

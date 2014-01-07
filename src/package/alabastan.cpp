@@ -4,31 +4,6 @@
 #include "engine.h"
 #include "client.h"
 
-FirePunchCard::FirePunchCard(){
-
-}
-
-bool FirePunchCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
-	return targets.length() < 2 && Self->canSlash(to_select);
-}
-
-bool FirePunchCard::targetsFeasible(const QList<const Player *> &targets, const Player *Self) const{
-	return targets.length() == 1 || targets.length() == 2;
-}
-
-void FirePunchCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
-	const Card *subcard = Bang->getCard(subcards.at(0));
-	FireSlash *slash = new FireSlash(subcard->getSuit(), subcard->getNumber());
-	slash->setSkillName("firepunch");
-	slash->addSubcard(subcard);
-
-	CardUseStruct use;
-	use.from = source;
-	use.card = slash;
-	use.to = targets;
-	room->useCard(use);
-}
-
 class FirePunch: public OneCardViewAsSkill{
 public:
 	FirePunch(): OneCardViewAsSkill("firepunch"){
@@ -49,19 +24,28 @@ public:
 	}
 
 	virtual const Card *viewAs(CardItem *card_item) const{
-		if(ClientInstance->getStatus() == Client::Responsing){
 		const Card *sub = card_item->getCard();
 		FireSlash *slash = new FireSlash(sub->getSuit(), sub->getNumber());
 		slash->setSkillName(objectName());
 		slash->addSubcard(sub);
 		return slash;
-		}else{
-		const Card *sub = card_item->getCard();
-		FirePunchCard *slash = new FirePunchCard;
-		slash->setSkillName(objectName());
-		slash->addSubcard(sub);
-		return slash;
+	}
+};
+
+class FirePunchEx: public PropertySkill{
+public:
+	FirePunchEx(): PropertySkill("#firepunchex"){
+
+	}
+
+	virtual QVariant getCorrect(const Player *player, const Card *card, const QString &property) const{
+		int correct = 0;
+
+		if(property == "slash_extra_target" && card->inherits("FireSlash") && card->getSkillName() == "firepunch"){
+			correct++;
 		}
+
+		return correct;
 	}
 };
 
@@ -683,7 +667,7 @@ AlabastanPackage::AlabastanPackage():Package("Alabastan")
 {
 	General *ace = new General(this, "ace", "pirate", 4);
 	ace->addSkill(new FirePunch);
-	addMetaObject<FirePunchCard>();
+	ace->addSkill(new FirePunchEx);
 
 	General *vivi = new General(this, "vivi", "citizen", 3, false);
 	vivi->addSkill(new AntiWar);

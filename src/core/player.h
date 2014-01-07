@@ -193,6 +193,8 @@ public:
 	QSet<const TriggerSkill *> getTriggerSkills() const;
 	QSet<const Skill *> getVisibleSkills() const;
 	QList<const Skill *> getVisibleSkillList() const;
+	QSet<const Skill *> getSkills() const;
+	QList<const Skill *> getSkillList() const;
 	QSet<QString> getAcquiredSkills() const;
 
 	bool canSlashWithoutHammer() const;

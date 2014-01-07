@@ -47,7 +47,7 @@ QString Skill::getText() const{
 }
 
 bool Skill::isVisible() const{
-	return ! objectName().startsWith("#");
+	return !objectName().startsWith("#");
 }
 
 QString Skill::getDefaultChoice(ServerPlayer *) const{
@@ -337,6 +337,14 @@ PropertySkill::PropertySkill(const QString &name)
 	:Skill(name, Skill::Compulsory)
 {
 
+}
+
+QVariant PropertySkill::getCorrect(const QString &property) const{
+	return QVariant();
+}
+
+QVariant PropertySkill::getCorrect(const Player *player, const Card *card, const QString &property) const{
+	return QVariant();
 }
 
 WeaponSkill::WeaponSkill(const QString &name)
