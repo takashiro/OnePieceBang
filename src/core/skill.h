@@ -214,7 +214,15 @@ public:
 	PropertySkill(const QString &name);
 
 	virtual QVariant getCorrect(const QString &property) const;
-	virtual QVariant getCorrect(const Player *player, const Card *card, const QString &property) const;
+};
+
+class CardTargetSkill: public Skill{
+	Q_OBJECT
+
+public:
+	CardTargetSkill(const QString &name);
+
+	virtual int getExtraTargetNum(const Player *player, const Card *card) const;
 };
 
 class WeaponSkill: public TriggerSkill{

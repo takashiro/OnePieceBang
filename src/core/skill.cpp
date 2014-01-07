@@ -343,8 +343,13 @@ QVariant PropertySkill::getCorrect(const QString &property) const{
 	return QVariant();
 }
 
-QVariant PropertySkill::getCorrect(const Player *player, const Card *card, const QString &property) const{
-	return QVariant();
+CardTargetSkill::CardTargetSkill(const QString &name)
+	:Skill(name, Skill::Compulsory){
+
+}
+
+int CardTargetSkill::getExtraTargetNum(const Player *player, const Card *card) const{
+	return 0;
 }
 
 WeaponSkill::WeaponSkill(const QString &name)

@@ -32,16 +32,16 @@ public:
 	}
 };
 
-class FirePunchEx: public PropertySkill{
+class FirePunchEx: public CardTargetSkill{
 public:
-	FirePunchEx(): PropertySkill("#firepunchex"){
+	FirePunchEx(): CardTargetSkill("#firepunchex"){
 
 	}
 
-	virtual QVariant getCorrect(const Player *player, const Card *card, const QString &property) const{
+	virtual int getExtraTargetNum(const Player *player, const Card *card) const{
 		int correct = 0;
 
-		if(property == "slash_extra_target" && card->inherits("FireSlash") && card->getSkillName() == "firepunch"){
+		if(card->getSkillName() == "firepunch"){
 			correct++;
 		}
 
@@ -682,10 +682,10 @@ AlabastanPackage::AlabastanPackage():Package("Alabastan")
 	chopper->addSkill(new Leechcraft);
 	chopper->addSkill(new RumbleBall);
 
-	General *bonkure = new General(this, "bonkure", "pirate", 3);
+	General *bonkure = new General(this, "bonkure", "pirate", 3, true);
 	bonkure->addSkill(new Imitate);
 	bonkure->addSkill(new Memoir);
-	bonkure->addSkill(new Skill("okama", Skill::Compulsory));
+	bonkure->setGender(General::Neuter);
 
 	General *crocodile = new General(this, "crocodile", "government", 3);
 	crocodile->addSkill(new Corrasion);

@@ -2327,6 +2327,7 @@ void RoomScene::doOkButton(){
 		return;
 
 	useSelectedCard();
+	enableTargets(NULL);
 }
 
 void RoomScene::doCancelButton(){

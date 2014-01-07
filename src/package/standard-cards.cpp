@@ -72,8 +72,8 @@ bool Slash::targetsFeasible(const QList<const Player *> &targets, const Player *
 bool Slash::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
 	int slash_targets = 1;
 	foreach(const ::Skill *skill, Self->getSkillList()){
-		if(skill->inherits("PropertySkill")){
-			slash_targets += ((PropertySkill *) skill)->getCorrect(Self, this, "slash_extra_target").toInt();
+		if(skill->inherits("CardTargetSkill")){
+			slash_targets += ((CardTargetSkill *) skill)->getExtraTargetNum(Self, this);
 		}
 	}
 
@@ -163,7 +163,7 @@ public:
 		SlashEffectStruct effect = data.value<SlashEffectStruct>();
 		Room *room = player->getRoom();
 
-		if(effect.from->getGeneral()->isMale() != effect.to->getGeneral()->isMale()){
+		if(effect.from->getGeneral()->getGender() != effect.to->getGeneral()->getGender()){
 			if(effect.from->askForSkillInvoke(objectName())){
 				bool draw_card = false;
 
@@ -390,16 +390,16 @@ Yubashiri::Yubashiri(Suit suit, int number)
 	attach_skill = true;
 }
 
-class YubashiriSkill: public PropertySkill{
+class YubashiriSkill: public CardTargetSkill{
 public:
-	YubashiriSkill(): PropertySkill("yubashiri"){
+	YubashiriSkill(): CardTargetSkill("yubashiri"){
 
 	}
 
-	virtual QVariant getCorrect(const Player *player, const Card *card, const QString &property) const{
+	virtual int getExtraTargetNum(const Player *player, const Card *card) const{
 		int correct = 0;
 
-		if(property == "slash_extra_target" && card->inherits("Slash") && player->isLastHandCard(card)){
+		if(card->inherits("Slash") && player->isLastHandCard(card)){
 			correct += 2;
 		}
 
@@ -670,9 +670,6 @@ bool Collateral::targetsFeasible(const QList<const Player *> &targets, const Pla
 
 bool Collateral::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
 	if(targets.isEmpty()){
-		if(to_select->hasSkill("weimu") && isBlack())
-			return false;
-
 		return to_select->getWeapon() && to_select != Self;
 	}else if(targets.length() == 1){
 		const Player *first = targets.first();
@@ -704,9 +701,7 @@ void Collateral::use(Room *room, ServerPlayer *source, const QList<ServerPlayer 
 					int card_id = weapon->getId();
 					room->throwCard(card_id, source);
 				}
-			}
-			else
-			{
+			}else{
 				if(killer->isAlive() && killer->getWeapon()){
 					source->obtainCard(weapon);
 				}
@@ -720,16 +715,14 @@ void Collateral::use(Room *room, ServerPlayer *source, const QList<ServerPlayer 
 					use.from = killer;
 					use.to = victims;
 					room->useCard(use);
-				}
-				else{
+				}else{
 					if(killer->getWeapon()){
 						int card_id = weapon->getId();
 						room->throwCard(card_id, source);
 					}
 				}
 			}
-		}
-		else{
+		}else{
 			if(killer->isDead()) ;
 			else{
 				if(slash){
@@ -738,8 +731,7 @@ void Collateral::use(Room *room, ServerPlayer *source, const QList<ServerPlayer 
 					use.from = killer;
 					use.to = victims;
 					room->useCard(use);
-				}
-				else{
+				}else{
 					if(killer->getWeapon())
 						source->obtainCard(weapon);
 				}
@@ -755,7 +747,6 @@ Nullification::Nullification(Suit suit, int number)
 }
 
 void Nullification::use(Room *room, ServerPlayer *, const QList<ServerPlayer *> &) const{
-	// does nothing, just throw it
 	room->throwCard(this);
 }
 
@@ -829,7 +820,7 @@ void Duel::onEffect(const CardEffectStruct &effect) const{
 	room->damage(damage);
 }
 
-Snatch::Snatch(Suit suit, int number):SingleTargetTrick(suit, number, true) {
+Snatch::Snatch(Suit suit, int number):SingleTargetTrick(suit, number, true){
 	setObjectName("snatch");
 }
 
