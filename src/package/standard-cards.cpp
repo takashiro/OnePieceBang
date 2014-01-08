@@ -71,16 +71,22 @@ bool Slash::targetsFeasible(const QList<const Player *> &targets, const Player *
 
 bool Slash::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
 	int slash_targets = 1;
-	foreach(const ::Skill *skill, Self->getSkillList()){
-		if(skill->inherits("CardTargetSkill")){
-			slash_targets += ((CardTargetSkill *) skill)->getExtraTargetNum(Self, this);
+	bool distance_limit = !Self->hasFlag("@slash_distance_unlimited");
+
+	foreach(const ::Skill *s, Self->getSkillList()){
+		if(s->inherits("CardTargetSkill")){
+			const CardTargetSkill *skill = (const CardTargetSkill *) s;
+			slash_targets += skill->getExtraTargetNum(Self, this);
+
+			if(distance_limit && !skill->hasDistanceLimit(Self, this)){
+				distance_limit = false;
+			}
 		}
 	}
 
-	if(targets.length() >= slash_targets)
+	if(targets.length() >= slash_targets){
 		return false;
-
-	bool distance_limit = !Self->hasFlag("@slash_distance_unlimited");
+	}
 
 	return Self->canSlash(to_select, distance_limit, this);
 }
@@ -834,10 +840,19 @@ bool Snatch::targetFilter(const QList<const Player *> &targets, const Player *to
 	if(to_select == Self)
 		return false;
 
-	if(Self->distanceTo(to_select) > 1 && !Self->hasSkill("qicai"))
-		return false;
+	int max_distance = 1;
+	foreach(const ::Skill *s, Self->getSkillList()){
+		if(s->inherits("CardTargetSkill")){
+			const CardTargetSkill *skill = (const CardTargetSkill *) s;
+			if(skill->hasDistanceLimit(Self, this)){
+				max_distance += skill->getExtraDistanceLimit(Self, this);
+			}else{
+				return true;
+			}
+		}
+	}
 
-	return true;
+	return Self->distanceTo(to_select) < max_distance;
 }
 
 void Snatch::onEffect(const CardEffectStruct &effect) const{
@@ -1470,14 +1485,19 @@ bool SupplyShortage::targetFilter(const QList<const Player *> &targets, const Pl
 	if(to_select->containsTrick(objectName()))
 		return false;
 
-	if(Self->hasSkill("qicai"))
-		return true;
+	int max_distance = 1;
+	foreach(const ::Skill *s, Self->getSkillList()){
+		if(s->inherits("CardTargetSkill")){
+			const CardTargetSkill *skill = (const CardTargetSkill *) s;
+			if(!skill->hasDistanceLimit(Self, this)){
+				max_distance += skill->getExtraDistanceLimit(Self, this);
+			}else{
+				return true;
+			}
+		}
+	}
 
-	int distance = Self->distanceTo(to_select);
-	if(Self->hasSkill("duanliang"))
-		return distance <= 2;
-	else
-		return distance <= 1;
+	return Self->distanceTo(to_select) <= max_distance;
 }
 
 void SupplyShortage::takeEffect(ServerPlayer *target) const{

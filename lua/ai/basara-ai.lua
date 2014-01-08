@@ -14,11 +14,6 @@ sgs.ai_skill_choice.RevealGeneral = function(self, choices)
 		for _, player in ipairs(players) do
 			if self:hasSkills(sgs.masochism_skill, player) and self:isEnemy(damage.from, damage.to) then return "yes" end
 		end
-	elseif event == sgs.CardEffected then
-		local effect = data:toCardEffect()
-		for _, player in ipairs(players) do
-			if self.room:isProhibited(effect.from, player, effect.card) and self:isEnemy(effect.from, effect.to) then return "yes" end
-		end
 	end
 
 	local anjiang = 0

@@ -352,6 +352,14 @@ int CardTargetSkill::getExtraTargetNum(const Player *player, const Card *card) c
 	return 0;
 }
 
+bool CardTargetSkill::hasDistanceLimit(const Player *player, const Card *card) const{
+	return true;
+}
+
+int CardTargetSkill::getExtraDistanceLimit(const Player *player, const Card *card) const{
+	return 1;
+}
+
 WeaponSkill::WeaponSkill(const QString &name)
 	:TriggerSkill(name)
 {

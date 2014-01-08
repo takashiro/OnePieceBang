@@ -3454,9 +3454,6 @@ function SmartAI:aoeIsEffective(card, to)
 	if armor and armor:inherits("CandleWall") then
 		return false
 	end
-	if self.room:isProhibited(self.player, to, card) then
-		return false
-	end
 	if to:isLocked(card) then
 		return false
 	end
@@ -3529,14 +3526,12 @@ function SmartAI:exclude(players, card)
 	local excluded = {}
 	local limit = self:getDistanceLimit(card)
 	for _, player in sgs.list(players) do
-		if not self.room:isProhibited(self.player, player, card) then
-			local should_insert = true
-			if limit then
-				should_insert = self.player:distanceTo(player) <= limit
-			end
-			if should_insert then
-				table.insert(excluded, player)
-			end
+		local should_insert = true
+		if limit then
+			should_insert = self.player:distanceTo(player) <= limit
+		end
+		if should_insert then
+			table.insert(excluded, player)
 		end
 	end
 	return excluded
@@ -3665,7 +3660,6 @@ end
 
 function SmartAI:hasTrickEffective(card, player)
 	if player then
-		if self.room:isProhibited(self.player, player, card) then return false end
 		if (player:hasSkill("zhichi") and self.room:getTag("Zhichi"):toString() == player:objectName()) or player:hasSkill("noswuyan") then
 			if card and not (card:inherits("NegativeSoul") or card:inherits("SupplyShortage")) then return false end
 		end
@@ -3704,11 +3698,6 @@ function SmartAI:useTrickCard(card, use)
 		local others = self.room:getOtherPlayers(self.player)
 		others = sgs.QList2Table(others)
 		local aval = #others
-		for _, other in ipairs(others) do
-			if self.room:isProhibited(self.player, other, card) then
-				aval = aval -1
-			end
-		end
 		if aval < 1 then return end
 		local good = self:getAoeValue(card,self.player)
 		if good > 0 then
@@ -3882,8 +3871,7 @@ function SmartAI:damageMinusHp(self, enemy, type)
 			if acard:getTypeId() == sgs.Card_Basic and not acard:inherits("Wine") then basicnum = basicnum + 1 end
 		end
 		for _, acard in ipairs(cards) do
-			if ((acard:inherits("Duel") or acard:inherits("SavageAssault") or acard:inherits("ArcheryAttack") or acard:inherits("FireAttack")) 
-			and not self.room:isProhibited(self.player, enemy, acard))
+			if (acard:inherits("Duel") or acard:inherits("SavageAssault") or acard:inherits("ArcheryAttack") or acard:inherits("FireAttack"))
 			or ((acard:inherits("SavageAssault") or acard:inherits("ArcheryAttack")) and self:aoeIsEffective(acard, enemy)) then
 				if acard:inherits("FireAttack") then
 					if not enemy:isKongcheng() then 

@@ -46,16 +46,6 @@ function sgs.CreateGameStartSkill(spec)
 	return sgs.CreateTriggerSkill(spec)
 end
 
-function sgs.CreateProhibitSkill(spec)
-	assert(type(spec.name) == "string")
-	assert(type(spec.is_prohibited) == "function")
-	
-	local skill = sgs.LuaProhibitSkill(spec.name)	
-	skill.is_prohibited = spec.is_prohibited
-	
-	return skill
-end
-
 function sgs.CreateFilterSkill(spec)
 	assert(type(spec.name) == "string")
 	assert(type(spec.view_filter) == "function")

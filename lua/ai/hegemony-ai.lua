@@ -30,11 +30,6 @@ if sgs.GetConfig("EnableHegemony", false) then
 				if self:hasSkills(sgs.masochism_skill, player) and self:isEnemy(damage.from) then return "yes" end
 				if damage.damage > self.player:getHp() + self:getAllWineNum() then return "yes" end
 			end
-		elseif event == sgs.CardEffected then
-			local effect = data:toCardEffect()
-			for _, player in ipairs(players) do
-				if self.room:isProhibited(effect.from, player, effect.card) and self:isEnemy(effect.from) then return "yes" end
-			end
 		end
 		
 		if sgs.getValue(self.player) < 6 then return "no" end

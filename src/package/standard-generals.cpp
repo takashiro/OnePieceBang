@@ -549,45 +549,28 @@ public:
 class SwordsExpert: public TriggerSkill{
 public:
 	SwordsExpert(): TriggerSkill("swordsexpert"){
-		events << PhaseChange;
-	}
-
-	virtual bool triggerable(const ServerPlayer *target) const{
-		return TriggerSkill::triggerable(target) && (target->getPhase() == Player::Start || target->getPhase() == Player::Finish);
+		events << Damaged;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-		Room *room = player->getRoom();
+		DamageStruct damage = data.value<DamageStruct>();
+		if(damage.from){
+			QList<const Card *> equips = damage.from->getCards("e");
+			if(!equips.isEmpty()){
+				if(player->askForSkillInvoke(objectName(), data)){
+					Room *room = player->getRoom();
+					int card_id = room->askForCardChosen(player, damage.from, "he", objectName());
+					const Card *card = Bang->getCard(card_id);
+					room->obtainCard(player, card);
 
-		if(player->getPhase() == Player::Start){
-			QList<ServerPlayer *> targets;
-			foreach(ServerPlayer *target, room->getOtherPlayers(player)){
-				if(target->getWeapon() != NULL){
-					targets.append(target);
-				}
-			}
-			if(!targets.isEmpty() && player->askForSkillInvoke(objectName())){
-				ServerPlayer *target = room->askForPlayerChosen(player, targets, objectName());
-				room->obtainCard(player, target->getWeapon());
-				target->setFlags("SwordsExpertTarget");
-			}
-
-		}else if(player->getPhase() == Player::Finish){
-			foreach(ServerPlayer *target, room->getOtherPlayers(player)){
-				if(!target->hasFlag("SwordsExpertTarget")){
-					continue;
-				}
-
-				target->setFlags("-SwordsExpertTarget");
-				QString prompt = "swordsexpert-return:" + target->getGeneralName();
-				const Card *card = room->askForCard(player, ".Equip", prompt, QVariant(), NonTrigger);
-				if(card != NULL){
-					room->moveCardTo(card, target, Player::HandArea, true);
-				}else{
-					DamageStruct damage;
-					damage.from = target;
-					damage.to = player;
-					room->damage(damage);
+					room->showCard(player, card_id);
+					if(card->inherits("Weapon")){
+						RecoverStruct recover;
+						recover.who = player;
+						recover.recover = 1;
+						room->recover(player, recover);
+						room->recover(damage.from, recover);
+					}
 				}
 			}
 		}
@@ -604,7 +587,10 @@ public:
 
 	virtual int getCorrect(const Player *from, const Player *to) const{
 		if(to->hasSkill(objectName()) && !to->inMyAttackRange(from)){
-		return 1;
+			return 1;
+		}
+		if(from->hasSkill(objectName()) && !from->inMyAttackRange(to)){
+			return 1;
 		}
 
 		return 0;
@@ -890,23 +876,24 @@ public:
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 		Room *room = player->getRoom();
 		if(event == SlashMissed){
-		room->setPlayerFlag(player, "massiveaxe_enabled");
+			room->setPlayerFlag(player, "massiveaxe_enabled");
 		}else if(event == PhaseChange || event == HpChanged){
-		if(player->getPhase() == Player::Play){
-		if(player->isWounded()){
-		room->setPlayerFlag(player, "slash_count_unlimited");
+			if(player->getPhase() == Player::Play){
+				if(player->isWounded()){
+					room->setPlayerFlag(player, "slash_count_unlimited");
+				}else{
+					room->setPlayerFlag(player, "-slash_count_unlimited");
+				}
+			}
 		}else{
-		room->setPlayerFlag(player, "-slash_count_unlimited");
-		}
-		}
-		}else{
-		if(player->hasFlag("massiveaxe_enabled")){
-		DamageStruct damage = data.value<DamageStruct>();
-		damage.damage++;
-		data = QVariant::fromValue(damage);
+			if(player->hasFlag("massiveaxe_enabled")){
+				DamageStruct damage = data.value<DamageStruct>();
+				damage.damage++;
+				data = QVariant::fromValue(damage);
+				room->setPlayerFlag(player, "-massiveaxe_enabled");
 
-		room->sendLog("#TriggerSkill", player);
-		}
+				room->sendLog("#TriggerSkill", player);
+			}
 		}
 	}
 };

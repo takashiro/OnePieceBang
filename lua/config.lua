@@ -13,12 +13,12 @@ config = {
 
         "Standard",
         "Alabastan",
-        --"Skypiea",
-        --"Water7",
-        --"ThrillerBark",
-        --"FishmanIsland",
-        --"SummitWar",
-        --"Test",
+        "Skypiea",
+        "Water7",
+        "ThrillerBark",
+        "FishmanIsland",
+        "SummitWar",
+        "Test",
 	},
 
 	scene_names = {

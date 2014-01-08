@@ -1095,8 +1095,7 @@ function SmartAI:useCardCollateral(card, use)
 	self:sort(self.enemies,"threat")
 
 	for _, friend in ipairs(self.friends_noself) do
-		if friend:getWeapon() and self:hasSkills(sgs.lose_equip_skill, friend) 
-			and not self.room:isProhibited(self.player, friend, card) then
+		if friend:getWeapon() and self:hasSkills(sgs.lose_equip_skill, friend) then
 
 			for _, enemy in ipairs(self.enemies) do
 				if friend:canSlash(enemy) then
@@ -1112,8 +1111,7 @@ function SmartAI:useCardCollateral(card, use)
 	local n = nil
 	local final_enemy = nil
 	for _, enemy in ipairs(self.enemies) do
-		if not self.room:isProhibited(self.player, enemy, card)
-			and self:hasTrickEffective(card, enemy)
+		if self:hasTrickEffective(card, enemy)
 			and not self:hasSkills(sgs.lose_equip_skill, enemy)
 			and enemy:getWeapon() then
 
@@ -1221,7 +1219,6 @@ sgs.dynamic_value.control_usecard.NegativeSoul = true
 function SmartAI:useCardLightning(card, use)
 	if self.player:containsTrick("lightning") then return end
 	if self.player:hasSkill("weimu") and card:isBlack() then return end
-	if self.room:isProhibited(self.player, self.player, card) then end
 
 	--if not self:hasWizard(self.enemies) then--and self.room:isProhibited(self.player, self.player, card) then
 	local function hasDangerousFriend() 
@@ -1316,7 +1313,6 @@ end
 function SmartAI:useCardRain(card, use)
 	if self.player:containsTrick("rain") then return end
 	if self.player:hasSkill("weimu") and card:isBlack() then return end
-	if self.room:isProhibited(self.player, self.player, card) then end
 
 	if self:getFinalRetrial(self.player) == 1 then
 		use.card = card
