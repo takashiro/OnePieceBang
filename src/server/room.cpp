@@ -472,14 +472,27 @@ void Room::slashEffect(const SlashEffectStruct &effect){
 }
 
 void Room::slashResult(const SlashEffectStruct &effect, const Card *jink){
+	if(jink != NULL){
+		CardUseStruct jink_use;
+		jink_use.from = effect.to;
+		jink_use.to.append(effect.from);
+		jink_use.card = jink;
+		useCard(jink_use);
+	}
+
 	SlashEffectStruct result_effect = effect;
+	if(effect.to->hasFlag("slash_counteracted")){
+		effect.to->setFlags("-slash_counteracted");
+	}else{
+		jink = NULL;
+	}
 	result_effect.jink = jink;
 
 	QVariant data = QVariant::fromValue(result_effect);
 
-	if(jink == NULL)
+	if(jink == NULL){
 		thread->trigger(SlashHit, effect.from, data);
-	else{
+	}else{
 		setEmotion(effect.to, "jink");
 		thread->trigger(SlashMissed, effect.from, data);
 	}
@@ -1006,7 +1019,7 @@ const Card *Room::askForCard(ServerPlayer *player, const QString &pattern, const
 		CardStar card_ptr = card;
 		QVariant card_star = QVariant::fromValue(card_ptr);
 
-		if(trigger_event == CardResponsed || trigger_event == JinkUsed){
+		if(trigger_event == CardResponsed){
 			LogMessage log;
 			log.card_str = card->toString();
 			log.from = player;
@@ -1014,9 +1027,6 @@ const Card *Room::askForCard(ServerPlayer *player, const QString &pattern, const
 			sendLog(log);
 
 			player->playCardEffect(card);
-
-			if(trigger_event == JinkUsed)
-				thread->trigger(CardResponsed, player, card_star);
 		}
 
 		thread->trigger(trigger_event, player, card_star);

@@ -338,6 +338,7 @@ public:
 	Q_INVOKABLE Jink(Card::Suit suit, int number);
 	virtual QString getSubtype() const;
 	virtual bool isAvailable(const Player *player) const;
+	virtual void onEffect(const CardEffectStruct &effect) const;
 };
 
 class Wine: public BasicCard{

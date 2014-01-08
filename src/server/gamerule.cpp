@@ -426,7 +426,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 		SlashEffectStruct effect = data.value<SlashEffectStruct>();
 
 		QString slasher = effect.from->objectName();
-		const Card *jink = room->askForCard(effect.to, "jink", "slash-jink:" + slasher, data, JinkUsed);
+		const Card *jink = room->askForCard(effect.to, "jink", "slash-jink:" + slasher, data, NonTrigger);
 		room->slashResult(effect, jink);
 
 		break;

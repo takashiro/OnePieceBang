@@ -105,6 +105,10 @@ bool Jink::isAvailable(const Player *) const{
 	return false;
 }
 
+void Jink::onEffect(const CardEffectStruct &effect) const{
+	effect.from->setFlags("slash_counteracted");
+}
+
 Wine::Wine(Suit suit, int number):BasicCard(suit, number){
 	setObjectName("wine");
 	target_fixed = true;

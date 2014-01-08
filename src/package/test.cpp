@@ -74,7 +74,7 @@ public:
 class BlackHole: public TriggerSkill{
 public:
 	BlackHole(): TriggerSkill("blackhole"){
-		events << CardEffect << SlashMissed;
+		events << CardEffect;
 		frequency = Compulsory;
 	}
 
@@ -100,23 +100,6 @@ public:
 				ServerPlayer *player = room->findPlayerBySkillName("blackhole");
 				room->sendLog("#TriggerSkill", player, "blackhole");
 				return true;
-			}
-
-		}else if(event == SlashMissed){
-			SlashEffectStruct effect = data.value<SlashEffectStruct>();
-			if(effect.from->hasSkill("blackhole") && effect.from->getPhase() != Player::NotActive && effect.jink->isRed()){
-				room->sendLog("#TriggerSkill", effect.from, "blackhole");
-				const Card *jink = NULL;
-				forever{
-					QString prompt = "slash-jink:" + effect.from->getGeneralName();
-					jink = room->askForCard(effect.to, "jink", prompt, QVariant(), CardUsed);
-					if(jink == NULL){
-						room->slashResult(effect, NULL);
-						return true;
-					}else if(jink->isBlack()){
-						break;
-					}
-				}
 			}
 		}
 
