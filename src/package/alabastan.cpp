@@ -668,6 +668,7 @@ AlabastanPackage::AlabastanPackage():Package("Alabastan")
 	General *ace = new General(this, "ace", "pirate", 4);
 	ace->addSkill(new FirePunch);
 	ace->addSkill(new FirePunchEx);
+	related_skills.insertMulti("firepunch", "#firepunchex");
 
 	General *vivi = new General(this, "vivi", "citizen", 3, false);
 	vivi->addSkill(new AntiWar);
