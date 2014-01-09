@@ -856,7 +856,7 @@ bool Snatch::targetFilter(const QList<const Player *> &targets, const Player *to
 		}
 	}
 
-	return Self->distanceTo(to_select) < max_distance;
+	return Self->distanceTo(to_select) <= max_distance;
 }
 
 void Snatch::onEffect(const CardEffectStruct &effect) const{
