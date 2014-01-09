@@ -904,7 +904,7 @@ public:
 
 void StandardPackage::addGenerals()
 {
-	General *luffy = new General(this, "luffy", "pirate", 4);
+	General *luffy = new General(this, "luffy$", "pirate", 4);
 	luffy->addSkill(new Insulator);
 	luffy->addSkill(new RubberPistol);
 	luffy->addSkill(new RubberPistolEx);
