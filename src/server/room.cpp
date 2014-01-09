@@ -2514,8 +2514,8 @@ void Room::damage(const DamageStruct &damage_data){
 			return;
 	}
 
-	// DamagedProceed
-	bool prevent = thread->trigger(DamagedProceed, damage_data.to, data);
+	// Predamaged
+	bool prevent = thread->trigger(Predamaged, damage_data.to, data);
 	if(prevent)
 		return;
 
@@ -2526,8 +2526,8 @@ void Room::damage(const DamageStruct &damage_data){
 	}
 
 
-	// predamaged
-	bool broken = thread->trigger(Predamaged, damage_data.to, data);
+	// DamagedProceed
+	bool broken = thread->trigger(DamagedProceed, damage_data.to, data);
 	if(broken)
 		return;
 

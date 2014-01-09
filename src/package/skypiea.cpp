@@ -4,7 +4,7 @@
 class GodThunder: public TriggerSkill{
 public:
 	GodThunder(): TriggerSkill("godthunder"){
-		events << Predamaged;
+		events << DamagedProceed;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
@@ -30,7 +30,7 @@ public:
 class GodThunderEx: public TriggerSkill{
 public:
 	GodThunderEx(): TriggerSkill("#godthunderex"){
-		events << Predamaged;
+		events << DamagedProceed;
 	}
 
 	virtual bool triggerable(const ServerPlayer *target) const{

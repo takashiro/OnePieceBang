@@ -4,7 +4,7 @@
 class Insulator: public TriggerSkill{
 public:
 	Insulator(): TriggerSkill("insulator"){
-		events << Predamaged;
+		events << DamagedProceed;
 		frequency = Compulsory;
 	}
 
@@ -379,7 +379,7 @@ public:
 class Mirage: public TriggerSkill{
 public:
 	Mirage(): TriggerSkill("mirage"){
-		events << Predamaged;
+		events << DamagedProceed;
 	}
 
 	virtual bool triggerable(const ServerPlayer *target) const{
@@ -708,7 +708,7 @@ public:
 class FogBarrierEffect: public TriggerSkill{
 public:
 	FogBarrierEffect(): TriggerSkill("#fogbarriereffect"){
-		events << CardEffected << Predamaged;
+		events << CardEffected << DamagedProceed;
 	}
 
 	virtual bool triggerable(const ServerPlayer *target) const{
@@ -723,7 +723,7 @@ public:
 				return true;
 			}
 
-		}else if(event == Predamaged){
+		}else if(event == DamagedProceed){
 			DamageStruct damage = data.value<DamageStruct>();
 			if(damage.nature != DamageStruct::Normal){
 				player->getRoom()->sendLog("#TriggerSkill", player, "fogbarrier");
@@ -739,7 +739,7 @@ public:
 class Justice: public TriggerSkill{
 public:
 	Justice(): TriggerSkill("justice"){
-		events << Predamaged;
+		events << DamagedProceed;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
@@ -755,11 +755,11 @@ public:
 class TopSwordman: public TriggerSkill{
 public:
 	TopSwordman(): TriggerSkill("topswordman"){
-		events << Predamaged << Predamage;
+		events << DamagedProceed << Predamage;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-		if(event == Predamaged){
+		if(event == DamagedProceed){
 			DamageStruct damage = data.value<DamageStruct>();
 			if(damage.from && damage.from->getWeapon() && damage.card && damage.card->inherits("Slash")){
 				damage.damage--;

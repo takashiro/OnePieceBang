@@ -19,7 +19,7 @@ GameRule::GameRule(QObject *)
 			<< CardEffected << HpRecover << HpLost << AskForWineDone
 			<< AskForWine << Death << Dying << GameOverJudge
 			<< SlashHit << SlashMissed << SlashEffected << SlashProceed
-			<< Predamaged << DamageDone << DamageComplete
+			<< DamagedProceed << DamageDone << DamageComplete
 			<< StartJudge << FinishJudge << Pindian;
 }
 
@@ -331,7 +331,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 		break;
 	}
 
-	case Predamaged:{
+	case DamagedProceed:{
 		DamageStruct damage = data.value<DamageStruct>();
 		if(damage.to != NULL && damage.damage > 1){
 			const Card *haki = room->askForCard(damage.to, "busou_haki", "damage-busou-haki", data);

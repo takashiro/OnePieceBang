@@ -351,7 +351,7 @@ public:
 class Corrasion: public TriggerSkill{
 public:
 	Corrasion(): TriggerSkill("corrasion"){
-		events << Predamaged;
+		events << DamagedProceed;
 		frequency = Compulsory;
 	}
 

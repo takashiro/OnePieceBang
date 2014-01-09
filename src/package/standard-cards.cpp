@@ -1284,7 +1284,7 @@ Shusui::Shusui(Suit suit, int number):Weapon(suit, number, 2){
 class CandleWallSkill: public ArmorSkill{
 public:
 	CandleWallSkill():ArmorSkill("candle_wall"){
-		events << Predamaged << SlashEffected << CardEffected;
+		events << DamagedProceed << SlashEffected << CardEffected;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
@@ -1312,7 +1312,7 @@ public:
 
 				return true;
 			}
-		}else if(event == Predamaged){
+		}else if(event == DamagedProceed){
 			DamageStruct damage = data.value<DamageStruct>();
 			if(damage.nature == DamageStruct::Fire){
 				LogMessage log;
@@ -1339,7 +1339,7 @@ CandleWall::CandleWall(Suit suit, int number):Armor(suit, number){
 class DiamondArmorSkill: public ArmorSkill{
 public:
 	DiamondArmorSkill():ArmorSkill("diamond_armor"){
-		events << Predamaged;
+		events << DamagedProceed;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{

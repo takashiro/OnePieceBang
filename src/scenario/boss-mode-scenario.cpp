@@ -126,7 +126,7 @@ public:
 class Daji: public TriggerSkill{
 public:
 	Daji():TriggerSkill("daji"){
-		events << Damaged << PhaseChange << CardEffected << Predamaged;
+		events << Damaged << PhaseChange << CardEffected << DamagedProceed;
 		frequency = Compulsory;
 	}
 
@@ -161,7 +161,7 @@ public:
 			}
 		}
 
-		if(event == Predamaged){
+		if(event == DamagedProceed){
 			DamageStruct damage = data.value<DamageStruct>();
 			if(damage.damage > 1){
 				damage.damage = damage.damage-1;
