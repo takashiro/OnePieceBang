@@ -182,13 +182,13 @@ public:
 class Guzhan: public TriggerSkill{
 public:
 	Guzhan():TriggerSkill("guzhan"){
-		events << CardLostOneTime << SlashEffect;
+		events << CardLost << SlashEffect;
 		frequency = Compulsory;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 		Room *room = player->getRoom();
-		if(event == CardLostOneTime){
+		if(event == CardLost){
 			if(player->getWeapon() == NULL){
 				if(!player->hasSkill("paoxiao"))
 					room->acquireSkill(player, "paoxiao");
@@ -214,7 +214,7 @@ public:
 class Jizhan: public TriggerSkill{
 public:
 	Jizhan():TriggerSkill("jizhan"){
-		events << Postdamage << CardLostOneTime;
+		events << Postdamage << CardLost;
 		frequency = Compulsory;
 	}
 

@@ -321,7 +321,7 @@ public:
 class Memoir: public TriggerSkill{
 public:
 	Memoir(): TriggerSkill("memoir"){
-		events << CardLostOneTime;
+		events << CardLost;
 	}
 
 	virtual bool triggerable(const ServerPlayer *target) const{

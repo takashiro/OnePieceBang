@@ -2983,7 +2983,7 @@ void Room::moveCardsAtomic(QList<CardsMoveStruct> cards_moves, bool forceMoveVis
 			moveOneTimeStruct.to_place = cards_move.to_place;
 			CardsMoveOneTimeStar lose_star = &moveOneTimeStruct;
 			QVariant data = QVariant::fromValue(lose_star);
-			thread->trigger(CardLostOneTime, (ServerPlayer*)lose_star->from, data);            
+			thread->trigger(CardLost, (ServerPlayer*)lose_star->from, data);            
 		}
 		if (cards_move.countAsOneTime) moveOneTimeStruct = CardsMoveOneTimeStruct();
 	}
@@ -3011,7 +3011,7 @@ void Room::moveCardsAtomic(QList<CardsMoveStruct> cards_moves, bool forceMoveVis
 			moveOneTimeStruct.to_place = cards_move.to_place;
 			CardsMoveOneTimeStar move_star = &moveOneTimeStruct;
 			QVariant data = QVariant::fromValue(move_star);
-			thread->trigger(CardGotOneTime, (ServerPlayer*)cards_move.to, data);
+			thread->trigger(CardGot, (ServerPlayer*)cards_move.to, data);
 		}
 		if (cards_move.countAsOneTime) moveOneTimeStruct = CardsMoveOneTimeStruct();
 	}
@@ -3123,14 +3123,14 @@ void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool forceMoveVisible,
 			moveOneTimeStruct.to_place = cards_move.to_place;
 			CardsMoveOneTimeStar lose_star = &moveOneTimeStruct;
 			QVariant data = QVariant::fromValue(lose_star);
-			thread->trigger(CardLostOneTime, (ServerPlayer*)lose_star->from, data);            
+			thread->trigger(CardLost, (ServerPlayer*)lose_star->from, data);            
 		}
 		if (cards_move.countAsOneTime) moveOneTimeStruct = CardsMoveOneTimeStruct();
 	}
 
 	if (enforceOrigin)
 	{
-		// check again here as CardLostOneTime may also kill target, or remove cards from source
+		// check again here as CardLost may also kill target, or remove cards from source
 		for (int i = 0; i < cards_moves.size(); i++)
 		{   
 			CardsMoveStruct &cards_move = cards_moves[i];
@@ -3201,7 +3201,7 @@ void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool forceMoveVisible,
 			moveOneTimeStruct.to_place = cards_move.to_place;
 			CardsMoveOneTimeStar move_star = &moveOneTimeStruct;
 			QVariant data = QVariant::fromValue(move_star);
-			thread->trigger(CardGotOneTime, (ServerPlayer*)cards_move.to, data);
+			thread->trigger(CardGot, (ServerPlayer*)cards_move.to, data);
 		}
 		if (cards_move.countAsOneTime) moveOneTimeStruct = CardsMoveOneTimeStruct();
 	}    
