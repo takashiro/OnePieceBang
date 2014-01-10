@@ -2970,7 +2970,7 @@ void Room::moveCardsAtomic(QList<CardsMoveStruct> cards_moves, bool forceMoveVis
 			if (cards_move.from && (cards_move.from_place == Player::HandArea || cards_move.from_place == Player::EquipArea)){
 				CardMoveStar move_star = &moves[j];
 				QVariant data = QVariant::fromValue(move_star);
-				thread->trigger(CardLostOnePiece, (ServerPlayer*)cards_move.from, data);
+				thread->trigger(OneCardLost, (ServerPlayer*)cards_move.from, data);
 			}
 		}
 		if (cards_move.from && (cards_move.from_place == Player::HandArea || cards_move.from_place == Player::EquipArea)){
@@ -2998,7 +2998,7 @@ void Room::moveCardsAtomic(QList<CardsMoveStruct> cards_moves, bool forceMoveVis
 			{
 				CardMoveStar move_star = &moves[j];
 				QVariant data = QVariant::fromValue(move_star);
-				thread->trigger(CardGotOnePiece, (ServerPlayer*)cards_move.to, data);
+				thread->trigger(OneCardGot, (ServerPlayer*)cards_move.to, data);
 			}
 		}
 		if (cards_move.to && (cards_move.to_place == Player::HandArea || cards_move.to_place == Player::EquipArea)){
@@ -3110,7 +3110,7 @@ void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool forceMoveVisible,
 			if (cards_move.from && (cards_move.from_place == Player::HandArea || cards_move.from_place == Player::EquipArea)){
 				CardMoveStar move_star = &moves[j];
 				QVariant data = QVariant::fromValue(move_star);
-				thread->trigger(CardLostOnePiece, (ServerPlayer*)cards_move.from, data);
+				thread->trigger(OneCardLost, (ServerPlayer*)cards_move.from, data);
 			}
 		}
 		if (cards_move.from && (cards_move.from_place == Player::HandArea || cards_move.from_place == Player::EquipArea)){
@@ -3187,7 +3187,7 @@ void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool forceMoveVisible,
 				(cards_move.to_place == Player::HandArea || cards_move.to_place == Player::EquipArea)) {
 				CardMoveStar move_star = &moves[j];
 				QVariant data = QVariant::fromValue(move_star);
-				thread->trigger(CardGotOnePiece, (ServerPlayer*)cards_move.to, data);
+				thread->trigger(OneCardGot, (ServerPlayer*)cards_move.to, data);
 			}
 			Bang->getCard(card_id)->onMove(moves[j]);
 		}
@@ -3829,7 +3829,7 @@ void Room::takeAG(ServerPlayer *player, int card_id){
 		move.card_id = card_id;
 		CardMoveStar move_star = &move;
 		QVariant data = QVariant::fromValue(move_star);
-		thread->trigger(CardGotOnePiece, player, data);        
+		thread->trigger(OneCardGot, player, data);        
 	}else{
 		discard_pile->prepend(card_id);
 		setCardMapping(card_id, NULL, Player::DiscardPile);

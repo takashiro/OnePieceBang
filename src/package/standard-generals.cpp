@@ -401,7 +401,7 @@ public:
 class FretyWind: public TriggerSkill{
 public:
 	FretyWind():TriggerSkill("fretywind"){
-		events << CardLostOnePiece;
+		events << OneCardLost;
 	}
 
 	virtual bool trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
@@ -441,12 +441,12 @@ public:
 class TripleSword: public TriggerSkill{
 public:
 	TripleSword(): TriggerSkill("triplesword"){
-		events << CardUsed << CardLostOnePiece;
+		events << CardUsed << OneCardLost;
 		frequency = Compulsory;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-		if(event == CardLostOnePiece){
+		if(event == OneCardLost){
 			CardMoveStar move = data.value<CardMoveStar>();
 			if(move->to != move->from && move->from_place == Player::EquipArea && Bang->getCard(move->card_id)->getSubtype() == "weapon" && player->getWeapon() == NULL && !player->getPile("sword").isEmpty()){
 				Room *room = player->getRoom();
