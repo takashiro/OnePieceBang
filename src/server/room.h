@@ -188,7 +188,7 @@ public:
 	// @param forceVisible
 	//        If true, all players will be able to see the face of card regardless of whether the movement is
 	//        relevant or not.
-	bool notifyMoveCards(bool isLostPhase, QList<CardsMoveStruct> move, bool forceVisible);
+	bool notifyMoveCards(bool is_lost_phase, QList<CardsMoveStruct> move, bool force_visible);
 
 	void acquireSkill(ServerPlayer *player, const Skill *skill, bool open = true);
 	void acquireSkill(ServerPlayer *player, const QString &skill_name, bool open = true);
@@ -243,8 +243,8 @@ public:
 	bool forceMoveVisible = false, bool ignoreChanged = true);
 	void moveCardsAtomic(QList<CardsMoveStruct> cards_move, bool forceMoveVisible);
 	void moveCards(CardsMoveStruct cards_move, bool forceMoveVisible, bool ignoreChanged = true);
-	void moveCards(QList<CardsMoveStruct> cards_moves, bool forceMoveVisible, bool ignoreChanged = true);
-	void _moveCards(QList<CardsMoveStruct> cards_moves, bool forceMoveVisible, bool ignoreChanged);
+	void moveCards(QList<CardsMoveStruct> cards_moves, bool forceMoveVisible, bool enforce_origin = true);
+	void _moveCards(QList<CardsMoveStruct> cards_moves, bool force_visible, bool ignoreChanged);
 	QList<CardsMoveStruct> _breakDownCardMoves(QList<CardsMoveStruct> &cards_moves);
 
 	// interactive methods

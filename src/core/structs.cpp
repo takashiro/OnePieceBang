@@ -78,7 +78,7 @@ QJsonValue CardsMoveStruct::toJsonValue() const{
 	return arg;
 }
 
-QList<CardMoveStruct> CardsMoveStruct::flatten(){
+QList<CardMoveStruct> CardsMoveStruct::flatten() const{
 	QList<CardMoveStruct> result;
 	foreach (int card_id, card_ids)
 	{
