@@ -1273,8 +1273,6 @@ sgs.ai_keep_value.Lightning = -1
 
 function SmartAI:useCardTornado(card, use)
 	if self.player:containsTrick("tornado") then return end
-	if self.player:hasSkill("weimu") and card:isBlack() then return end
-	if self.room:isProhibited(self.player, self.player, card) then end
 
 	--if not self:hasWizard(self.enemies) then--and self.room:isProhibited(self.player, self.player, card) then
 	if self:getFinalRetrial(self.player) == 2 then 
