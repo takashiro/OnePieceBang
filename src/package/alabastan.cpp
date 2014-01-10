@@ -332,9 +332,14 @@ public:
 		Room *room = target->getRoom();
 		foreach(ServerPlayer *player, room->getOtherPlayers(target)){
 			if(player->hasSkill(objectName()) && player->askForSkillInvoke(objectName(), data)){
-				foreach(int card_id, player->handCards()){
-					room->obtainCard(target, card_id, false);
+				CardsMoveStruct move;
+				move.to = target;
+				move.to_place = Player::HandArea;
+				move.as_one_time = true;
+				foreach(const Card *card, player->getHandcards()){
+					move.card_ids << card->getEffectiveId();
 				}
+				room->moveCards(move, false);
 
 				player->drawCards(1, true, objectName());
 				if(player->tag.contains("imitated_skill_name")){

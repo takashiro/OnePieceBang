@@ -2837,10 +2837,10 @@ void Room::moveCardTo(const Card* card, ServerPlayer* dstPlayer, Player::Place d
 	moveCards(moves, forceMoveVisible, ignoreChanged);
 }
 
-void Room::moveCards(CardsMoveStruct cards_move, bool forceMoveVisible, bool ignoreChanged){
+void Room::moveCards(CardsMoveStruct cards_move, bool force_visible, bool enforce_origin){
 	QList<CardsMoveStruct> cards_moves;
 	cards_moves.append(cards_move);
-	moveCards(cards_moves, forceMoveVisible, ignoreChanged);
+	moveCards(cards_moves, force_visible, enforce_origin);
 }
 
 void Room::_fillMoveInfo(CardMoveStruct &move) const
@@ -2897,8 +2897,7 @@ void Room::_fillMoveInfo(CardsMoveStruct &moves, int card_index) const
 	}
 }
 
-void Room::moveCardsAtomic(QList<CardsMoveStruct> cards_moves, bool forceMoveVisible)
-{
+void Room::moveCardsAtomic(QList<CardsMoveStruct> cards_moves, bool force_visible){
 	cards_moves = _breakDownCardMoves(cards_moves);
 	// First, process remove card
 	for(int i = 0; i < cards_moves.size(); i++){
@@ -2958,8 +2957,8 @@ void Room::moveCardsAtomic(QList<CardsMoveStruct> cards_moves, bool forceMoveVis
 		}
 	}
 
-	notifyMoveCards(true, cards_moves, forceMoveVisible);
-	notifyMoveCards(false, cards_moves, forceMoveVisible);
+	notifyMoveCards(true, cards_moves, force_visible);
+	notifyMoveCards(false, cards_moves, force_visible);
 
 	foreach(const CardsMoveStruct &cards_move, cards_moves){
 		//trigger events
@@ -3029,12 +3028,12 @@ QList<CardsMoveStruct> Room::_breakDownCardMoves(QList<CardsMoveStruct> &cards_m
 
 	return all_sub_moves;
 }
-void Room::moveCards(QList<CardsMoveStruct> cards_moves, bool forceMoveVisible, bool enforce_origin){
+void Room::moveCards(QList<CardsMoveStruct> cards_moves, bool force_visible, bool enforce_origin){
 	QList<CardsMoveStruct> all_sub_moves = _breakDownCardMoves(cards_moves);
-	_moveCards(all_sub_moves, forceMoveVisible, enforce_origin);
+	_moveCards(all_sub_moves, force_visible, enforce_origin);
 }
 
-void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool force_visible, bool enforceOrigin)
+void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool force_visible, bool enforce_origin)
 {
 	// First, process remove card
 	notifyMoveCards(true, cards_moves, force_visible);
@@ -3042,7 +3041,7 @@ void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool force_visible, bo
 	for(int i = 0; i < cards_moves.length(); i++){
 		CardsMoveStruct &cards_move = cards_moves[i];
 		QList<CardMoveStruct> moves = cards_move.flatten();
-		if (enforceOrigin){
+		if (enforce_origin){
 			if(cards_move.to && !cards_move.to->isAlive()){
 				cards_move.to = NULL;
 				cards_move.to_place = Player::DiscardPile;
@@ -3052,7 +3051,7 @@ void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool force_visible, bo
 		for (int j = 0; j < moves.size(); j++){
 			// If the during the move, the source's card is moved by some other trigger,
 			// then abort the current card
-			if(enforceOrigin){
+			if(enforce_origin){
 				CardMoveStruct new_move = moves[j];
 				_fillMoveInfo(new_move);
 				if (!new_move.hasSameSourceAs(moves[j])){
@@ -3097,7 +3096,7 @@ void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool force_visible, bo
 		}
 	}
 
-	if (enforceOrigin){
+	if (enforce_origin){
 		// check again here as CardLost may also kill target, or remove cards from source
 		for(int i = 0; i < cards_moves.length(); i++){
 			CardsMoveStruct &cards_move = cards_moves[i];

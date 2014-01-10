@@ -241,10 +241,10 @@ public:
 
 	void moveCardTo(const Card* card, ServerPlayer* dstPlayer, Player::Place dstPlace,
 	bool forceMoveVisible = false, bool ignoreChanged = true);
-	void moveCardsAtomic(QList<CardsMoveStruct> cards_move, bool forceMoveVisible);
-	void moveCards(CardsMoveStruct cards_move, bool forceMoveVisible, bool ignoreChanged = true);
-	void moveCards(QList<CardsMoveStruct> cards_moves, bool forceMoveVisible, bool enforce_origin = true);
-	void _moveCards(QList<CardsMoveStruct> cards_moves, bool force_visible, bool ignoreChanged);
+	void moveCardsAtomic(QList<CardsMoveStruct> cards_move, bool force_visible);
+	void moveCards(CardsMoveStruct cards_move, bool force_visible, bool enforce_origin = true);
+	void moveCards(QList<CardsMoveStruct> cards_moves, bool force_visible, bool enforce_origin = true);
+	void _moveCards(QList<CardsMoveStruct> cards_moves, bool force_visible, bool enforce_origin);
 	QList<CardsMoveStruct> _breakDownCardMoves(QList<CardsMoveStruct> &cards_moves);
 
 	// interactive methods
