@@ -1703,7 +1703,7 @@ void Client::skillInvoked(const QJsonValue &argdata){
 }
 
 void Client::acquireSkill(const QString &acquire_str){
-	QRegExp rx("(\\w+):(\\w+)");
+	QRegExp rx("(\\w+):(#?\\w+)");
 
 	if(!rx.exactMatch(acquire_str))
 		return;

@@ -3222,15 +3222,16 @@ void Room::acquireSkill(ServerPlayer *player, const Skill *skill, bool open){
 		thread->addTriggerSkill(trigger_skill);
 	}
 
-	if(skill->isVisible()){
-		if(open){
-			QString acquire_str = QString("%1:%2").arg(player->objectName()).arg(skill_name);
-			broadcastInvoke("acquireSkill", acquire_str);
-		}
+	if(open){
+		QString acquire_str = QString("%1:%2").arg(player->objectName()).arg(skill_name);
+		broadcastInvoke("acquireSkill", acquire_str);
+	}
 
+	if(skill->isVisible()){
 		foreach(const Skill *related_skill, Bang->getRelatedSkills(skill_name)){
-			if(!related_skill->isVisible())
+			if(!related_skill->isVisible()){
 				acquireSkill(player, related_skill);
+			}
 		}
 	}
 }

@@ -1516,6 +1516,8 @@ void RoomScene::removeWidgetFromSkillDock(QWidget *widget){
 }
 
 void RoomScene::acquireSkill(const ClientPlayer *player, const QString &skill_name){
+	if(skill_name.startsWith("#")) return;
+
 	QGraphicsObject *dest = getAnimationObject(player->objectName());
 	QGraphicsTextItem *item = new QGraphicsTextItem(Bang->translate(skill_name), NULL);
 	this->addItem(item);
