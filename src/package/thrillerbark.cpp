@@ -104,7 +104,7 @@ public:
 
 	virtual bool viewFilter(const CardItem *to_select) const{
 		const Card *card = to_select->getCard();
-		return card->getSuit() == Card::Club && (card->getTypeId() == Card::Basic || card->getTypeId() == Card::Equip);
+		return card->getSuit() == Card::Club && !card->inherits("DelayedTrick");
 	}
 
 	virtual const Card *viewAs(CardItem *card_item) const{
@@ -138,7 +138,7 @@ public:
 			if(judge->isBad()){//effect
 				foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){
 					room->sendLog("#TriggerSkill", player, objectName());
-					room->obtainCard(player, judge->card);
+					player->drawCards(1);
 				}
 			}else{
 				foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){

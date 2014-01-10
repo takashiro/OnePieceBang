@@ -222,7 +222,9 @@ const DelayedTrick *DelayedTrick::CastFrom(const Card *card){
 	int number = card->getNumber();
 	if(card->inherits("DelayedTrick")){
 		return qobject_cast<const DelayedTrick *>(card);
-
+	}else if(card->getSuit() == Card::Club){
+		trick = new NegativeSoul(suit, number);
+		trick->addSubcard(card->getId());
 	}else if(card->getTypeId() == Card::Basic || card->getTypeId() == Card::Equip){
 		switch(card->getSuit()){
 		case Card::Spade:
@@ -231,10 +233,6 @@ const DelayedTrick *DelayedTrick::CastFrom(const Card *card){
 			break;
 		case Card::Heart:
 			trick = new Rain(suit, number);
-			trick->addSubcard(card->getId());
-			break;
-		case Card::Club:
-			trick = new NegativeSoul(suit, number);
 			trick->addSubcard(card->getId());
 			break;
 		case Card::Diamond:
