@@ -553,7 +553,7 @@ public:
 class SwordsExpert: public TriggerSkill{
 public:
 	SwordsExpert(): TriggerSkill("swordsexpert"){
-		events << Damaged;
+		events << Postdamaged;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
@@ -785,7 +785,7 @@ public:
 class Upright: public TriggerSkill{
 public:
 	Upright(): TriggerSkill("upright"){
-		events << Damaged;
+		events << Postdamaged;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{

@@ -2536,13 +2536,13 @@ void Room::damage(const DamageStruct &damage_data){
 
 	// damage
 	if(damage_data.from){
-		bool broken = thread->trigger(Damage, damage_data.from, data);
+		bool broken = thread->trigger(Postdamage, damage_data.from, data);
 		if(broken)
 			return;
 	}
 
 	// damaged
-	broken = thread->trigger(Damaged, damage_data.to, data);
+	broken = thread->trigger(Postdamaged, damage_data.to, data);
 	if(broken)
 		return;
 

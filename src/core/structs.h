@@ -229,8 +229,8 @@ enum TriggerEvent{
 	DamageProceed,
 	DamagedProceed,
 	DamageDone,
-	Damage,
-	Damaged,
+	Postdamage,
+	Postdamaged,
 	DamageComplete,
 
 	Dying,

@@ -71,7 +71,7 @@ end
 function sgs.CreateMasochismSkill(spec)
 	assert(type(spec.on_damaged) == "function")
 	
-	spec.events = sgs.Damaged
+	spec.events = sgs.Postdamaged
 	
 	function spec.on_trigger(skill, event, player, data)
 		spec.on_damaged(skill, player)

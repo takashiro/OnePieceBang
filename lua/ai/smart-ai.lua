@@ -1599,7 +1599,7 @@ function SmartAI:filterEvent(event, player, data)
 			and (to:getHandcardNum()>2 or from:getState() == "robot") then
 			sgs.ai_leiji_effect = true
 		end
-	elseif event == sgs.Damaged then
+	elseif event == sgs.Postamaged then
 		local damage = data:toDamage()
 		local card = damage.card
 		local from = damage.from

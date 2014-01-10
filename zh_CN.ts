@@ -199,7 +199,7 @@
     <message>
         <location filename="src/dialog/cardeditor.cpp" line="918"/>
         <source>Lord</source>
-        <translation>主公</translation>
+        <translation>船长</translation>
     </message>
     <message>
         <location filename="src/dialog/cardeditor.cpp" line="937"/>
@@ -244,7 +244,7 @@
     <message>
         <location filename="src/dialog/cardeditor.cpp" line="1005"/>
         <source>Lord skill</source>
-        <translation>主公技</translation>
+        <translation>船长技</translation>
     </message>
     <message>
         <location filename="src/dialog/cardeditor.cpp" line="1006"/>
@@ -388,7 +388,7 @@
     <message>
         <location filename="src/dialog/choosegeneraldialog.cpp" line="175"/>
         <source>The lord has chosen %1. %2</source>
-        <translation>主公选择了 %1，%2</translation>
+        <translation>船长选择了 %1，%2</translation>
     </message>
     <message>
         <location filename="src/dialog/choosegeneraldialog.cpp" line="194"/>
@@ -413,7 +413,7 @@
         <source>
  wait for the lord player choosing general, please</source>
         <translation>
-请等待主公选择武将</translation>
+请等待船长选择武将</translation>
     </message>
     <message>
         <location filename="src/client/client.cpp" line="755"/>
@@ -817,7 +817,7 @@
     <message>
         <location filename="src/dialog/configdialog.ui" line="610"/>
         <source>Only save the record of lord</source>
-        <translation>仅保存主公的重放记录</translation>
+        <translation>仅保存船长的重放记录</translation>
     </message>
     <message>
         <location filename="src/dialog/configdialog.cpp" line="73"/>
@@ -1244,7 +1244,7 @@
     <message>
         <location filename="src/dialog/customassigndialog.cpp" line="1368"/>
         <source>Two many lords in the game</source>
-        <translation>主公角色设置过多</translation>
+        <translation>船长角色设置过多</translation>
     </message>
     <message>
         <location filename="src/dialog/customassigndialog.cpp" line="1377"/>
@@ -2156,17 +2156,17 @@
     <message>
         <location filename="src/dialog/mainwindow.cpp" line="505"/>
         <source>Lord</source>
-        <translation>主公</translation>
+        <translation>船长</translation>
     </message>
     <message>
         <location filename="src/dialog/mainwindow.cpp" line="505"/>
         <source>Loyalist</source>
-        <translation>忠臣</translation>
+        <translation>船员</translation>
     </message>
     <message>
         <location filename="src/dialog/mainwindow.cpp" line="505"/>
         <source>Rebel</source>
-        <translation>反贼</translation>
+        <translation>外敌</translation>
     </message>
     <message>
         <location filename="src/dialog/mainwindow.cpp" line="505"/>
@@ -2230,17 +2230,17 @@
     <message>
         <location filename="src/dialog/mainwindow.cpp" line="853"/>
         <source>Lord</source>
-        <translation>主公</translation>
+        <translation>船长</translation>
     </message>
     <message>
         <location filename="src/dialog/mainwindow.cpp" line="854"/>
         <source>Loyalist</source>
-        <translation>忠臣</translation>
+        <translation>船员</translation>
     </message>
     <message>
         <location filename="src/dialog/mainwindow.cpp" line="855"/>
         <source>Rebel</source>
-        <translation>反贼</translation>
+        <translation>外敌</translation>
     </message>
     <message>
         <location filename="src/dialog/mainwindow.cpp" line="856"/>
@@ -2659,7 +2659,7 @@
     <message>
         <location filename="src/dialog/roleassigndialog.cpp" line="115"/>
         <source>The first assigned role must be lord!</source>
-        <translation>1号位必须是主公!</translation>
+        <translation>1号位必须是船长!</translation>
     </message>
     <message>
         <location filename="src/dialog/roleassigndialog.cpp" line="132"/>
@@ -2801,17 +2801,17 @@
     <message>
         <location filename="src/ui/roomscene.cpp" line="1569"/>
         <source>Lord</source>
-        <translation>主公</translation>
+        <translation>船长</translation>
     </message>
     <message>
         <location filename="src/ui/roomscene.cpp" line="1570"/>
         <source>Loyalist</source>
-        <translation>忠臣</translation>
+        <translation>船员</translation>
     </message>
     <message>
         <location filename="src/ui/roomscene.cpp" line="1571"/>
         <source>Rebel</source>
-        <translation>反贼</translation>
+        <translation>外敌</translation>
     </message>
     <message>
         <location filename="src/ui/roomscene.cpp" line="1572"/>
@@ -3139,7 +3139,7 @@
     <message>
         <location filename="src/ui/roomscene.cpp" line="3623"/>
         <source>Only the lord can kick!</source>
-        <translation>只有主公才能踢人!</translation>
+        <translation>只有船长才能踢人!</translation>
     </message>
     <message>
         <location filename="src/ui/roomscene.cpp" line="3628"/>
@@ -3381,7 +3381,7 @@ P = 你自己, R = 你所在的房间</translation>
     <message>
         <location filename="src/server/server.cpp" line="159"/>
         <source>Requires password to login, hide screen name and disable kicking</source>
-        <translation>需要密码才能登录，隐藏玩家昵称且禁止主公T人</translation>
+        <translation>需要密码才能登录，隐藏玩家昵称且禁止船长T人</translation>
     </message>
     <message>
         <location filename="src/server/server.cpp" line="165"/>

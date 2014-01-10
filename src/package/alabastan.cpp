@@ -52,7 +52,7 @@ public:
 class AntiWar: public TriggerSkill{
 public:
 	AntiWar(): TriggerSkill("antiwar"){
-		events << Damage;
+		events << Postdamage;
 	}
 
 	virtual bool triggerable(const ServerPlayer *) const{

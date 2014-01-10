@@ -114,7 +114,7 @@ class Scene27Skill : public OneCardViewAsSkill {
 SceneRule::SceneRule(QObject *parent) : GameRule(parent) {
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
-	events << CardEffect << DamagedProceed << Damaged;
+	events << CardEffect << DamagedProceed << Postdamaged;
 
 	if(!Bang->getSkill("#scene_dst_effect")) {
 		QList<const Skill *> skillList;
@@ -559,7 +559,7 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
 		break;
 	}
 
-	case Damaged:
+	case Postdamaged:
 	{
 		DamageStruct damage = data.value<DamageStruct>();
 		switch(room->getTag("SceneID").toInt()) {
