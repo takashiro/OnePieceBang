@@ -1645,7 +1645,7 @@ function SmartAI:filterEvent(event, player, data)
 				sgs.updateIntentions(from, to, callback, card)
 			end
 		end
-	elseif event == sgs.CardLost then
+	elseif event == sgs.CardLostOnePiece then
 		local move = data:toCardMove()
 		local from = move.from
 		local place = move.from_place
