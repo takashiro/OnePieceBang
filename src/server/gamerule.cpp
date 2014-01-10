@@ -860,7 +860,7 @@ int BasaraMode::getPriority() const{
 	return 5;
 }
 
-void BasaraMode::playerShowed(ServerPlayer *player) const{
+void BasaraMode::askForGeneralRevealed(ServerPlayer *player) const{
 	Room *room = player->getRoom();
 	QStringList names = room->getTag(player->objectName()).toStringList();
 	if(names.isEmpty())
@@ -882,13 +882,13 @@ void BasaraMode::playerShowed(ServerPlayer *player) const{
 
 		QString general_name = room->askForGeneral(player,names);
 
-		generalShowed(player,general_name);
+		showGeneral(player,general_name);
 		if(Config.EnableHegemony)room->getThread()->trigger(GameOverJudge, player);
-		playerShowed(player);
+		askForGeneralRevealed(player);
 	}
 }
 
-void BasaraMode::generalShowed(ServerPlayer *player, QString general_name) const
+void BasaraMode::showGeneral(ServerPlayer *player, QString general_name) const
 {
 	Room * room = player->getRoom();
 	QStringList names = room->getTag(player->objectName()).toStringList();
@@ -979,19 +979,19 @@ bool BasaraMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &dat
 			if(ces.card)
 				if(ces.card->inherits("TrickCard") ||
 						ces.card->inherits("Slash"))
-				playerShowed(player);
+				askForGeneralRevealed(player);
 		}
 		break;
 	}
 
 	case PhaseChange:{
 		if(player->getPhase() == Player::Start)
-			playerShowed(player);
+			askForGeneralRevealed(player);
 
 		break;
 	}
 	case Predamaged:{
-		playerShowed(player);
+		askForGeneralRevealed(player);
 		break;
 	}
 	case GameOverJudge:{

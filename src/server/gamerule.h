@@ -37,8 +37,8 @@ public:
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const;
 	virtual int getPriority() const;
-	void playerShowed(ServerPlayer *player) const;
-	void generalShowed(ServerPlayer *player,QString general_name) const;
+	void askForGeneralRevealed(ServerPlayer *player) const;
+	void showGeneral(ServerPlayer *player,QString general_name) const;
 	static QString getMappedRole(const QString& role);
 
 private:
