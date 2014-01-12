@@ -58,7 +58,7 @@ void RubberPistolCard::use(Room *room, ServerPlayer *source, const QList<ServerP
 
 		room->useCard(use, false);
 	}else{
-		room->setPlayerFlag(source, "rubberpistol_forbidden");
+		room->setPlayerFlag(source, "slash_forbidden");
 	}
 }
 
@@ -69,7 +69,7 @@ public:
 	}
 
 	virtual bool isEnabledAtPlay(const Player *player) const{
-		return !player->hasFlag("slash_forbidden") && !player->hasFlag("rubberpistol_forbidden");
+		return !player->hasFlag("slash_forbidden");
 	}
 
 	virtual const Card *viewAs() const{
