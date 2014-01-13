@@ -321,14 +321,19 @@ public:
 class Memoir: public TriggerSkill{
 public:
 	Memoir(): TriggerSkill("memoir"){
-		events << CardLost;
+		events << OneCardLost;
 	}
 
 	virtual bool triggerable(const ServerPlayer *target) const{
-		return target->isKongcheng() && target->isAlive();
+		return target->isAlive();
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
+		CardMoveStruct *move = data.value<CardMoveStar>();
+		if(move->from != Player::HandArea || !target->isLastHandCard(Bang->getCard(move->card_id))){
+			return false;
+		}
+
 		Room *room = target->getRoom();
 		foreach(ServerPlayer *player, room->getOtherPlayers(target)){
 			if(player->hasSkill(objectName()) && player->askForSkillInvoke(objectName(), data)){
