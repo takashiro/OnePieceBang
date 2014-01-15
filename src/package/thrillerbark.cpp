@@ -81,9 +81,9 @@ public:
 
 		if(judge.isGood()){
 			RecoverStruct recover;
-			recover.who = player;
+			recover.from = recover.to = player;
 			recover.recover = 1 - player->getHp();
-			room->recover(player, recover);
+			room->recover(recover);
 
 			player->addToPile("soul", judge.card);
 		}

@@ -127,8 +127,9 @@ void RendeCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *
 	if(old_value < 2 && new_value >= 2){
 		RecoverStruct recover;
 		recover.card = this;
-		recover.who = source;
-		room->recover(source, recover);
+		recover.from = source;
+		recover.to = source;
+		room->recover(recover);
 	}
 }
 

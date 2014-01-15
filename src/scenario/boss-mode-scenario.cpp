@@ -224,9 +224,9 @@ public:
 		Room *room = player->getRoom();
 		if(player->getHp() != player->getMaxHp() && event == Postdamage){
 			RecoverStruct recover;
-			recover.who = player;
+			recover.from = recover.to = player;
 			recover.recover = 1;
-			room->recover(player, recover);
+			room->recover(recover);
 		}
 		else{
 			QList<ServerPlayer *> players = room->getAlivePlayers();

@@ -2461,16 +2461,37 @@ void Room::applyDamage(ServerPlayer *victim, const DamageStruct &damage){
 	broadcastInvoke("hpChange", change_str);
 }
 
-void Room::recover(ServerPlayer *player, const RecoverStruct &recover, bool set_emotion){
-	if(player->getLostHp() == 0 || player->isDead())
+void Room::recover(const RecoverStruct &recover, bool set_emotion){
+	if(recover.to->getLostHp() == 0 || recover.to->isDead())
 		return;
 
 	QVariant data = QVariant::fromValue(recover);
-	thread->trigger(HpRecover, player, data);
+
+	if(recover.from != NULL){
+		if(thread->trigger(BeforeRecovering, recover.from, data)){
+			return;
+		}
+	}
+
+	if(thread->trigger(BeforeRecovered, recover.to, data)){
+		return;
+	}
+
+	if(recover.from != NULL){
+		thread->trigger(Recovering, recover.from, data);
+	}
+
+	thread->trigger(Recovered, recover.to, data);
 
 	if(set_emotion){
-		setEmotion(player, "recover");
+		setEmotion(recover.to, "recover");
 	}
+
+	if(recover.from != NULL){
+		thread->trigger(AfterRecovering, recover.from, data);
+	}
+
+	thread->trigger(AfterRecovered, recover.to, data);
 }
 
 bool Room::cardEffect(const Card *card, ServerPlayer *from, ServerPlayer *to){
@@ -3714,9 +3735,10 @@ void Room::makeDamage(const QString& source, const QString& target, QSanProtocol
 	else if (nature == S_CHEAT_HP_RECOVER)
 	{
 		RecoverStruct recover;        
-		recover.who = sourcePlayer;        
+		recover.from = sourcePlayer;
+		recover.to = targetPlayer;
 		recover.recover = point;
-		this->recover(targetPlayer, recover);
+		this->recover(recover);
 		return;
 	}
 

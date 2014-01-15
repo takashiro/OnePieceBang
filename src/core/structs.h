@@ -153,7 +153,8 @@ struct RecoverStruct{
 	RecoverStruct();
 
 	int recover;
-	ServerPlayer *who;
+	ServerPlayer *from;
+	ServerPlayer *to;
 	const Card *card;
 };
 
@@ -206,7 +207,14 @@ enum TriggerEvent{
 	TurnStart,
 	PhaseChange,
 	DrawNCards,
-	HpRecover,
+
+	BeforeRecovering,
+	BeforeRecovered,
+	Recovering,
+	Recovered,
+	AfterRecovering,
+	AfterRecovered,
+
 	HpLost,
 	HpChanged,
 

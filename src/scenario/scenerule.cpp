@@ -324,8 +324,9 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
 							if(p->pindian(nextAlivePlayer, "Scene29")) {
 								if(room->askForChoice(p, "scene_29_eff", "dscorlose+recover") == "recover") {
 									RecoverStruct recover;
-									recover.who = p;
-									room->recover(nextAlivePlayer, recover);
+									recover.from = p;
+									recover.to = nextAlivePlayer;
+									room->recover(recover);
 								} else {
 									if(nextAlivePlayer->isKongcheng())
 										room->loseHp(nextAlivePlayer);
@@ -340,8 +341,9 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
 								if(room->askForChoice(nextAlivePlayer, "scene_29_eff", "dscorlose+recover") == "recover")
 								{
 									RecoverStruct recover;
-									recover.who = nextAlivePlayer;
-									room->recover(p, recover);
+									recover.from = nextAlivePlayer;
+									recover.to = p;
+									room->recover(recover);
 								} else {
 									if(p->isKongcheng())
 										room->loseHp(p);
@@ -417,7 +419,7 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
 			if(use.card->inherits("Wine") && player->getPhase() == Player::Play) {
 				ServerPlayer *effectTo = room->askForPlayerChosen(player, room->getOtherPlayers(player), "Scene16");
 				RecoverStruct recover;
-				recover.who = effectTo;
+				recover.from = recover.to = effectTo;
 				recover.card = use.card;
 
 				LogMessage log;
@@ -427,7 +429,7 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
 				room->sendLog(log);
 
 				room->throwCard(use.card);
-				room->recover(effectTo, recover);
+				room->recover(recover);
 				return true;
 			}
 			break;

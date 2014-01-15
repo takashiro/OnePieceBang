@@ -16,7 +16,7 @@ GameRule::GameRule(QObject *)
 	//setParent(parent);
 
 	events << GameStart << TurnStart << PhaseChange << CardUsed << CardFinished
-			<< CardEffected << HpRecover << HpLost << AskForWineDone
+			<< CardEffected << Recovered << HpLost << AskForWineDone
 			<< AskForWine << Death << Dying << GameOverJudge
 			<< SlashHit << SlashMissed << SlashEffected << SlashProceed
 			<< DamagedProceed << DamageDone << DamageComplete
@@ -235,7 +235,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 		break;
 	}
 
-	case HpRecover:{
+	case Recovered:{
 		RecoverStruct recover_struct = data.value<RecoverStruct>();
 		int recover = recover_struct.recover;
 

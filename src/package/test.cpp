@@ -63,8 +63,9 @@ public:
 			if(use.card->isRed() && player->isWounded() && player->askForSkillInvoke(objectName())){
 				RecoverStruct recover;
 				recover.card = use.card;
-				recover.who = player;
-				player->getRoom()->recover(player, recover);
+				recover.from = player;
+				recover.to = player;
+				player->getRoom()->recover(recover);
 			}
 		}
 		return false;

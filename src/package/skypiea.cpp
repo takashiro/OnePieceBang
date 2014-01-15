@@ -16,9 +16,10 @@ public:
 
 			RecoverStruct recover;
 			recover.card = damage.card;
-			recover.who = damage.from;
+			recover.from = damage.from;
+			recover.to = damage.to;
 			recover.recover = damage.damage;
-			room->recover(player, recover);
+			room->recover(recover);
 
 			return true;
 		}

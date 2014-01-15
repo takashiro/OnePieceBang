@@ -225,7 +225,7 @@ public:
 	}
 
 	virtual bool viewFilter(const CardItem *to_select) const{
-		return to_select->getFilteredCard()->isRed();
+		return to_select->getFilteredCard()->getSuit() == Card::Club;
 	}
 
 	virtual const Card *viewAs(CardItem *card_item) const{
@@ -240,7 +240,7 @@ public:
 class RumbleBall: public TriggerSkill{
 public:
 	RumbleBall(): TriggerSkill("rumbleball"){
-		events << Predamage << CardEffect;
+		events << Predamage << BeforeRecovering;
 	}
 
 	virtual bool triggerable(const ServerPlayer *target) const{
@@ -257,14 +257,12 @@ public:
 			damage.damage++;
 			data = QVariant::fromValue(damage);
 		}else{
-			CardEffectStruct effect = data.value<CardEffectStruct>();
-			if(effect.card->inherits("Wine")){
+			RecoverStruct recover = data.value<RecoverStruct>();
+			if(recover.card && recover.card->inherits("Wine")){
 				room->sendLog("#TriggerSkill", player, objectName());
 
-				RecoverStruct recover;
-				recover.card = effect.card;
-				recover.who = player;
-				room->recover(effect.to, recover);
+				recover.recover++;
+				data = QVariant::fromValue(recover);
 			}
 		}
 
@@ -439,7 +437,7 @@ public:
 class Quack: public TriggerSkill{
 public:
 	Quack(): TriggerSkill("quack"){
-		 events << HpRecover;
+		 events << Recovered;
 		 frequency = Compulsory;
 	}
 
@@ -451,11 +449,11 @@ public:
 		RecoverStruct recover = data.value<RecoverStruct>();
 		Room *room = target->getRoom();
 
-		if(recover.who != NULL && recover.who->hasSkill(objectName())){
-			room->sendLog("#TriggerSkill", recover.who, objectName());
+		if(recover.from != NULL && recover.from->hasSkill(objectName())){
+			room->sendLog("#TriggerSkill", recover.from, objectName());
 			for(int i = 0; i < recover.recover; i++){
 				target->turnOver();
-				target->drawCards(recover.who->getLostHp());
+				target->drawCards(recover.from->getLostHp());
 			}
 		}
 		return false;
@@ -494,7 +492,7 @@ public:
 			room->showAllCards(player);
 
 			RecoverStruct recover;
-			recover.who = player;
+			recover.from = player;
 
 			foreach(const Card *card, player->getHandcards()){
 				if(card->getSuit() == Card::Club){
@@ -615,22 +613,23 @@ public:
 				return false;
 			}
 
-		room->showAllCards(dying.who);
+			room->showAllCards(dying.who);
 
 			static RecoverStruct recover;
-			recover.who = player;
-		recover.recover = 1;
+			recover.from = player;
+			recover.recover = 1;
 			foreach(const Card *card, dying.who->getHandcards()){
 				if(card->isRed()){
-		room->throwCard(card, dying.who);
-		room->recover(dying.who, recover);
-		}
+					room->throwCard(card, dying.who);
+					recover.to = dying.who;
+					room->recover(recover);
+				}
 			}
 
-		int card_id = room->askForCardChosen(player, dying.who, "he", objectName());
-		if(card_id > 0){
-		room->obtainCard(player, card_id);
-		}
+			int card_id = room->askForCardChosen(player, dying.who, "he", objectName());
+			if(card_id > 0){
+				room->obtainCard(player, card_id);
+			}
 		}
 
 		return false;

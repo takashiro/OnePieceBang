@@ -138,9 +138,10 @@ void Wine::onEffect(const CardEffectStruct &effect) const{
 	// recover hp
 	RecoverStruct recover;
 	recover.card = this;
-	recover.who = effect.from;
+	recover.from = effect.from;
+	recover.to = effect.to;
 
-	room->recover(effect.to, recover);
+	room->recover(recover);
 }
 
 bool Wine::isAvailable(const Player *player) const{
@@ -570,8 +571,9 @@ void AllBlue::onEffect(const CardEffectStruct &effect) const{
 
 	RecoverStruct recover;
 	recover.card = this;
-	recover.who = effect.from;
-	room->recover(effect.to, recover);
+	recover.from = effect.from;
+	recover.to = effect.to;
+	room->recover(recover);
 }
 
 NeptunianAttack::NeptunianAttack(Suit suit, int number)
@@ -1367,7 +1369,9 @@ void DiamondArmor::onUninstall(ServerPlayer *player) const{
 	if(player->isAlive() && player->getMark("qinggang") == 0){
 		RecoverStruct recover;
 		recover.card = this;
-		player->getRoom()->recover(player, recover);
+		recover.from = player;
+		recover.to = player;
+		player->getRoom()->recover(recover);
 	}
 }
 

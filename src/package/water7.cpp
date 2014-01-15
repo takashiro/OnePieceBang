@@ -84,8 +84,8 @@ public:
 		Room *room = player->getRoom();
 
 		RecoverStruct recover;
-		recover.who = player;
-		room->recover(player, recover);
+		recover.from = recover.to = player;
+		room->recover(recover);
 
 		room->acquireSkill(player, "rankyaku");
 		room->setPlayerProperty(player, "kingdom", "marine");

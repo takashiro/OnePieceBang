@@ -62,9 +62,9 @@ public:
 						room->setPlayerProperty(p, "maxhp",  p->getMaxHp()+1);
 
 						RecoverStruct recover;
-						recover.who = p;
+						recover.from = recover.to = p;
 						recover.recover = 1;
-						room->recover(p, recover);
+						room->recover(recover);
 
 						p->gainMark("@round",player->getMark("@round")>1 ? player->getMark("@round")-1 : 1);
 						hasHuman=true;
@@ -80,10 +80,10 @@ public:
 
 				if(player->getGeneral2Name()=="zombie"){
 					RecoverStruct recover;
-					recover.who = killer;
+					recover.from = recover.to = killer;
 					recover.recover = killer->getLostHp();
-					room->recover(killer, recover);
-					if(player->getRole()=="renegade")killer->drawCards(3);
+					room->recover(recover);
+					if(player->getRole()=="renegade") killer->drawCards(3);
 
 				}
 

@@ -475,25 +475,25 @@ public:
 class Gentleman: public TriggerSkill{
 public:
 	Gentleman(): TriggerSkill("gentleman"){
-		events << HpRecover;
+		events << AfterRecovering << AfterRecovered;
 		frequency = Frequent;
-	}
-
-	virtual bool triggerable(const ServerPlayer *target) const{
-		return target != NULL && (target->getGender() == General::Female || target->hasSkill(objectName()));
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 		RecoverStruct recover = data.value<RecoverStruct>();
 
-		if(recover.who == NULL || player == NULL){
-			return false;
-		}
-
-		if(recover.who->hasSkill(objectName()) && player->getGender() == General::Female && recover.who->askForSkillInvoke(objectName())){
-			recover.who->drawCards(1);
-		}else if(recover.who->getGender() == General::Female && player->hasSkill(objectName()) && player->askForSkillInvoke(objectName())){
-			player->drawCards(1);
+		if(event == AfterRecovering){
+			if(recover.to->getGender() == General::Female){
+				if(player->askForSkillInvoke(objectName())){
+					player->drawCards(1, true, objectName());
+				}
+			}
+		}else{
+			if(recover.from->getGender() == General::Female){
+				if(player->askForSkillInvoke(objectName())){
+					recover.from->drawCards(1, true, objectName());
+				}
+			}
 		}
 
 		return false;
@@ -570,10 +570,14 @@ public:
 					room->showCard(player, card_id);
 					if(card->inherits("Weapon")){
 						RecoverStruct recover;
-						recover.who = player;
+						recover.from = player;
 						recover.recover = 1;
-						room->recover(player, recover);
-						room->recover(damage.from, recover);
+
+						recover.to = player;
+						room->recover(recover);
+
+						recover.to = damage.from;
+						room->recover(recover);
 					}
 				}
 			}
