@@ -41,7 +41,7 @@ public:
 	virtual int getExtraTargetNum(const Player *player, const Card *card) const{
 		int correct = 0;
 
-		if(card->getSkillName() == "firepunch"){
+		if(card->inherits("FireSlash")){
 			correct++;
 		}
 
