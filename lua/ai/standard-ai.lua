@@ -8,7 +8,7 @@ local rubberpistol_skill={}
 rubberpistol_skill.name="rubberpistol"
 table.insert(sgs.ai_skills, rubberpistol_skill)
 rubberpistol_skill.getTurnUseCard=function(self)
-	if self.player:hasFlag("rubberpistol_forbidden") then return end
+	if self.player:hasFlag("slash_forbidden") then return end
 	return sgs.Card_Parse("@RubberPistolCard=.")
 end
 
