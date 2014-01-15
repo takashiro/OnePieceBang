@@ -15,6 +15,11 @@ Card::CardType BasicCard::getTypeId() const{
 	return Basic;
 }
 
+void BasicCard::onUse(Room *room, const CardUseStruct &card_use) const{
+	room->moveCardTo(card_use.card, card_use.from, Player::HandlingArea);
+	Card::onUse(room, card_use);
+}
+
 TrickCard::TrickCard(Suit suit, int number, bool aggressive)
 	:Card(suit, number), aggressive(aggressive),
 	cancelable(true)
@@ -39,6 +44,13 @@ Card::CardType TrickCard::getTypeId() const{
 
 bool TrickCard::isCancelable(const CardEffectStruct &effect) const{
 	return cancelable;
+}
+
+void TrickCard::onUse(Room *room, const CardUseStruct &card_use) const{
+	if(card_use.card && card_use.card->isNDTrick()){
+		room->moveCardTo(card_use.card, card_use.from, Player::HandlingArea);
+	}
+	Card::onUse(room, card_use);
 }
 
 TriggerSkill *EquipCard::getSkill() const{
@@ -81,31 +93,28 @@ void EquipCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *
 	case OffensiveHorseLocation: equipped = target->getOffensiveHorse(); break;
 	}
 
-	if (room->getCardOwner(getId()) == source && room->getCardPlace(getId()) == Player::HandArea)
-		{
-			QList<CardsMoveStruct> exchangeMove;
-			CardsMoveStruct move1;
-			move1.card_ids << getId();
-			move1.to = source;
-			move1.to_place = Player::EquipArea;
-			exchangeMove.push_back(move1);
-			if(equipped)
-			{
-				CardsMoveStruct move2;
-				move2.card_ids << equipped->getId();
-				move2.to = NULL;
-				move2.to_place = Player::DiscardPile;
-				exchangeMove.push_back(move2);
-			}
-			LogMessage log;
-			log.from = target;
-			log.type = "$Install";
-			log.card_str = QString::number(getEffectiveId());
-			room->sendLog(log);
+	QList<CardsMoveStruct> replace;
+	CardsMoveStruct move1;
+	move1.card_ids << getId();
+	move1.to = source;
+	move1.to_place = Player::EquipArea;
+	replace.push_back(move1);
 
-			room->moveCardsAtomic(exchangeMove, true);
-		}
+	if(equipped){
+		CardsMoveStruct move2;
+		move2.card_ids << equipped->getId();
+		move2.to = NULL;
+		move2.to_place = Player::DiscardPile;
+		replace.push_back(move2);
+	}
 
+	LogMessage log;
+	log.from = target;
+	log.type = "$Install";
+	log.card_str = QString::number(getEffectiveId());
+	room->sendLog(log);
+
+	room->moveCardsAtomic(replace, true);
 }
 
 void EquipCard::onInstall(ServerPlayer *player) const{

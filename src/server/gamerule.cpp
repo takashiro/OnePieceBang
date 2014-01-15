@@ -205,7 +205,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 
 	case PhaseChange: onPhaseChange(player); break;
 
-	case CardUsed: {
+	case CardUsed:{
 		if(data.canConvert<CardUseStruct>()){
 			RoomThread *thread = room->getThread();
 			CardUseStruct card_use = data.value<CardUseStruct>();
@@ -219,10 +219,8 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 			}
 
 			card_use = data.value<CardUseStruct>();
-			const Card *card = card_use.card;
-
-			card_use.from->playCardEffect(card);
-			card->use(room, card_use.from, card_use.to);
+			card_use.from->playCardEffect(card_use.card);
+			card_use.card->use(room, card_use.from, card_use.to);
 		}
 
 		break;

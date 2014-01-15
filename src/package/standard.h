@@ -21,6 +21,7 @@ public:
 	BasicCard(Suit suit, int number):Card(suit, number){}
 	virtual QString getType() const;
 	virtual CardType getTypeId() const;
+	virtual void onUse(Room *room, const CardUseStruct &card_use) const;
 };
 
 class TrickCard:public Card{
@@ -34,6 +35,7 @@ public:
 	virtual QString getType() const;
 	virtual CardType getTypeId() const;
 	virtual bool isCancelable(const CardEffectStruct &effect) const;
+	virtual void onUse(Room *room, const CardUseStruct &card_use) const;
 
 private:
 	bool aggressive;
