@@ -434,6 +434,26 @@ bool Card::targetFixed() const{
 	return target_fixed;
 }
 
+int Card::targetNum(const Player *Self) const{
+	int target_num = 0;
+	foreach(const ::Skill *skill, Self->getSkillList()){
+		if(skill->inherits("CardTargetSkill")){
+			target_num += ((const CardTargetSkill *) skill)->getExtraTargetNum(Self, this);
+		}
+	}
+	return target_num;
+}
+
+int Card::targetDistanceLimit(const Player *Self) const{
+	int distance_limit = 0;
+	foreach(const ::Skill *skill, Self->getSkillList()){
+		if(skill->inherits("CardTargetSkill")){
+			distance_limit += ((const CardTargetSkill *) skill)->getExtraDistanceLimit(Self, this);
+		}
+	}
+	return distance_limit;
+}
+
 bool Card::targetsFeasible(const QList<const Player *> &targets, const Player *) const{
 	if(target_fixed)
 		return true;

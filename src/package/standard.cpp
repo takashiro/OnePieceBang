@@ -166,6 +166,10 @@ DelayedTrick::DelayedTrick(Suit suit, int number, bool movable)
 {
 }
 
+int DelayedTrick::targetNum(const Player *) const{
+	return 1;
+}
+
 void DelayedTrick::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
 	ServerPlayer *target = targets.value(0, source);
 	room->moveCardTo(this, target, Player::JudgingArea, true);

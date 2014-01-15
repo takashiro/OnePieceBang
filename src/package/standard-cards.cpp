@@ -65,30 +65,20 @@ void Slash::onEffect(const CardEffectStruct &card_effect) const{
 	room->slashEffect(effect);
 }
 
+int Slash::targetNum(const Player *Self) const{
+	return 1 + Card::targetNum(Self);
+}
+
 bool Slash::targetsFeasible(const QList<const Player *> &targets, const Player *) const{
 	return !targets.isEmpty();
 }
 
 bool Slash::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
-	int slash_targets = 1;
-	bool distance_limit = !Self->hasFlag("@slash_distance_unlimited");
-
-	foreach(const ::Skill *s, Self->getSkillList()){
-		if(s->inherits("CardTargetSkill")){
-			const CardTargetSkill *skill = (const CardTargetSkill *) s;
-			slash_targets += skill->getExtraTargetNum(Self, this);
-
-			if(distance_limit && !skill->hasDistanceLimit(Self, this)){
-				distance_limit = false;
-			}
-		}
-	}
-
-	if(targets.length() >= slash_targets){
+	if(targets.length() >= targetNum(Self)){
 		return false;
 	}
 
-	return Self->canSlash(to_select, distance_limit, this);
+	return Self->canSlash(to_select, !Self->hasFlag("slash_distance_unlimited"), this);
 }
 
 Jink::Jink(Suit suit, int number):BasicCard(suit, number){
@@ -665,6 +655,10 @@ Collateral::Collateral(Card::Suit suit, int number)
 	setObjectName("collateral");
 }
 
+int Collateral::targetNum(const Player *Self) const{
+	return 1 + Card::targetNum(Self);
+}
+
 bool Collateral::isAvailable(const Player *player) const{
 	foreach(const Player *p, player->getSiblings()){
 		if(p->getWeapon() && p->isAlive())
@@ -675,76 +669,84 @@ bool Collateral::isAvailable(const Player *player) const{
 }
 
 bool Collateral::targetsFeasible(const QList<const Player *> &targets, const Player *) const{
-	return targets.length() == 2;
+	return targets.length() == 1;
 }
 
 bool Collateral::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
-	if(targets.isEmpty()){
-		return to_select->getWeapon() && to_select != Self;
-	}else if(targets.length() == 1){
-		const Player *first = targets.first();
-		return first != Self && first->getWeapon() && first->canSlash(to_select);
-	}else
+	if(targets.length() >= targetNum(Self)){
 		return false;
+	}
+
+	if(to_select->getWeapon() == NULL){
+		return false;
+	}
+
+	foreach(const Player *victim, Self->getSiblings()){
+		if(to_select->inMyAttackRange(victim)){
+			return true;
+		}
+	}
+	return false;
 }
 
-void Collateral::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
-	room->throwCard(this);
+void Collateral::onEffect(const CardEffectStruct &effect) const{
+	Room *room = effect.from->getRoom();
 
-	ServerPlayer *killer = targets.at(0);
-	QList<ServerPlayer *> victims = targets;
-	if(victims.length() > 1)
-		victims.removeAt(0);
-	const Weapon *weapon = killer->getWeapon();
-
-	if(weapon == NULL)
+	const Weapon *weapon = effect.to->getWeapon();
+	if(weapon == NULL){
 		return;
+	}
 
-	bool on_effect = room->cardEffect(this, source, killer);
-	if(on_effect){
-		QString prompt = QString("collateral-slash:%1:%2")
-				.arg(source->objectName()).arg(victims.first()->objectName());
-		const Card *slash = room->askForCard(killer, "slash", prompt, QVariant(), NonTrigger);
-		if (victims.first()->isDead()){
-			if (source->isDead()){
-				if(killer->isAlive() && killer->getWeapon()){
-					int card_id = weapon->getId();
-					room->throwCard(card_id, source);
-				}
+	QList<ServerPlayer *> victims;
+	foreach(ServerPlayer *victim, room->getOtherPlayers(effect.to)){
+		if(effect.to->inMyAttackRange(victim)){
+			victims << victim;
+		}
+	}
+	ServerPlayer *victim = room->askForPlayerChosen(effect.from, victims, objectName());
+
+	QString prompt = QString("collateral-slash:%1:%2")
+			.arg(effect.from->objectName()).arg(victim->objectName());
+	const Card *slash = room->askForCard(effect.to, "slash", prompt, QVariant(), NonTrigger);
+	if(victim->isDead()){
+		if (effect.from->isDead()){
+			if(effect.to->isAlive() && effect.to->getWeapon()){
+				int card_id = weapon->getId();
+				room->throwCard(card_id, effect.from);
+			}
+		}else{
+			if(effect.to->isAlive() && effect.to->getWeapon()){
+				effect.from->obtainCard(weapon);
+			}
+		}
+	}
+
+	if (effect.from->isDead()){
+		if (effect.to->isAlive()){
+			if(slash){
+				CardUseStruct use;
+				use.card = slash;
+				use.from = effect.to;
+				use.to << victim;
+				room->useCard(use);
 			}else{
-				if(killer->isAlive() && killer->getWeapon()){
-					source->obtainCard(weapon);
+				if(effect.to->getWeapon()){
+					int card_id = weapon->getId();
+					room->throwCard(card_id, effect.from);
 				}
 			}
 		}
-		if (source->isDead()){
-			if (killer->isAlive()){
-				if(slash){
-					CardUseStruct use;
-					use.card = slash;
-					use.from = killer;
-					use.to = victims;
-					room->useCard(use);
-				}else{
-					if(killer->getWeapon()){
-						int card_id = weapon->getId();
-						room->throwCard(card_id, source);
-					}
-				}
-			}
-		}else{
-			if(killer->isDead()) ;
-			else{
-				if(slash){
-					CardUseStruct use;
-					use.card = slash;
-					use.from = killer;
-					use.to = victims;
-					room->useCard(use);
-				}else{
-					if(killer->getWeapon())
-						source->obtainCard(weapon);
-				}
+	}else{
+		if(effect.to->isAlive()){
+			if(slash){
+				CardUseStruct use;
+				use.card = slash;
+				use.from = effect.to;
+				use.to << victim;
+				room->useCard(use);
+			}else{
+				if(effect.to->getWeapon())
+					effect.from->obtainCard(weapon);
 			}
 		}
 	}
@@ -834,8 +836,16 @@ Snatch::Snatch(Suit suit, int number):SingleTargetTrick(suit, number, true){
 	setObjectName("snatch");
 }
 
+int Snatch::targetNum(const Player *Self) const{
+	return 1 + Card::targetNum(Self);
+}
+
+int Snatch::targetDistanceLimit(const Player *Self) const{
+	return 1 + Card::targetDistanceLimit(Self);
+}
+
 bool Snatch::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
-	if(!targets.isEmpty())
+	if(targets.length() >= targetNum(Self))
 		return false;
 
 	if(to_select->isAllNude())
@@ -844,19 +854,7 @@ bool Snatch::targetFilter(const QList<const Player *> &targets, const Player *to
 	if(to_select == Self)
 		return false;
 
-	int max_distance = 1;
-	foreach(const ::Skill *s, Self->getSkillList()){
-		if(s->inherits("CardTargetSkill")){
-			const CardTargetSkill *skill = (const CardTargetSkill *) s;
-			if(skill->hasDistanceLimit(Self, this)){
-				max_distance += skill->getExtraDistanceLimit(Self, this);
-			}else{
-				return true;
-			}
-		}
-	}
-
-	return Self->distanceTo(to_select) <= max_distance;
+	return Self->distanceTo(to_select) <= targetDistanceLimit(Self);
 }
 
 void Snatch::onEffect(const CardEffectStruct &effect) const{
@@ -1479,6 +1477,10 @@ SupplyShortage::SupplyShortage(Card::Suit suit, int number)
 	judge.reason = objectName();
 }
 
+int SupplyShortage::targetDistanceLimit(const Player *Self) const{
+	return 1 + Card::targetDistanceLimit(Self);
+}
+
 bool SupplyShortage::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
 	if(!targets.isEmpty())
 		return false;
@@ -1489,19 +1491,7 @@ bool SupplyShortage::targetFilter(const QList<const Player *> &targets, const Pl
 	if(to_select->containsTrick(objectName()))
 		return false;
 
-	int max_distance = 1;
-	foreach(const ::Skill *s, Self->getSkillList()){
-		if(s->inherits("CardTargetSkill")){
-			const CardTargetSkill *skill = (const CardTargetSkill *) s;
-			if(!skill->hasDistanceLimit(Self, this)){
-				max_distance += skill->getExtraDistanceLimit(Self, this);
-			}else{
-				return true;
-			}
-		}
-	}
-
-	return Self->distanceTo(to_select) <= max_distance;
+	return Self->distanceTo(to_select) <= targetDistanceLimit(Self);
 }
 
 void SupplyShortage::takeEffect(ServerPlayer *target) const{

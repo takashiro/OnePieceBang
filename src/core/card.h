@@ -106,6 +106,8 @@ public:
 
 	// card target selection
 	virtual bool targetFixed() const;
+	virtual int targetNum(const Player *Self) const;
+	virtual int targetDistanceLimit(const Player *Self) const;
 	virtual bool targetsFeasible(const QList<const Player *> &targets, const Player *Self) const;
 	virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
 	virtual bool isAvailable(const Player *player) const;

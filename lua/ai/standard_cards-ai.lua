@@ -1142,18 +1142,22 @@ sgs.ai_use_value.Collateral = 8.8
 sgs.ai_use_priority.Collateral = 2.75
 
 sgs.ai_card_intention.Collateral = function(card, from, tos)
-	assert(#tos == 2)
+	--[[assert(#tos == 2)
 	if tos[2]:objectName() == from:objectName() then
 		sgs.updateIntention(from, tos[1], 80)
 	elseif sgs.compareRoleEvaluation(tos[1], "rebel", "loyalist") == sgs.compareRoleEvaluation(tos[2], "rebel", "loyalist") then
 		sgs.updateIntention(from, tos[2], 80)
 	elseif from:getWeapon() and from:distanceTo(tos[2]) <= from:getAttackRange() then
 		sgs.updateIntention(from, tos[1], 80)
-	elseif tos[1]:isKongcheng() then
+	else]]
+
+	if tos[1]:isKongcheng() then
 		sgs.updateIntention(from, tos[1], 80)
 	end
 	sgs.ai_collateral = false
 end
+
+sgs.ai_playerchosen_intention.collateral = 80
 
 sgs.dynamic_value.control_card.Collateral = true
 

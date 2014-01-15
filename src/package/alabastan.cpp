@@ -329,8 +329,8 @@ public:
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
-		CardMoveStruct *move = data.value<CardMoveStar>();
-		if(move->from != Player::HandArea || !target->isLastHandCard(Bang->getCard(move->card_id))){
+		CardMoveStar move = data.value<CardMoveStar>();
+		if(move->from_place != Player::HandArea || !target->isLastHandCard(Bang->getCard(move->card_id))){
 			return false;
 		}
 

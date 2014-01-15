@@ -223,7 +223,6 @@ public:
 	CardTargetSkill(const QString &name);
 
 	virtual int getExtraTargetNum(const Player *player, const Card *card) const;
-	virtual bool hasDistanceLimit(const Player *player, const Card *card) const;
 	virtual int getExtraDistanceLimit(const Player *player, const Card *card) const;
 };
 

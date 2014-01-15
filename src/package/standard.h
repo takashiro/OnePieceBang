@@ -143,10 +143,11 @@ class Collateral:public SingleTargetTrick{
 
 public:
 	Q_INVOKABLE Collateral(Card::Suit suit, int number);
+	virtual int targetNum(const Player *Self) const;
 	virtual bool isAvailable(const Player *player) const;
 	virtual bool targetsFeasible(const QList<const Player *> &targets, const Player *Self) const;
 	virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
-	virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const;
+	virtual void onEffect(const CardEffectStruct &effect) const;
 };
 
 class TreasureChest: public SingleTargetTrick{
@@ -173,6 +174,7 @@ public:
 	DelayedTrick(Suit suit, int number, bool movable = false);
 	void onNullified(ServerPlayer *target) const;
 
+	virtual int targetNum(const Player *) const;
 	virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const;
 	virtual QString getSubtype() const;
 	virtual void onEffect(const CardEffectStruct &effect) const;
@@ -321,6 +323,7 @@ public:
 	virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const;
 	virtual void onEffect(const CardEffectStruct &effect) const;
 
+	virtual int targetNum(const Player *Self) const;
 	virtual bool targetsFeasible(const QList<const Player *> &targets, const Player *Self) const;
 	virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
 	virtual bool isAvailable(const Player *player) const;
@@ -360,6 +363,8 @@ class Snatch:public SingleTargetTrick{
 public:
 	Q_INVOKABLE Snatch(Card::Suit suit, int number);
 
+	virtual int targetNum(const Player *Self) const;
+	virtual int targetDistanceLimit(const Player *Self) const;
 	virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
 	virtual void onEffect(const CardEffectStruct &effect) const;
 };
@@ -474,6 +479,7 @@ class SupplyShortage: public DelayedTrick{
 public:
 	Q_INVOKABLE SupplyShortage(Card::Suit suit, int number);
 
+	virtual int targetDistanceLimit(const Player *Self) const;
 	virtual bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const;
 	virtual void takeEffect(ServerPlayer *target) const;
 };
