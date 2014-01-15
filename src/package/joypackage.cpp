@@ -306,7 +306,7 @@ QString Monkey::getEffectPath(bool ) const{
 class GaleShellSkill: public ArmorSkill{
 public:
 	GaleShellSkill():ArmorSkill("gale-shell"){
-		events << DamagedProceed;
+		events << Damaged;
 	}
 
 	virtual bool trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
@@ -377,7 +377,7 @@ JoyPackage::JoyPackage()
 class YxSwordSkill: public WeaponSkill{
 public:
 	YxSwordSkill():WeaponSkill("yx_sword"){
-		events << Predamage;
+		events << Predamaging;
 	}
 
 	virtual bool trigger(TriggerEvent , ServerPlayer *player, QVariant &data) const{

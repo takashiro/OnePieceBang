@@ -19,7 +19,7 @@ GameRule::GameRule(QObject *)
 			<< CardEffected << Recovered << HpLost << AskForWineDone
 			<< AskForWine << Death << Dying << GameOverJudge
 			<< SlashHit << SlashMissed << SlashEffected << SlashProceed
-			<< DamagedProceed << DamageDone << DamageComplete
+			<< Damaged << DamageDone << DamageComplete
 			<< StartJudge << FinishJudge << Pindian;
 }
 
@@ -210,7 +210,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 			RoomThread *thread = room->getThread();
 			CardUseStruct card_use = data.value<CardUseStruct>();
 
-			if(thread->trigger(TargetSelecting, card_use.from, data)){
+			if(thread->trigger(TargetSelect, card_use.from, data)){
 				break;
 			}
 
@@ -331,7 +331,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 		break;
 	}
 
-	case DamagedProceed:{
+	case Damaged:{
 		DamageStruct damage = data.value<DamageStruct>();
 		if(damage.to != NULL && damage.damage > 1){
 			const Card *haki = room->askForCard(damage.to, "busou_haki", "damage-busou-haki", data);

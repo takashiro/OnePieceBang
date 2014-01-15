@@ -411,7 +411,7 @@ public:
 class KabutoSkill: public WeaponSkill{
 public:
 	KabutoSkill():WeaponSkill("kabuto"){
-		events << DamageProceed;
+		events << Damaging;
 	}
 
 	virtual bool trigger(TriggerEvent , ServerPlayer *player, QVariant &data) const{
@@ -998,7 +998,7 @@ void Tornado::takeEffect(ServerPlayer *target) const{
 class SoulSolidSkill: public WeaponSkill{
 public:
 	SoulSolidSkill():WeaponSkill("ice_sword"){
-		events << DamageProceed;
+		events << Damaging;
 	}
 
 	virtual bool trigger(TriggerEvent , ServerPlayer *player, QVariant &data) const{
@@ -1252,7 +1252,7 @@ FlameDial::FlameDial(Suit suit, int number):Weapon(suit, number, 4){
 class ShusuiSkill: public WeaponSkill{
 public:
 	ShusuiSkill():WeaponSkill("shusui"){
-		events << DamageProceed;
+		events << Damaging;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
@@ -1284,7 +1284,7 @@ Shusui::Shusui(Suit suit, int number):Weapon(suit, number, 2){
 class CandleWallSkill: public ArmorSkill{
 public:
 	CandleWallSkill():ArmorSkill("candle_wall"){
-		events << DamagedProceed << SlashEffected << CardEffected;
+		events << Damaged << SlashEffected << CardEffected;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
@@ -1312,7 +1312,7 @@ public:
 
 				return true;
 			}
-		}else if(event == DamagedProceed){
+		}else if(event == Damaged){
 			DamageStruct damage = data.value<DamageStruct>();
 			if(damage.nature == DamageStruct::Fire){
 				LogMessage log;
@@ -1339,7 +1339,7 @@ CandleWall::CandleWall(Suit suit, int number):Armor(suit, number){
 class DiamondArmorSkill: public ArmorSkill{
 public:
 	DiamondArmorSkill():ArmorSkill("diamond_armor"){
-		events << DamagedProceed;
+		events << Damaged;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{

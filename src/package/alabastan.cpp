@@ -52,7 +52,7 @@ public:
 class AntiWar: public TriggerSkill{
 public:
 	AntiWar(): TriggerSkill("antiwar"){
-		events << Postdamage;
+		events << Postdamaging;
 	}
 
 	virtual bool triggerable(const ServerPlayer *) const{
@@ -61,7 +61,7 @@ public:
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
 		DamageStruct damage = data.value<DamageStruct>();
-		if(damage.card == NULL || (!damage.card->inherits("Slash") && !damage.card->inherits("Duel")) || damage.from == NULL){
+		if(damage.card == NULL || !damage.card->inherits("Slash") || damage.from == NULL){
 			return false;
 		}
 
@@ -72,18 +72,12 @@ public:
 
 		Room *room = target->getRoom();
 		foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){
-			if(player->isKongcheng()){
-				continue;
-			}
+			if(player->askForSkillInvoke(objectName())){
+				room->throwCard(weapon, player);
 
-			QString prompt = QString("antiwar-invoke:").append(damage.from->getGeneralName());
-			const Card *card = room->askForCard(player, ".", prompt, data, NonTrigger);
-			if(card == NULL){
-				continue;
+				int card_id = room->askForCardChosen(damage.from, player, "h", objectName());
+				room->obtainCard(damage.from, card_id);
 			}
-			room->sendLog("#InvokeSkill", player, objectName());
-			room->throwCard(card);
-			room->throwCard(weapon, damage.from);
 		}
 
 		return false;
@@ -240,7 +234,7 @@ public:
 class RumbleBall: public TriggerSkill{
 public:
 	RumbleBall(): TriggerSkill("rumbleball"){
-		events << Predamage << BeforeRecovering;
+		events << Predamaging << BeforeRecovering;
 	}
 
 	virtual bool triggerable(const ServerPlayer *target) const{
@@ -250,7 +244,7 @@ public:
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 		Room *room = player->getRoom();
 
-		if(event == Predamage){
+		if(event == Predamaging){
 			room->sendLog("#TriggerSkill", player, objectName());
 
 			DamageStruct damage = data.value<DamageStruct>();
@@ -359,7 +353,7 @@ public:
 class Corrasion: public TriggerSkill{
 public:
 	Corrasion(): TriggerSkill("corrasion"){
-		events << DamagedProceed;
+		events << Damaged;
 		frequency = Compulsory;
 	}
 

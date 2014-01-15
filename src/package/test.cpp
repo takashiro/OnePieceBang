@@ -46,12 +46,12 @@ public:
 class DarkWater: public TriggerSkill{
 public:
 	DarkWater(): TriggerSkill("darkwater"){
-		events << DamagedProceed << TargetSelected;
+		events << Damaged << TargetSelected;
 		frequency = Compulsory;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-		if(event == DamagedProceed){
+		if(event == Damaged){
 			DamageStruct damage = data.value<DamageStruct>();
 			if(damage.nature == DamageStruct::Normal){
 				player->getRoom()->sendLog("#TriggerSkill", player, objectName());

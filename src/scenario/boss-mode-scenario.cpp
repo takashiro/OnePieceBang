@@ -126,7 +126,7 @@ public:
 class Daji: public TriggerSkill{
 public:
 	Daji():TriggerSkill("daji"){
-		events << Postdamaged << PhaseChange << CardEffected << DamagedProceed;
+		events << Postdamaged << PhaseChange << CardEffected << Damaged;
 		frequency = Compulsory;
 	}
 
@@ -161,7 +161,7 @@ public:
 			}
 		}
 
-		if(event == DamagedProceed){
+		if(event == Damaged){
 			DamageStruct damage = data.value<DamageStruct>();
 			if(damage.damage > 1){
 				damage.damage = damage.damage-1;
@@ -214,7 +214,7 @@ public:
 class Jizhan: public TriggerSkill{
 public:
 	Jizhan():TriggerSkill("jizhan"){
-		events << Postdamage << CardLost;
+		events << Postdamaging << CardLost;
 		frequency = Compulsory;
 	}
 
@@ -222,7 +222,7 @@ public:
 		if(player->getPhase() != Player::Play) return false;
 
 		Room *room = player->getRoom();
-		if(player->getHp() != player->getMaxHp() && event == Postdamage){
+		if(player->getHp() != player->getMaxHp() && event == Postdamaging){
 			RecoverStruct recover;
 			recover.from = recover.to = player;
 			recover.recover = 1;

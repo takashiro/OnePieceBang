@@ -470,12 +470,12 @@ enum TriggerEvent{
     Pindian,
     TurnedOver,
 
-    Predamage,
+    Predamaging,
     Predamaged,
-    DamageProceed,
-    DamagedProceed,
+    Damaging,
+    Damaged,
     DamageDone,
-    Postdamage,
+    Postdamaging,
     Postdamaged,
     DamageComplete,
 
@@ -502,7 +502,7 @@ enum TriggerEvent{
     CardDrawing,
     CardDrawnDone,
 
-    TargetSelecting,
+    TargetSelect,
     TargetSelected,
     CardEffect,
     CardEffected,

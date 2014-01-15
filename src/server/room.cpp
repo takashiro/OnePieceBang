@@ -2530,39 +2530,33 @@ void Room::damage(const DamageStruct &damage_data){
 	QVariant data = QVariant::fromValue(damage_data);
 
 	if(!damage_data.chain && damage_data.from){
-		// predamage
-		if(thread->trigger(Predamage, damage_data.from, data))
+		if(thread->trigger(Predamaging, damage_data.from, data))
 			return;
 	}
 
-	// Predamaged
 	bool prevent = thread->trigger(Predamaged, damage_data.to, data);
 	if(prevent)
 		return;
 
-	// DamageProceed
 	if(damage_data.from){
-		if(thread->trigger(DamageProceed, damage_data.from, data))
+		if(thread->trigger(Damaging, damage_data.from, data))
 			return;
 	}
 
 
-	// DamagedProceed
-	bool broken = thread->trigger(DamagedProceed, damage_data.to, data);
+	bool broken = thread->trigger(Damaged, damage_data.to, data);
 	if(broken)
 		return;
 
 	// damage done, should not cause damage process broken
 	thread->trigger(DamageDone, damage_data.to, data);
 
-	// damage
 	if(damage_data.from){
-		bool broken = thread->trigger(Postdamage, damage_data.from, data);
+		bool broken = thread->trigger(Postdamaging, damage_data.from, data);
 		if(broken)
 			return;
 	}
 
-	// damaged
 	broken = thread->trigger(Postdamaged, damage_data.to, data);
 	if(broken)
 		return;

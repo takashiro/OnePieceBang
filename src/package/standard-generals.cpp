@@ -4,7 +4,7 @@
 class Insulator: public TriggerSkill{
 public:
 	Insulator(): TriggerSkill("insulator"){
-		events << DamagedProceed;
+		events << Damaged;
 		frequency = Compulsory;
 	}
 
@@ -198,7 +198,7 @@ public:
 class Shoot: public TriggerSkill{
 public:
 	Shoot(): TriggerSkill("shoot"){
-		events << Predamage;
+		events << Predamaging;
 		frequency = Compulsory;
 	}
 
@@ -379,7 +379,7 @@ public:
 class Mirage: public TriggerSkill{
 public:
 	Mirage(): TriggerSkill("mirage"){
-		events << DamagedProceed;
+		events << Damaged;
 	}
 
 	virtual bool triggerable(const ServerPlayer *target) const{
@@ -712,7 +712,7 @@ public:
 class FogBarrierEffect: public TriggerSkill{
 public:
 	FogBarrierEffect(): TriggerSkill("#fogbarriereffect"){
-		events << CardEffected << DamagedProceed;
+		events << CardEffected << Damaged;
 	}
 
 	virtual bool triggerable(const ServerPlayer *target) const{
@@ -727,7 +727,7 @@ public:
 				return true;
 			}
 
-		}else if(event == DamagedProceed){
+		}else if(event == Damaged){
 			DamageStruct damage = data.value<DamageStruct>();
 			if(damage.nature != DamageStruct::Normal){
 				player->getRoom()->sendLog("#TriggerSkill", player, "fogbarrier");
@@ -743,7 +743,7 @@ public:
 class Justice: public TriggerSkill{
 public:
 	Justice(): TriggerSkill("justice"){
-		events << DamagedProceed;
+		events << Damaged;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
@@ -759,11 +759,11 @@ public:
 class TopSwordman: public TriggerSkill{
 public:
 	TopSwordman(): TriggerSkill("topswordman"){
-		events << DamagedProceed << Predamage;
+		events << Damaged << Predamaging;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-		if(event == DamagedProceed){
+		if(event == Damaged){
 			DamageStruct damage = data.value<DamageStruct>();
 			if(damage.from && damage.from->getWeapon() && damage.card && damage.card->inherits("Slash")){
 				damage.damage--;
@@ -771,7 +771,7 @@ public:
 
 				player->getRoom()->sendLog("#TriggerSkill", player, objectName());
 			}
-		}else if(event == Predamage){
+		}else if(event == Predamaging){
 			DamageStruct damage = data.value<DamageStruct>();
 			if(player->getWeapon() && damage.nature == DamageStruct::Normal && damage.card && damage.card->inherits("Slash")){
 				damage.damage++;
@@ -794,20 +794,20 @@ public:
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 		if(!player->askForSkillInvoke(objectName())){
-		return false;
+			return false;
 		}
 
 		player->drawCards(1);
 
 		DamageStruct damage = data.value<DamageStruct>();
 		if(damage.from){
-		CardUseStruct use;
-		use.from = player;
-		use.to << damage.from;
-		use.card = new Duel(Card::NoSuit, 0);
+			CardUseStruct use;
+			use.from = player;
+			use.to << damage.from;
+			use.card = new Duel(Card::NoSuit, 0);
 
-		Room *room = player->getRoom();
-		room->useCard(use);
+			Room *room = player->getRoom();
+			room->useCard(use);
 		}
 
 		return false;
@@ -817,23 +817,23 @@ public:
 class Protect: public TriggerSkill{
 public:
 	Protect(): TriggerSkill("protect"){
-		events << TargetSelecting;
+		events << TargetSelect;
 	}
 
 	bool triggerable(const ServerPlayer *target) const{
 		if(target == NULL){
-		return false;
+			return false;
 		}
 
 		Room *room = target->getRoom();
 		foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){
-		if(!target->inMyAttackRange(player) || target == player){
-		continue;
-		}
+			if(!target->inMyAttackRange(player) || target == player){
+				continue;
+			}
 
-		if(player->hasSkill(objectName())){
-		return true;
-		}
+			if(player->hasSkill(objectName())){
+				return true;
+			}
 		}
 
 		return false;
@@ -842,33 +842,33 @@ public:
 	bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
 		CardUseStruct use = data.value<CardUseStruct>();
 		if(!use.card->inherits("Slash")){
-		return false;
+			return false;
 		}
 
 		Room *room = target->getRoom();
 		foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){
-		if(!target->inMyAttackRange(player) || target == player){
-		continue;
-		}
+			if(!target->inMyAttackRange(player) || target == player){
+				continue;
+			}
 
-		if(player->hasSkill(objectName())){
-		if(use.to.length() == 1 && use.to.contains(player)){
-		continue;
-		}
+			if(player->hasSkill(objectName())){
+				if(use.to.length() == 1 && use.to.contains(player)){
+					continue;
+				}
 
-		if(player->askForSkillInvoke(objectName())){
-		use.to.clear();
-		use.to << player;
-		data = QVariant::fromValue(use);
+				if(player->askForSkillInvoke(objectName())){
+					use.to.clear();
+					use.to << player;
+					data = QVariant::fromValue(use);
 
-		LogMessage log;
-		log.type = "#ProtectTargetChange";
-		log.from = target;
-		log.to << player;
-		log.arg = use.card->objectName();
-		room->sendLog(log);
-		}
-		}
+					LogMessage log;
+					log.type = "#ProtectTargetChange";
+					log.from = target;
+					log.to << player;
+					log.arg = use.card->objectName();
+					room->sendLog(log);
+				}
+			}
 		}
 
 		return false;
@@ -878,7 +878,7 @@ public:
 class MassiveAxe: public TriggerSkill{
 public:
 	MassiveAxe(): TriggerSkill("massiveaxe"){
-		events << SlashMissed << Predamage << PhaseChange << HpChanged;
+		events << SlashMissed << Predamaging << PhaseChange << HpChanged;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
@@ -900,7 +900,7 @@ public:
 				data = QVariant::fromValue(damage);
 				room->setPlayerFlag(player, "-massiveaxe_enabled");
 
-				room->sendLog("#TriggerSkill", player);
+				room->sendLog("#TriggerSkill", player, objectName());
 			}
 		}
 	}

@@ -246,7 +246,7 @@ public:
 class Xunmeng: public TriggerSkill{
 public:
 	Xunmeng():TriggerSkill("xunmeng"){
-		events << Predamage;
+		events << Predamaging;
 
 		frequency = Compulsory;
 	}
