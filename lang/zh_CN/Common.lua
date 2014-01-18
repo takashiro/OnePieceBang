@@ -61,6 +61,9 @@ return {
 	["government"] = "政府",
 	["citizen"] = "国民",
 
+	["invoke"] = "发动",
+	["uninvoke"] = "不发动",
+
 	["#Murder"] = "%to【%arg】死亡，凶手是 %from",
 	["#Suicide"] = "%to【%arg】自杀身亡",
 	["#InvokeSkill"] = "%from 使用了技能【%arg】",

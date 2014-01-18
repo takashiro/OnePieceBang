@@ -7,8 +7,8 @@ end
 local rubberpistol_skill={}
 rubberpistol_skill.name="rubberpistol"
 table.insert(sgs.ai_skills, rubberpistol_skill)
-rubberpistol_skill.getTurnUseCard=function(self)
-	if self.player:hasFlag("slash_forbidden") then return end
+rubberpistol_skill.getTurnUseCard = function(self)
+	if self.player:hasFlag("slash_forbidden") or not self:slashIsAvailable() then return end
 	return sgs.Card_Parse("@RubberPistolCard=.")
 end
 
@@ -17,7 +17,7 @@ sgs.ai_skill_use_func.RubberPistolCard = function(card, use, self)
 
 	self:sort(self.enemies, "defense")
 	for _, target in ipairs(self.enemies) do
-		if self:isEnemy(target) and not self:slashProhibit(slash ,target) and self:slashIsEffective(slash,target) and self.player:inMyAttackRange(target) then
+		if self:isEnemy(target) and not self:slashProhibit(slash, target) and self:slashIsEffective(slash,target) and self.player:inMyAttackRange(target) then
 			use.card = sgs.Card_Parse("@RubberPistolCard=.")
 			if use.to then
 				use.to:append(target)

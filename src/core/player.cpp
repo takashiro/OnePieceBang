@@ -158,15 +158,15 @@ void Player::clearFlags(){
 }
 
 int Player::getAttackRange() const{
-	if(hasFlag("tianyi_success") || hasFlag("jiangchi_invoke"))
-		return 1000;
+	int range = weapon ? weapon->getRange() : 1;
 
-	if(weapon)
-		return weapon->getRange();
-	else if(hasSkill("zhengfeng"))
-		return hp;
-	else
-		return 1;
+	foreach(const Skill *skill, getSkillList()){
+		if(skill->inherits("PropertySkill")){
+			range += ((const PropertySkill *) skill)->getCorrect("attack_range").toInt();
+		}
+	}
+
+	return range;
 }
 
 bool Player::inMyAttackRange(const Player *other) const{

@@ -47,12 +47,21 @@ public:
 	virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const;
 };
 
-class WaltzCard: public SkillCard{
+class CannonBallCard: public SkillCard{
 	Q_OBJECT
 
 public:
-	Q_INVOKABLE WaltzCard();
-	virtual void onUse(Room *room, const CardUseStruct &card_use) const;
+	Q_INVOKABLE CannonBallCard();
+	virtual bool targetFilter(const QList<const Player *> &targets, const Player *, const Player *) const;
+	virtual bool targetsFeasible(const QList<const Player *> &targets, const Player *) const;
+	virtual void onEffect(const CardEffectStruct &effect) const;
+};
+
+class SwordFanCard: public SkillCard{
+	Q_OBJECT
+
+public:
+	Q_INVOKABLE SwordFanCard();
 	virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &) const;
 };
 

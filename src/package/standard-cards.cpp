@@ -978,6 +978,13 @@ Rain::Rain(Suit suit, int number):Disaster(suit, number){
 
 void Rain::takeEffect(ServerPlayer *target) const{
 	Room *room = target->getRoom();
+
+	RecoverStruct recover;
+	recover.recover = 1;
+	recover.from = target;
+	recover.to = target;
+	room->recover(recover);
+
 	room->acquireSkill(target, "raineffect", false);
 }
 
@@ -1083,7 +1090,7 @@ public:
 	}
 
 	virtual bool viewFilter(const CardItem *to_select) const{
-		return to_select->getCard()->getSuit() == Card::Heart;
+		return !to_select->isEquipped() && to_select->getCard()->getSuit() == Card::Heart;
 	}
 
 	virtual const Card *viewAs(CardItem *card_item) const{
@@ -1093,8 +1100,9 @@ public:
 			new_card->setSuit(Card::Spade);
 			new_card->setSkillName(objectName());
 			return new_card;
-		}else
+		}else{
 			return card;
+		}
 	}
 };
 
