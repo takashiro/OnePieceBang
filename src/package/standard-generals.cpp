@@ -272,6 +272,10 @@ public:
 
 	}
 
+	virtual bool isEnabledAtPlay(const Player *) const{
+		return false;
+	}
+
 	virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
 		return pattern == "@@cannonball";
 	}
@@ -462,6 +466,7 @@ class FretyWind: public TriggerSkill{
 public:
 	FretyWind():TriggerSkill("fretywind"){
 		events << OneCardLost;
+		default_choice = "uninvoke";
 	}
 
 	virtual bool trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
