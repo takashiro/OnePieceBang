@@ -28,27 +28,28 @@ sgs.ai_skill_use_func.RubberPistolCard = function(card, use, self)
 end
 
 --Frety Wind
-sgs.ai_skill_invoke.fretywind = function(self, data)
-	local choice = sgs.ai_skill_choice.fretywind
-	if(choice ~= "nothing") then
-		return true
-	end
-	return false	 
-end
-
 sgs.ai_skill_choice.fretywind = function(self, choices)
+	local choice = "uninvoke"
+
 	self:sort(self.enemies, "defense")
 	local n1 = self:getCardsNum("Slash")
 	local slash = sgs.Card_Parse(("slash[%s:%s]"):format(sgs.Card_NoSuit, 0))
 	for _, enemy in ipairs(self.enemies) do
 		local n2 = self:getCardsNum("Slash", enemy)
 		if n1 >= n2 then
-			return "duel"
-		elseif not self:slashProhibit(slash ,enemy) then
-			return "slash"
+			choice = "duel"
+		elseif not self:slashProhibit(slash, enemy) then
+			choice = "slash"
 		end
 	end
-	return "nothing"
+
+	for _, c in ipairs(choices) do
+		if c == choice then
+			return choice
+		end
+	end
+
+	return "uninvoke"
 end
 
 sgs.ai_skill_playerchosen.fretywind = sgs.ai_skill_playerchosen.zero_card_as_slash
@@ -137,11 +138,42 @@ end
 
 --Mirage
 sgs.ai_skill_invoke.mirage = function(self, data)
+	local judges = who:getJudgingArea()
+
+	for _, card in sgs.qlist(judges) do
+		if not card:inherits("Disaster") then
+			return true
+		end
+	end
+
+	if self.player:isWounded() then
+		return true
+	end
+
+	for _, card in sgs.qlist(judges) do
+		if card:inherits("Lightning") then
+			return false
+		end
+	end
+
 	return true
 end
 
 sgs.ai_skill_cardchosen.mirage = function(self, who, flags)
 	local judges = who:getJudgingArea()
+
+	for _, card in sgs.qlist(judges) do
+		if not card:inherits("Disaster") then
+			return card
+		end
+	end
+
+	for _, card in sgs.qlist(judges) do
+		if not card:inherits("Lightning") then
+			return card
+		end
+	end
+
 	return judges[0]
 end
 
