@@ -117,28 +117,29 @@ end
 --Forecast
 sgs.ai_skill_cardask["@forecast-card"] = function(self, data)
 	local judge = data:toJudge()
-	local cards = sgs.QList2Table(self.player:getHandcards())
-
-	if #cards == 0 then return "." end
-	local card_id = self:getRetrialCardId(cards, judge)
-	if card_id == -1 then
-		if self:needRetrial(judge) then
-			self:sortByUseValue(cards, true)
-			if self:getUseValue(judge.card) > self:getUseValue(cards[1]) then
-				return "@ForecastCard[" .. cards[1]:getSuitString() .. ":" .. cards[1]:getNumberString() .."]=" .. cards[1]:getId()
-			end
-		end
-	elseif self:needRetrial(judge) or self:getUseValue(judge.card) > self:getUseValue(sgs.Bang:getCard(card_id)) then
+	
+	if self:needRetrial(judge) then
+		local cards = sgs.QList2Table(self.player:getHandcards())
+		local card_id = self:getRetrialCardId(cards, judge)
 		local card = sgs.Bang:getCard(card_id)
-		return "@ForecastCard[" .. card:getSuitString() .. ":" .. card:getNumberString() .. "]=" .. card_id
+		if card_id ~= -1 then
+			return "@ForecastCard[" .. card:getSuitString() .. ":" .. card:getNumberString() .. "]=" .. card_id
+		end
 	end
 	
 	return "."
 end
 
+sgs.nami_suit_value = 
+{
+	heart = 3.9,
+	club = 3.9,
+	spade = 3.5
+}
+
 --Mirage
 sgs.ai_skill_invoke.mirage = function(self, data)
-	local judges = who:getJudgingArea()
+	local judges = self.player:getJudgingArea()
 
 	for _, card in sgs.qlist(judges) do
 		if not card:inherits("Disaster") then
