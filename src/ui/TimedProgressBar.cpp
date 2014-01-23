@@ -40,13 +40,13 @@ void TimedProgressBar::timerEvent(QTimerEvent* timerEvent)
 	this->setValue(m_val);
 }
 
-using namespace QSanProtocol;
+using namespace BangProtocol;
 
 QSanCommandProgressBar::QSanCommandProgressBar()
 {
 	m_step = Config.S_PROGRESS_BAR_UPDATE_INTERVAL;
 	m_hasTimer = (ServerInfo.OperationTimeout != 0);
-	m_instanceType = S_CLIENT_INSTANCE;
+	m_instanceType = ClientInstance;
 	if (sm_progress_100_image == NULL)
 	{
 		sm_progress_100_image = new QPixmap("image/system/controls/progress-100.png");
@@ -99,8 +99,8 @@ void QSanCommandProgressBar::paintEvent(QPaintEvent *e)
 
 void QSanCommandProgressBar::setCountdown(Countdown countdown)
 {
-	if (countdown.m_type == Countdown::S_COUNTDOWN_NO_LIMIT)
+	if (countdown.type == Countdown::Unlimited)
 		m_hasTimer = false;
-	m_max = countdown.m_max;
-	m_val = countdown.m_current;
+	m_max = countdown.max;
+	m_val = countdown.current;
 }

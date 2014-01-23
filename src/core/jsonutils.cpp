@@ -1,6 +1,6 @@
 #include "jsonutils.h"
 
-QJsonArray QSanProtocol::Utils::toJsonArray(const QString& s1, const QString& s2)
+QJsonArray BangProtocol::toJsonArray(const QString& s1, const QString& s2)
 {
 	QJsonArray val;
 	val.append(s1);
@@ -8,7 +8,7 @@ QJsonArray QSanProtocol::Utils::toJsonArray(const QString& s1, const QString& s2
 	return val;
 }
 
-QJsonArray QSanProtocol::Utils::toJsonArray(const QString& s1, const QString& s2, const QString& s3)
+QJsonArray BangProtocol::toJsonArray(const QString& s1, const QString& s2, const QString& s3)
 {
 	QJsonArray val;
 	val.append(s1);
@@ -17,7 +17,7 @@ QJsonArray QSanProtocol::Utils::toJsonArray(const QString& s1, const QString& s2
 	return val;
 }
 
-QJsonArray QSanProtocol::Utils::toJsonArray(const QString& s1, const QJsonValue& s2)
+QJsonArray BangProtocol::toJsonArray(const QString& s1, const QJsonValue& s2)
 {
 	QJsonArray val;
 	val.append(s1);
@@ -25,7 +25,7 @@ QJsonArray QSanProtocol::Utils::toJsonArray(const QString& s1, const QJsonValue&
 	return val;
 }
 
-QJsonArray QSanProtocol::Utils::toJsonArray(const QList<int>& arg)
+QJsonArray BangProtocol::toJsonArray(const QList<int>& arg)
 {
 	QJsonArray val;
 	foreach(int i, arg)
@@ -33,7 +33,7 @@ QJsonArray QSanProtocol::Utils::toJsonArray(const QList<int>& arg)
 	return val;
 }
 
-bool QSanProtocol::Utils::tryParse(const QJsonValue& argdata, QList<int>& result)
+bool BangProtocol::tryParse(const QJsonValue& argdata, QList<int>& result)
 {
 	if (!argdata.isArray()) return false;
 	QJsonArray arg = argdata.toArray();
@@ -48,7 +48,7 @@ bool QSanProtocol::Utils::tryParse(const QJsonValue& argdata, QList<int>& result
 	return true;
 }
 
-QJsonArray QSanProtocol::Utils::toJsonArray(const QList<QString>& arg)
+QJsonArray BangProtocol::toJsonArray(const QList<QString>& arg)
 {
 	QJsonArray val;
 	foreach(QString s, arg)
@@ -56,7 +56,7 @@ QJsonArray QSanProtocol::Utils::toJsonArray(const QList<QString>& arg)
 	return val;
 }
 
-QJsonArray QSanProtocol::Utils::toJsonArray(const QStringList& arg)
+QJsonArray BangProtocol::toJsonArray(const QStringList& arg)
 {
 	QJsonArray val;
 	foreach(QString s, arg)
@@ -64,7 +64,7 @@ QJsonArray QSanProtocol::Utils::toJsonArray(const QStringList& arg)
 	return val;
 }
 
-bool QSanProtocol::Utils::tryParse(const QJsonValue& argdata, QStringList& result)
+bool BangProtocol::tryParse(const QJsonValue& argdata, QStringList& result)
 {
 	if (!argdata.isArray()) return false;
 	QJsonArray arg = argdata.toArray();

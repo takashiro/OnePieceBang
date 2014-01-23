@@ -50,7 +50,6 @@
 
 #endif
 
-using namespace QSanProtocol;
 
 struct RoomLayout {
 	int m_scenePadding;
@@ -201,7 +200,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
 	connect(ClientInstance, SIGNAL(cards_got(const ClientPlayer*, QString, QString)), this, SLOT(chooseCard(const ClientPlayer*, QString, QString)));
 	connect(ClientInstance, SIGNAL(roles_got(QString, QStringList)), this, SLOT(chooseRole(QString, QStringList)));
 	connect(ClientInstance, SIGNAL(directions_got()), this, SLOT(chooseDirection()));
-	connect(ClientInstance, SIGNAL(orders_got(QSanProtocol::Game3v3ChooseOrderCommand)), this, SLOT(chooseOrder(QSanProtocol::Game3v3ChooseOrderCommand)));
+	connect(ClientInstance, SIGNAL(orders_got(BangProtocol::Game3v3ChooseOrderCommand)), this, SLOT(chooseOrder(BangProtocol::Game3v3ChooseOrderCommand)));
 	connect(ClientInstance, SIGNAL(kingdoms_got(QStringList)), this, SLOT(chooseKingdom(QStringList)));
 	connect(ClientInstance, SIGNAL(seats_arranged(QList<const ClientPlayer*>)), SLOT(arrangeSeats(QList<const ClientPlayer*>)));
 	connect(ClientInstance, SIGNAL(status_changed(Client::Status, Client::Status)), this, SLOT(updateStatus(Client::Status, Client::Status)));
@@ -212,7 +211,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
 	connect(ClientInstance, SIGNAL(player_revived(QString)), this, SLOT(revivePlayer(QString)));
 	connect(ClientInstance, SIGNAL(card_shown(QString,int)), this, SLOT(showCard(QString,int)));
 	connect(ClientInstance, SIGNAL(gongxin(QList<int>, bool)), this, SLOT(doGongxin(QList<int>, bool)));
-	connect(ClientInstance, SIGNAL(focus_moved(QString, QSanProtocol::Countdown)), this, SLOT(moveFocus(QString, QSanProtocol::Countdown)));
+	connect(ClientInstance, SIGNAL(focus_moved(QString, BangProtocol::Countdown)), this, SLOT(moveFocus(QString, BangProtocol::Countdown)));
 	connect(ClientInstance, SIGNAL(emotion_set(QString,QString)), this, SLOT(setEmotion(QString,QString)));
 	connect(ClientInstance, SIGNAL(skill_invoked(QString,QString)), this, SLOT(showSkillInvocation(QString,QString)));
 	connect(ClientInstance, SIGNAL(skill_acquired(const ClientPlayer*,QString)), this, SLOT(acquireSkill(const ClientPlayer*,QString)));
@@ -1117,12 +1116,12 @@ void RoomScene::chooseCard(const ClientPlayer *player, const QString &flags, con
 	m_choiceDialog = dialog;    
 }
 
-void RoomScene::chooseOrder(QSanProtocol::Game3v3ChooseOrderCommand reason)
+void RoomScene::chooseOrder(BangProtocol::Game3v3ChooseOrderCommand reason)
 {
 	QDialog *dialog = new QDialog;
-	if (reason == S_REASON_CHOOSE_ORDER_SELECT)
+	if (reason == BangProtocol::ChooseOrderSelect)
 		dialog->setWindowTitle(tr("The order who first choose general"));
-	else if (reason == S_REASON_CHOOSE_ORDER_TURN)
+	else if (reason == BangProtocol::ChooseOrderTurn)
 		dialog->setWindowTitle(tr("The order who first in turn"));
 
 	QLabel *prompt = new QLabel(tr("Please select the order"));
@@ -2078,7 +2077,7 @@ void RoomScene::updateStatus(Client::Status oldStatus, Client::Status newStatus)
 			showPromptBox();
 
 			ok_button->setEnabled(false);
-			cancel_button->setEnabled(ClientInstance->m_isDiscardActionRefusable);
+			cancel_button->setEnabled(ClientInstance->is_discard_action_refusable);
 			discard_button->setEnabled(false);
 
 			QString pattern = ClientInstance->getPattern();
@@ -2109,12 +2108,12 @@ void RoomScene::updateStatus(Client::Status oldStatus, Client::Status newStatus)
 			showPromptBox();
 
 			ok_button->setEnabled(false);
-			cancel_button->setEnabled(ClientInstance->m_isDiscardActionRefusable);
+			cancel_button->setEnabled(ClientInstance->is_discard_action_refusable);
 			discard_button->setEnabled(false);
 
 			discard_skill->setNum(ClientInstance->discard_num);
 			discard_skill->setMinNum(ClientInstance->min_num);
-			discard_skill->setIncludeEquip(ClientInstance->m_canDiscardEquip);
+			discard_skill->setIncludeEquip(ClientInstance->can_discard_equip);
 			dashboard->startPending(discard_skill);
 			break;
 		}
@@ -2178,7 +2177,7 @@ void RoomScene::updateStatus(Client::Status oldStatus, Client::Status newStatus)
 	case Client::AskForAG:{
 			dashboard->disableAllCards();
 
-			ok_button->setEnabled(ClientInstance->m_isDiscardActionRefusable);
+			ok_button->setEnabled(ClientInstance->is_discard_action_refusable);
 			cancel_button->setEnabled(false);
 			discard_button->setEnabled(false);
 
@@ -2707,11 +2706,11 @@ DamageMakerDialog::DamageMakerDialog(QWidget *parent)
 	RoomScene::FillPlayerNames(damage_target, false);
 
 	damage_nature = new QComboBox;
-	damage_nature->addItem(tr("Normal"), S_CHEAT_NORMAL_DAMAGE);
-	damage_nature->addItem(tr("Thunder"), S_CHEAT_THUNDER_DAMAGE);
-	damage_nature->addItem(tr("Fire"), S_CHEAT_FIRE_DAMAGE);
-	damage_nature->addItem(tr("HP recover"), S_CHEAT_HP_RECOVER);
-	damage_nature->addItem(tr("Lose HP"), S_CHEAT_HP_LOSE);
+	damage_nature->addItem(tr("Normal"), BangProtocol::NormalDamage);
+	damage_nature->addItem(tr("Thunder"), BangProtocol::ThunderDamage);
+	damage_nature->addItem(tr("Fire"), BangProtocol::FireDamage);
+	damage_nature->addItem(tr("HP recover"), BangProtocol::HpRecover);
+	damage_nature->addItem(tr("Lose HP"), BangProtocol::HpLose);
 
 	damage_point = new QSpinBox;
 	damage_point->setRange(1, 1000);
@@ -3275,7 +3274,7 @@ void RoomScene::freeze(){
 	main_window->setStatusBar(NULL);
 }
 
-void RoomScene::moveFocus(const QString &who, Countdown countdown){
+void RoomScene::moveFocus(const QString &who, BangProtocol::Countdown countdown){
 	if (who == Self->objectName() && focused != NULL)
 	{
 		focused->hideProgressBar();

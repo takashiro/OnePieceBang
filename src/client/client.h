@@ -56,8 +56,8 @@ public:
 	void requestSurrender();
 
 	void disconnectFromHost();
-	void replyToServer(QSanProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
-	void requestToServer(QSanProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
+	void replyToServer(BangProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
+	void requestToServer(BangProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
 	void request(const QString &message);
 	void onPlayerUseCard(const Card *card, const QList<const Player *> &targets = QList<const Player *>());
 	void setStatus(Status status);
@@ -176,23 +176,22 @@ public:
 	void attachSkill(const QString &skill_name);
 	void detachSkill(const QString &skill_name);
 	
-	inline void setCountdown(QSanProtocol::Countdown countdown) 
-	{
-		m_mutexCountdown.lock();
-		m_countdown = countdown;
-		m_mutexCountdown.unlock();
+	inline void setCountdown(BangProtocol::Countdown countdown) {
+		countdown_mutex.lock();
+		this->countdown = countdown;
+		countdown_mutex.unlock();
 	}
-	inline QSanProtocol::Countdown getCountdown()
-	{
-		m_mutexCountdown.lock();
-		QSanProtocol::Countdown countdown = m_countdown;
-		m_mutexCountdown.unlock();
+
+	inline BangProtocol::Countdown getCountdown(){
+		countdown_mutex.lock();
+		BangProtocol::Countdown countdown = countdown;
+		countdown_mutex.unlock();
 		return countdown;
 	}
 
 	// public fields
-	bool m_isDiscardActionRefusable;
-	bool m_canDiscardEquip;
+	bool is_discard_action_refusable;
+	bool can_discard_equip;
 	int discard_num;
 	int min_num;
 	QString skill_name;
@@ -215,19 +214,19 @@ public slots:
 
 protected:
 	// operation countdown
-	QSanProtocol::Countdown m_countdown;
+	BangProtocol::Countdown countdown;
 	// sync objects    
-	QMutex m_mutexCountdown;
+	QMutex countdown_mutex;
 
 private:
 	ClientSocket *socket;
 	bool m_isGameOver;
 	Status status;
 	int alive_count;
-	QHash<QString, Callback> callbacks;
-	QHash<QSanProtocol::CommandType, CallBack> m_interactions;
-	QHash<QSanProtocol::CommandType, CallBack> m_callbacks;
-	QList<const ClientPlayer*> players;
+	QHash<QString, Callback> oldcallbacks;
+	QHash<BangProtocol::CommandType, CallBack> interactions;
+	QHash<BangProtocol::CommandType, CallBack> callbacks;
+	QList<const ClientPlayer *> players;
 	bool m_isUseCard;
 	QStringList ban_packages;
 	Recorder *recorder;
@@ -239,7 +238,7 @@ private:
 	QString skill_to_invoke;
 	int swap_pile;
 
-	unsigned int _m_lastServerSerial;
+	unsigned int last_server_serial;
 
 	void updatePileNum();
 	void setPromptList(const QStringList &text);
@@ -252,7 +251,7 @@ private:
 private slots:
 	void processServerPacket(const QString &cmd);
 	void processServerPacket(char *cmd);
-	bool processServerRequest(const QSanProtocol::QSanGeneralPacket& packet);
+	bool processServerRequest(const BangProtocol::Packet& packet);
 	void processReply(char *reply);
 	void notifyRoleChange(const QString &new_role);
 	void onPlayerChooseSuit();
@@ -275,7 +274,7 @@ signals:
 	void cards_got(const ClientPlayer *player, const QString &flags, const QString &reason);
 	void roles_got(const QString &scheme, const QStringList &roles);
 	void directions_got();    
-	void orders_got(QSanProtocol::Game3v3ChooseOrderCommand reason);
+	void orders_got(BangProtocol::Game3v3ChooseOrderCommand reason);
 	
 	void seats_arranged(const QList<const ClientPlayer*> &seats);
 	void hp_changed(const QString &who, int delta, DamageStruct::Nature nature, bool losthp);
@@ -288,7 +287,7 @@ signals:
 	void log_received(const QString &log_str);
 	void guanxing(const QList<int> &card_ids, bool up_only);
 	void gongxin(const QList<int> &card_ids, bool enable_heart);
-	void focus_moved(const QString &focus, QSanProtocol::Countdown countdown);
+	void focus_moved(const QString &focus, BangProtocol::Countdown countdown);
 	void emotion_set(const QString &target, const QString &emotion);
 	void skill_invoked(const QString &who, const QString &skill_name);
 	void skill_acquired(const ClientPlayer *player, const QString &skill_name);

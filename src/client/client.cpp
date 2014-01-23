@@ -19,147 +19,143 @@
 #include <QTextDocument>
 #include <QTextCursor>
 
-using namespace std;
-using namespace QSanProtocol;
-using namespace QSanProtocol::Utils;
-
 Client *ClientInstance = NULL;
 
 Client::Client(QObject *parent, const QString &filename)
-	:QObject(parent), m_isDiscardActionRefusable(true),
+	:QObject(parent), is_discard_action_refusable(true),
 	status(NotActive), alive_count(1), swap_pile(0)
 {
 
 	ClientInstance = this;
 	m_isGameOver = false;
 
-	callbacks["checkVersion"] = &Client::checkVersion;
+	oldcallbacks["checkVersion"] = &Client::checkVersion;
 
-	callbacks["roomBegin"] = &Client::roomBegin;
-	callbacks["room"] = &Client::room;
-	callbacks["roomEnd"] = &Client::roomEnd;
-	callbacks["roomCreated"] = &Client::roomCreated;
-	callbacks["roomError"] = &Client::roomError;
-	callbacks["hallEntered"] = &Client::hallEntered;
+	oldcallbacks["roomBegin"] = &Client::roomBegin;
+	oldcallbacks["room"] = &Client::room;
+	oldcallbacks["roomEnd"] = &Client::roomEnd;
+	oldcallbacks["roomCreated"] = &Client::roomCreated;
+	oldcallbacks["roomError"] = &Client::roomError;
+	oldcallbacks["hallEntered"] = &Client::hallEntered;
 
-	callbacks["setup"] = &Client::setup;
-	callbacks["networkDelayTest"] = &Client::networkDelayTest;
-	callbacks["addPlayer"] = &Client::addPlayer;
-	callbacks["removePlayer"] = &Client::removePlayer;
-	callbacks["startInXs"] = &Client::startInXs;
-	callbacks["arrangeSeats"] = &Client::arrangeSeats;
-	callbacks["warn"] = &Client::warn;
+	oldcallbacks["setup"] = &Client::setup;
+	oldcallbacks["networkDelayTest"] = &Client::networkDelayTest;
+	oldcallbacks["addPlayer"] = &Client::addPlayer;
+	oldcallbacks["removePlayer"] = &Client::removePlayer;
+	oldcallbacks["startInXs"] = &Client::startInXs;
+	oldcallbacks["arrangeSeats"] = &Client::arrangeSeats;
+	oldcallbacks["warn"] = &Client::warn;
 
-	callbacks["startGame"] = &Client::startGame;
-	m_callbacks[S_COMMAND_GAME_OVER] = &Client::gameOver;
+	oldcallbacks["startGame"] = &Client::startGame;
+	callbacks[BangProtocol::GameOver] = &Client::gameOver;
 
-	callbacks["hpChange"] = &Client::hpChange;
-	callbacks["killPlayer"] = &Client::killPlayer;
-	callbacks["revivePlayer"] = &Client::revivePlayer;
-	m_callbacks[S_COMMAND_SHOW_CARD] = &Client::showCard;
+	oldcallbacks["hpChange"] = &Client::hpChange;
+	oldcallbacks["killPlayer"] = &Client::killPlayer;
+	oldcallbacks["revivePlayer"] = &Client::revivePlayer;
+	callbacks[BangProtocol::ShowCard] = &Client::showCard;
 	//callbacks["showCard"] = &Client::showCard;
-	callbacks["setMark"] = &Client::setMark;
-	callbacks["doFilter"] = &Client::doFilter;
-	callbacks["log"] = &Client::log;
-	callbacks["speak"] = &Client::speak;
-	callbacks["acquireSkill"] = &Client::acquireSkill;
-	callbacks["attachSkill"] = &Client::attachSkill;
-	callbacks["detachSkill"] = &Client::detachSkill;
-	m_callbacks[S_COMMAND_MOVE_FOCUS] = &Client::moveFocus; 
+	oldcallbacks["setMark"] = &Client::setMark;
+	oldcallbacks["doFilter"] = &Client::doFilter;
+	oldcallbacks["log"] = &Client::log;
+	oldcallbacks["speak"] = &Client::speak;
+	oldcallbacks["acquireSkill"] = &Client::acquireSkill;
+	oldcallbacks["attachSkill"] = &Client::attachSkill;
+	oldcallbacks["detachSkill"] = &Client::detachSkill;
+	callbacks[BangProtocol::MoveFocus] = &Client::moveFocus;
 	//callbacks["moveFocus"] = &Client::moveFocus;
-	callbacks["setEmotion"] = &Client::setEmotion;
-	m_callbacks[S_COMMAND_INVOKE_SKILL] = &Client::skillInvoked;
-	m_callbacks[S_COMMAND_SHOW_ALL_CARDS] = &Client::askForGongxin;
-	m_callbacks[S_COMMAND_SKILL_GONGXIN] = &Client::askForGongxin; 
+	oldcallbacks["setEmotion"] = &Client::setEmotion;
+	callbacks[BangProtocol::InvokeSkill] = &Client::skillInvoked;
+	callbacks[BangProtocol::ShowAllCards] = &Client::askForGongxin;
+	callbacks[BangProtocol::InvokeGongxin] = &Client::askForGongxin;
 	//callbacks["skillInvoked"] = &Client::skillInvoked;
-	callbacks["addHistory"] = &Client::addHistory;
-	callbacks["animate"] = &Client::animate;
-	callbacks["judgeResult"] = &Client::judgeResult;
-	callbacks["setScreenName"] = &Client::setScreenName;
-	callbacks["setFixedDistance"] = &Client::setFixedDistance;
-	callbacks["transfigure"] = &Client::transfigure;
-	callbacks["jilei"] = &Client::jilei;
-	callbacks["cardLock"] = &Client::cardLock;
-	callbacks["pile"] = &Client::pile;
+	oldcallbacks["addHistory"] = &Client::addHistory;
+	oldcallbacks["animate"] = &Client::animate;
+	oldcallbacks["judgeResult"] = &Client::judgeResult;
+	oldcallbacks["setScreenName"] = &Client::setScreenName;
+	oldcallbacks["setFixedDistance"] = &Client::setFixedDistance;
+	oldcallbacks["transfigure"] = &Client::transfigure;
+	oldcallbacks["jilei"] = &Client::jilei;
+	oldcallbacks["cardLock"] = &Client::cardLock;
+	oldcallbacks["pile"] = &Client::pile;
 
-	callbacks["updateStateItem"] = &Client::updateStateItem;
+	oldcallbacks["updateStateItem"] = &Client::updateStateItem;
 
-	callbacks["playSkillEffect"] = &Client::playSkillEffect;
-	callbacks["playCardEffect"] = &Client::playCardEffect;
-	callbacks["playAudio"] = &Client::playAudio;
+	oldcallbacks["playSkillEffect"] = &Client::playSkillEffect;
+	oldcallbacks["playCardEffect"] = &Client::playCardEffect;
+	oldcallbacks["playAudio"] = &Client::playAudio;
 
 	// callbacks["moveNCards"] = &Client::moveNCards;
 	// callbacks["moveCard"] = &Client::moveCard;
 	// callbacks["drawNCards"] = &Client::drawNCards;
 	// callbacks["drawCards"] = &Client::drawCards;    
-	m_callbacks[S_COMMAND_GET_CARD] = &Client::getCards;
-	m_callbacks[S_COMMAND_LOSE_CARD] = &Client::loseCards;
-	callbacks["clearPile"] = &Client::resetPiles;
-	callbacks["setPileNumber"] = &Client::setPileNumber;
-	callbacks["setStatistics"] = &Client::setStatistics;
-	callbacks["setCardFlag"] = &Client::setCardFlag;
+	callbacks[BangProtocol::GetCard] = &Client::getCards;
+	callbacks[BangProtocol::LoseCard] = &Client::loseCards;
+	oldcallbacks["clearPile"] = &Client::resetPiles;
+	oldcallbacks["setPileNumber"] = &Client::setPileNumber;
+	oldcallbacks["setStatistics"] = &Client::setStatistics;
+	oldcallbacks["setCardFlag"] = &Client::setCardFlag;
 
 	// interactive methods    
-	m_interactions[S_COMMAND_CHOOSE_GENERAL] = &Client::askForGeneral;
+	interactions[BangProtocol::ChooseGeneral] = &Client::askForGeneral;
 	//callbacks["askForGeneral"] = &Client::askForGeneral;
-	m_interactions[S_COMMAND_CHOOSE_PLAYER] = &Client::askForPlayerChosen;
+	interactions[BangProtocol::ChoosePlayer] = &Client::askForPlayerChosen;
 	//callbacks["askForPlayerChosen"] = &Client::askForPlayerChosen;
-	m_interactions[S_COMMAND_CHOOSE_ROLE] = &Client::askForAssign;
+	interactions[BangProtocol::ChooseRole] = &Client::askForAssign;
 	//callbacks["askForAssign"] = &Client::askForAssign;
-	m_interactions[S_COMMAND_CHOOSE_DIRECTION] = &Client::askForDirection;
+	interactions[BangProtocol::ChooseDirection] = &Client::askForDirection;
 	//callbacks["askForDirection"] = &Client::askForDirection;
-	m_interactions[S_COMMAND_EXCHANGE_CARD] = &Client::askForExchange;
+	interactions[BangProtocol::ExchangeCard] = &Client::askForExchange;
 	//callbacks["askForExchange"] = &Client::askForExchange;
-	m_interactions[S_COMMAND_ASK_WINE] = &Client::askForSingleWine;
+	interactions[BangProtocol::AskForWine] = &Client::askForSingleWine;
 	//callbacks["askForSingleWine"] = &Client::askForSingleWine;
-	m_interactions[S_COMMAND_SKILL_GUANXING] = &Client::askForGuanxing;
+	interactions[BangProtocol::InvokeGuanxing] = &Client::askForGuanxing;
 	//callbacks["doGuanxing"] = &Client::doGuanxing;
-	m_interactions[S_COMMAND_SKILL_GONGXIN] = &Client::askForGongxin;
+	interactions[BangProtocol::InvokeGongxin] = &Client::askForGongxin;
 	//callbacks["doGongxin"] = &Client::doGongxin;
-	m_interactions[S_COMMAND_SKILL_YIJI] = &Client::askForYiji;
+	interactions[BangProtocol::InvokeYiji] = &Client::askForYiji;
 	//callbacks["askForYiji"] = &Client::askForYiji;
-	m_interactions[S_COMMAND_PLAY_CARD] = &Client::activate;
+	interactions[BangProtocol::PlayCard] = &Client::activate;
 	// callbacks["activate"] = &Client::activate;
-	m_interactions[S_COMMAND_DISCARD_CARD] = &Client::askForDiscard;
+	interactions[BangProtocol::DiscardCard] = &Client::askForDiscard;
 	//callbacks["askForDiscard"] = &Client::askForDiscard;
-	m_interactions[S_COMMAND_CHOOSE_SUIT] = &Client::askForSuit;
+	interactions[BangProtocol::ChooseSuit] = &Client::askForSuit;
 	//callbacks["askForSuit"] = &Client::askForSuit;
-	m_interactions[S_COMMAND_CHOOSE_KINGDOM] = &Client::askForKingdom;
+	interactions[BangProtocol::ChooseKingdom] = &Client::askForKingdom;
 	//callbacks["askForKingdom"] = &Client::askForKingdom;    
-	m_interactions[S_COMMAND_RESPONSE_CARD] = &Client::askForCard;
+	interactions[BangProtocol::ResponseCard] = &Client::askForCard;
 	//callbacks["askForCard"] = &Client::askForCard;
-	m_interactions[S_COMMAND_USE_CARD] = &Client::askForUseCard;
+	interactions[BangProtocol::UseCard] = &Client::askForUseCard;
 	//callbacks["askForUseCard"] = &Client::askForUseCard;
-	m_interactions[S_COMMAND_INVOKE_SKILL] = &Client::askForSkillInvoke;
+	interactions[BangProtocol::InvokeSkill] = &Client::askForSkillInvoke;
 	//callbacks["askForSkillInvoke"] = &Client::askForSkillInvoke;
-	m_interactions[S_COMMAND_MULTIPLE_CHOICE] = &Client::askForChoice;
+	interactions[BangProtocol::MultipleChoice] = &Client::askForChoice;
 	//callbacks["askForChoice"] = &Client::askForChoice;
-	m_interactions[S_COMMAND_NULLIFICATION] = &Client::askForNullification;
+	interactions[BangProtocol::Nullification] = &Client::askForNullification;
 	//callbacks["askForNullification"] = &Client::askForNullification;
-	m_interactions[S_COMMAND_SHOW_CARD] = &Client::askForCardShow;
+	interactions[BangProtocol::ShowCard] = &Client::askForCardShow;
 	//callbacks["askForCardShow"] = &Client::askForCardShow;
-	m_interactions[S_COMMAND_AMAZING_GRACE] = &Client::askForAG;
+	interactions[BangProtocol::AmazingGrace] = &Client::askForAG;
 	//callbacks["askForAG"] = &Client::askForAG;        
-	m_interactions[S_COMMAND_PINDIAN] = &Client::askForPindian;
+	interactions[BangProtocol::Pindian] = &Client::askForPindian;
 	//callbacks["askForPindian"] = &Client::askForPindian;
-	m_interactions[S_COMMAND_CHOOSE_CARD] = &Client::askForCardChosen;
+	interactions[BangProtocol::ChooseCard] = &Client::askForCardChosen;
 	//callbacks["askForCardChosen"] = &Client::askForCardChosen;
-	m_interactions[S_COMMAND_CHOOSE_ORDER] = &Client::askForOrder;
-	m_interactions[S_COMMAND_CHOOSE_ROLE_3V3] = &Client::askForRole3v3;
-	m_interactions[S_COMMAND_SURRENDER] = &Client::askForSurrender;
+	interactions[BangProtocol::ChooseOrder] = &Client::askForOrder;
+	interactions[BangProtocol::Choose3v3Role] = &Client::askForRole3v3;
+	interactions[BangProtocol::Surrender] = &Client::askForSurrender;
 
-	callbacks["fillAG"] = &Client::fillAG;    
-	callbacks["takeAG"] = &Client::takeAG;
-	callbacks["clearAG"] = &Client::clearAG;
+	oldcallbacks["fillAG"] = &Client::fillAG;
+	oldcallbacks["takeAG"] = &Client::takeAG;
+	oldcallbacks["clearAG"] = &Client::clearAG;
 
 	// 3v3 mode & 1v1 mode
-	callbacks["fillGenerals"] = &Client::fillGenerals;
-	callbacks["askForGeneral3v3"] = &Client::askForGeneral3v3;
-	callbacks["askForGeneral1v1"] = &Client::askForGeneral3v3;
-	callbacks["takeGeneral"] = &Client::takeGeneral;
-	callbacks["startArrange"] = &Client::startArrange;    
-	callbacks["recoverGeneral"] = &Client::recoverGeneral;
-	callbacks["revealGeneral"] = &Client::revealGeneral;   
+	oldcallbacks["fillGenerals"] = &Client::fillGenerals;
+	oldcallbacks["askForGeneral3v3"] = &Client::askForGeneral3v3;
+	oldcallbacks["askForGeneral1v1"] = &Client::askForGeneral3v3;
+	oldcallbacks["takeGeneral"] = &Client::takeGeneral;
+	oldcallbacks["startArrange"] = &Client::startArrange;
+	oldcallbacks["recoverGeneral"] = &Client::recoverGeneral;
+	oldcallbacks["revealGeneral"] = &Client::revealGeneral;
 
 	m_isUseCard = false;
 
@@ -218,18 +214,18 @@ void Client::networkDelayTest(const QString &){
 	request("networkDelayTest .");
 }
 
-void Client::replyToServer(CommandType command, const QJsonValue &arg){    
+void Client::replyToServer(BangProtocol::CommandType command, const QJsonValue &arg){
 	if(socket){
-		QSanGeneralPacket packet(S_CLIENT_REPLY, command);
-		packet.m_localSerial = _m_lastServerSerial;
+		BangProtocol::Packet packet(BangProtocol::ClientReply, command);
+		packet.local_serial = last_server_serial;
 		packet.setMessageBody(arg);
 		socket->send(packet.toString());
 	}
 }
 
-void Client::requestToServer(CommandType command, const QJsonValue &arg){    
+void Client::requestToServer(BangProtocol::CommandType command, const QJsonValue &arg){
 	if(socket){
-		QSanGeneralPacket packet(S_CLIENT_REQUEST, command);        
+		BangProtocol::Packet packet(BangProtocol::ClientRequest, command);
 		packet.setMessageBody(arg);
 		socket->send(packet.toString());
 	}
@@ -280,46 +276,54 @@ void Client::processServerPacket(const QString &cmd){
 }
 
 void Client::processServerPacket(char *cmd){
-	if (m_isGameOver) return;
-	QSanGeneralPacket packet;
-	if (packet.parse(cmd))
-	{
-		if (packet.getPacketType() == S_SERVER_NOTIFICATION)
-		{
-			CallBack callback = m_callbacks[packet.getCommandType()];
-			if (callback) {            
+	if(m_isGameOver) return;
+
+	BangProtocol::Packet packet;
+	if(packet.parse(cmd)){
+		if(packet.getPacketType() == BangProtocol::ServerNotification){
+			CallBack callback = callbacks[packet.getCommandType()];
+			if(callback){
 				(this->*callback)(packet.getMessageBody());
 			}
-		}
-		else if (packet.getPacketType() == S_SERVER_REQUEST)
+		}else if(packet.getPacketType() == BangProtocol::ServerRequest){
 			processServerRequest(packet);
+		}
+	}else{
+		processReply(cmd);
 	}
-	else processReply(cmd);
 }
 
-bool Client::processServerRequest(const QSanGeneralPacket& packet)
-{
+bool Client::processServerRequest(const BangProtocol::Packet &packet){
 	setStatus(Client::NotActive);
-	_m_lastServerSerial = packet.m_globalSerial;
-	CommandType command = packet.getCommandType();
+
+	last_server_serial = packet.global_serial;
+
+	BangProtocol::CommandType command = packet.getCommandType();
 	QJsonValue msg = packet.getMessageBody();
-	Countdown countdown;
-	countdown.m_current = 0;
+
+	BangProtocol::Countdown countdown;
+	countdown.current = 0;
+
 	bool use_default = !msg.isArray();
 	if(!use_default){
 		QJsonArray arr = msg.toArray();
 		if(arr.size() <= 1 || !countdown.tryParse(arr.first())){
-		use_default = true;
+			use_default = true;
 		}
 	}
 	if(use_default){
-		countdown.m_type = Countdown::S_COUNTDOWN_USE_DEFAULT;    
-		countdown.m_max = ServerInfo.getCommandTimeout(command, S_CLIENT_INSTANCE);
+		countdown.type = BangProtocol::Countdown::UseDefault;
+		countdown.max = ServerInfo.getCommandTimeout(command, BangProtocol::ClientInstance);
 	}
+
 	setCountdown(countdown);
-	CallBack callback = m_interactions[command];
-	if (!callback) return false;
-	(this->*callback)(msg);    
+
+	CallBack callback = interactions[command];
+	if(!callback){
+		return false;
+	}
+	(this->*callback)(msg);
+
 	return true;
 }
 
@@ -361,7 +365,7 @@ void Client::processReply(char *reply){
 			deprecated << "increaseSlashCount"; // replaced by addHistory
 		}
 
-		Callback callback = callbacks.value(method, NULL);
+		Callback callback = oldcallbacks.value(method, NULL);
 		if(callback){
 			QString arg_str = arg;
 			(this->*callback)(arg_str);
@@ -489,7 +493,7 @@ void Client::loseCards(const QJsonValue& data)
 void Client::onPlayerChooseGeneral(const QString &item_name){
 	setStatus(Client::NotActive);
 	if(!item_name.isEmpty()){
-		replyToServer(S_COMMAND_CHOOSE_GENERAL, item_name);
+		replyToServer(BangProtocol::ChooseGeneral, item_name);
 		Bang->playAudio("choose-item");
 	}
 
@@ -498,17 +502,17 @@ void Client::onPlayerChooseGeneral(const QString &item_name){
 void Client::requestCheatRunScript(const QString& script)
 {
 	QJsonArray cheatReq;
-	cheatReq.append((int)S_CHEAT_RUN_SCRIPT);
+	cheatReq.append((int) BangProtocol::RunScript);
 	cheatReq.append(script);
-	requestToServer(S_COMMAND_CHEAT, cheatReq);
+	requestToServer(BangProtocol::Cheat, cheatReq);
 }
 
 void Client::requestCheatRevive(const QString& name)
 {
 	QJsonArray cheatReq;
-	cheatReq.append((int)S_CHEAT_REVIVE_PLAYER);
+	cheatReq.append((int) BangProtocol::RevivePlayer);
 	cheatReq.append(name);
-	requestToServer(S_COMMAND_CHEAT, cheatReq);
+	requestToServer(BangProtocol::Cheat, cheatReq);
 }
 
 void Client::requestCheatDamage(const QString& source, const QString& target, DamageStruct::Nature nature, int points)
@@ -519,31 +523,31 @@ void Client::requestCheatDamage(const QString& source, const QString& target, Da
 	cheatArg.append((int)nature);
 	cheatArg.append(points);
 
-	cheatReq.append((int)S_CHEAT_MAKE_DAMAGE);
+	cheatReq.append((int) BangProtocol::MakeDamage);
 	cheatReq.append(cheatArg);
-	requestToServer(S_COMMAND_CHEAT, cheatReq);
+	requestToServer(BangProtocol::Cheat, cheatReq);
 }
 
 void Client::requestCheatKill(const QString& killer, const QString& victim)
 {
 	QJsonArray cheatArg;
-	cheatArg.append((int)S_CHEAT_KILL_PLAYER);
-	cheatArg.append(toJsonArray(killer, victim));
-	requestToServer(S_COMMAND_CHEAT, cheatArg);
+	cheatArg.append((int) BangProtocol::KillPlayer);
+	cheatArg.append(BangProtocol::toJsonArray(killer, victim));
+	requestToServer(BangProtocol::Cheat, cheatArg);
 }
 
 void Client::requestCheatGetOneCard(int card_id){
 	QJsonArray cheatArg;
-	cheatArg.append((int)S_CHEAT_GET_ONE_CARD);
+	cheatArg.append((int) BangProtocol::GetOneCard);
 	cheatArg.append(card_id);
-	requestToServer(S_COMMAND_CHEAT, cheatArg);
+	requestToServer(BangProtocol::Cheat, cheatArg);
 }
 
 void Client::requestCheatChangeGeneral(QString name){
 	QJsonArray cheatArg;
-	cheatArg.append((int)S_CHEAT_CHANGE_GENERAL);
+	cheatArg.append((int) BangProtocol::ChangeGeneral);
 	cheatArg.append(name);
-	requestToServer(S_COMMAND_CHEAT, cheatArg);
+	requestToServer(BangProtocol::Cheat, cheatArg);
 }
 
 void Client::addRobot(){
@@ -563,14 +567,14 @@ void Client::arrange(const QStringList &order){
 void Client::onPlayerUseCard(const Card *card, const QList<const Player *> &targets){
 
 	if(card == NULL){
-		replyToServer(S_COMMAND_USE_CARD, QJsonValue());
+		replyToServer(BangProtocol::UseCard, QJsonValue());
 		// request("useCard .");
 	}else{
 		QJsonArray targetNames;
 		foreach(const Player *target, targets)
 		targetNames.append(target->objectName());
 
-		replyToServer(S_COMMAND_USE_CARD, toJsonArray(card->toString(), targetNames));
+		replyToServer(BangProtocol::UseCard, BangProtocol::toJsonArray(card->toString(), targetNames));
 
 		//if(target_names.isEmpty())
 		//    request(QString("useCard %1->.").arg(card->toString()));
@@ -729,9 +733,9 @@ QString Client::getSkillNameToInvoke() const{
 
 void Client::onPlayerInvokeSkill(bool invoke){    
 	if (skill_name == "surrender")
-		replyToServer(S_COMMAND_SURRENDER, invoke);
+		replyToServer(BangProtocol::Surrender, invoke);
 	else
-		replyToServer(S_COMMAND_INVOKE_SKILL, invoke);
+		replyToServer(BangProtocol::InvokeSkill, invoke);
 	setStatus(NotActive);
 }
 
@@ -775,9 +779,9 @@ void Client::_askForCardOrUseCard(const QJsonValue &cardUsageData){
 		setPromptList(texts);
 
 	if(card_pattern.endsWith("!"))
-		m_isDiscardActionRefusable = false;
+		is_discard_action_refusable = false;
 	else
-		m_isDiscardActionRefusable = true;
+		is_discard_action_refusable = true;
 
 	QRegExp rx("^@@?(\\w+)(-card)?$");
 	if(rx.exactMatch(card_pattern)){
@@ -810,7 +814,7 @@ void Client::askForUseCard(const QJsonValue &req){
 void Client::askForSkillInvoke(const QJsonValue &argdata){
 	if(!argdata.isArray()) return;
 	QJsonArray arg = argdata.toArray();
-	if (!isStringArray(arg, 0, 1)) return;
+	if (!BangProtocol::isStringArray(arg, 0, 1)) return;
 	QString skill_name = arg[0].toString();
 	QString data = arg[1].toString();
 
@@ -833,7 +837,7 @@ void Client::askForSkillInvoke(const QJsonValue &argdata){
 
 void Client::onPlayerMakeChoice(){
 	QString option = sender()->objectName();
-	replyToServer(S_COMMAND_MULTIPLE_CHOICE, option);
+	replyToServer(BangProtocol::MultipleChoice, option);
 	setStatus(NotActive);
 }
 
@@ -900,7 +904,7 @@ void Client::askForNullification(const QJsonValue &argdata){
 	}
 
 	card_pattern = "nullification";
-	m_isDiscardActionRefusable = true;
+	is_discard_action_refusable = true;
 	m_isUseCard = false;
 
 	setStatus(Responsing);
@@ -934,7 +938,7 @@ void Client::onPlayerChooseCard(int card_id){
 	if(card_id != -2){   
 		reply = card_id;
 	}
-	replyToServer(S_COMMAND_CHOOSE_CARD, reply);
+	replyToServer(BangProtocol::ChooseCard, reply);
 	setStatus(NotActive);
 }
 
@@ -943,7 +947,7 @@ void Client::onPlayerChoosePlayer(const Player *player){
 		player = findChild<const Player *>(players_to_choose.first());
 
 	if (player == NULL) return;
-	replyToServer(S_COMMAND_CHOOSE_PLAYER, player->objectName());
+	replyToServer(BangProtocol::ChoosePlayer, player->objectName());
 	setStatus(NotActive);
 }
 
@@ -959,7 +963,7 @@ void Client::trust(){
 }
 
 void Client::requestSurrender(){
-	requestToServer(S_COMMAND_SURRENDER);
+	requestToServer(BangProtocol::Surrender);
 	setStatus(NotActive);
 }
 
@@ -1000,10 +1004,10 @@ int Client::alivePlayerCount() const{
 
 void Client::onPlayerResponseCard(const Card *card){
 	if(card)
-		replyToServer(S_COMMAND_RESPONSE_CARD, card->toString());
+		replyToServer(BangProtocol::ResponseCard, card->toString());
 		//request(QString("responseCard %1").arg(card->toString()));
 	else
-		replyToServer(S_COMMAND_RESPONSE_CARD, QJsonValue());
+		replyToServer(BangProtocol::ResponseCard, QJsonValue());
 		//request("responseCard .");
 
 	card_pattern.clear();
@@ -1112,12 +1116,12 @@ void Client::askForDiscard(const QJsonValue &reqdata){
 		return;
 
 	discard_num = req[0].toDouble();
-	m_isDiscardActionRefusable = req[2].toBool();
-	m_canDiscardEquip = req[3].toBool();
+	is_discard_action_refusable = req[2].toBool();
+	can_discard_equip = req[3].toBool();
 	min_num = req[1].toDouble();
 
 	QString prompt;
-	if(m_canDiscardEquip)
+	if(can_discard_equip)
 		prompt = tr("Please discard %1 card(s), include equip").arg(discard_num);
 	else
 		prompt = tr("Please discard %1 card(s), only hand cards is allowed").arg(discard_num);
@@ -1135,8 +1139,8 @@ void Client::askForExchange(const QJsonValue &exchange_str){
 	}
 
 	discard_num = exchange_str.toDouble();
-	m_isDiscardActionRefusable = false;
-	m_canDiscardEquip = false;
+	is_discard_action_refusable = false;
+	can_discard_equip = false;
 
 	prompt_doc->setHtml(tr("Please give %1 cards to exchange").arg(discard_num));
 
@@ -1150,7 +1154,7 @@ void Client::gameOver(const QJsonValue &argdata){
 	setStatus(Client::NotActive);
 	QString winner = arg[0].toString();
 	QStringList roles;
-	tryParse(arg[1], roles);
+	BangProtocol::tryParse(arg[1], roles);
 
 	Q_ASSERT(roles.length() == players.length());
 
@@ -1239,7 +1243,7 @@ void Client::warn(const QString &reason){
 
 void Client::askForGeneral(const QJsonValue &arg){
 	QStringList generals;
-	if (!tryParse(arg, generals)) return;
+	if (!BangProtocol::tryParse(arg, generals)) return;
 	emit generals_got(generals);
 	setStatus(ExecDialog);
 }
@@ -1262,7 +1266,7 @@ void Client::askForKingdom(const QJsonValue&){
 void Client::askForChoice(const QJsonValue &ask_str_raw){
 	if(!ask_str_raw.isArray()) return;
 	QJsonArray ask_str = ask_str_raw.toArray();
-	if (!isStringArray(ask_str, 0, 1)) return;
+	if (!BangProtocol::isStringArray(ask_str, 0, 1)) return;
 	QString skill_name = ask_str[0].toString();
 	QStringList options = ask_str[1].toString().split("+");
 	emit options_got(skill_name, options);
@@ -1272,7 +1276,7 @@ void Client::askForChoice(const QJsonValue &ask_str_raw){
 void Client::askForCardChosen(const QJsonValue &ask_str_raw){
 	if(!ask_str_raw.isArray()) return;
 	QJsonArray ask_str = ask_str_raw.toArray();
-	if (!isStringArray(ask_str, 0, 2)) return;
+	if (!BangProtocol::isStringArray(ask_str, 0, 2)) return;
 	QString player_name = ask_str[0].toString();
 	QString flags = ask_str[1].toString();
 	QString reason = ask_str[2].toString();
@@ -1285,7 +1289,7 @@ void Client::askForCardChosen(const QJsonValue &ask_str_raw){
 
 void Client::askForOrder(const QJsonValue &arg){
 	if (!arg.isDouble()) return;
-	Game3v3ChooseOrderCommand reason = (Game3v3ChooseOrderCommand) arg.toDouble();
+	BangProtocol::Game3v3ChooseOrderCommand reason = (BangProtocol::Game3v3ChooseOrderCommand) arg.toDouble();
 	emit orders_got(reason);
 	setStatus(ExecDialog);
 }
@@ -1295,7 +1299,7 @@ void Client::askForRole3v3(const QJsonValue &argdata){
 	QJsonArray arg = argdata.toArray();
 	if (arg.size() != 2 || !arg[0].isString() || !arg[1].isArray()) return;
 	QStringList roles;
-	if (!tryParse(arg[1], roles)) return;    
+	if (!BangProtocol::tryParse(arg[1], roles)) return;
 	QString scheme = arg[0].toString();
 	emit roles_got(scheme, roles);
 	setStatus(ExecDialog);
@@ -1327,24 +1331,24 @@ void Client::doFilter(const QString &){
 }
 
 void Client::onPlayerChooseSuit(){
-	replyToServer(S_COMMAND_CHOOSE_SUIT, sender()->objectName());
+	replyToServer(BangProtocol::ChooseSuit, sender()->objectName());
 	setStatus(NotActive);
 }
 
 void Client::onPlayerChooseKingdom(){
-	replyToServer(S_COMMAND_CHOOSE_KINGDOM, sender()->objectName());
+	replyToServer(BangProtocol::ChooseKingdom, sender()->objectName());
 	setStatus(NotActive);
 }
 
 void Client::onPlayerDiscardCards(const Card *cards){
 	if(!cards){
-		replyToServer(S_COMMAND_DISCARD_CARD, QJsonValue());
+		replyToServer(BangProtocol::DiscardCard, QJsonValue());
 	}else{
 		QJsonArray val;
 		foreach(int card_id, cards->getSubcards()){
 			val.append(card_id);
 		}
-		replyToServer(S_COMMAND_DISCARD_CARD, val);
+		replyToServer(BangProtocol::DiscardCard, val);
 	}
 
 	setStatus(NotActive);
@@ -1401,7 +1405,7 @@ void Client::askForSingleWine(const QJsonValue &argdata){
 		card_pattern = "wine";
 	}
 
-	m_isDiscardActionRefusable = true;
+	is_discard_action_refusable = true;
 	m_isUseCard = false;
 	setStatus(Responsing);
 }
@@ -1412,19 +1416,19 @@ void Client::askForCardShow(const QJsonValue &requestor){
 	prompt_doc->setHtml(tr("%1 request you to show one hand card").arg(name));
 
 	card_pattern = ".";
-	m_isDiscardActionRefusable = false;
+	is_discard_action_refusable = false;
 	m_isUseCard = false;
 	setStatus(Responsing);
 }
 
 void Client::askForAG(const QJsonValue &arg){
 	if (!arg.isBool()) return;
-	m_isDiscardActionRefusable = arg.toBool();
+	is_discard_action_refusable = arg.toBool();
 	setStatus(AskForAG);
 }
 
 void Client::onPlayerChooseAG(int card_id){
-	replyToServer(S_COMMAND_AMAZING_GRACE, card_id);
+	replyToServer(BangProtocol::AmazingGrace, card_id);
 	setStatus(NotActive);
 }
 
@@ -1461,8 +1465,7 @@ void Client::showCard(const QJsonValue &data){
 	}
 
 	QJsonArray show_str = data.toArray();
-	if (show_str.size() != 2
-		|| !show_str[0].isString() || !show_str[1].toDouble())
+	if(show_str.size() != 2 || !show_str[0].isString() || !show_str[1].isDouble())
 		return;
 
 	QString player_name = show_str[0].toString();
@@ -1506,9 +1509,9 @@ void Client::onPlayerAssignRole(const QList<QString> &names, const QList<QString
 {
 	Q_ASSERT(names.size() == roles.size());
 	QJsonArray reply;
-	reply.append(toJsonArray(names));
-	reply.append(toJsonArray(roles));
-	replyToServer(S_COMMAND_CHOOSE_ROLE, reply);
+	reply.append(BangProtocol::toJsonArray(names));
+	reply.append(BangProtocol::toJsonArray(roles));
+	replyToServer(BangProtocol::ChooseRole, reply);
 }
 
 void Client::askForGuanxing(const QJsonValue &argdata){
@@ -1516,7 +1519,7 @@ void Client::askForGuanxing(const QJsonValue &argdata){
 	QJsonValue deck = arg[0];
 	bool up_only = arg[1].toBool();
 	QList<int> card_ids;
-	tryParse(deck, card_ids);
+	BangProtocol::tryParse(deck, card_ids);
 	
 	emit guanxing(card_ids, up_only);
 	setStatus(AskForGuanxing);
@@ -1534,7 +1537,7 @@ void Client::askForGongxin(const QJsonValue &data){
 	ClientPlayer *who = getPlayer(arg[0].toString());
 	bool enable_heart = arg[1].toBool();
 	QList<int> card_ids;
-	if (!tryParse(arg[2], card_ids)) return;    
+	if (!BangProtocol::tryParse(arg[2], card_ids)) return;
 
 	who->setCards(card_ids);
 
@@ -1546,7 +1549,7 @@ void Client::onPlayerReplyGongxin(int card_id){
 	QJsonValue reply;
 	if(card_id != -1)
 		reply = card_id;    
-	replyToServer(S_COMMAND_SKILL_GONGXIN, reply);
+	replyToServer(BangProtocol::InvokeGongxin, reply);
 	setStatus(NotActive);
 }
 
@@ -1556,7 +1559,7 @@ void Client::askForPindian(const QJsonValue &data){
 	}
 
 	QJsonArray ask_str = data.toArray();
-	if (!isStringArray(ask_str, 0, 1)){
+	if (!BangProtocol::isStringArray(ask_str, 0, 1)){
 		return;
 	}
 	QString from = ask_str[0].toString();
@@ -1568,7 +1571,7 @@ void Client::askForPindian(const QJsonValue &data){
 	}
 	m_isUseCard = false;
 	card_pattern = ".";
-	m_isDiscardActionRefusable = false;
+	is_discard_action_refusable = false;
 	setStatus(Responsing);
 }
 
@@ -1604,21 +1607,21 @@ void Client::onPlayerReplyYiji(const Card *card, const Player *to){
 	QJsonValue req;
 	if(card){
 		QJsonArray arr;
-		arr.append(toJsonArray(card->getSubcards()));
+		arr.append(BangProtocol::toJsonArray(card->getSubcards()));
 		arr.append(to->objectName());
 		req = arr;
 	}
-	replyToServer(S_COMMAND_SKILL_YIJI, req);
+	replyToServer(BangProtocol::InvokeYiji, req);
 
 	setStatus(NotActive);
 }
 
 void Client::onPlayerReplyGuanxing(const QList<int> &up_cards, const QList<int> &down_cards){
 	QJsonArray decks;
-	decks.append(toJsonArray(up_cards));
-	decks.append(toJsonArray(down_cards));
+	decks.append(BangProtocol::toJsonArray(up_cards));
+	decks.append(BangProtocol::toJsonArray(down_cards));
 
-	replyToServer(S_COMMAND_SKILL_GUANXING, decks);
+	replyToServer(BangProtocol::InvokeGuanxing, decks);
 	//request(QString("replyGuanxing %1:%2").arg(up_items.join("+")).arg(down_items.join("+")));
 
 	setStatus(NotActive);
@@ -1662,11 +1665,11 @@ void Client::speak(const QString &speak_data){
 
 void Client::moveFocus(const QJsonValue &focus){
 	QString who;
-	Countdown countdown;
+	BangProtocol::Countdown countdown;
 	if (focus.isString())
 	{
 		who = focus.toString();
-		countdown.m_type = Countdown::S_COUNTDOWN_NO_LIMIT;
+		countdown.type = BangProtocol::Countdown::Unlimited;
 	}
 	else
 	{
@@ -1676,12 +1679,11 @@ void Client::moveFocus(const QJsonValue &focus){
 		who = focusarr[0].toString();
 	
 		bool success = countdown.tryParse(focusarr[1]);
-		if (!success)
-		{
-		Q_ASSERT(focusarr[1].isDouble());
-		CommandType command = (CommandType)focusarr[1].toDouble();
-			countdown.m_max = ServerInfo.getCommandTimeout(command, S_CLIENT_INSTANCE);
-			countdown.m_type = Countdown::S_COUNTDOWN_USE_DEFAULT;
+		if (!success){
+			Q_ASSERT(focusarr[1].isDouble());
+			BangProtocol::CommandType command = (BangProtocol::CommandType) focusarr[1].toDouble();
+			countdown.max = ServerInfo.getCommandTimeout(command, BangProtocol::ClientInstance);
+			countdown.type = BangProtocol::Countdown::UseDefault;
 		}
 	}
 	emit focus_moved(who, countdown);
@@ -1698,7 +1700,7 @@ void Client::setEmotion(const QString &set_str){
 void Client::skillInvoked(const QJsonValue &argdata){
 	if(!argdata.isArray()) return;
 	QJsonArray arg = argdata.toArray();
-	if (!isStringArray(arg,0,1)) return;
+	if (!BangProtocol::isStringArray(arg,0,1)) return;
 	emit skill_invoked(arg[1].toString(), arg[0].toString());
 }
 
@@ -1802,7 +1804,7 @@ void Client::startArrange(const QString &){
 }
 
 void Client::onPlayerChooseRole3v3(){
-	replyToServer(S_COMMAND_CHOOSE_ROLE_3V3, sender()->objectName());
+	replyToServer(BangProtocol::Choose3v3Role, sender()->objectName());
 	setStatus(NotActive);
 }
 
@@ -1842,13 +1844,12 @@ void Client::onPlayerChooseOrder(){
 			order = "cool";
 	}
 	int req;
-	if (order == "warm") req = (int)S_CAMP_WARM;
-	else req = (int)S_CAMP_COOL;
-	replyToServer(S_COMMAND_CHOOSE_ORDER, req);
+	if (order == "warm") req = (int) BangProtocol::WarmCamp;
+	else req = (int) BangProtocol::CoolCamp;
+	replyToServer(BangProtocol::ChooseOrder, req);
 	setStatus(NotActive);
 }
 
-void Client::updateStateItem(const QString &state_str)
-{
+void Client::updateStateItem(const QString &state_str){
 	emit role_state_changed(state_str);
 }

@@ -10,8 +10,6 @@
 
 #include <QTime>
 
-using namespace QSanProtocol::Utils;
-
 LogMessage::LogMessage()
 	:from(NULL)
 {
@@ -72,7 +70,7 @@ bool JudgeStructPattern::match(const Player *player, const Card *card) const{
 	if(pattern.isEmpty())
 		return false;
 
-	if(isRegex){
+	if(is_regex){
 		QString class_name = card->metaObject()->className();
 		Card::Suit suit = card->getSuit();
 		if(player->hasSkill("hongyan") && suit == Card::Spade)
@@ -90,14 +88,14 @@ bool JudgeStructPattern::match(const Player *player, const Card *card) const{
 
 JudgeStructPattern &JudgeStructPattern::operator =(const QRegExp &rx){
 	pattern = rx.pattern();
-	isRegex = true;
+	is_regex = true;
 
 	return *this;
 }
 
 JudgeStructPattern &JudgeStructPattern::operator =(const QString &str){
 	pattern = str;
-	isRegex = false;
+	is_regex = false;
 
 	return *this;
 }

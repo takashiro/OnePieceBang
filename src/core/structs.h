@@ -172,7 +172,7 @@ struct PindianStruct{
 class JudgeStructPattern{
 private:
 	QString pattern;
-	bool isRegex;
+	bool is_regex;
 
 public:
 	JudgeStructPattern();

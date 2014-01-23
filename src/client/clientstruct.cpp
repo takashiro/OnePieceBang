@@ -10,15 +10,15 @@ ServerInfoStruct ServerInfo;
 #include <QListWidget>
 #include <QCheckBox>
 
-time_t ServerInfoStruct::getCommandTimeout(QSanProtocol::CommandType command, QSanProtocol::ProcessInstanceType instance)
+time_t ServerInfoStruct::getCommandTimeout(BangProtocol::CommandType command, BangProtocol::ProcessInstanceType instance)
 {
 	time_t timeOut;
 	if (OperationTimeout == 0) return 0;
-	else if (command == QSanProtocol::S_COMMAND_CHOOSE_GENERAL)
+	else if (command == BangProtocol::ChooseGeneral)
 	{
 		timeOut = Config.S_CHOOSE_GENERAL_TIMEOUT * 1000;
 	}
-	else if (command == QSanProtocol::S_COMMAND_SKILL_GUANXING)
+	else if (command == BangProtocol::InvokeGuanxing)
 	{
 		timeOut = Config.S_GUANXING_TIMEOUT * 1000;
 	}
@@ -26,7 +26,7 @@ time_t ServerInfoStruct::getCommandTimeout(QSanProtocol::CommandType command, QS
 	{
 		timeOut = OperationTimeout * 1000;
 	}
-	if (instance == QSanProtocol::S_SERVER_INSTANCE)
+	if (instance == BangProtocol::ServerInstance)
 		timeOut += Config.S_SERVER_TIMEOUT_GRACIOUS_PERIOD;
 	return timeOut;
 }

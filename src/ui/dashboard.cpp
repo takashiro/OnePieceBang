@@ -13,8 +13,6 @@
 #include <QPixmapCache>
 #include <QParallelAnimationGroup>
 
-using namespace QSanProtocol;
-
 const QRect Dashboard::S_EQUIP_CARD_MOVE_REGION(0, -10,
 	CardItem::S_NORMAL_CARD_WIDTH * 1.5, CardItem::S_NORMAL_CARD_HEIGHT);
 const QRect Dashboard::S_JUDGE_CARD_MOVE_REGION(0, -20, 
@@ -516,7 +514,7 @@ void Dashboard::hideProgressBar()
 	m_progressBar.hide();
 }
 
-void Dashboard::showProgressBar(Countdown countdown)
+void Dashboard::showProgressBar(BangProtocol::Countdown countdown)
 {
 	m_progressBar.setCountdown(countdown);
 	m_progressBar.show();

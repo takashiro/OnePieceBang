@@ -23,7 +23,7 @@
 
 #include "pixmapanimation.h"
 
-using namespace QSanProtocol;
+using namespace BangProtocol;
 
 const QRect Photo::S_CARD_MOVE_REGION(-50, Photo::S_NORMAL_PHOTO_HEIGHT / 2,
 										200, CardItem::S_NORMAL_CARD_HEIGHT);
@@ -129,7 +129,7 @@ void Photo::createRoleCombobox(){
 
 void Photo::showProgressBar(Countdown countdown){
 	progress_bar->setCountdown(countdown);
-	if (countdown.m_max != 0 && countdown.m_type != Countdown::S_COUNTDOWN_NO_LIMIT)
+	if (countdown.max != 0 && countdown.type != Countdown::Unlimited)
 		progress_bar->show();
 }
 

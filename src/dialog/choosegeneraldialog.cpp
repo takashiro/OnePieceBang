@@ -15,8 +15,6 @@
 #include <QCheckBox>
 #include <QTabWidget>
 
-using namespace QSanProtocol;
-
 OptionButton::OptionButton(QString icon_path, const QString &caption, QWidget *parent)
 	:QToolButton(parent)
 {
@@ -184,7 +182,7 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
 	}else{
 		progress_bar = new QSanCommandProgressBar();
 		progress_bar->setTimerEnabled(true);
-		progress_bar->setCountdown(S_COMMAND_CHOOSE_GENERAL);
+		progress_bar->setCountdown(BangProtocol::ChooseGeneral);
 		last_layout->addWidget(progress_bar);
 	}
 

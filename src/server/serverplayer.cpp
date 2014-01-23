@@ -8,8 +8,6 @@
 #include "banpair.h"
 #include "lua-wrapper.h"
 
-using namespace QSanProtocol;
-
 const int ServerPlayer::S_NUM_SEMAPHORES = 6;
 
 ServerPlayer::ServerPlayer(Room *room)
@@ -303,7 +301,7 @@ void ServerPlayer::castMessage(const QString &message){
 	}
 }
 
-void ServerPlayer::invoke(const QSanPacket* packet)
+void ServerPlayer::invoke(const BangProtocol::AbstractPacket* packet)
 {
 	unicast(packet->toString());
 }
