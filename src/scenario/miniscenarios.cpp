@@ -126,8 +126,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 				}
 				general = room->askForGeneral(sp,available);
 			}
-			QString trans = QString("%1:%2").arg(original).arg(general);
-			sp->invoke("transfigure",trans);
+			sp->notify(BP::Transfigure, BP::toJsonArray(original, general));
 			room->setPlayerProperty(sp,"general",general);
 		}
 		general = this->players.at(i)["general2"];
@@ -154,8 +153,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 				general = room->askForGeneral(sp,available);
 			}
 			if(general == sp->getGeneralName())general = this->players.at(i)["general3"];
-			QString trans = QString("%1:%2").arg("sujiang").arg(general);
-			sp->invoke("transfigure",trans);
+			sp->notify(BP::Transfigure, BP::toJsonArray("sujiang", general));
 			room->setPlayerProperty(sp,"general2",general);
 		}
 

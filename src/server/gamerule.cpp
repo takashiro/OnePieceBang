@@ -900,20 +900,16 @@ void BasaraMode::showGeneral(ServerPlayer *player, QString general_name) const
 	QStringList names = room->getTag(player->objectName()).toStringList();
 	if(names.isEmpty())return;
 
-	if(player->getGeneralName() == "anjiang")
-	{
-		QString transfigure_str = QString("%1:%2").arg(player->getGeneralName()).arg(general_name);
-		player->invoke("transfigure", transfigure_str);
+	if(player->getGeneralName() == "anjiang"){
+		player->notify(BP::Transfigure, BP::toJsonArray(player->getGeneralName(), general_name));
 		room->setPlayerProperty(player,"general",general_name);
 
 		foreach(QString skill_name, skill_mark.keys()){
 			if(player->hasSkill(skill_name))
 				room->setPlayerMark(player, skill_mark[skill_name], 1);
 		}
-	}
-	else{
-		QString transfigure_str = QString("%1:%2").arg(player->getGeneral2Name()).arg(general_name);
-		player->invoke("transfigure", transfigure_str);
+	}else{
+		player->notify(BP::Transfigure, player->getGeneral2Name(), general_name);
 		room->setPlayerProperty(player,"general2",general_name);
 	}
 
@@ -949,8 +945,7 @@ bool BasaraMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &dat
 				room->setTag("SkipNormalDeathProcess", true);
 			foreach(ServerPlayer* sp, room->getAlivePlayers())
 			{
-				QString transfigure_str = QString("%1:%2").arg(sp->getGeneralName()).arg("anjiang");
-				sp->invoke("transfigure", transfigure_str);
+				sp->notify(BP::Transfigure, BP::toJsonArray(sp->getGeneralName(), "anjiang"));
 				room->setPlayerProperty(sp,"general","anjiang");
 				room->setPlayerProperty(sp,"kingdom","god");
 
@@ -958,17 +953,14 @@ bool BasaraMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &dat
 				log.type = "#BasaraGeneralChosen";
 				log.arg = room->getTag(sp->objectName()).toStringList().at(0);
 
-				if(Config.Enable2ndGeneral)
-				{
-
-					transfigure_str = QString("%1:%2").arg(sp->getGeneral2Name()).arg("anjiang");
-					sp->invoke("transfigure", transfigure_str);
+				if(Config.Enable2ndGeneral){
+					sp->notify(BP::Transfigure, BP::toJsonArray(sp->getGeneral2Name(), "anjiang"));
 					room->setPlayerProperty(sp,"general2","anjiang");
 
 					log.arg2 = room->getTag(sp->objectName()).toStringList().at(1);
 				}
 
-				sp->invoke("log",log.toString());
+				sp->notify(BP::Log, log.toString());
 				sp->tag["roles"] = room->getTag(sp->objectName()).toStringList().join("+");
 			}
 		}

@@ -129,7 +129,7 @@ public:
 	void setScreenName(const QJsonValue &set_str);
 	void setFixedDistance(const QJsonValue &set_str);
 	void pile(const QString &pile_str);
-	void transfigure(const QString &transfigure_tr);
+	void transfigure(const QJsonValue &transfigure_tr);
 	void updateStateItem(const QString &state_str);
 	void setStatistics(const QString &property_str);
 	void setCardFlag(const QString &pattern_str);

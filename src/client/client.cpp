@@ -69,7 +69,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::JudgeResult] = &Client::judgeResult;
 	callbacks[BP::SetScreenName] = &Client::setScreenName;
 	callbacks[BP::SetFixedDistance] = &Client::setFixedDistance;
-	oldcallbacks["transfigure"] = &Client::transfigure;
+	callbacks[BP::Rransfigure] = &Client::transfigure;
 	oldcallbacks["jilei"] = &Client::jilei;
 	oldcallbacks["cardLock"] = &Client::cardLock;
 	oldcallbacks["pile"] = &Client::pile;
@@ -1740,18 +1740,18 @@ void Client::pile(const QString &pile_str){
 		player->changePile(name, add, card_ids);
 }
 
-void Client::transfigure(const QString &transfigure_tr){
-	QStringList generals = transfigure_tr.split(":");
+void Client::transfigure(const QJsonValue &transfigure_tr){
+	QJsonArray generals = transfigure_tr.toArray();
 
-	if(generals.length() >= 2){
-		const General *furui = Bang->getGeneral(generals.first());
-		const General *atarashi = Bang->getGeneral(generals.last());
+	if(generals.size() >= 2){
+		const General *from = Bang->getGeneral(generals.at(0).toString());
+		const General *to = Bang->getGeneral(generals.at(1).toString());
 
-		if(furui)foreach(const Skill *skill, furui->getVisibleSkills()){
+		if(from) foreach(const Skill *skill, from->getVisibleSkills()){
 			emit skill_detached(skill->objectName());
 		}
 
-		if(atarashi)foreach(const Skill *skill, atarashi->getVisibleSkills()){
+		if(to) foreach(const Skill *skill, to->getVisibleSkills()){
 			emit skill_attached(skill->objectName(), false);
 		}
 	}
