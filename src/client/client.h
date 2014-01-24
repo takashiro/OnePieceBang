@@ -131,7 +131,7 @@ public:
 	void pile(const QJsonValue &pile_str);
 	void transfigure(const QJsonValue &transfigure_tr);
 	void updateStateItem(const QJsonValue &state_str);
-	void setStatistics(const QString &property_str);
+	void setStatistics(const QJsonValue &property_str);
 	void setCardFlag(const QString &pattern_str);
 
 	void fillAG(const QString &cards_str);    

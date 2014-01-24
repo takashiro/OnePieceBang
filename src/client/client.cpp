@@ -84,7 +84,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::LoseCard] = &Client::loseCards;
 	callbacks[BP::ClearPile] = &Client::resetPiles;
 	callbacks[BP::SetPileNumber] = &Client::setPileNumber;
-	oldcallbacks["setStatistics"] = &Client::setStatistics;
+	callbacks[BP::SetStatistics] = &Client::setStatistics;
 	oldcallbacks["setCardFlag"] = &Client::setCardFlag;
 
 	// interactive methods    
@@ -1048,22 +1048,20 @@ void Client::setPileNumber(const QJsonValue &pile_str){
 	updatePileNum();
 }
 
-void Client::setStatistics(const QString &property_str){
-	QRegExp rx("(\\w+):(\\w+)");
-	if(!rx.exactMatch(property_str))
+void Client::setStatistics(const QJsonValue &property_str){
+	QJsonArray texts = property_str.toArray();
+	if(texts.size() != 2){
 		return;
+	}
 
-	QStringList texts = rx.capturedTexts();
-	QString property_name = texts.at(1);
-	QString value_str = texts.at(2);
+	QString property_name = texts.at(0).toString();
+	const QJsonValue &value_str = texts.at(1);
 
 	StatisticsStruct *statistics = Self->getStatistics();
-	bool ok;
-	value_str.toInt(&ok);
-	if(ok)
-		statistics->setStatistics(property_name, value_str.toInt());
+	if(value_str.isDouble())
+		statistics->setStatistics(property_name, value_str.toDouble());
 	else
-		statistics->setStatistics(property_name, value_str);
+		statistics->setStatistics(property_name, value_str.toString());
 
 	Self->setStatistics(statistics);
 }
