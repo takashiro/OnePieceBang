@@ -926,7 +926,7 @@ void BasaraMode::showGeneral(ServerPlayer *player, QString general_name) const
 	log.arg2 = player->getGeneral2Name();
 
 	room->sendLog(log);
-	room->broadcastInvoke("playAudio","choose-item");
+	room->doBroadcastNotify(BP::PlayAudio, QString("choose-item"));
 }
 
 bool BasaraMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{

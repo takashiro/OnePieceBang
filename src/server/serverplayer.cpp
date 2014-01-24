@@ -30,8 +30,10 @@ Room *ServerPlayer::getRoom() const{
 }
 
 void ServerPlayer::playCardEffect(const QString &card_name) const{
-	QString gender = getGender() == General::Male ? "M" : "F";
-	room->broadcastInvoke("playCardEffect", QString("%1:%2").arg(card_name).arg(gender));
+	QJsonArray arg;
+	arg.append(card_name);
+	arg.append(getGender() == General::Male);
+	room->doBroadcastNotify(BP::PlayCardEffect, arg);
 }
 
 void ServerPlayer::playCardEffect(const Card *card) const{

@@ -101,9 +101,9 @@ public:
 	void activate(const QJsonValue &playerId);
 	void startGame(const QJsonValue &);
 	void hpChange(const QJsonValue &change_str);
-	void playSkillEffect(const QString &play_str);
-	void playCardEffect(const QString &play_str);
-	void playAudio(const QString &name);
+	void playSkillEffect(const QJsonValue &play_str);
+	void playCardEffect(const QJsonValue &play_str);
+	void playAudio(const QJsonValue &name);
 	void resetPiles(const QString &);
 	void setPileNumber(const QString &pile_num);
 	void gameOver(const QJsonValue &);

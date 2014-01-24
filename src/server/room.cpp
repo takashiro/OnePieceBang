@@ -166,7 +166,7 @@ void Room::enterDying(ServerPlayer *player, DamageStruct *reason){
 		int r = qrand() % 2 + 1;
 		sos_filename = QString("female-sos%1").arg(r);
 	}
-	broadcastInvoke("playAudio", sos_filename);
+	doBroadcastNotify(BP::PlayAudio, sos_filename);
 
 	QList<ServerPlayer *> savers = getAllPlayers();
 	/*ServerPlayer *current = getCurrent();
@@ -3206,7 +3206,10 @@ bool Room::notifyMoveCards(bool is_lost_phase, QList<CardsMoveStruct> cards_move
 }
 
 void Room::playSkillEffect(const QString &skill_name, int index){
-	broadcastInvoke("playSkillEffect", QString("%1:%2").arg(skill_name).arg(index));
+	QJsonArray arg;
+	arg.append(skill_name);
+	arg.append(index);
+	doBroadcastNotify(BP::PlaySkillEffect, arg);
 }
 
 void Room::startTest(const QString &to_test){

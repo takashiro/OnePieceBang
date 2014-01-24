@@ -76,9 +76,9 @@ Client::Client(QObject *parent, const QString &filename)
 
 	callbacks[BP::UpdateStateItem] = &Client::updateStateItem;
 
-	oldcallbacks["playSkillEffect"] = &Client::playSkillEffect;
-	oldcallbacks["playCardEffect"] = &Client::playCardEffect;
-	oldcallbacks["playAudio"] = &Client::playAudio;
+	callbacks[BP::PlaySkillEffect] = &Client::playSkillEffect;
+	callbacks[BP::PlayCardEffect] = &Client::playCardEffect;
+	callbacks[BP::PlayAudio] = &Client::playAudio;
 
 	callbacks[BP::GetCard] = &Client::getCards;
 	callbacks[BP::LoseCard] = &Client::loseCards;
@@ -838,14 +838,14 @@ void Client::askForSurrender(const QJsonValue &initiator){
 }
 
 
-void Client::playSkillEffect(const QString &play_str){
-	QRegExp rx("(#?\\w+):([-\\w]+)");
-	if(!rx.exactMatch(play_str))
+void Client::playSkillEffect(const QJsonValue &play_str){
+	QJsonArray words = play_str.toArray();
+	if(words.size() != 2){
 		return;
+	}
 
-	QStringList words = rx.capturedTexts();
-	QString skill_name = words.at(1);
-	int index = words.at(2).toInt();
+	QString skill_name = words.at(0).toString();
+	int index = words.at(1).toDouble();
 
 	Bang->playSkillEffect(skill_name, index);
 }
@@ -891,24 +891,21 @@ void Client::askForNullification(const QJsonValue &argdata){
 	setStatus(Responsing);
 }
 
-void Client::playAudio(const QString &name){
-	Bang->playAudio(name);
+void Client::playAudio(const QJsonValue &name){
+	Bang->playAudio(name.toString());
 }
 
-void Client::playCardEffect(const QString &play_str){
-	QRegExp rx1("(@?\\w+):([MF])");
-	QRegExp rx2("(\\w+)@(\\w+):([MF])"); // old version
+void Client::playCardEffect(const QJsonValue &play_str){
+	QJsonArray texts = play_str.toArray();
 
-	if(rx1.exactMatch(play_str)){
-		QStringList texts = rx1.capturedTexts();
-		QString card_name = texts.at(1);
-		bool is_male = texts.at(2) == "M";
+	if(texts.size() == 2){
+		QString card_name = texts.at(0).toString();
+		bool is_male = texts.at(1).toBool();
 
 		Bang->playCardEffect(card_name, is_male);
-	}else if(rx2.exactMatch(play_str)){
-		QStringList texts = rx2.capturedTexts();
-		QString card_name = texts.at(1);
-		bool is_male = texts.at(3) == "M";
+	}else if(texts.size() == 3){// old version
+		QString card_name = texts.at(0).toString();
+		bool is_male = texts.at(3).toBool();
 
 		Bang->playCardEffect("@" + card_name, is_male);
 	}
