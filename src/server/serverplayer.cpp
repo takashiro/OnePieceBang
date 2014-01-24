@@ -213,7 +213,7 @@ void ServerPlayer::unicast(const QString &message) const{
 
 void ServerPlayer::startNetworkDelayTest(){
 	test_time = QDateTime::currentDateTime();
-	invoke("networkDelayTest");
+	notify(BP::NetworkDelayTest);
 }
 
 qint64 ServerPlayer::endNetworkDelayTest(){
@@ -301,12 +301,10 @@ void ServerPlayer::castMessage(const QString &message){
 	}
 }
 
-void ServerPlayer::invoke(const BP::AbstractPacket &packet){
-	unicast(packet.toUtf8());
-}
-
-void ServerPlayer::invoke(const char *method, const QString &arg){
-	unicast(QString("%1 %2").arg(method).arg(arg));
+void ServerPlayer::notify(BP::CommandType command, const QJsonValue &arg){
+	BP::Packet packet(BP::ServerNotification, command);
+	packet.setMessageBody(arg);
+	invoke(packet);
 }
 
 QString ServerPlayer::reportHeader() const{

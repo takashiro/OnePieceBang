@@ -91,7 +91,7 @@ public:
 
 	void checkVersion(const QJsonValue &server_version);
 	void setup(const QJsonValue &setup);
-	void networkDelayTest(const QString&);
+	void networkDelayTest(const QJsonValue &);
 	void addPlayer(const QJsonValue &player_info);
 	void removePlayer(const QString &player_name);
 	void drawCards(const QString &cards_str);

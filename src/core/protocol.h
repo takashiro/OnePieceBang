@@ -87,7 +87,8 @@ namespace BP{
 		AddPlayer,
 		SetScreenName,
 		SignUpR,
-		SignUp
+		SignUp,
+		NetworkDelayTest
 	};
 
 	enum Game3v3ChooseOrderCommand

@@ -65,7 +65,7 @@ Room::Room(QObject *parent, const QString &mode)
 	oldcallbacks["kickCommand"] = &Room::kickCommand;
 
 	//Client request
-	oldcallbacks["networkDelayTestCommand"] = &Room::networkDelayTestCommand;
+	callbacks[BP::NetworkDelayTest] = &Room::networkDelayTestCommand;
 
 	L = CreateLuaState();
 	QStringList scripts;
@@ -3955,7 +3955,7 @@ QString Room::askForRole(ServerPlayer *player, const QStringList &roles, const Q
 	return result;
 }
 
-void Room::networkDelayTestCommand(ServerPlayer *player, const QString &){
+void Room::networkDelayTestCommand(ServerPlayer *player, const QJsonValue &){
 	qint64 delay = player->endNetworkDelayTest();
 	QString report_str = tr("<font color=#EEB422>The network delay of player <b>%1</b> is %2 milliseconds.</font>")
 		.arg(Config.ContestMode ? tr("Contestant") : player->screenName()).arg(QString::number(delay));

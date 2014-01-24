@@ -31,15 +31,15 @@ Client::Client(QObject *parent, const QString &filename)
 
 	callbacks[BP::CheckVersion] = &Client::checkVersion;
 
-	oldcallbacks["roomBegin"] = &Client::roomBegin;
+	/*oldcallbacks["roomBegin"] = &Client::roomBegin;
 	oldcallbacks["room"] = &Client::room;
 	oldcallbacks["roomEnd"] = &Client::roomEnd;
 	oldcallbacks["roomCreated"] = &Client::roomCreated;
 	oldcallbacks["roomError"] = &Client::roomError;
-	oldcallbacks["hallEntered"] = &Client::hallEntered;
+	oldcallbacks["hallEntered"] = &Client::hallEntered;*/
 
 	callbacks[BP::Setup] = &Client::setup;
-	oldcallbacks["networkDelayTest"] = &Client::networkDelayTest;
+	callbacks[BP::NetworkDelayTest] = &Client::networkDelayTest;
 	callbacks[BP::AddPlayer] = &Client::addPlayer;
 	oldcallbacks["removePlayer"] = &Client::removePlayer;
 	oldcallbacks["startInXs"] = &Client::startInXs;
@@ -188,8 +188,8 @@ void Client::signup(){
 	}
 }
 
-void Client::networkDelayTest(const QString &){
-	request("networkDelayTest .");
+void Client::networkDelayTest(const QJsonValue &){
+	notifyServer(BP::NetworkDelayTest);
 }
 
 void Client::replyToServer(BP::CommandType command, const QJsonValue &arg){

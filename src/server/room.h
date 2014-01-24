@@ -279,7 +279,7 @@ public:
 	void broadcastInvoke(const BP::AbstractPacket &packet, ServerPlayer *except = NULL);
 	void broadcastInvoke(const char *method, const QString &arg = ".", ServerPlayer *except = NULL);
 	void startTest(const QString &to_test);
-	void networkDelayTestCommand(ServerPlayer *player, const QString &);
+	void networkDelayTestCommand(ServerPlayer *player, const QJsonValue &);
 
 protected:
 	virtual void run();
