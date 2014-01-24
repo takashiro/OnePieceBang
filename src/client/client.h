@@ -121,7 +121,7 @@ public:
 	void moveFocus(const QJsonValue &focus);
 	void setEmotion(const QString &set_str);
 	void skillInvoked(const QJsonValue &invoke_str);
-	void acquireSkill(const QString &acquire_str);
+	void acquireSkill(const QJsonValue &acquire_arr);
 	void animate(const QString &animate_str);
 	void jilei(const QString &jilei_str);
 	void cardLock(const QString &card_str);

@@ -3224,8 +3224,10 @@ void Room::acquireSkill(ServerPlayer *player, const Skill *skill, bool open){
 	}
 
 	if(open){
-		QString acquire_str = QString("%1:%2").arg(player->objectName()).arg(skill_name);
-		broadcastInvoke("acquireSkill", acquire_str);
+		QJsonArray acquire_arr;
+		acquire_arr.append(player->objectName());
+		acquire_arr.append(skill_name);
+		doBroadcastNotify(BP::AcquireSkill, acquire_arr);
 	}
 
 	if(skill->isVisible()){

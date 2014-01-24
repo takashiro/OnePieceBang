@@ -50,14 +50,14 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::GameOver] = &Client::gameOver;
 
 	callbacks[BP::HpChange] = &Client::hpChange;
-	callbacks[BP::killPlayer] = &Client::killPlayer;
-	callbacks[BP::revivePlayer] = &Client::revivePlayer;
+	callbacks[BP::KillPlayer] = &Client::killPlayer;
+	callbacks[BP::RevivePlayer] = &Client::revivePlayer;
 	callbacks[BP::AskForCardShow] = &Client::showCard;
 	callbacks[BP::SetMark] = &Client::setMark;
 	callbacks[BP::DoFilter] = &Client::doFilter;//deprecated?
 	callbacks[BP::Log] = &Client::log;
 	callbacks[BP::Speak] = &Client::speak;
-	oldcallbacks["acquireSkill"] = &Client::acquireSkill;
+	callbacks[BP::AcquireSkill] = &Client::acquireSkill;
 	oldcallbacks["attachSkill"] = &Client::attachSkill;
 	oldcallbacks["detachSkill"] = &Client::detachSkill;
 	callbacks[BP::MoveFocus] = &Client::moveFocus;
@@ -1294,11 +1294,6 @@ void Client::askForDirection(const QJsonValue &){
 
 
 void Client::setMark(const QJsonValue &mark_str){
-	QRegExp rx("(\\w+)\\.(@?[\\w-]+)=(\\d+)");
-
-	if(!rx.exactMatch(mark_str))
-		return;
-
 	QJsonArray texts = mark_str.toArray();
 	QString who = texts.at(0).toString();
 	QString mark = texts.at(1).toString();
@@ -1687,15 +1682,10 @@ void Client::skillInvoked(const QJsonValue &argdata){
 	emit skill_invoked(arg[1].toString(), arg[0].toString());
 }
 
-void Client::acquireSkill(const QString &acquire_str){
-	QRegExp rx("(\\w+):(#?\\w+)");
-
-	if(!rx.exactMatch(acquire_str))
-		return;
-
-	QStringList texts = rx.capturedTexts();
-	ClientPlayer *who = getPlayer(texts.at(1));
-	QString skill_name = texts.at(2);
+void Client::acquireSkill(const QJsonValue &acquire_arr){
+	QJsonArray texts = acquire_arr.toArray();
+	ClientPlayer *who = getPlayer(texts.at(0).toString());
+	QString skill_name = texts.at(1).toString();
 
 	who->acquireSkill(skill_name);
 

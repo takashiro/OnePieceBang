@@ -851,7 +851,10 @@ void ServerPlayer::marshal(ServerPlayer *player) const{
 	}
 
 	foreach(QString skill_name, acquired_skills){
-		player->invoke("acquireSkill", QString("%1:%2").arg(objectName()).arg(skill_name));
+		QJsonArray arg;
+		arg.append(objectName());
+		arg.append(skill_name);
+		player->notify(BP::AcquireSkill, arg);
 	}
 
 	foreach(QString flag, flags){
