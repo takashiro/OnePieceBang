@@ -69,7 +69,7 @@ public:
 	}
 
 	virtual bool isEnabledAtPlay(const Player *player) const{
-		return !player->hasFlag("slash_forbidden");
+		return !player->hasFlag("slash_forbidden") && Slash::IsAvailable(player);
 	}
 
 	virtual const Card *viewAs() const{
