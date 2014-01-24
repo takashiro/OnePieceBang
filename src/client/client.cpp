@@ -54,7 +54,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::revivePlayer] = &Client::revivePlayer;
 	callbacks[BP::AskForCardShow] = &Client::showCard;
 	callbacks[BP::SetMark] = &Client::setMark;
-	oldcallbacks["doFilter"] = &Client::doFilter;
+	callbacks[BP::DoFilter] = &Client::doFilter;//deprecated?
 	oldcallbacks["log"] = &Client::log;
 	callbacks[BP::Speak] = &Client::speak;
 	oldcallbacks["acquireSkill"] = &Client::acquireSkill;
@@ -1308,7 +1308,7 @@ void Client::setMark(const QJsonValue &mark_str){
 	player->setMark(mark, value);
 }
 
-void Client::doFilter(const QString &){
+void Client::doFilter(const QJsonValue &){
 	emit do_filter();
 }
 
