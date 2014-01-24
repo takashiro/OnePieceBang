@@ -113,8 +113,7 @@ void ServerPlayer::clearPrivatePiles(){
 
 		foreach(int card_id, pile){
 			room->throwCard(card_id);
-			QString pile_command = QString("%1:%2-%3").arg(objectName()).arg(pile_name).arg(card_id);
-			room->broadcastInvoke("pile", pile_command);
+			room->doBroadcastNotify(BP::Pile, BP::toJsonArray(objectName(), pile_name, card_id));
 		}
 	}
 	piles.clear();

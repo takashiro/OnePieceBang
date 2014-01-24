@@ -72,7 +72,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::Rransfigure] = &Client::transfigure;
 	//callbacks[BP::Jilei] = &Client::jilei;
 	callbacks[BP::CardLock] = &Client::cardLock;
-	oldcallbacks["pile"] = &Client::pile;
+	callbacks[BP::Pile] = &Client::pile;
 
 	oldcallbacks["updateStateItem"] = &Client::updateStateItem;
 
@@ -1722,17 +1722,17 @@ void Client::setFixedDistance(const QJsonValue &set_str){
 		from->setFixedDistance(to, distance);
 }
 
-void Client::pile(const QString &pile_str){
-	QRegExp rx("(\\w+):(\\w+)([+-])(\\d+)");
-	if(!rx.exactMatch(pile_str)){
+void Client::pile(const QJsonValue &pile_str){
+	QJsonArray texts = pile_str.toArray();
+	if(texts.size() != 4){
 		return;
 	}
 
-	QStringList texts = rx.capturedTexts();
-	ClientPlayer *player = getPlayer(texts.at(1));
-	QString name = texts.at(2);
-	bool add = texts.at(3) == "+";
-	int card_id = texts.at(4).toInt();
+	ClientPlayer *player = getPlayer(texts.at(0).toString());
+	QString name = texts.at(1).toString();
+	bool add = texts.at(2).toString() == "+";
+	int card_id = texts.at(3).toDouble();
+
 	QList<int> card_ids;
 	card_ids.append(card_id);
 
