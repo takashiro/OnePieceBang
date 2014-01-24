@@ -125,7 +125,7 @@ public:
 	void animate(const QJsonValue &animate_str);
 	void jilei(const QString &jilei_str);
 	void cardLock(const QString &card_str);
-	void judgeResult(const QString &result_str);
+	void judgeResult(const QJsonValue &result_str);
 	void setScreenName(const QJsonValue &set_str);
 	void setFixedDistance(const QString &set_str);
 	void pile(const QString &pile_str);

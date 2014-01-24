@@ -66,7 +66,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::AskForGongxin] = &Client::askForGongxin;
 	callbacks[BP::AddHistory] = &Client::addHistory;
 	callbacks[BP::Animate] = &Client::animate;
-	oldcallbacks["judgeResult"] = &Client::judgeResult;
+	callbacks[BP::JudgeResult] = &Client::judgeResult;
 	callbacks[BP::SetScreenName] = &Client::setScreenName;
 	oldcallbacks["setFixedDistance"] = &Client::setFixedDistance;
 	oldcallbacks["transfigure"] = &Client::transfigure;
@@ -673,10 +673,10 @@ void Client::cardLock(const QString &card_str){
 	Self->setCardLocked(card_str);
 }
 
-void Client::judgeResult(const QString &result_str){
-	QStringList texts = result_str.split(":");
-	QString who = texts.at(0);
-	QString result = texts.at(1);
+void Client::judgeResult(const QJsonValue &result_str){
+	QJsonArray texts = result_str.toArray();
+	QString who = texts.at(0).toString();
+	QString result = texts.at(1).toString();
 
 	emit judge_result(who, result);
 }
