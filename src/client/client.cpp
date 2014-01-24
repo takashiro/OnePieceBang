@@ -61,7 +61,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::AttachSkill] = &Client::attachSkill;
 	callbacks[BP::DetachSkill] = &Client::detachSkill;
 	callbacks[BP::MoveFocus] = &Client::moveFocus;
-	oldcallbacks["setEmotion"] = &Client::setEmotion;
+	callbacks[BP::SetEmotion] = &Client::setEmotion;
 	callbacks[BP::AskForSkillInvoke] = &Client::skillInvoked;
 	callbacks[BP::ShowAllCards] = &Client::askForGongxin;
 	callbacks[BP::AskForGongxin] = &Client::askForGongxin;
@@ -1668,10 +1668,10 @@ void Client::moveFocus(const QJsonValue &focus){
 	emit focus_moved(who, countdown);
 }
 
-void Client::setEmotion(const QString &set_str){
-	QStringList words = set_str.split(":");
-	QString target_name = words.at(0);
-	QString emotion = words.at(1);
+void Client::setEmotion(const QJsonValue &set_str){
+	QJsonArray words = set_str.toArray();
+	QString target_name = words.at(0).toString();
+	QString emotion = words.at(1).toString();
 
 	emit emotion_set(target_name, emotion);
 }

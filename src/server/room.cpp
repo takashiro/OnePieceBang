@@ -3263,8 +3263,10 @@ void Room::removeTag(const QString &key){
 }
 
 void Room::setEmotion(ServerPlayer *target, const QString &emotion){
-	broadcastInvoke("setEmotion",
-		QString("%1:%2").arg(target->objectName()).arg(emotion.isEmpty() ? "." : emotion));
+	QJsonArray emo;
+	emo.append(target->objectName());
+	emo.append(emotion.isEmpty() ? QString(".") : emotion);
+	doBroadcastNotify(BP::SetEmotion, emo);
 }
 
 #include <QElapsedTimer>

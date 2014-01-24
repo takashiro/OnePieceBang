@@ -119,7 +119,7 @@ public:
 	void speak(const QJsonValue &speak_data);
 	void addHistory(const QString &card);
 	void moveFocus(const QJsonValue &focus);
-	void setEmotion(const QString &set_str);
+	void setEmotion(const QJsonValue &set_str);
 	void skillInvoked(const QJsonValue &invoke_str);
 	void acquireSkill(const QJsonValue &acquire_arr);
 	void animate(const QString &animate_str);
