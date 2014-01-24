@@ -863,8 +863,9 @@ void ServerPlayer::marshal(ServerPlayer *player) const{
 
 	foreach(QString item, history.keys()){
 		int value = history.value(item);
-		if(value > 0)
-			player->invoke("addHistory", QString("%1#%2").arg(item).arg(value));
+		if(value > 0){
+			player->notify(BP::AddHistory, QString("%1#%2").arg(item).arg(value));
+		}
 	}
 }
 

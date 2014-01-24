@@ -65,7 +65,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::AskForSkillInvoke] = &Client::skillInvoked;
 	callbacks[BP::ShowAllCards] = &Client::askForGongxin;
 	callbacks[BP::AskForGongxin] = &Client::askForGongxin;
-	oldcallbacks["addHistory"] = &Client::addHistory;
+	callbacks[BP::AddHistory] = &Client::addHistory;
 	oldcallbacks["animate"] = &Client::animate;
 	oldcallbacks["judgeResult"] = &Client::judgeResult;
 	callbacks[BP::SetScreenName] = &Client::setScreenName;
@@ -956,15 +956,15 @@ void Client::speakToServer(const QString &text){
 	notifyServer(BP::Speak, text);
 }
 
-void Client::addHistory(const QString &add_str){
-	if(add_str == "pushPile")
-	{
+void Client::addHistory(const QJsonValue &add_str){
+	QString history_str = add_str.toString();
+	if(history_str == "pushPile"){
 		emit card_used();
 		return;
 	}
 
 	QRegExp rx("(.+)(#\\d+)?");
-	if(rx.exactMatch(add_str)){
+	if(rx.exactMatch(history_str)){
 		QStringList texts = rx.capturedTexts();
 		QString card_name = texts.at(1);
 		QString times_str = texts.at(2);

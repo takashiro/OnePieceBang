@@ -2395,10 +2395,10 @@ void Room::useCard(const CardUseStruct &card_use, bool add_history){
 
 		if(!slash_record){
 			card_use.from->addHistory(key);
-			card_use.from->invoke("addHistory", key);
+			card_use.from->notify(BP::AddHistory, key);
 		}
 
-		broadcastInvoke("addHistory","pushPile");
+		doBroadcastNotify(BP::AddHistory, QString("pushPile"));
 	}
 
 	card = card_use.card->validate(&card_use);
