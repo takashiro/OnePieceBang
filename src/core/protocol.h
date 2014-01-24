@@ -90,7 +90,8 @@ namespace BP{
 		SignUp,
 		NetworkDelayTest,
 		RemovePlayer,
-		StartInXSeconds
+		StartInXSeconds,
+		ArrangeSeats
 	};
 
 	enum Game3v3ChooseOrderCommand

@@ -97,7 +97,7 @@ public:
 	void drawCards(const QString &cards_str);
 	void drawNCards(const QString &draw_str);    
 	void startInXSeconds(const QJsonValue &);
-	void arrangeSeats(const QString &seats);
+	void arrangeSeats(const QJsonValue &seats_data);
 	void activate(const QJsonValue &playerId);
 	void startGame(const QString &);
 	void hpChange(const QString &change_str);

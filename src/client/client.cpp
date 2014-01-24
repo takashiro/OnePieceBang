@@ -43,7 +43,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::AddPlayer] = &Client::addPlayer;
 	callbacks[BP::RemovePlayer] = &Client::removePlayer;
 	callbacks[BP::StartInXSeconds] = &Client::startInXSeconds;
-	oldcallbacks["arrangeSeats"] = &Client::arrangeSeats;
+	callbacks[BP::ArrangeSeats] = &Client::arrangeSeats;
 	oldcallbacks["warn"] = &Client::warn;
 
 	oldcallbacks["startGame"] = &Client::startGame;
@@ -588,12 +588,12 @@ void Client::startInXSeconds(const QJsonValue &left_seconds){
 	}
 }
 
-void Client::arrangeSeats(const QString &seats_str){
-	QStringList player_names = seats_str.split("+");
+void Client::arrangeSeats(const QJsonValue &seats_data){
+	QJsonArray player_names = seats_data.toArray();
 	players.clear();
 	
-	for (int i = 0; i < player_names.length(); i++){
-		ClientPlayer *player = findChild<ClientPlayer*>(player_names.at(i));
+	for (int i = 0; i < player_names.size(); i++){
+		ClientPlayer *player = findChild<ClientPlayer*>(player_names.at(i).toString());
 
 		Q_ASSERT(player != NULL);
 
