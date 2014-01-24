@@ -371,9 +371,14 @@ void Room::gameOver(const QString &winner){
 	game_finished = true;
 
 	if(Config.ContestMode){
+		BangProtocol::Packet packet(BangProtocol::ServerNotification, BangProtocol::SetScreenName);
 		foreach(ServerPlayer *player, m_players){
-			QString screen_name = player->screenName().toUtf8().toBase64();
-			broadcastInvoke("setScreenName", QString("%1:%2").arg(player->objectName()).arg(screen_name));
+			QJsonArray arg;
+			arg.append(player->objectName());
+			arg.append(player->screenName());
+
+			packet.setMessageBody(arg);
+			broadcastInvoke(packet);
 		}
 
 		ContestDB *db = ContestDB::GetInstance();
@@ -554,7 +559,7 @@ bool Room::doRequest(ServerPlayer *player, BangProtocol::CommandType command, co
 	else 
 		player->m_expectedReplyCommand = command;             
 
-	player->invoke(&packet);
+	player->invoke(packet);
 	player->releaseLock(ServerPlayer::SEMA_MUTEX);
 	if (wait) return getResult(player, timeOut);
 	else return true;
@@ -654,17 +659,16 @@ ServerPlayer* Room::getRaceResult(QList<ServerPlayer*> &players, BangProtocol::C
 	return _m_raceWinner;
 }
 
-bool Room::doNotify(ServerPlayer* player, BangProtocol::CommandType command, const QJsonValue &arg)
+bool Room::doNotify(ServerPlayer *player, BangProtocol::CommandType command, const QJsonValue &arg)
 {
 	BangProtocol::Packet packet(BangProtocol::ServerNotification, command);
 	packet.setMessageBody(arg);     
-	player->invoke(&packet);
+	player->invoke(packet);
 	return true;
 }
 
 bool Room::doBroadcastNotify(const QList<ServerPlayer*> &players, BangProtocol::CommandType command, const QJsonValue &arg){
-	foreach (ServerPlayer* player, players)
-	{
+	foreach (ServerPlayer* player, players){
 		doNotify(player, command, arg);
 	}
 	return true;
@@ -679,8 +683,8 @@ void Room::broadcastInvoke(const char *method, const QString &arg, ServerPlayer 
 	broadcast(QString("%1 %2").arg(method).arg(arg), except);
 }
 
-void Room::broadcastInvoke(const BangProtocol::AbstractPacket *packet, ServerPlayer *except){
-	broadcast(packet->toUtf8(), except);
+void Room::broadcastInvoke(const BangProtocol::AbstractPacket &packet, ServerPlayer *except){
+	broadcast(packet.toUtf8(), except);
 }
 
 bool Room::getResult(ServerPlayer* player, time_t timeOut){  
@@ -2314,7 +2318,7 @@ void Room::speakCommand(ServerPlayer *player, const QJsonValue &content){
 	body.append(content);
 	speak.setMessageBody(body);
 
-	broadcastInvoke(&speak);
+	broadcastInvoke(speak);
 }
 
 void Room::processResponse(ServerPlayer *player, const BangProtocol::Packet *packet){

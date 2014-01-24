@@ -276,7 +276,7 @@ public:
 	void addRobotCommand(ServerPlayer *player, const QString &arg);
 	void fillRobotsCommand(ServerPlayer *player, const QString &arg);
 	void broadcastProperty(ServerPlayer *player, const char *property_name, const QString &value = QString());
-	void broadcastInvoke(const BangProtocol::AbstractPacket* packet, ServerPlayer *except = NULL);
+	void broadcastInvoke(const BangProtocol::AbstractPacket &packet, ServerPlayer *except = NULL);
 	void broadcastInvoke(const char *method, const QString &arg = ".", ServerPlayer *except = NULL);
 	void startTest(const QString &to_test);
 	void networkDelayTestCommand(ServerPlayer *player, const QString &);

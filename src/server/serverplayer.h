@@ -23,7 +23,7 @@ public:
 	explicit ServerPlayer(Room *room);
 
 	void setSocket(ClientSocket *socket);
-	void invoke(const BangProtocol::AbstractPacket *packet);
+	void invoke(const BangProtocol::AbstractPacket &packet);
 	void invoke(const char *method, const QString &arg = ".");
 	QString reportHeader() const;
 	void sendProperty(const char *property_name, const Player *player = NULL) const;

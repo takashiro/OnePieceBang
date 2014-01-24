@@ -970,7 +970,7 @@ void Server::broadcast(const QString &msg){
 	speak.setMessageBody(to_sent);
 
 	foreach(Room *room, rooms){
-		room->broadcastInvoke(&speak);
+		room->broadcastInvoke(speak);
 	}
 }
 

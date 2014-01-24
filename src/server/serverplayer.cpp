@@ -301,8 +301,8 @@ void ServerPlayer::castMessage(const QString &message){
 	}
 }
 
-void ServerPlayer::invoke(const BangProtocol::AbstractPacket *packet){
-	unicast(packet->toUtf8());
+void ServerPlayer::invoke(const BangProtocol::AbstractPacket &packet){
+	unicast(packet.toUtf8());
 }
 
 void ServerPlayer::invoke(const char *method, const QString &arg){
@@ -775,9 +775,9 @@ void ServerPlayer::introduceTo(ServerPlayer *player){
 	intro_packet.setMessageBody(intro);
 
 	if(player){
-		player->invoke(&intro_packet);
+		player->invoke(intro_packet);
 	}else{
-		room->broadcastInvoke(&intro_packet, this);
+		room->broadcastInvoke(intro_packet, this);
 	}
 
 	if(isReady())

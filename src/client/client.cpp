@@ -68,7 +68,7 @@ Client::Client(QObject *parent, const QString &filename)
 	oldcallbacks["addHistory"] = &Client::addHistory;
 	oldcallbacks["animate"] = &Client::animate;
 	oldcallbacks["judgeResult"] = &Client::judgeResult;
-	oldcallbacks["setScreenName"] = &Client::setScreenName;
+	callbacks[BangProtocol::SetScreenName] = &Client::setScreenName;
 	oldcallbacks["setFixedDistance"] = &Client::setFixedDistance;
 	oldcallbacks["transfigure"] = &Client::transfigure;
 	oldcallbacks["jilei"] = &Client::jilei;
@@ -1732,11 +1732,10 @@ void Client::animate(const QString &animate_str){
 	emit animated(name, args);
 }
 
-void Client::setScreenName(const QString &set_str){
-	QStringList words = set_str.split(":");
-	ClientPlayer *player = getPlayer(words.first());
-	QString base64 = words.at(1);
-	QString screen_name = QString::fromUtf8(QByteArray::fromBase64(base64.toLatin1()));
+void Client::setScreenName(const QJsonValue &set_str){
+	QJsonArray words = set_str.toArray();
+	ClientPlayer *player = getPlayer(words.at(0).toString());
+	QString screen_name = words.at(1).toString();
 	player->setScreenName(screen_name);
 }
 
