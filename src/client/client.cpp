@@ -50,7 +50,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::GameOver] = &Client::gameOver;
 
 	callbacks[BP::HpChange] = &Client::hpChange;
-	oldcallbacks["killPlayer"] = &Client::killPlayer;
+	callbacks[BP::killPlayer] = &Client::killPlayer;
 	oldcallbacks["revivePlayer"] = &Client::revivePlayer;
 	callbacks[BP::AskForCardShow] = &Client::showCard;
 	oldcallbacks["setMark"] = &Client::setMark;
@@ -1161,10 +1161,11 @@ void Client::gameOver(const QJsonValue &argdata){
 	emit game_over();
 }
 
-void Client::killPlayer(const QString &player_name){
-	alive_count --;
+void Client::killPlayer(const QJsonValue &player_name){
+	alive_count--;
 
-	ClientPlayer *player = getPlayer(player_name);
+	QString victim_name = player_name.toString();
+	ClientPlayer *player = getPlayer(victim_name);
 	if(player == Self){
 		foreach(const Skill *skill, Self->getVisibleSkills())
 			emit skill_detached(skill->objectName());
@@ -1193,7 +1194,7 @@ void Client::killPlayer(const QString &player_name){
 		updatePileNum();
 	}
 
-	emit player_killed(player_name);
+	emit player_killed(victim_name);
 }
 
 void Client::revivePlayer(const QString &player_name){

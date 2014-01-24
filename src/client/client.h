@@ -109,7 +109,7 @@ public:
 	void gameOver(const QJsonValue &);
 	void loseCards(const QJsonValue &data);
 	void getCards(const QJsonValue &data);
-	void killPlayer(const QString &player_name);
+	void killPlayer(const QJsonValue &player_name);
 	void revivePlayer(const QString &player_name);
 	void warn(const QJsonValue &);
 	void setMark(const QString &mark_str);

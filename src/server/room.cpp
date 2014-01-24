@@ -285,7 +285,7 @@ void Room::killPlayer(ServerPlayer *victim, DamageStruct *reason){
 
 	QVariant data = QVariant::fromValue(reason);
 	broadcastProperty(victim, "role");
-	broadcastInvoke("killPlayer", victim->objectName());
+	doBroadcastNotify(BP::KillPlayer, victim->objectName());
 
 	if (thread->trigger(GameOverJudge, victim, data)) return;
 

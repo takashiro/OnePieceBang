@@ -796,7 +796,7 @@ void ServerPlayer::marshal(ServerPlayer *player) const{
 	}else{
 		player->sendProperty("alive", this);
 		player->sendProperty("role", this);
-		player->invoke("killPlayer", objectName());
+		player->notify(BP::KillPlayer, objectName());
 	}
 
 	if(!faceUp())
