@@ -32,20 +32,11 @@ Room::Room(QObject *parent, const QString &mode)
 	thread_3v3(NULL), sem(new QSemaphore), _m_semRaceRequest(0), _m_semRoomMutex(1),
 	_m_raceStarted(false), provided(NULL), has_provided(false),
 	m_surrenderRequestReceived(false), _virtual(false)
-{       
+{
 	_m_lastMovementId = 0;
 	player_count = Bang->getPlayerCount(mode);
 	scenario = Bang->getScenario(mode);
 
-	initCallbacks();
-
-	L = CreateLuaState();
-	QStringList scripts;
-	scripts << "lua/bang.lua" << "lua/ai/smart-ai.lua";
-	DoLuaScripts(L, scripts);
-}
-
-void Room::initCallbacks(){
 	// init request response pair
 	m_requestResponsePair[BangProtocol::PlayCard] = BangProtocol::UseCard;
 	m_requestResponsePair[BangProtocol::Nullification] = BangProtocol::ResponseCard;
@@ -57,25 +48,29 @@ void Room::initCallbacks(){
 	m_requestResponsePair[BangProtocol::ShowAllCards] = BangProtocol::InvokeGongxin;
 
 	// client request handlers
-	m_callbacks[BangProtocol::Surrender] = &Room::processRequestSurrender;
-	m_callbacks[BangProtocol::Cheat] = &Room::processRequestCheat;
-
+	callbacks[BangProtocol::Surrender] = &Room::processRequestSurrender;
+	callbacks[BangProtocol::Cheat] = &Room::processRequestCheat;
 
 	// init callback table
-	callbacks["arrangeCommand"] = &Room::arrangeCommand;
-	callbacks["takeGeneralCommand"] = &Room::takeGeneralCommand;
+	oldcallbacks["arrangeCommand"] = &Room::arrangeCommand;
+	oldcallbacks["takeGeneralCommand"] = &Room::takeGeneralCommand;
 
 	// Client notifications
-	callbacks["toggleReadyCommand"] = &Room::toggleReadyCommand;
-	callbacks["addRobotCommand"] = &Room::addRobotCommand;
-	callbacks["fillRobotsCommand"] = &Room::fillRobotsCommand;
+	oldcallbacks["toggleReadyCommand"] = &Room::toggleReadyCommand;
+	oldcallbacks["addRobotCommand"] = &Room::addRobotCommand;
+	oldcallbacks["fillRobotsCommand"] = &Room::fillRobotsCommand;
 
-	callbacks["speakCommand"] = &Room::speakCommand;
-	callbacks["trustCommand"] = &Room::trustCommand;
-	callbacks["kickCommand"] = &Room::kickCommand;
+	callbacks[BangProtocol::Speak] = &Room::speakCommand;//oldcallbacks["speakCommand"] = &Room::speakCommand;
+	oldcallbacks["trustCommand"] = &Room::trustCommand;
+	oldcallbacks["kickCommand"] = &Room::kickCommand;
 
 	//Client request
-	callbacks["networkDelayTestCommand"] = &Room::networkDelayTestCommand;
+	oldcallbacks["networkDelayTestCommand"] = &Room::networkDelayTestCommand;
+
+	L = CreateLuaState();
+	QStringList scripts;
+	scripts << "lua/bang.lua" << "lua/ai/smart-ai.lua";
+	DoLuaScripts(L, scripts);
 }
 
 ServerPlayer *Room::getCurrent() const{
@@ -539,14 +534,12 @@ bool Room::obtainable(const Card *card, ServerPlayer *player){
 	return true;
 }
 
-bool Room::doRequest(ServerPlayer* player, BangProtocol::CommandType command, const QJsonValue &arg, bool wait)
-{     
+bool Room::doRequest(ServerPlayer *player, BangProtocol::CommandType command, const QJsonValue &arg, bool wait){
 	time_t timeOut = ServerInfo.getCommandTimeout(command, BangProtocol::ServerInstance);
 	return doRequest(player, command, arg, timeOut, wait);
 }
 
-bool Room::doRequest(ServerPlayer* player, BangProtocol::CommandType command, const QJsonValue &arg, time_t timeOut, bool wait)
-{
+bool Room::doRequest(ServerPlayer *player, BangProtocol::CommandType command, const QJsonValue &arg, time_t timeOut, bool wait){
 	BangProtocol::Packet packet(BangProtocol::ServerRequest, command);
 	packet.setMessageBody(arg);
 	player->acquireLock(ServerPlayer::SEMA_MUTEX);    
@@ -669,8 +662,7 @@ bool Room::doNotify(ServerPlayer* player, BangProtocol::CommandType command, con
 	return true;
 }
 
-bool Room::doBroadcastNotify(const QList<ServerPlayer*> &players, BangProtocol::CommandType command, const QJsonValue &arg)
-{
+bool Room::doBroadcastNotify(const QList<ServerPlayer*> &players, BangProtocol::CommandType command, const QJsonValue &arg){
 	foreach (ServerPlayer* player, players)
 	{
 		doNotify(player, command, arg);
@@ -687,9 +679,8 @@ void Room::broadcastInvoke(const char *method, const QString &arg, ServerPlayer 
 	broadcast(QString("%1 %2").arg(method).arg(arg), except);
 }
 
-void Room::broadcastInvoke(const BangProtocol::AbstractPacket* packet, ServerPlayer *except)
-{
-	broadcast(packet->toString(), except);
+void Room::broadcastInvoke(const BangProtocol::AbstractPacket *packet, ServerPlayer *except){
+	broadcast(packet->toUtf8(), except);
 }
 
 bool Room::getResult(ServerPlayer* player, time_t timeOut){  
@@ -744,27 +735,22 @@ bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, co
 		if(invoked)
 			thread->delay(Config.AIDelay);
 	}else{
-
 		QJsonValue skillCommand;
 		if(data.type() == QVariant::String)
 			skillCommand = BangProtocol::toJsonArray(skill_name, data.toString());
 		else
 			skillCommand = BangProtocol::toJsonArray(skill_name, QString());
 
-		if (!doRequest(player, BangProtocol::InvokeSkill, skillCommand, true))
-		{            
+		if(!doRequest(player, BangProtocol::InvokeSkill, skillCommand, true)){
 			invoked = false;
-		}
-		else
-		{
+		}else{
 			QJsonValue clientReply = player->getClientReply();
 			if (clientReply.isBool())
-		invoked = clientReply.toBool();
-		}   
+				invoked = clientReply.toBool();
+		}
 	}
 
-	if(invoked)
-	{        
+	if(invoked){        
 		QJsonValue msg = BangProtocol::toJsonArray(skill_name, player->objectName());
 		doBroadcastNotify(BangProtocol::InvokeSkill, msg);
 	}
@@ -1645,8 +1631,8 @@ void Room::reportDisconnection(){
 
 			if(player->getState() != "robot"){
 				QString screen_name = Config.ContestMode ? tr("Contestant") : player->screenName();
-				QString leaveStr = tr("<font color=#000000>Player <b>%1</b> left the game</font>").arg(screen_name);
-				speakCommand(player, leaveStr.toUtf8().toBase64());
+				QString leave_str = tr("<font color=#000000>Player <b>%1</b> left the game</font>").arg(screen_name);
+				speakCommand(player, leave_str);
 			}
 
 			broadcastInvoke("removePlayer", player->objectName());
@@ -1700,18 +1686,18 @@ void Room::trustCommand(ServerPlayer *player, const QString &){
 	broadcastProperty(player, "state");
 }
 
-bool Room::processRequestCheat(ServerPlayer *player, const BangProtocol::Packet *packet)
-{
-	if(!Config.FreeChoose) return false;
-	QJsonArray arg = packet->getMessageBody().toArray();
-	if(arg.isEmpty() || !arg[0].isDouble()) return false;
+void Room::processRequestCheat(ServerPlayer *player, const QJsonValue &cheat){
+	if(!Config.FreeChoose) return;
+
+	QJsonArray arg = cheat.toArray();
+	if(arg.isEmpty() || !arg[0].isDouble()) return;
+
 	//@todo: synchronize this
 	player->m_cheatArgs = arg;
 	player->releaseLock(ServerPlayer::SEMA_COMMAND_INTERACTIVE);
-	return true;
 }
 
-bool Room::makeSurrender(ServerPlayer* initiator)
+bool Room::makeSurrender(ServerPlayer *initiator)
 {
 	bool loyalGiveup = true; int loyalAlive = 0;
 	bool renegadeGiveup = true; int renegadeAlive = 0;
@@ -1789,74 +1775,69 @@ bool Room::makeSurrender(ServerPlayer* initiator)
 	return true;
 }
 
-bool Room::processRequestSurrender(ServerPlayer *player, const BangProtocol::Packet *)
-{    
+void Room::processRequestSurrender(ServerPlayer *player, const QJsonValue &){
 	//@todo: Strictly speaking, the client must be in the PLAY phase
 	//@todo: return false for 3v3 and 1v1!!!
 	if (player == NULL || !player->m_isWaitingReply)
-		return false;
+		return;
 	if (!_m_isFirstSurrenderRequest
 		&& _m_timeSinceLastSurrenderRequest.elapsed() <= Config.S_SURRNDER_REQUEST_MIN_INTERVAL)
 	{
 		//@todo: warn client here after new protocol has been enacted on the warn request
-		return false;
+		return;
 	}
 	_m_isFirstSurrenderRequest = false;
 	_m_timeSinceLastSurrenderRequest.restart();
 	m_surrenderRequestReceived = true;
 	player->releaseLock(ServerPlayer::SEMA_COMMAND_INTERACTIVE);    
-	return true;
+	return;
 }
 
 void Room::processClientPacket(const QString &request){
+	ServerPlayer *player = qobject_cast<ServerPlayer*>(sender());
+
+	if(game_finished){
+		if (player->isOnline())
+			player->invoke("warn", "GAME_OVER");
+		return;
+	}
+
 	BangProtocol::Packet packet;
 	//@todo: remove this thing after the new protocol is fully deployed
-	if (packet.parse(request.toLatin1().constData()))
-	{    
-		ServerPlayer *player = qobject_cast<ServerPlayer*>(sender());
-		if (packet.getPacketType() == BangProtocol::ClientReply)
-		{    
+	if (packet.parse(request.toUtf8().constData())){
+		if (packet.getPacketType() == BangProtocol::ClientReply){
 			if (player == NULL) return; 
 			player->setClientReplyString(request);            
 			processResponse(player, &packet);
-		}
-		//@todo: make sure that cheat is binded to Config.FreeChoose, better make
-		// a seperate variable called EnableCheat
-		else if (packet.getPacketType() == BangProtocol::ClientRequest)
-		{
-			CallBack callback = m_callbacks[packet.getCommandType()];
+
+		//@todo: make sure that cheat is binded to Config.FreeChoose, better make a seperate variable called EnableCheat
+		}else if(packet.getPacketType() == BangProtocol::ClientRequest){
+			CallBack callback = callbacks[packet.getCommandType()];
 			if (!callback) return;
-			(this->*callback)(player, &packet);
+			(this->*callback)(player, packet.getMessageBody());
+
+		}else{
+			CallBack callback = callbacks[packet.getCommandType()];
+			if(!callback) return;
+			(this->*callback)(player, packet.getMessageBody());
 		}
-	}
-	else
-	{
+	}else{
 		QStringList args = request.split(" ");
 		QString command = args.first();
-		ServerPlayer *player = qobject_cast<ServerPlayer*>(sender());
 		if(player == NULL)
 			return;
 
-		if(game_finished){
-			if (player->isOnline())
-				player->invoke("warn", "GAME_OVER");
-			return;
-		}
-
 		command.append("Command");
-		Callback callback = callbacks.value(command, NULL);
+		Callback callback = oldcallbacks.value(command, NULL);
 		if(callback){
-
 			(this->*callback)(player, args.at(1));
+		}
+	}
 
 #ifndef QT_NO_DEBUG
-			// output client command only in debug version
-			emit room_message(player->reportHeader() + request);
+	// output client command only in debug version
+	emit room_message(player->reportHeader() + request);
 #endif
-
-		}else
-			emit room_message(tr("%1: %2 is not invokable").arg(player->reportHeader()).arg(command));
-	}
 }
 
 void Room::addRobotCommand(ServerPlayer *player, const QString &){
@@ -1881,7 +1862,7 @@ void Room::addRobotCommand(ServerPlayer *player, const QString &){
 	const QString robot_avatar = Bang->getRandomGeneralName();
 	signup(robot, robot_name, robot_avatar, true);
 
-	QString greeting = tr("Hello, I'm a robot").toUtf8().toBase64();
+	QString greeting = tr("Hello, I'm a robot");
 	speakCommand(robot, greeting);
 
 	broadcastProperty(robot, "state");
@@ -1949,9 +1930,9 @@ void Room::signup(ServerPlayer *player, const QString &screen_name, const QStrin
 	player->introduceTo(NULL);
 
 	if(!is_robot){
-		QString greetingStr = tr("<font color=#EEB422>Player <b>%1</b> joined the game</font>")
+		QString greeting_str = tr("<font color=#EEB422>Player <b>%1</b> joined the game</font>")
 			.arg(Config.ContestMode ? tr("Contestant") : screen_name);
-		speakCommand(player, greetingStr.toUtf8().toBase64());
+		speakCommand(player, greeting_str);
 		player->startNetworkDelayTest();
 
 		// introduce all existing player to the new joined
@@ -2326,8 +2307,14 @@ bool Room::_setPlayerGeneral(ServerPlayer* player, const QString& generalName, b
 	return true;
 }
 
-void Room::speakCommand(ServerPlayer *player, const QString &arg){
-	broadcastInvoke("speak", QString("%1:%2").arg(player->objectName()).arg(arg));
+void Room::speakCommand(ServerPlayer *player, const QJsonValue &content){
+	BangProtocol::Packet speak(BangProtocol::ServerNotification, BangProtocol::Speak);
+	QJsonArray body;
+	body.append(player->objectName());
+	body.append(content);
+	speak.setMessageBody(body);
+
+	broadcastInvoke(&speak);
 }
 
 void Room::processResponse(ServerPlayer *player, const BangProtocol::Packet *packet){
@@ -3966,9 +3953,9 @@ QString Room::askForRole(ServerPlayer *player, const QStringList &roles, const Q
 
 void Room::networkDelayTestCommand(ServerPlayer *player, const QString &){
 	qint64 delay = player->endNetworkDelayTest();
-	QString reportStr = tr("<font color=#EEB422>The network delay of player <b>%1</b> is %2 milliseconds.</font>")
+	QString report_str = tr("<font color=#EEB422>The network delay of player <b>%1</b> is %2 milliseconds.</font>")
 		.arg(Config.ContestMode ? tr("Contestant") : player->screenName()).arg(QString::number(delay));
-	speakCommand(player, reportStr.toUtf8().toBase64());
+	speakCommand(player, report_str);
 }
 
 bool Room::isVirtual()

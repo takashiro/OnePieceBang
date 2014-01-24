@@ -293,7 +293,7 @@ void ServerPlayer::clearSelected(){
 
 void ServerPlayer::castMessage(const QString &message){
 	if(socket){
-		socket->send(message);
+		socket->send(message.toUtf8());
 
 #ifndef QT_NO_DEBUG
 		qDebug("%s: %s", qPrintable(objectName()), qPrintable(message));
@@ -301,9 +301,8 @@ void ServerPlayer::castMessage(const QString &message){
 	}
 }
 
-void ServerPlayer::invoke(const BangProtocol::AbstractPacket* packet)
-{
-	unicast(packet->toString());
+void ServerPlayer::invoke(const BangProtocol::AbstractPacket *packet){
+	unicast(packet->toUtf8());
 }
 
 void ServerPlayer::invoke(const char *method, const QString &arg){
@@ -767,15 +766,19 @@ void ServerPlayer::introduceTo(ServerPlayer *player){
 	QString screen_name = Config.ContestMode ? tr("Contestant") : screenName();
 	QString avatar = property("avatar").toString();
 
-	QString introduce_str = QString("%1:%2:%3")
-							.arg(objectName())
-							.arg(QString(screen_name.toUtf8().toBase64()))
-							.arg(avatar);
+	QJsonArray intro;
+	intro.append(objectName());
+	intro.append(screen_name);
+	intro.append(avatar);
 
-	if(player)
-		player->invoke("addPlayer", introduce_str);
-	else
-		room->broadcastInvoke("addPlayer", introduce_str, this);
+	BangProtocol::Packet intro_packet(BangProtocol::ServerNotification, BangProtocol::AddPlayer);
+	intro_packet.setMessageBody(intro);
+
+	if(player){
+		player->invoke(&intro_packet);
+	}else{
+		room->broadcastInvoke(&intro_packet, this);
+	}
 
 	if(isReady())
 		room->broadcastProperty(this, "ready");

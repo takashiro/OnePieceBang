@@ -5,6 +5,7 @@
 #include <QRegExp>
 #include <QStringList>
 #include <QUdpSocket>
+#include <QDebug>
 
 NativeServerSocket::NativeServerSocket()
 {
@@ -96,8 +97,13 @@ void NativeClientSocket::disconnectFromHost(){
 	socket->disconnectFromHost();
 }
 
-void NativeClientSocket::send(const QString &message){
-	socket->write(message.toLatin1());
+void NativeClientSocket::send(const QByteArray &raw_message){
+	socket->write(raw_message);
+	socket->write("\n");
+}
+
+void NativeClientSocket::send(const BangProtocol::Packet &packet){
+	socket->write(packet.toUtf8());
 	socket->write("\n");
 }
 

@@ -31,8 +31,7 @@ bool BangProtocol::Countdown::tryParse(QJsonValue valdata){
 
 		return true;
 	}
-	else return false;            
-
+	else return false;
 }
 
 bool BangProtocol::isStringArray(const QJsonValue &data, unsigned int start_index, unsigned int end_index)
@@ -82,10 +81,11 @@ bool BangProtocol::Packet::parse(const QByteArray &s){
 
 	if (result.size() == 5)
 		parseBody(result[4]);
+
 	return true;
 }
 
-QString BangProtocol::Packet::toString() const{
+QByteArray BangProtocol::Packet::toUtf8() const{
 	QJsonArray result;
 	result.append((double) global_serial);
 	result.append((double) local_serial);
@@ -96,8 +96,5 @@ QString BangProtocol::Packet::toString() const{
 	if (!body.isNull())
 		result.append(body);
 
-	QJsonDocument doc(result);
-	QString msg = doc.toJson(QJsonDocument::Compact);
-
-	return msg;
+	return QJsonDocument(result).toJson(QJsonDocument::Compact);
 }

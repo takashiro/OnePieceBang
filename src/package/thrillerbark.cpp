@@ -70,8 +70,6 @@ public:
 			}
 		}
 
-		qDebug() << QString("(.*):(.*):(%1)").arg(soul_pattern);
-
 		JudgeStruct judge;
 		judge.good = false;
 		judge.pattern = QRegExp(QString("(.*):(.*):(%1)").arg(soul_pattern));

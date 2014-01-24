@@ -33,8 +33,7 @@ namespace BangProtocol{
 		RunScript
 	};
 
-	enum CheatCategory
-	{
+	enum CheatCategory{
 		FireDamage,
 		ThunderDamage,
 		NormalDamage,
@@ -42,8 +41,7 @@ namespace BangProtocol{
 		HpLose
 	};
 
-	enum CommandType
-	{
+	enum CommandType{
 		UnknownCommand,
 		ChooseCard,
 		PlayCard,
@@ -82,7 +80,11 @@ namespace BangProtocol{
 		GameOver,
 		MoveCard,
 		GetCard,
-		LoseCard
+		LoseCard,
+		CheckVersion,
+		Setup,
+		Speak,
+		AddPlayer
 	};
 
 	enum Game3v3ChooseOrderCommand
@@ -143,7 +145,7 @@ namespace BangProtocol{
 	class AbstractPacket{
 	public:
 		virtual bool parse(const QByteArray &) = 0;
-		virtual QString toString() const = 0;
+		virtual QByteArray toUtf8() const = 0;
 		virtual PacketType getPacketType() const = 0;
 		virtual CommandType getCommandType() const = 0;        
 	};
@@ -153,6 +155,7 @@ namespace BangProtocol{
 		//format: [global_serial,local_serial,packet_type,command_name,command_body]
 		unsigned int global_serial;
 		unsigned int local_serial;
+
 		inline Packet(PacketType packet_type = UnknownPacket, CommandType command = UnknownCommand)
 			:local_serial(0), packet_type(packet_type), command(command){
 			global_serial_sequence++;
@@ -172,7 +175,7 @@ namespace BangProtocol{
 		}
 
 		virtual bool parse(const QByteArray &);
-		virtual QString toString() const;
+		virtual QByteArray toUtf8() const;
 
 		inline virtual PacketType getPacketType() const {
 			return packet_type;

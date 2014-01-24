@@ -58,7 +58,8 @@ public:
 	void disconnectFromHost();
 	void replyToServer(BangProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
 	void requestToServer(BangProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
-	void request(const QString &message);
+	void notifyServer(BangProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
+	void request(const QString &raw_message);
 	void onPlayerUseCard(const Card *card, const QList<const Player *> &targets = QList<const Player *>());
 	void setStatus(Status status);
 	Status getStatus() const;
@@ -88,10 +89,10 @@ public:
 	typedef void (Client::*Callback)(const QString &);
 	typedef void (Client::*CallBack)(const QJsonValue &);
 
-	void checkVersion(const QString &server_version);
-	void setup(const QString &setup_str);
+	void checkVersion(const QJsonValue &server_version);
+	void setup(const QJsonValue &setup);
 	void networkDelayTest(const QString&);
-	void addPlayer(const QString &player_info);
+	void addPlayer(const QJsonValue &player_info);
 	void removePlayer(const QString &player_name);
 	void drawCards(const QString &cards_str);
 	void drawNCards(const QString &draw_str);    
@@ -115,7 +116,7 @@ public:
 	void doFilter(const QString &);
 	void showCard(const QJsonValue &data);
 	void log(const QString &log_str);
-	void speak(const QString &speak_data);
+	void speak(const QJsonValue &speak_data);
 	void addHistory(const QString &card);
 	void moveFocus(const QJsonValue &focus);
 	void setEmotion(const QString &set_str);
@@ -251,7 +252,7 @@ private:
 private slots:
 	void processServerPacket(const QString &cmd);
 	void processServerPacket(char *cmd);
-	bool processServerRequest(const BangProtocol::Packet& packet);
+	bool processServerRequest(const BangProtocol::Packet &packet);
 	void processReply(char *reply);
 	void notifyRoleChange(const QString &new_role);
 	void onPlayerChooseSuit();

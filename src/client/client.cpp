@@ -29,7 +29,7 @@ Client::Client(QObject *parent, const QString &filename)
 	ClientInstance = this;
 	m_isGameOver = false;
 
-	oldcallbacks["checkVersion"] = &Client::checkVersion;
+	callbacks[BangProtocol::CheckVersion] = &Client::checkVersion;
 
 	oldcallbacks["roomBegin"] = &Client::roomBegin;
 	oldcallbacks["room"] = &Client::room;
@@ -38,9 +38,9 @@ Client::Client(QObject *parent, const QString &filename)
 	oldcallbacks["roomError"] = &Client::roomError;
 	oldcallbacks["hallEntered"] = &Client::hallEntered;
 
-	oldcallbacks["setup"] = &Client::setup;
+	callbacks[BangProtocol::Setup] = &Client::setup;
 	oldcallbacks["networkDelayTest"] = &Client::networkDelayTest;
-	oldcallbacks["addPlayer"] = &Client::addPlayer;
+	callbacks[BangProtocol::AddPlayer] = &Client::addPlayer;
 	oldcallbacks["removePlayer"] = &Client::removePlayer;
 	oldcallbacks["startInXs"] = &Client::startInXs;
 	oldcallbacks["arrangeSeats"] = &Client::arrangeSeats;
@@ -53,21 +53,18 @@ Client::Client(QObject *parent, const QString &filename)
 	oldcallbacks["killPlayer"] = &Client::killPlayer;
 	oldcallbacks["revivePlayer"] = &Client::revivePlayer;
 	callbacks[BangProtocol::ShowCard] = &Client::showCard;
-	//callbacks["showCard"] = &Client::showCard;
 	oldcallbacks["setMark"] = &Client::setMark;
 	oldcallbacks["doFilter"] = &Client::doFilter;
 	oldcallbacks["log"] = &Client::log;
-	oldcallbacks["speak"] = &Client::speak;
+	callbacks[BangProtocol::Speak] = &Client::speak;
 	oldcallbacks["acquireSkill"] = &Client::acquireSkill;
 	oldcallbacks["attachSkill"] = &Client::attachSkill;
 	oldcallbacks["detachSkill"] = &Client::detachSkill;
 	callbacks[BangProtocol::MoveFocus] = &Client::moveFocus;
-	//callbacks["moveFocus"] = &Client::moveFocus;
 	oldcallbacks["setEmotion"] = &Client::setEmotion;
 	callbacks[BangProtocol::InvokeSkill] = &Client::skillInvoked;
 	callbacks[BangProtocol::ShowAllCards] = &Client::askForGongxin;
 	callbacks[BangProtocol::InvokeGongxin] = &Client::askForGongxin;
-	//callbacks["skillInvoked"] = &Client::skillInvoked;
 	oldcallbacks["addHistory"] = &Client::addHistory;
 	oldcallbacks["animate"] = &Client::animate;
 	oldcallbacks["judgeResult"] = &Client::judgeResult;
@@ -219,7 +216,7 @@ void Client::replyToServer(BangProtocol::CommandType command, const QJsonValue &
 		BangProtocol::Packet packet(BangProtocol::ClientReply, command);
 		packet.local_serial = last_server_serial;
 		packet.setMessageBody(arg);
-		socket->send(packet.toString());
+		socket->send(packet);
 	}
 }
 
@@ -227,33 +224,44 @@ void Client::requestToServer(BangProtocol::CommandType command, const QJsonValue
 	if(socket){
 		BangProtocol::Packet packet(BangProtocol::ClientRequest, command);
 		packet.setMessageBody(arg);
-		socket->send(packet.toString());
+		socket->send(packet);
 	}
 }
 
-void Client::request(const QString &message){
-	if(socket)
-		socket->send(message);
+void Client::notifyServer(BangProtocol::CommandType command, const QJsonValue &arg){
+	if(socket){
+		BangProtocol::Packet packet(BangProtocol::ClientNotification, command);
+		packet.setMessageBody(arg);
+		socket->send(packet);
+	}
 }
 
-void Client::checkVersion(const QString &server_version){
+void Client::request(const QString &raw_message){
+	if(socket)
+		socket->send(raw_message.toUtf8());
+}
+
+void Client::checkVersion(const QJsonValue &server_version){
+	QString version = server_version.toString();
+
 	QString version_number, mod_name;
-	if(server_version.contains(QChar(':'))){
-		QStringList texts = server_version.split(QChar(':'));
+	if(version.contains(QChar(':'))){
+		QStringList texts = version.split(QChar(':'));
 		version_number = texts.value(0);
 		mod_name = texts.value(1);
 	}else{
-		version_number = server_version;
+		version_number = version;
 		mod_name = "official";
 	}
 
 	emit version_checked(version_number, mod_name);
 }
 
-void Client::setup(const QString &setup_str){
+void Client::setup(const QJsonValue &setup){
 	if(socket && !socket->isConnected())
 		return;
 
+	QString setup_str = setup.toString();
 	if(ServerInfo.parse(setup_str)){
 		emit server_connected();
 		request("toggleReady .");
@@ -272,7 +280,7 @@ void Client::disconnectFromHost(){
 typedef char buffer_t[1024];
 
 void Client::processServerPacket(const QString &cmd){
-	processServerPacket(cmd.toLatin1().data());
+	processServerPacket(cmd.toUtf8().data());
 }
 
 void Client::processServerPacket(char *cmd){
@@ -374,13 +382,11 @@ void Client::processReply(char *reply){
 	}
 }
 
-void Client::addPlayer(const QString &player_info){
-	QStringList texts = player_info.split(":");
-	QString name = texts.at(0);
-	QString base64 = texts.at(1);
-	QByteArray data = QByteArray::fromBase64(base64.toLatin1());
-	QString screen_name = QString::fromUtf8(data);
-	QString avatar = texts.at(2);
+void Client::addPlayer(const QJsonValue &player_info){
+	QJsonArray texts = player_info.toArray();
+	QString name = texts.at(0).toString();
+	QString screen_name = texts.at(1).toString();
+	QString avatar = texts.at(2).toString();
 
 	ClientPlayer *player = new ClientPlayer(this);
 	player->setObjectName(name);
@@ -971,8 +977,7 @@ void Client::speakToServer(const QString &text){
 	if(text.isEmpty())
 		return;
 
-	QByteArray data = text.toUtf8().toBase64();
-	request(QString("speak %1").arg(QString(data)));
+	notifyServer(BangProtocol::Speak, text);
 }
 
 void Client::addHistory(const QString &add_str){
@@ -1631,13 +1636,14 @@ void Client::log(const QString &log_str){
 	emit log_received(log_str);
 }
 
-void Client::speak(const QString &speak_data){
-	QStringList words = speak_data.split(":");
-	QString who = words.at(0);
-	QString base64 = words.at(1);
+void Client::speak(const QJsonValue &speak_data){
+	QJsonArray words = speak_data.toArray();
+	if(words.size() != 2){
+		return;
+	}
 
-	QByteArray data = QByteArray::fromBase64(base64.toLatin1());
-	QString text = QString::fromUtf8(data);
+	QString who = words.at(0).toString();
+	QString text = words.at(1).toString();
 	emit text_spoken(text);
 
 	if(who == "."){

@@ -963,10 +963,15 @@ Server::Server(QObject *parent)
 }
 
 void Server::broadcast(const QString &msg){
-	QString to_sent = msg.toUtf8().toBase64();
-	to_sent = ".:" + to_sent;
-	foreach(Room *room, rooms)
-		room->broadcastInvoke("speak", to_sent);
+	BangProtocol::Packet speak(BangProtocol::ServerNotification, BangProtocol::Speak);
+	QJsonArray to_sent;
+	to_sent.append(QString("."));
+	to_sent.append(msg);
+	speak.setMessageBody(to_sent);
+
+	foreach(Room *room, rooms){
+		room->broadcastInvoke(&speak);
+	}
 }
 
 bool Server::listen(){
@@ -1000,8 +1005,15 @@ void Server::processNewConnection(ClientSocket *socket){
 	}
 
 	connect(socket, SIGNAL(disconnected()), this, SLOT(cleanup()));
-	socket->send("checkVersion " + Bang->getVersion());
-	socket->send("setup " + Bang->getSetupString());
+
+	BangProtocol::Packet check_version(BangProtocol::ServerNotification, BangProtocol::CheckVersion);
+	check_version.setMessageBody(Bang->getVersion());
+	socket->send(check_version);
+
+	BangProtocol::Packet setup(BangProtocol::ServerNotification, BangProtocol::Setup);
+	setup.setMessageBody(Bang->getSetupString());
+	socket->send(setup);
+
 	emit server_message(tr("%1 connected").arg(socket->peerName()));
 
 	connect(socket, SIGNAL(message_got(char*)), this, SLOT(processRequest(char*)));

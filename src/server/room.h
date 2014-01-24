@@ -24,7 +24,7 @@ public:
 	friend class RoomThread1v1;
 
 	typedef void (Room::*Callback)(ServerPlayer *, const QString &);
-	typedef bool (Room::*CallBack)(ServerPlayer *, const BangProtocol::Packet*);
+	typedef void (Room::*CallBack)(ServerPlayer *, const QJsonValue &);
 	typedef bool (Room::*ResponseVerifyFunction)(ServerPlayer*, const QJsonValue&, void*);
 
 	explicit Room(QObject *parent, const QString &mode);
@@ -269,7 +269,7 @@ public:
 	const Card *askForSingleWine(ServerPlayer *player, ServerPlayer *dying);
 	
 	void toggleReadyCommand(ServerPlayer *player, const QString &);
-	void speakCommand(ServerPlayer *player, const QString &arg);
+	void speakCommand(ServerPlayer *player, const QJsonValue &content);
 	void trustCommand(ServerPlayer *player, const QString &arg);
 	void kickCommand(ServerPlayer *player, const QString &arg);
 	void processResponse(ServerPlayer *player, const BangProtocol::Packet* arg);
@@ -337,8 +337,8 @@ private:
 	QSemaphore _m_semRoomMutex; // Provide per-room  (rather than per-player) level protection of any shared variables
 
 	
-	QHash<QString, Callback> callbacks; // Legacy protocol callbacks
-	QHash<BangProtocol::CommandType, CallBack> m_callbacks; // Stores the callbacks for client request. Do not use this
+	QHash<QString, Callback> oldcallbacks; // Legacy protocol callbacks
+	QHash<BangProtocol::CommandType, CallBack> callbacks; // Stores the callbacks for client request. Do not use this
 															// this map for anything else but S_CLIENT_REQUEST!!!!!
 	QHash<BangProtocol::CommandType, BangProtocol::CommandType> m_requestResponsePair; 
 		// Stores the expected client response for each server request, any unmatched client response will be discarded.
@@ -368,15 +368,14 @@ private:
 	void chooseGenerals();
 	AI *cloneAI(ServerPlayer *player);
 	void broadcast(const QString &message, ServerPlayer *except = NULL);
-	void initCallbacks();
 	void arrangeCommand(ServerPlayer *player, const QString &arg);
 	void takeGeneralCommand(ServerPlayer *player, const QString &arg);
 	QString askForOrder(ServerPlayer *player);
 	QString askForRole(ServerPlayer *player, const QStringList &roles, const QString &scheme);
 
 	//process client requests
-	bool processRequestCheat(ServerPlayer *player, const BangProtocol::Packet *packet);
-	bool processRequestSurrender(ServerPlayer *player, const BangProtocol::Packet *packet);
+	void processRequestCheat(ServerPlayer *player, const QJsonValue &cheat);
+	void processRequestSurrender(ServerPlayer *player, const QJsonValue &);
 
 	bool makeSurrender(ServerPlayer* player);
 	bool makeCheat(ServerPlayer* player);
