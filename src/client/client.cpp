@@ -42,7 +42,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::NetworkDelayTest] = &Client::networkDelayTest;
 	callbacks[BP::AddPlayer] = &Client::addPlayer;
 	callbacks[BP::RemovePlayer] = &Client::removePlayer;
-	oldcallbacks["startInXs"] = &Client::startInXs;
+	callbacks[BP::StartInXSeconds] = &Client::startInXSeconds;
 	oldcallbacks["arrangeSeats"] = &Client::arrangeSeats;
 	oldcallbacks["warn"] = &Client::warn;
 
@@ -575,10 +575,10 @@ void Client::onPlayerUseCard(const Card *card, const QList<const Player *> &targ
 	setStatus(NotActive);
 }
 
-void Client::startInXs(const QString &left_seconds){
-	int seconds = left_seconds.toInt();
+void Client::startInXSeconds(const QJsonValue &left_seconds){
+	int seconds = left_seconds.toDouble();
 	if (seconds > 0)
-		lines_doc->setHtml(tr("<p align = \"center\">Game will start in <b>%1</b> seconds...</p>").arg(left_seconds));
+		lines_doc->setHtml(tr("<p align = \"center\">Game will start in <b>%1</b> seconds...</p>").arg(seconds));
 	else
 		lines_doc->setHtml(QString());
 

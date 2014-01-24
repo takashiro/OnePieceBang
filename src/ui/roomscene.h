@@ -322,7 +322,7 @@ private slots:
 	void doCancelButton();
 	void doDiscardButton();
 	void doTimeout();
-	void startInXs();
+	void startInXSeconds();
 	void hideAvatars();
 	void changeHp(const QString &who, int delta, DamageStruct::Nature nature, bool losthp);
 	void moveFocus(const QString &who, BP::Countdown);

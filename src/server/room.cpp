@@ -674,7 +674,7 @@ bool Room::doBroadcastNotify(BP::CommandType command, const QJsonValue &arg, con
 
 bool Room::doBroadcastNotify(BP::CommandType command, const QJsonValue &arg)
 {
-	return doBroadcastNotify(m_players, command, arg);
+	return doBroadcastNotify(command, arg, m_players);
 }
 
 void Room::broadcastInvoke(const char *method, const QString &arg, ServerPlayer *except){
@@ -2107,11 +2107,12 @@ void Room::run(){
 
 	if(using_countdown){
 		for(int i=Config.CountDownSeconds; i>=0; i--){
-			broadcastInvoke("startInXs", QString::number(i));
+			doBroadcastNotify(BP::StartInXSeconds, i);
 			sleep(1);
 		}
-	}else
-		broadcastInvoke("startInXs", "0");
+	}else{
+		doBroadcastNotify(BP::StartInXSeconds, 0);
+	}
 
 
 	if(scenario && !scenario->generalSelection())
@@ -2617,7 +2618,7 @@ void Room::marshal(ServerPlayer *player){
 		player_circle << player->objectName();
 
 	player->invoke("arrangeSeats", player_circle.join("+"));
-	player->invoke("startInXs", "0");
+	player->notify(BP::StartInXSeconds, 0);
 
 	foreach(ServerPlayer *p, m_players){
 		player->sendProperty("general", p);

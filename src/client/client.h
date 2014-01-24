@@ -96,7 +96,7 @@ public:
 	void removePlayer(const QJsonValue &player_name);
 	void drawCards(const QString &cards_str);
 	void drawNCards(const QString &draw_str);    
-	void startInXs(const QString &);
+	void startInXSeconds(const QJsonValue &);
 	void arrangeSeats(const QString &seats);
 	void activate(const QJsonValue &playerId);
 	void startGame(const QString &);

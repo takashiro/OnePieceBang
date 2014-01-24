@@ -227,7 +227,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
 	connect(ClientInstance, SIGNAL(move_cards_got(int, QList<CardsMoveStruct>)), this, SLOT(getCards(int, QList<CardsMoveStruct>)));
 
 	connect(ClientInstance, SIGNAL(assign_asked()), this, SLOT(startAssign()));
-	connect(ClientInstance, SIGNAL(start_in_xs()), this, SLOT(startInXs()));
+	connect(ClientInstance, SIGNAL(start_in_xs()), this, SLOT(startInXSeconds()));
 
 	{
 		guanxing_box = new GuanxingBox;
@@ -2413,7 +2413,7 @@ void RoomScene::hideAvatars(){
 	dashboard->hideAvatar();
 }
 
-void RoomScene::startInXs(){
+void RoomScene::startInXSeconds(){
 	if(add_robot) add_robot->hide();
 	if(fill_robots) fill_robots->hide();
 }
