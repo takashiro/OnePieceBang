@@ -74,7 +74,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::CardLock] = &Client::cardLock;
 	callbacks[BP::Pile] = &Client::pile;
 
-	oldcallbacks["updateStateItem"] = &Client::updateStateItem;
+	callbacks[BP::UpdateStateItem] = &Client::updateStateItem;
 
 	oldcallbacks["playSkillEffect"] = &Client::playSkillEffect;
 	oldcallbacks["playCardEffect"] = &Client::playCardEffect;
@@ -1824,6 +1824,6 @@ void Client::onPlayerChooseOrder(){
 	setStatus(NotActive);
 }
 
-void Client::updateStateItem(const QString &state_str){
-	emit role_state_changed(state_str);
+void Client::updateStateItem(const QJsonValue &state_str){
+	emit role_state_changed(state_str.toString());
 }

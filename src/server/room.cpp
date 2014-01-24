@@ -241,7 +241,7 @@ void Room::updateStateItem(){
 		roles.append(c);
 	}
 
-	broadcastInvoke("updateStateItem", roles);
+	doBroadcastNotify(BP::UpdateStateItem, roles);
 }
 
 void Room::killPlayer(ServerPlayer *victim, DamageStruct *reason){
