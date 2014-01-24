@@ -347,7 +347,7 @@ QList<int> Room::getNCards(int n, bool update_pile_number){
 	}
 
 	if(update_pile_number)
-		broadcastInvoke("setPileNumber", QString::number(draw_pile->length()));
+		doBroadcastNotify(BP::SetPileNumber, QJsonValue(draw_pile->length()));
 
 	return card_ids;
 }
@@ -1317,8 +1317,8 @@ void Room::swapPile(){
 
 	qSwap(draw_pile, discard_pile);
 
-	broadcastInvoke("clearPile");
-	broadcastInvoke("setPileNumber", QString::number(draw_pile->length()));
+	doBroadcastNotify(BP::ClearPile);
+	doBroadcastNotify(BP::SetPileNumber, QJsonValue(draw_pile->length()));
 
 	qShuffle(*draw_pile);
 
@@ -2639,7 +2639,7 @@ void Room::marshal(ServerPlayer *player){
 	}
 
 	player->unicast(".flags -marshalling");
-	player->invoke("setPileNumber", QString::number(draw_pile->length()));
+	player->notify(BP::SetPileNumber, QJsonValue(draw_pile->length()));
 }
 
 void Room::startGame(){
@@ -2711,7 +2711,7 @@ void Room::startGame(){
 		setCardMapping(card_id, NULL, Player::DrawPile);
 	}
 
-	broadcastInvoke("setPileNumber", QString::number(draw_pile->length()));
+	doBroadcastNotify(BP::SetPileNumber, QJsonValue(draw_pile->length()));
 
 	thread = new RoomThread(this);
 	connect(thread, SIGNAL(started()), this, SIGNAL(game_start()));

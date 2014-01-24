@@ -69,7 +69,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::JudgeResult] = &Client::judgeResult;
 	callbacks[BP::SetScreenName] = &Client::setScreenName;
 	callbacks[BP::SetFixedDistance] = &Client::setFixedDistance;
-	callbacks[BP::Rransfigure] = &Client::transfigure;
+	callbacks[BP::Transfigure] = &Client::transfigure;
 	//callbacks[BP::Jilei] = &Client::jilei;
 	callbacks[BP::CardLock] = &Client::cardLock;
 	callbacks[BP::Pile] = &Client::pile;
@@ -82,8 +82,8 @@ Client::Client(QObject *parent, const QString &filename)
 
 	callbacks[BP::GetCard] = &Client::getCards;
 	callbacks[BP::LoseCard] = &Client::loseCards;
-	oldcallbacks["clearPile"] = &Client::resetPiles;
-	oldcallbacks["setPileNumber"] = &Client::setPileNumber;
+	callbacks[BP::ClearPile] = &Client::resetPiles;
+	callbacks[BP::SetPileNumber] = &Client::setPileNumber;
 	oldcallbacks["setStatistics"] = &Client::setStatistics;
 	oldcallbacks["setCardFlag"] = &Client::setCardFlag;
 
@@ -1035,15 +1035,15 @@ QTextDocument *Client::getPromptDoc() const{
 	return prompt_doc;
 }
 
-void Client::resetPiles(const QString &){
+void Client::resetPiles(const QJsonValue &){
 	discarded_list.clear();
 	swap_pile++;
 	updatePileNum();
 	emit pile_reset();
 }
 
-void Client::setPileNumber(const QString &pile_str){
-	pile_num = pile_str.toInt();
+void Client::setPileNumber(const QJsonValue &pile_str){
+	pile_num = pile_str.toDouble();
 
 	updatePileNum();
 }

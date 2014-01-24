@@ -104,8 +104,8 @@ public:
 	void playSkillEffect(const QJsonValue &play_str);
 	void playCardEffect(const QJsonValue &play_str);
 	void playAudio(const QJsonValue &name);
-	void resetPiles(const QString &);
-	void setPileNumber(const QString &pile_num);
+	void resetPiles(const QJsonValue &);
+	void setPileNumber(const QJsonValue &pile_num);
 	void gameOver(const QJsonValue &);
 	void loseCards(const QJsonValue &data);
 	void getCards(const QJsonValue &data);
