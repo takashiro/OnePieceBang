@@ -93,7 +93,7 @@ public:
 	void setup(const QJsonValue &setup);
 	void networkDelayTest(const QJsonValue &);
 	void addPlayer(const QJsonValue &player_info);
-	void removePlayer(const QString &player_name);
+	void removePlayer(const QJsonValue &player_name);
 	void drawCards(const QString &cards_str);
 	void drawNCards(const QString &draw_str);    
 	void startInXs(const QString &);

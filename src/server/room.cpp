@@ -1639,9 +1639,9 @@ void Room::reportDisconnection(){
 				speakCommand(player, leave_str);
 			}
 
-			broadcastInvoke("removePlayer", player->objectName());
+			doBroadcastNotify(BP::RemovePlayer, player->objectName());
 		}
-	}else{ 
+	}else{
 		// fourth case
 		if (player->m_isWaitingReply)
 		{
