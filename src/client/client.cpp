@@ -44,7 +44,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::RemovePlayer] = &Client::removePlayer;
 	callbacks[BP::StartInXSeconds] = &Client::startInXSeconds;
 	callbacks[BP::ArrangeSeats] = &Client::arrangeSeats;
-	oldcallbacks["warn"] = &Client::warn;
+	callbacks[BP::Warn] = &Client::warn;
 
 	oldcallbacks["startGame"] = &Client::startGame;
 	callbacks[BP::GameOver] = &Client::gameOver;
@@ -1204,20 +1204,20 @@ void Client::revivePlayer(const QString &player_name){
 }
 
 
-void Client::warn(const QString &reason){
-	QString msg;
-	if(reason == "GAME_OVER")
+void Client::warn(const QJsonValue &reason){
+	QString msg = reason.toString();
+	if(msg == "GAME_OVER")
 		msg = tr("Game is over now");
-	else if(reason == "REQUIRE_PASSWORD")
+	else if(msg == "REQUIRE_PASSWORD")
 		msg = tr("The server require password to signup");
-	else if(reason == "WRONG_PASSWORD")
+	else if(msg == "WRONG_PASSWORD")
 		msg = tr("Your password is wrong");
-	else if(reason == "INVALID_FORMAT")
+	else if(msg == "INVALID_FORMAT")
 		msg = tr("Invalid signup string");
-	else if(reason == "LEVEL_LIMITATION")
+	else if(msg == "LEVEL_LIMITATION")
 		msg = tr("Your level is not enough");
 	else
-		msg = tr("Unknown warning: %1").arg(reason);
+		msg = tr("Unknown warning: %1").arg(msg);
 
 	disconnectFromHost();
 	QMessageBox::warning(NULL, tr("Warning"), msg);

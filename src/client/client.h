@@ -111,7 +111,7 @@ public:
 	void getCards(const QJsonValue &data);
 	void killPlayer(const QString &player_name);
 	void revivePlayer(const QString &player_name);
-	void warn(const QString &);
+	void warn(const QJsonValue &);
 	void setMark(const QString &mark_str);
 	void doFilter(const QString &);
 	void showCard(const QJsonValue &data);

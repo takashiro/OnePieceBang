@@ -1800,7 +1800,7 @@ void Room::processClientPacket(const QString &request){
 
 	if(game_finished){
 		if (player->isOnline())
-			player->invoke("warn", "GAME_OVER");
+			player->notify(BP::Warn, QString("GAME_OVER"));
 		return;
 	}
 

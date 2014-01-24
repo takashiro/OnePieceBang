@@ -25,6 +25,12 @@
 #include <QNetworkReply>
 #include <QAction>
 
+inline void notify(ClientSocket *socket, BP::CommandType command, const QJsonValue &arg){
+	BP::Packet packet(BP::ServerNotification, command);
+	packet.setMessageBody(arg);
+	socket->send(packet);
+}
+
 static QLayout *HLay(QWidget *left, QWidget *right){
 	QHBoxLayout *layout = new QHBoxLayout;
 	layout->addWidget(left);
@@ -1006,13 +1012,8 @@ void Server::processNewConnection(ClientSocket *socket){
 
 	connect(socket, SIGNAL(disconnected()), this, SLOT(cleanup()));
 
-	BP::Packet check_version(BP::ServerNotification, BP::CheckVersion);
-	check_version.setMessageBody(Bang->getVersion());
-	socket->send(check_version);
-
-	BP::Packet setup(BP::ServerNotification, BP::Setup);
-	setup.setMessageBody(Bang->getSetupString());
-	socket->send(setup);
+	notify(socket, BP::CheckVersion, Bang->getVersion());
+	notify(socket, BP::Setup, Bang->getSetupString());
 
 	emit server_message(tr("%1 connected").arg(socket->peerName()));
 
@@ -1036,7 +1037,7 @@ void Server::processRequest(char *request){
 	QJsonArray signup = packet.getMessageBody().toArray();
 	if(signup.size() < 2 || signup.size() > 3){
 		emit server_message(tr("Invalid signup string: %1").arg(request));
-		socket->send("warn INVALID_FORMAT");
+		notify(socket, BP::Warn, QString("INVALID_FORMAT"));
 		socket->disconnectFromHost();
 		return;
 	}
@@ -1047,7 +1048,7 @@ void Server::processRequest(char *request){
 	if(Config.ContestMode){
 		QString password = signup.at(2).toString();
 		if(password.isEmpty()){
-			socket->send("warn REQUIRE_PASSWORD");
+			notify(socket, BP::Warn, QString("REQUIRE_PASSWORD"));
 			socket->disconnectFromHost();
 			return;
 		}
@@ -1055,7 +1056,7 @@ void Server::processRequest(char *request){
 		password.remove(QChar(':'));
 		ContestDB *db = ContestDB::GetInstance();
 		if(!db->checkPassword(screen_name, password)){
-			socket->send("warn WRONG_PASSWORD");
+			notify(socket, BP::Warn, QString("WRONG_PASSWORD"));
 			socket->disconnectFromHost();
 			return;
 		}
