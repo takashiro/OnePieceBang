@@ -46,7 +46,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::ArrangeSeats] = &Client::arrangeSeats;
 	callbacks[BP::Warn] = &Client::warn;
 
-	oldcallbacks["startGame"] = &Client::startGame;
+	callbacks[BP::StartGame] = &Client::startGame;
 	callbacks[BP::GameOver] = &Client::gameOver;
 
 	oldcallbacks["hpChange"] = &Client::hpChange;
@@ -628,7 +628,7 @@ void Client::activate(const QJsonValue& playerId){
 		setStatus(NotActive);
 }
 
-void Client::startGame(const QString &){
+void Client::startGame(const QJsonValue &){
 	QList<ClientPlayer *> players = findChildren<ClientPlayer *>();
 	alive_count = players.count();
 

@@ -99,7 +99,7 @@ public:
 	void startInXSeconds(const QJsonValue &);
 	void arrangeSeats(const QJsonValue &seats_data);
 	void activate(const QJsonValue &playerId);
-	void startGame(const QString &);
+	void startGame(const QJsonValue &);
 	void hpChange(const QString &change_str);
 	void playSkillEffect(const QString &play_str);
 	void playCardEffect(const QString &play_str);

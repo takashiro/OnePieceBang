@@ -665,16 +665,11 @@ bool Room::doNotify(ServerPlayer *player, BP::CommandType command, const QJsonVa
 	return true;
 }
 
-bool Room::doBroadcastNotify(BP::CommandType command, const QJsonValue &arg, const QList<ServerPlayer*> &players){
-	foreach (ServerPlayer* player, players){
+bool Room::doBroadcastNotify(BP::CommandType command, const QJsonValue &arg){
+	foreach (ServerPlayer* player, m_players){
 		doNotify(player, command, arg);
 	}
 	return true;
-}
-
-bool Room::doBroadcastNotify(BP::CommandType command, const QJsonValue &arg)
-{
-	return doBroadcastNotify(command, arg, m_players);
 }
 
 void Room::broadcastInvoke(const char *method, const QString &arg, ServerPlayer *except){
@@ -2627,7 +2622,7 @@ void Room::marshal(ServerPlayer *player){
 			player->sendProperty("general2", p);
 	}
 
-	player->invoke("startGame");
+	player->notify(BP::StartGame);
 
 	foreach(ServerPlayer *p, m_players){
 		p->marshal(player);
@@ -2690,7 +2685,7 @@ void Room::startGame(){
 			broadcastProperty(player, "role"); 
 	}
 
-	broadcastInvoke("startGame");
+	doBroadcastNotify(BP::StartGame);
 	game_started = true;
 
 	Server *server = qobject_cast<Server *>(parent());
