@@ -59,7 +59,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::Speak] = &Client::speak;
 	callbacks[BP::AcquireSkill] = &Client::acquireSkill;
 	callbacks[BP::AttachSkill] = &Client::attachSkill;
-	oldcallbacks["detachSkill"] = &Client::detachSkill;
+	callbacks[BP::DetachSkill] = &Client::detachSkill;
 	callbacks[BP::MoveFocus] = &Client::moveFocus;
 	oldcallbacks["setEmotion"] = &Client::setEmotion;
 	callbacks[BP::AskForSkillInvoke] = &Client::skillInvoked;
@@ -1461,16 +1461,16 @@ void Client::attachSkill(const QJsonValue &skill_name){
 	emit skill_attached(name, true);
 }
 
-void Client::detachSkill(const QString &detach_str){
-	QStringList texts = detach_str.split(":");
+void Client::detachSkill(const QJsonValue &detach_str){
+	QJsonArray texts = detach_str.toArray();
 	ClientPlayer *player = NULL;
 	QString skill_name;
-	if(texts.length() == 1){
+	if(texts.size() == 1){
 		player = Self;
-		skill_name = texts.first();
-	}else if(texts.length() == 2){
-		player = getPlayer(texts.first());
-		skill_name = texts.last();
+		skill_name = texts.at(0).toString();
+	}else if(texts.size() == 2){
+		player = getPlayer(texts.at(0).toString());
+		skill_name = texts.at(1).toString();
 	}
 
 	player->loseSkill(skill_name);

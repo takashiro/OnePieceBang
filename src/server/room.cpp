@@ -503,8 +503,11 @@ void Room::detachSkillFromPlayer(ServerPlayer *player, const QString &skill_name
 		return;
 
 	player->loseSkill(skill_name);
-	broadcastInvoke("detachSkill",
-		QString("%1:%2").arg(player->objectName()).arg(skill_name));
+
+	QJsonArray detach_arg;
+	detach_arg.append(player->objectName());
+	detach_arg.append(skill_name);
+	doBroadcastNotify(BP::DetachSkill, detach_arg);
 
 	const Skill *skill = Bang->getSkill(skill_name);
 	if(skill && skill->isVisible()){

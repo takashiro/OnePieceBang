@@ -175,7 +175,7 @@ public:
 	void revealGeneral(const QString &);
 
 	void attachSkill(const QJsonValue &skill_name);
-	void detachSkill(const QString &skill_name);
+	void detachSkill(const QJsonValue &skill_name);
 	
 	inline void setCountdown(BP::Countdown countdown) {
 		countdown_mutex.lock();
