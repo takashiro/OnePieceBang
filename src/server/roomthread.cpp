@@ -5,7 +5,6 @@
 #include "scenerule.h"
 #include "scenario.h"
 #include "ai.h"
-#include "jsonutils.h"
 #include "settings.h"
 
 #include <QTime>

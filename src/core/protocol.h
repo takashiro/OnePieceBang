@@ -9,6 +9,15 @@ namespace BP{
 	bool isStringArray(const QJsonValue &data, unsigned int start_index, unsigned int end_index);
 	bool isIntArray(const QJsonValue &data, unsigned int start_index, unsigned int end_index);
 
+	QJsonArray toJsonArray(const QString& s1, const QString& s2);
+	QJsonArray toJsonArray(const QString& s1, const QJsonValue& s2);
+	QJsonArray toJsonArray(const QString& s1, const QString& s2, const QString& s3);
+	QJsonArray toJsonArray(const QList<int>&);
+	QJsonArray toJsonArray(const QList<QString>&);
+	QJsonArray toJsonArray(const QStringList&);
+	bool tryParse(const QJsonValue&, QList<int> &);
+	bool tryParse(const QJsonValue&, QStringList &);
+
 	enum PacketType{
 		UnknownPacket,
 		ServerRequest,

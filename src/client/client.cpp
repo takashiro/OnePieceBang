@@ -5,7 +5,6 @@
 #include "choosegeneraldialog.h"
 #include "nativesocket.h"
 #include "recorder.h"
-#include "jsonutils.h"
 
 #include <QApplication>
 #include <QCryptographicHash>
@@ -66,7 +65,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::ShowAllCards] = &Client::askForGongxin;
 	callbacks[BP::AskForGongxin] = &Client::askForGongxin;
 	callbacks[BP::AddHistory] = &Client::addHistory;
-	oldcallbacks["animate"] = &Client::animate;
+	callbacks[BP::Animate] = &Client::animate;
 	oldcallbacks["judgeResult"] = &Client::judgeResult;
 	callbacks[BP::SetScreenName] = &Client::setScreenName;
 	oldcallbacks["setFixedDistance"] = &Client::setFixedDistance;
@@ -1693,11 +1692,17 @@ void Client::acquireSkill(const QJsonValue &acquire_arr){
 	emit skill_acquired(who, skill_name);
 }
 
-void Client::animate(const QString &animate_str){
-	QStringList args = animate_str.split(":");
-	QString name = args.takeFirst();
+void Client::animate(const QJsonValue &animate_str){
+	QJsonArray args = animate_str.toArray();
 
-	emit animated(name, args);
+	QStringList arglist;
+	for(int i = 1; i < args.size(); i++){
+		arglist << args.at(i).toString();
+	}
+
+	QString name = args.at(0).toString();
+
+	emit animated(name, arglist);
 }
 
 void Client::setScreenName(const QJsonValue &set_str){

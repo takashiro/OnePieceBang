@@ -1,4 +1,7 @@
-#include "jsonutils.h"
+#include "protocol.h"
+
+#include <QStringList>
+#include <QList>
 
 QJsonArray BP::toJsonArray(const QString& s1, const QString& s2)
 {

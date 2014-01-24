@@ -141,7 +141,6 @@ HEADERS += \
         src/core/card.h \
         src/core/engine.h \
         src/core/general.h \
-        src/core/jsonutils.h \
         src/core/lua-wrapper.h \
         src/core/player.h \
         src/core/protocol.h \

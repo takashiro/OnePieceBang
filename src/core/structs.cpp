@@ -1,5 +1,4 @@
 #include "structs.h"
-#include "jsonutils.h"
 #include "protocol.h"
 
 bool CardMoveStruct::tryParse(const QJsonValue &data){

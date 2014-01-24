@@ -12,7 +12,6 @@
 #include "roomthread1v1.h"
 #include "server.h"
 #include "generalselector.h"
-#include "jsonutils.h"
 #include "structs.h"
 
 #include <QStringList>
@@ -903,8 +902,7 @@ bool Room::_askForNullification(const TrickCard *trick, ServerPlayer *from, Serv
 	log.arg = trick_name;
 	sendLog(log);
 
-	broadcastInvoke("animate", QString("nullification:%1:%2")
-		.arg(repliedPlayer->objectName()).arg(to->objectName()));
+	doBroadcastNotify(BP::Animate, BP::toJsonArray("nullification", repliedPlayer->objectName(), to->objectName()));
 
 	QVariant decisionData = QVariant::fromValue("Nullification:"+QString(trick->metaObject()->className())+":"+to->objectName()+":"+(positive?"true":"false"));
 	thread->trigger(ChoiceMade, repliedPlayer, decisionData);

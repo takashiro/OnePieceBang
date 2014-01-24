@@ -131,9 +131,7 @@ void Wine::onEffect(const CardEffectStruct &effect) const{
 	Room *room = effect.to->getRoom();
 
 	// do animation
-	room->broadcastInvoke("animate", QString("wine:%1:%2")
-						  .arg(effect.from->objectName())
-						  .arg(effect.to->objectName()));
+	room->doBroadcastNotify(BP::Animate, BP::toJsonArray("wine", effect.from->objectName(), effect.to->objectName()));
 
 	// recover hp
 	RecoverStruct recover;
