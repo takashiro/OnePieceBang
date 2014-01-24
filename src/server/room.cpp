@@ -1185,7 +1185,12 @@ void Room::setPlayerProperty(ServerPlayer *player, const char *property_name, co
 
 void Room::setPlayerMark(ServerPlayer *player, const QString &mark, int value){
 	player->setMark(mark, value);
-	broadcastInvoke("setMark", QString("%1.%2=%3").arg(player->objectName()).arg(mark).arg(value));
+
+	QJsonArray arg;
+	arg.append(player->objectName());
+	arg.append(mark);
+	arg.append(value);
+	doBroadcastNotify(BP::SetMark, arg);
 }
 
 void Room::setPlayerCardLock(ServerPlayer *player, const QString &name){

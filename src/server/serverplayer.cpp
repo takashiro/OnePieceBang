@@ -840,12 +840,12 @@ void ServerPlayer::marshal(ServerPlayer *player) const{
 		if(mark_name.startsWith("@")){
 			int value = getMark(mark_name);
 			if(value != 0){
-				QString mark_str = QString("%1.%2=%3")
-								   .arg(objectName())
-								   .arg(mark_name)
-								   .arg(value);
+				QJsonArray mark_arg;
+				mark_arg.append(objectName());
+				mark_arg.append(mark_name);
+				mark_arg.append(value);
 
-				player->invoke("setMark", mark_str);
+				player->notify(BP::SetMark, mark_arg);
 			}
 		}
 	}

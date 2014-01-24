@@ -53,7 +53,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::killPlayer] = &Client::killPlayer;
 	callbacks[BP::revivePlayer] = &Client::revivePlayer;
 	callbacks[BP::AskForCardShow] = &Client::showCard;
-	oldcallbacks["setMark"] = &Client::setMark;
+	callbacks[BP::SetMark] = &Client::setMark;
 	oldcallbacks["doFilter"] = &Client::doFilter;
 	oldcallbacks["log"] = &Client::log;
 	callbacks[BP::Speak] = &Client::speak;
@@ -1293,16 +1293,16 @@ void Client::askForDirection(const QJsonValue &){
 }
 
 
-void Client::setMark(const QString &mark_str){
+void Client::setMark(const QJsonValue &mark_str){
 	QRegExp rx("(\\w+)\\.(@?[\\w-]+)=(\\d+)");
 
 	if(!rx.exactMatch(mark_str))
 		return;
 
-	QStringList texts = rx.capturedTexts();
-	QString who = texts.at(1);
-	QString mark = texts.at(2);
-	int value = texts.at(3).toInt();
+	QJsonArray texts = mark_str.toArray();
+	QString who = texts.at(0).toString();
+	QString mark = texts.at(1).toString();
+	int value = texts.at(2).toDouble();
 
 	ClientPlayer *player = getPlayer(who);
 	player->setMark(mark, value);
