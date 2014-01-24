@@ -160,7 +160,7 @@ public slots:
 	void chooseCard(const ClientPlayer *playerName, const QString &flags, const QString &reason);
 	void chooseKingdom(const QStringList &kingdoms);
 	void chooseOption(const QString& skillName, const QStringList &options);
-	void chooseOrder(BangProtocol::Game3v3ChooseOrderCommand reason);
+	void chooseOrder(BP::Game3v3ChooseOrderCommand reason);
 	void chooseRole(const QString &scheme, const QStringList &roles);
 	void chooseDirection();
 
@@ -325,7 +325,7 @@ private slots:
 	void startInXs();
 	void hideAvatars();
 	void changeHp(const QString &who, int delta, DamageStruct::Nature nature, bool losthp);
-	void moveFocus(const QString &who, BangProtocol::Countdown);
+	void moveFocus(const QString &who, BP::Countdown);
 	void setEmotion(const QString &who, const QString &emotion,bool permanent = false);
 	void showSkillInvocation(const QString &who, const QString &skill_name);
 	void doAnimation(const QString &name, const QStringList &args);

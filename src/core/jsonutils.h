@@ -7,7 +7,7 @@
 #include <QJsonArray>
 #include <QJsonValue>
 
-namespace BangProtocol{
+namespace BP{
 
 QJsonArray toJsonArray(const QString& s1, const QString& s2);
 QJsonArray toJsonArray(const QString& s1, const QJsonValue& s2);

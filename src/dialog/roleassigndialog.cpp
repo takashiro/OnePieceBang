@@ -132,7 +132,7 @@ void RoleAssignDialog::accept(){
 }
 
 void RoleAssignDialog::reject(){
-	ClientInstance->replyToServer(BangProtocol::ChooseRole, QJsonValue());
+	ClientInstance->replyToServer(BP::AskForAssign, QJsonValue());
 	QDialog::reject();
 }
 

@@ -23,7 +23,7 @@ public:
 	explicit ServerPlayer(Room *room);
 
 	void setSocket(ClientSocket *socket);
-	void invoke(const BangProtocol::AbstractPacket &packet);
+	void invoke(const BP::AbstractPacket &packet);
 	void invoke(const char *method, const QString &arg = ".");
 	QString reportHeader() const;
 	void sendProperty(const char *property_name, const Player *player = NULL) const;
@@ -133,7 +133,7 @@ public:
 	bool m_isClientResponseReady; //Suggest whether a valid player's reponse has been received.
 	bool m_isWaitingReply; // Suggest if the server player is waiting for client's response.
 	QJsonValue m_cheatArgs; // Store the cheat code received from client.
-	BangProtocol::CommandType m_expectedReplyCommand; // Store the command to be sent to the client.
+	BP::CommandType m_expectedReplyCommand; // Store the command to be sent to the client.
 	QJsonValue m_commandArgs; // Store the command args to be sent to the client.
 
 

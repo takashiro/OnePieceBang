@@ -182,7 +182,7 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
 	}else{
 		progress_bar = new QSanCommandProgressBar();
 		progress_bar->setTimerEnabled(true);
-		progress_bar->setCountdown(BangProtocol::ChooseGeneral);
+		progress_bar->setCountdown(BP::AskForGeneral);
 		last_layout->addWidget(progress_bar);
 	}
 

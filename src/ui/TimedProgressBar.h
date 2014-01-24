@@ -41,12 +41,12 @@ class QSanCommandProgressBar: public TimedProgressBar
 Q_OBJECT    
 public:
 	QSanCommandProgressBar();
-	inline void setInstanceType(BangProtocol::ProcessInstanceType type) { m_instanceType = type; }
-	void setCountdown(BangProtocol::CommandType command);
-	void setCountdown(BangProtocol::Countdown countdown);    
+	inline void setInstanceType(BP::ProcessInstanceType type) { m_instanceType = type; }
+	void setCountdown(BP::CommandType command);
+	void setCountdown(BP::Countdown countdown);    
 protected:
 	virtual void paintEvent(QPaintEvent *);
-	BangProtocol::ProcessInstanceType m_instanceType;
+	BP::ProcessInstanceType m_instanceType;
 private:
 	static QPixmap* sm_progress_100_image;
 	static QPixmap* sm_progress_80_image;

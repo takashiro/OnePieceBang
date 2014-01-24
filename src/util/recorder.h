@@ -68,8 +68,8 @@ private:
 	QList<Pair> pairs;
 
 	QMap<QString, QString> m_nameTranslation;
-	QMap<QString, BangProtocol::CommandType> m_commandMapping;
-	QMap<BangProtocol::PacketType, QList<BangProtocol::CommandType> > m_packetTypeMapping;
+	QMap<QString, BP::CommandType> m_commandMapping;
+	QMap<BP::PacketType, QList<BP::CommandType> > m_packetTypeMapping;
 
 signals:
 	void command_parsed(const QString &cmd);

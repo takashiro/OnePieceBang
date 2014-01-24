@@ -1,10 +1,10 @@
 #include "protocol.h"
 #include <algorithm>
 
-unsigned int BangProtocol::Packet::global_serial_sequence = 0;
-const QString BangProtocol::Countdown::CountdownMagic = "MG_COUNTDOWN";
+unsigned int BP::Packet::global_serial_sequence = 0;
+const QString BP::Countdown::CountdownMagic = "MG_COUNTDOWN";
 
-bool BangProtocol::Countdown::tryParse(QJsonValue valdata){
+bool BP::Countdown::tryParse(QJsonValue valdata){
 	QJsonArray val = valdata.toArray();
 	if((val.size() != 2 && val.size() != 3) || !val[0].isString() || val[0].toString() != CountdownMagic)
 		return false;
@@ -34,7 +34,7 @@ bool BangProtocol::Countdown::tryParse(QJsonValue valdata){
 	else return false;
 }
 
-bool BangProtocol::isStringArray(const QJsonValue &data, unsigned int start_index, unsigned int end_index)
+bool BP::isStringArray(const QJsonValue &data, unsigned int start_index, unsigned int end_index)
 {
 	QJsonArray json_object = data.toArray();
 	if(json_object.size() <= end_index){
@@ -49,7 +49,7 @@ bool BangProtocol::isStringArray(const QJsonValue &data, unsigned int start_inde
 	return true;
 }
 
-bool BangProtocol::isIntArray(const QJsonValue &data, unsigned int start_index, unsigned int end_index){
+bool BP::isIntArray(const QJsonValue &data, unsigned int start_index, unsigned int end_index){
 	QJsonArray json_object = data.toArray();
 	if(json_object.size() <= end_index){
 		return false;
@@ -63,7 +63,7 @@ bool BangProtocol::isIntArray(const QJsonValue &data, unsigned int start_index, 
 	return true;
 }
 
-bool BangProtocol::Packet::parse(const QByteArray &s){
+bool BP::Packet::parse(const QByteArray &s){
 	QJsonDocument doc = QJsonDocument::fromJson(s);
 	if(doc.isNull() || !doc.isArray()){
 		return false;
@@ -85,7 +85,7 @@ bool BangProtocol::Packet::parse(const QByteArray &s){
 	return true;
 }
 
-QByteArray BangProtocol::Packet::toUtf8() const{
+QByteArray BP::Packet::toUtf8() const{
 	QJsonArray result;
 	result.append((double) global_serial);
 	result.append((double) local_serial);

@@ -112,8 +112,8 @@ public:
 	//    command only once in all with broadcast = true if the poll is to everypody).
 	// 2. Call getResult(player, timeout) on each player to retrieve the result. Read manual for getResults
 	//    before you use.
-	bool doRequest(ServerPlayer* player, BangProtocol::CommandType command, const QJsonValue &arg, time_t timeOut, bool wait);
-	bool doRequest(ServerPlayer* player, BangProtocol::CommandType command, const QJsonValue &arg, bool wait);
+	bool doRequest(ServerPlayer* player, BP::CommandType command, const QJsonValue &arg, time_t timeOut, bool wait);
+	bool doRequest(ServerPlayer* player, BP::CommandType command, const QJsonValue &arg, bool wait);
 
 	// Broadcast a request to a list of players and get the client responses. Call is blocking until all client
 	// replies or server times out, whichever is earlier. Check each player's m_isClientResponseReady to see if a valid
@@ -126,8 +126,8 @@ public:
 	//        Maximum total milliseconds that server will wait for all clients to respond before returning. Any client 
 	//        response after the timeOut will be rejected.
 	// @return True if the a valid response is returned from client.  
-	bool doBroadcastRequest(QList<ServerPlayer*> &players, BangProtocol::CommandType command, time_t timeOut);
-	bool doBroadcastRequest(QList<ServerPlayer*> &players, BangProtocol::CommandType command);
+	bool doBroadcastRequest(QList<ServerPlayer*> &players, BP::CommandType command, time_t timeOut);
+	bool doBroadcastRequest(QList<ServerPlayer*> &players, BP::CommandType command);
 
 	// Broadcast a request to a list of players and get the first valid client response. Call is blocking until the first
 	// client response is received or server times out, whichever is earlier. Any client response is verified by the validation
@@ -137,19 +137,19 @@ public:
 	//        Validation function that verifies whether the reply is a valid one. The first parameter passed to the function
 	//        is the response sender, the second parameter is the response content, the third parameter is funcArg passed in.
 	// @return The player that first send a legal request to the server. NULL if no such request is received.
-	ServerPlayer* doBroadcastRaceRequest(QList<ServerPlayer*> &players, BangProtocol::CommandType command, 
+	ServerPlayer* doBroadcastRaceRequest(QList<ServerPlayer*> &players, BP::CommandType command, 
 		   time_t timeOut, ResponseVerifyFunction validateFunc = NULL, void* funcArg = NULL);
 	
 	// Notify a player of a event by sending S_SERVER_NOTIFICATION packets. No reply should be expected from
 	// the client for S_SERVER_NOTIFICATION as it's a one way notice. Any message from the client in reply to this call
 	// will be rejected.
-	bool doNotify(ServerPlayer* player, BangProtocol::CommandType command, const QJsonValue &arg); 
+	bool doNotify(ServerPlayer* player, BP::CommandType command, const QJsonValue &arg); 
 
 	// Broadcast a event to a list of players by sending S_SERVER_NOTIFICATION packets. No replies should be expected from
 	// the clients for S_SERVER_NOTIFICATION as it's a one way notice. Any message from the client in reply to this call
 	// will be rejected.    
-	bool doBroadcastNotify(BangProtocol::CommandType command, const QJsonValue &arg);
-	bool doBroadcastNotify(const QList<ServerPlayer*> &players, BangProtocol::CommandType command, const QJsonValue &arg);
+	bool doBroadcastNotify(BP::CommandType command, const QJsonValue &arg);
+	bool doBroadcastNotify(const QList<ServerPlayer*> &players, BP::CommandType command, const QJsonValue &arg);
 	
 	// Ask a server player to wait for the client response. Call is blocking until client replies or server times out, 
 	// whichever is earlier.
@@ -167,7 +167,7 @@ public:
 	// player->getClientReply(), use the default value directly. If the return value is true, the reply value should still be
 	// examined as a malicious client can have tampered with the content of the package for cheating purposes.
 	bool getResult(ServerPlayer* player, time_t timeOut);
-	ServerPlayer* getRaceResult(QList<ServerPlayer*> &players, BangProtocol::CommandType command, time_t timeOut,
+	ServerPlayer* getRaceResult(QList<ServerPlayer*> &players, BP::CommandType command, time_t timeOut,
 								ResponseVerifyFunction validateFunc = NULL, void* funcArg = NULL);
 
 	// Verification functions
@@ -175,7 +175,7 @@ public:
 
 	// Notification functions
 	bool notifyMoveFocus(ServerPlayer* player);
-	bool notifyMoveFocus(ServerPlayer* player, BangProtocol::CommandType command);
+	bool notifyMoveFocus(ServerPlayer* player, BP::CommandType command);
 	// Notify client side to move cards from one place to another place. A movement should always be completed by
 	// calling notifyMoveCards in pairs, one with isLostPhase equaling true followed by one with isLostPhase
 	// equaling false. The tow phase design is needed because the target player doesn't necessarily gets the 
@@ -272,11 +272,11 @@ public:
 	void speakCommand(ServerPlayer *player, const QJsonValue &content);
 	void trustCommand(ServerPlayer *player, const QString &arg);
 	void kickCommand(ServerPlayer *player, const QString &arg);
-	void processResponse(ServerPlayer *player, const BangProtocol::Packet* arg);
+	void processResponse(ServerPlayer *player, const BP::Packet* arg);
 	void addRobotCommand(ServerPlayer *player, const QString &arg);
 	void fillRobotsCommand(ServerPlayer *player, const QString &arg);
 	void broadcastProperty(ServerPlayer *player, const char *property_name, const QString &value = QString());
-	void broadcastInvoke(const BangProtocol::AbstractPacket &packet, ServerPlayer *except = NULL);
+	void broadcastInvoke(const BP::AbstractPacket &packet, ServerPlayer *except = NULL);
 	void broadcastInvoke(const char *method, const QString &arg = ".", ServerPlayer *except = NULL);
 	void startTest(const QString &to_test);
 	void networkDelayTestCommand(ServerPlayer *player, const QString &);
@@ -338,9 +338,9 @@ private:
 
 	
 	QHash<QString, Callback> oldcallbacks; // Legacy protocol callbacks
-	QHash<BangProtocol::CommandType, CallBack> callbacks; // Stores the callbacks for client request. Do not use this
+	QHash<BP::CommandType, CallBack> callbacks; // Stores the callbacks for client request. Do not use this
 															// this map for anything else but S_CLIENT_REQUEST!!!!!
-	QHash<BangProtocol::CommandType, BangProtocol::CommandType> m_requestResponsePair; 
+	QHash<BP::CommandType, BP::CommandType> m_requestResponsePair; 
 		// Stores the expected client response for each server request, any unmatched client response will be discarded.
 
 	QTime _m_timeSinceLastSurrenderRequest; // Timer used to ensure that surrender polls are not initiated too frequently
@@ -379,7 +379,7 @@ private:
 
 	bool makeSurrender(ServerPlayer* player);
 	bool makeCheat(ServerPlayer* player);
-	void makeDamage(const QString& source, const QString& target, BangProtocol::CheatCategory nature, int point);
+	void makeDamage(const QString& source, const QString& target, BP::CheatCategory nature, int point);
 	void makeKilling(const QString& killer, const QString& victim);
 	void makeReviving(const QString &name);
 	void doScript(const QString &script);

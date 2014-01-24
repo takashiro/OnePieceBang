@@ -200,7 +200,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
 	connect(ClientInstance, SIGNAL(cards_got(const ClientPlayer*, QString, QString)), this, SLOT(chooseCard(const ClientPlayer*, QString, QString)));
 	connect(ClientInstance, SIGNAL(roles_got(QString, QStringList)), this, SLOT(chooseRole(QString, QStringList)));
 	connect(ClientInstance, SIGNAL(directions_got()), this, SLOT(chooseDirection()));
-	connect(ClientInstance, SIGNAL(orders_got(BangProtocol::Game3v3ChooseOrderCommand)), this, SLOT(chooseOrder(BangProtocol::Game3v3ChooseOrderCommand)));
+	connect(ClientInstance, SIGNAL(orders_got(BP::Game3v3ChooseOrderCommand)), this, SLOT(chooseOrder(BP::Game3v3ChooseOrderCommand)));
 	connect(ClientInstance, SIGNAL(kingdoms_got(QStringList)), this, SLOT(chooseKingdom(QStringList)));
 	connect(ClientInstance, SIGNAL(seats_arranged(QList<const ClientPlayer*>)), SLOT(arrangeSeats(QList<const ClientPlayer*>)));
 	connect(ClientInstance, SIGNAL(status_changed(Client::Status, Client::Status)), this, SLOT(updateStatus(Client::Status, Client::Status)));
@@ -211,7 +211,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
 	connect(ClientInstance, SIGNAL(player_revived(QString)), this, SLOT(revivePlayer(QString)));
 	connect(ClientInstance, SIGNAL(card_shown(QString,int)), this, SLOT(showCard(QString,int)));
 	connect(ClientInstance, SIGNAL(gongxin(QList<int>, bool)), this, SLOT(doGongxin(QList<int>, bool)));
-	connect(ClientInstance, SIGNAL(focus_moved(QString, BangProtocol::Countdown)), this, SLOT(moveFocus(QString, BangProtocol::Countdown)));
+	connect(ClientInstance, SIGNAL(focus_moved(QString, BP::Countdown)), this, SLOT(moveFocus(QString, BP::Countdown)));
 	connect(ClientInstance, SIGNAL(emotion_set(QString,QString)), this, SLOT(setEmotion(QString,QString)));
 	connect(ClientInstance, SIGNAL(skill_invoked(QString,QString)), this, SLOT(showSkillInvocation(QString,QString)));
 	connect(ClientInstance, SIGNAL(skill_acquired(const ClientPlayer*,QString)), this, SLOT(acquireSkill(const ClientPlayer*,QString)));
@@ -1116,12 +1116,12 @@ void RoomScene::chooseCard(const ClientPlayer *player, const QString &flags, con
 	m_choiceDialog = dialog;    
 }
 
-void RoomScene::chooseOrder(BangProtocol::Game3v3ChooseOrderCommand reason)
+void RoomScene::chooseOrder(BP::Game3v3ChooseOrderCommand reason)
 {
 	QDialog *dialog = new QDialog;
-	if (reason == BangProtocol::ChooseOrderSelect)
+	if (reason == BP::ChooseOrderSelect)
 		dialog->setWindowTitle(tr("The order who first choose general"));
-	else if (reason == BangProtocol::ChooseOrderTurn)
+	else if (reason == BP::ChooseOrderTurn)
 		dialog->setWindowTitle(tr("The order who first in turn"));
 
 	QLabel *prompt = new QLabel(tr("Please select the order"));
@@ -2704,11 +2704,11 @@ DamageMakerDialog::DamageMakerDialog(QWidget *parent)
 	RoomScene::FillPlayerNames(damage_target, false);
 
 	damage_nature = new QComboBox;
-	damage_nature->addItem(tr("Normal"), BangProtocol::NormalDamage);
-	damage_nature->addItem(tr("Thunder"), BangProtocol::ThunderDamage);
-	damage_nature->addItem(tr("Fire"), BangProtocol::FireDamage);
-	damage_nature->addItem(tr("HP recover"), BangProtocol::HpRecover);
-	damage_nature->addItem(tr("Lose HP"), BangProtocol::HpLose);
+	damage_nature->addItem(tr("Normal"), BP::NormalDamage);
+	damage_nature->addItem(tr("Thunder"), BP::ThunderDamage);
+	damage_nature->addItem(tr("Fire"), BP::FireDamage);
+	damage_nature->addItem(tr("HP recover"), BP::HpRecover);
+	damage_nature->addItem(tr("Lose HP"), BP::HpLose);
 
 	damage_point = new QSpinBox;
 	damage_point->setRange(1, 1000);
@@ -3272,7 +3272,7 @@ void RoomScene::freeze(){
 	main_window->setStatusBar(NULL);
 }
 
-void RoomScene::moveFocus(const QString &who, BangProtocol::Countdown countdown){
+void RoomScene::moveFocus(const QString &who, BP::Countdown countdown){
 	if (who == Self->objectName() && focused != NULL)
 	{
 		focused->hideProgressBar();

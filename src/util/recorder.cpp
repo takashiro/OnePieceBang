@@ -160,12 +160,12 @@ QString &Replayer::commandTranslation(QString &cmd){
 
 			commandProceed(cmd);
 
-			BangProtocol::CommandType commandEnum = m_commandMapping[command];
+			BP::CommandType commandEnum = m_commandMapping[command];
 			int packetTypeId;
-			if(m_packetTypeMapping[BangProtocol::ServerRequest].contains(commandEnum))
-				packetTypeId = static_cast<int>(BangProtocol::ServerRequest);
+			if(m_packetTypeMapping[BP::ServerRequest].contains(commandEnum))
+				packetTypeId = static_cast<int>(BP::ServerRequest);
 			else
-				packetTypeId = static_cast<int>(BangProtocol::ServerNotification);
+				packetTypeId = static_cast<int>(BP::ServerNotification);
 
 			cmd = QString("[%1,0,%2,%3,%4]").arg(QString::number(m_commandSeriesCounter++))
 					.arg(QString::number(packetTypeId))
@@ -194,68 +194,68 @@ void Replayer::initCommandPair(){
 	}
 
 	if(m_commandMapping.isEmpty()){
-		m_commandMapping["showCard"]            = BangProtocol::ShowCard;
-		m_commandMapping["moveFocus"]           = BangProtocol::MoveFocus;
-		m_commandMapping["skillInvoked"]        = BangProtocol::InvokeSkill;
-		m_commandMapping["doGongxin"]           = BangProtocol::InvokeGongxin;
-		m_commandMapping["askForGeneral"]       = BangProtocol::ChooseGeneral;
-		m_commandMapping["askForPlayerChosen"]  = BangProtocol::ChoosePlayer;
-		m_commandMapping["askForAssign"]        = BangProtocol::ChooseRole;
-		m_commandMapping["askForDirection"]     = BangProtocol::ChooseDirection;
-		m_commandMapping["askForExchange"]      = BangProtocol::ExchangeCard;
-		m_commandMapping["askForSingleWine"]   = BangProtocol::AskForWine;
-		m_commandMapping["doGuanxing"]          = BangProtocol::InvokeGuanxing;
-		m_commandMapping["askForYiji"]          = BangProtocol::InvokeYiji;
-		m_commandMapping["activate"]            = BangProtocol::PlayCard;
-		m_commandMapping["askForDiscard"]       = BangProtocol::DiscardCard;
-		m_commandMapping["askForSuit"]          = BangProtocol::ChooseSuit;
-		m_commandMapping["askForKingdom"]       = BangProtocol::ChooseKingdom;
-		m_commandMapping["askForCard"]          = BangProtocol::ResponseCard;
-		m_commandMapping["askForUseCard"]       = BangProtocol::UseCard;
-		m_commandMapping["askForChoice"]        = BangProtocol::MultipleChoice;
-		m_commandMapping["askForCardShow"]      = BangProtocol::ShowCard;
-		m_commandMapping["askForAG"]            = BangProtocol::AmazingGrace;
-		m_commandMapping["askForPindian"]       = BangProtocol::Pindian;
-		m_commandMapping["askForCardChosen"]    = BangProtocol::ChooseCard;
-		m_commandMapping["askForOrder"]         = BangProtocol::ChooseOrder;
-		m_commandMapping["askForRole"]          = BangProtocol::Choose3v3Role;
+		m_commandMapping["showCard"]            = BP::AskForCardShow;
+		m_commandMapping["moveFocus"]           = BP::MoveFocus;
+		m_commandMapping["skillInvoked"]        = BP::AskForSkillInvoke;
+		m_commandMapping["doGongxin"]           = BP::AskForGongxin;
+		m_commandMapping["askForGeneral"]       = BP::AskForGeneral;
+		m_commandMapping["askForPlayerChosen"]  = BP::AskForPlayerChosen;
+		m_commandMapping["askForAssign"]        = BP::AskForAssign;
+		m_commandMapping["askForDirection"]     = BP::AskForDirection;
+		m_commandMapping["askForExchange"]      = BP::AskForExchange;
+		m_commandMapping["askForSingleWine"]   = BP::AskForSingleWine;
+		m_commandMapping["doGuanxing"]          = BP::AskForGuanxing;
+		m_commandMapping["askForYiji"]          = BP::AskForYiji;
+		m_commandMapping["activate"]            = BP::Activate;
+		m_commandMapping["askForDiscard"]       = BP::AskForDiscard;
+		m_commandMapping["askForSuit"]          = BP::AskForSuit;
+		m_commandMapping["askForKingdom"]       = BP::AskForKingdom;
+		m_commandMapping["askForCard"]          = BP::AskForCard;
+		m_commandMapping["askForUseCard"]       = BP::AskForUseCard;
+		m_commandMapping["askForChoice"]        = BP::AskForChoice;
+		m_commandMapping["askForCardShow"]      = BP::AskForCardShow;
+		m_commandMapping["askForAG"]            = BP::AskForAG;
+		m_commandMapping["askForPindian"]       = BP::AskForPindian;
+		m_commandMapping["askForCardChosen"]    = BP::AskForCardChosen;
+		m_commandMapping["askForOrder"]         = BP::AskForOrder;
+		m_commandMapping["askForRole"]          = BP::AskForRole3v3;
 	}
 
 	if(m_packetTypeMapping.isEmpty()){
-		QList<BangProtocol::CommandType> commands;
+		QList<BP::CommandType> commands;
 
-		commands << BangProtocol::ChooseGeneral
-				 << BangProtocol::ChoosePlayer
-				<< BangProtocol::ChooseRole
-				<< BangProtocol::ChooseDirection
-				<< BangProtocol::ExchangeCard
-				<< BangProtocol::AskForWine
-				<< BangProtocol::InvokeGuanxing
-				<< BangProtocol::InvokeGongxin
-				<< BangProtocol::InvokeYiji
-				<< BangProtocol::PlayCard
-				<< BangProtocol::DiscardCard
-				<< BangProtocol::ChooseSuit
-				<< BangProtocol::ChooseKingdom
-				<< BangProtocol::ResponseCard
-				<< BangProtocol::UseCard
-				<< BangProtocol::InvokeSkill
-				<< BangProtocol::MultipleChoice
-				<< BangProtocol::Nullification
-				<< BangProtocol::ShowCard
-				<< BangProtocol::AmazingGrace
-				<< BangProtocol::Pindian
-				<< BangProtocol::ChooseCard
-				<< BangProtocol::ChooseOrder
-				<< BangProtocol::Choose3v3Role;
-		m_packetTypeMapping[BangProtocol::ServerNotification] = commands;
+		commands << BP::AskForGeneral
+				 << BP::AskForPlayerChosen
+				<< BP::AskForAssign
+				<< BP::AskForDirection
+				<< BP::AskForExchange
+				<< BP::AskForSingleWine
+				<< BP::AskForGuanxing
+				<< BP::AskForGongxin
+				<< BP::AskForYiji
+				<< BP::Activate
+				<< BP::AskForDiscard
+				<< BP::AskForSuit
+				<< BP::AskForKingdom
+				<< BP::AskForCard
+				<< BP::AskForUseCard
+				<< BP::AskForSkillInvoke
+				<< BP::AskForChoice
+				<< BP::AskForNullification
+				<< BP::AskForCardShow
+				<< BP::AskForAG
+				<< BP::AskForPindian
+				<< BP::AskForCardChosen
+				<< BP::AskForOrder
+				<< BP::AskForRole3v3;
+		m_packetTypeMapping[BP::ServerNotification] = commands;
 
 		commands.clear();
-		commands << BangProtocol::ShowCard
-				<< BangProtocol::MoveFocus
-				<< BangProtocol::InvokeSkill
-				<< BangProtocol::InvokeGongxin;
-		m_packetTypeMapping[BangProtocol::ServerRequest] = commands;
+		commands << BP::AskForCardShow
+				<< BP::MoveFocus
+				<< BP::AskForSkillInvoke
+				<< BP::AskForGongxin;
+		m_packetTypeMapping[BP::ServerRequest] = commands;
 	}
 }
 

@@ -23,7 +23,7 @@
 
 #include "pixmapanimation.h"
 
-using namespace BangProtocol;
+using namespace BP;
 
 const QRect Photo::S_CARD_MOVE_REGION(-50, Photo::S_NORMAL_PHOTO_HEIGHT / 2,
 										200, CardItem::S_NORMAL_CARD_HEIGHT);

@@ -963,7 +963,7 @@ Server::Server(QObject *parent)
 }
 
 void Server::broadcast(const QString &msg){
-	BangProtocol::Packet speak(BangProtocol::ServerNotification, BangProtocol::Speak);
+	BP::Packet speak(BP::ServerNotification, BP::Speak);
 	QJsonArray to_sent;
 	to_sent.append(QString("."));
 	to_sent.append(msg);
@@ -1006,11 +1006,11 @@ void Server::processNewConnection(ClientSocket *socket){
 
 	connect(socket, SIGNAL(disconnected()), this, SLOT(cleanup()));
 
-	BangProtocol::Packet check_version(BangProtocol::ServerNotification, BangProtocol::CheckVersion);
+	BP::Packet check_version(BP::ServerNotification, BP::CheckVersion);
 	check_version.setMessageBody(Bang->getVersion());
 	socket->send(check_version);
 
-	BangProtocol::Packet setup(BangProtocol::ServerNotification, BangProtocol::Setup);
+	BP::Packet setup(BP::ServerNotification, BP::Setup);
 	setup.setMessageBody(Bang->getSetupString());
 	socket->send(setup);
 
@@ -1023,13 +1023,13 @@ void Server::processRequest(char *request){
 	ClientSocket *socket = qobject_cast<ClientSocket *>(sender());
 	socket->disconnect(this, SLOT(processRequest(char*)));
 
-	BangProtocol::Packet packet;
+	BP::Packet packet;
 	if(!packet.parse(request)){
 		return;
 	}
 
-	BangProtocol::CommandType command = packet.getCommandType();
-	if(command != BangProtocol::SignUp && command != BangProtocol::SignUpR){
+	BP::CommandType command = packet.getCommandType();
+	if(command != BP::SignUp && command != BP::SignUpR){
 		return;
 	}
 
@@ -1061,7 +1061,7 @@ void Server::processRequest(char *request){
 		}
 	}
 
-	if(command == BangProtocol::SignUpR){
+	if(command == BP::SignUpR){
 		foreach(QString objname, name2objname.values(screen_name)){
 			ServerPlayer *player = players.value(objname);
 			if(player && player->getState() == "offline"){

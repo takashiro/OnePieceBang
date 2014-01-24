@@ -12,7 +12,7 @@ struct ServerInfoStruct{
 	//Get the timeout allowance for a command. Server countdown is more lenient than the client.
 	//@param command: type of command
 	//@return countdown for command in milliseconds.
-	time_t getCommandTimeout(BangProtocol::CommandType command, BangProtocol::ProcessInstanceType instance);
+	time_t getCommandTimeout(BP::CommandType command, BP::ProcessInstanceType instance);
 	
 	QString Name;
 	QString GameMode;

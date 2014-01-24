@@ -31,7 +31,7 @@ public:
 	
 	//Progress bar functions
 	void hideProgressBar();
-	void showProgressBar(BangProtocol::Countdown countdown);
+	void showProgressBar(BP::Countdown countdown);
 
 	void setTrust(bool trust);    
 	void setPlayer(const ClientPlayer *player);

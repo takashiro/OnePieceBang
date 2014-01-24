@@ -31,7 +31,7 @@ public:
 	void installDelayedTrick(CardItem *trick);    
 	void hideAvatar();
 	void showCard(int card_id);
-	void showProgressBar(BangProtocol::Countdown countdown);
+	void showProgressBar(BP::Countdown countdown);
 	void hideProgressBar();
 	void setEmotion(const QString &emotion, bool permanent = false);
 	void tremble();

@@ -34,7 +34,7 @@ public:
 	virtual void connectToHost();
 	virtual void disconnectFromHost();
 	virtual void send(const QByteArray &raw_message);
-	virtual void send(const BangProtocol::Packet &packet);
+	virtual void send(const BP::Packet &packet);
 	virtual bool isConnected() const;
 	virtual QString peerName() const;
 	virtual QString peerAddress() const;

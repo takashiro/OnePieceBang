@@ -56,9 +56,9 @@ public:
 	void requestSurrender();
 
 	void disconnectFromHost();
-	void replyToServer(BangProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
-	void requestToServer(BangProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
-	void notifyServer(BangProtocol::CommandType command, const QJsonValue &arg = QJsonValue());
+	void replyToServer(BP::CommandType command, const QJsonValue &arg = QJsonValue());
+	void requestToServer(BP::CommandType command, const QJsonValue &arg = QJsonValue());
+	void notifyServer(BP::CommandType command, const QJsonValue &arg = QJsonValue());
 	void request(const QString &raw_message);
 	void onPlayerUseCard(const Card *card, const QList<const Player *> &targets = QList<const Player *>());
 	void setStatus(Status status);
@@ -177,15 +177,15 @@ public:
 	void attachSkill(const QString &skill_name);
 	void detachSkill(const QString &skill_name);
 	
-	inline void setCountdown(BangProtocol::Countdown countdown) {
+	inline void setCountdown(BP::Countdown countdown) {
 		countdown_mutex.lock();
 		this->countdown = countdown;
 		countdown_mutex.unlock();
 	}
 
-	inline BangProtocol::Countdown getCountdown(){
+	inline BP::Countdown getCountdown(){
 		countdown_mutex.lock();
-		BangProtocol::Countdown countdown = countdown;
+		BP::Countdown countdown = countdown;
 		countdown_mutex.unlock();
 		return countdown;
 	}
@@ -215,7 +215,7 @@ public slots:
 
 protected:
 	// operation countdown
-	BangProtocol::Countdown countdown;
+	BP::Countdown countdown;
 	// sync objects    
 	QMutex countdown_mutex;
 
@@ -225,8 +225,8 @@ private:
 	Status status;
 	int alive_count;
 	QHash<QString, Callback> oldcallbacks;
-	QHash<BangProtocol::CommandType, CallBack> interactions;
-	QHash<BangProtocol::CommandType, CallBack> callbacks;
+	QHash<BP::CommandType, CallBack> interactions;
+	QHash<BP::CommandType, CallBack> callbacks;
 	QList<const ClientPlayer *> players;
 	bool m_isUseCard;
 	QStringList ban_packages;
@@ -252,7 +252,7 @@ private:
 private slots:
 	void processServerPacket(const QString &cmd);
 	void processServerPacket(char *cmd);
-	bool processServerRequest(const BangProtocol::Packet &packet);
+	bool processServerRequest(const BP::Packet &packet);
 	void processReply(char *reply);
 	void notifyRoleChange(const QString &new_role);
 	void onPlayerChooseSuit();
@@ -275,7 +275,7 @@ signals:
 	void cards_got(const ClientPlayer *player, const QString &flags, const QString &reason);
 	void roles_got(const QString &scheme, const QStringList &roles);
 	void directions_got();    
-	void orders_got(BangProtocol::Game3v3ChooseOrderCommand reason);
+	void orders_got(BP::Game3v3ChooseOrderCommand reason);
 	
 	void seats_arranged(const QList<const ClientPlayer*> &seats);
 	void hp_changed(const QString &who, int delta, DamageStruct::Nature nature, bool losthp);
@@ -288,7 +288,7 @@ signals:
 	void log_received(const QString &log_str);
 	void guanxing(const QList<int> &card_ids, bool up_only);
 	void gongxin(const QList<int> &card_ids, bool enable_heart);
-	void focus_moved(const QString &focus, BangProtocol::Countdown countdown);
+	void focus_moved(const QString &focus, BP::Countdown countdown);
 	void emotion_set(const QString &target, const QString &emotion);
 	void skill_invoked(const QString &who, const QString &skill_name);
 	void skill_acquired(const ClientPlayer *player, const QString &skill_name);

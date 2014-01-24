@@ -102,7 +102,7 @@ void NativeClientSocket::send(const QByteArray &raw_message){
 	socket->write("\n");
 }
 
-void NativeClientSocket::send(const BangProtocol::Packet &packet){
+void NativeClientSocket::send(const BP::Packet &packet){
 	socket->write(packet.toUtf8());
 	socket->write("\n");
 }

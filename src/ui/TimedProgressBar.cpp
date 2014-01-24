@@ -40,7 +40,7 @@ void TimedProgressBar::timerEvent(QTimerEvent* timerEvent)
 	this->setValue(m_val);
 }
 
-using namespace BangProtocol;
+using namespace BP;
 
 QSanCommandProgressBar::QSanCommandProgressBar()
 {

@@ -514,7 +514,7 @@ void Dashboard::hideProgressBar()
 	m_progressBar.hide();
 }
 
-void Dashboard::showProgressBar(BangProtocol::Countdown countdown)
+void Dashboard::showProgressBar(BP::Countdown countdown)
 {
 	m_progressBar.setCountdown(countdown);
 	m_progressBar.show();

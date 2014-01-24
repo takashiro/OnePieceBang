@@ -1,6 +1,6 @@
 #include "jsonutils.h"
 
-QJsonArray BangProtocol::toJsonArray(const QString& s1, const QString& s2)
+QJsonArray BP::toJsonArray(const QString& s1, const QString& s2)
 {
 	QJsonArray val;
 	val.append(s1);
@@ -8,7 +8,7 @@ QJsonArray BangProtocol::toJsonArray(const QString& s1, const QString& s2)
 	return val;
 }
 
-QJsonArray BangProtocol::toJsonArray(const QString& s1, const QString& s2, const QString& s3)
+QJsonArray BP::toJsonArray(const QString& s1, const QString& s2, const QString& s3)
 {
 	QJsonArray val;
 	val.append(s1);
@@ -17,7 +17,7 @@ QJsonArray BangProtocol::toJsonArray(const QString& s1, const QString& s2, const
 	return val;
 }
 
-QJsonArray BangProtocol::toJsonArray(const QString& s1, const QJsonValue& s2)
+QJsonArray BP::toJsonArray(const QString& s1, const QJsonValue& s2)
 {
 	QJsonArray val;
 	val.append(s1);
@@ -25,7 +25,7 @@ QJsonArray BangProtocol::toJsonArray(const QString& s1, const QJsonValue& s2)
 	return val;
 }
 
-QJsonArray BangProtocol::toJsonArray(const QList<int>& arg)
+QJsonArray BP::toJsonArray(const QList<int>& arg)
 {
 	QJsonArray val;
 	foreach(int i, arg)
@@ -33,7 +33,7 @@ QJsonArray BangProtocol::toJsonArray(const QList<int>& arg)
 	return val;
 }
 
-bool BangProtocol::tryParse(const QJsonValue& argdata, QList<int>& result)
+bool BP::tryParse(const QJsonValue& argdata, QList<int>& result)
 {
 	if (!argdata.isArray()) return false;
 	QJsonArray arg = argdata.toArray();
@@ -48,7 +48,7 @@ bool BangProtocol::tryParse(const QJsonValue& argdata, QList<int>& result)
 	return true;
 }
 
-QJsonArray BangProtocol::toJsonArray(const QList<QString>& arg)
+QJsonArray BP::toJsonArray(const QList<QString>& arg)
 {
 	QJsonArray val;
 	foreach(QString s, arg)
@@ -56,7 +56,7 @@ QJsonArray BangProtocol::toJsonArray(const QList<QString>& arg)
 	return val;
 }
 
-QJsonArray BangProtocol::toJsonArray(const QStringList& arg)
+QJsonArray BP::toJsonArray(const QStringList& arg)
 {
 	QJsonArray val;
 	foreach(QString s, arg)
@@ -64,7 +64,7 @@ QJsonArray BangProtocol::toJsonArray(const QStringList& arg)
 	return val;
 }
 
-bool BangProtocol::tryParse(const QJsonValue& argdata, QStringList& result)
+bool BP::tryParse(const QJsonValue& argdata, QStringList& result)
 {
 	if (!argdata.isArray()) return false;
 	QJsonArray arg = argdata.toArray();
