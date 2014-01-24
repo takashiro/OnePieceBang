@@ -70,7 +70,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::SetScreenName] = &Client::setScreenName;
 	callbacks[BP::SetFixedDistance] = &Client::setFixedDistance;
 	callbacks[BP::Rransfigure] = &Client::transfigure;
-	oldcallbacks["jilei"] = &Client::jilei;
+	//callbacks[BP::Jilei] = &Client::jilei;
 	oldcallbacks["cardLock"] = &Client::cardLock;
 	oldcallbacks["pile"] = &Client::pile;
 
@@ -665,8 +665,8 @@ Client::Status Client::getStatus() const{
 	return status;
 }
 
-void Client::jilei(const QString &jilei_str){
-	Self->jilei(jilei_str);
+void Client::jilei(const QJsonValue &jilei_str){
+	Self->jilei(jilei_str.toString());
 }
 
 void Client::cardLock(const QString &card_str){
