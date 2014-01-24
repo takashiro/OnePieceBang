@@ -216,7 +216,7 @@ void Room::revivePlayer(ServerPlayer *player){
 		broadcastProperty(m_alivePlayers.at(i), "seat");
 	}
 
-	broadcastInvoke("revivePlayer", player->objectName());
+	doBroadcastNotify(BP::RevivePlayer, player->objectName());
 	updateStateItem();
 }
 

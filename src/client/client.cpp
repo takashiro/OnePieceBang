@@ -51,7 +51,7 @@ Client::Client(QObject *parent, const QString &filename)
 
 	callbacks[BP::HpChange] = &Client::hpChange;
 	callbacks[BP::killPlayer] = &Client::killPlayer;
-	oldcallbacks["revivePlayer"] = &Client::revivePlayer;
+	callbacks[BP::revivePlayer] = &Client::revivePlayer;
 	callbacks[BP::AskForCardShow] = &Client::showCard;
 	oldcallbacks["setMark"] = &Client::setMark;
 	oldcallbacks["doFilter"] = &Client::doFilter;
@@ -1197,10 +1197,10 @@ void Client::killPlayer(const QJsonValue &player_name){
 	emit player_killed(victim_name);
 }
 
-void Client::revivePlayer(const QString &player_name){
-	alive_count ++;
+void Client::revivePlayer(const QJsonValue &player_name){
+	alive_count++;
 
-	emit player_revived(player_name);
+	emit player_revived(player_name.toString());
 }
 
 
