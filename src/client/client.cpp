@@ -58,7 +58,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::Log] = &Client::log;
 	callbacks[BP::Speak] = &Client::speak;
 	callbacks[BP::AcquireSkill] = &Client::acquireSkill;
-	oldcallbacks["attachSkill"] = &Client::attachSkill;
+	callbacks[BP::AttachSkill] = &Client::attachSkill;
 	oldcallbacks["detachSkill"] = &Client::detachSkill;
 	callbacks[BP::MoveFocus] = &Client::moveFocus;
 	oldcallbacks["setEmotion"] = &Client::setEmotion;
@@ -1455,9 +1455,10 @@ void Client::showCard(const QJsonValue &data){
 	emit card_shown(player_name, card_id);
 }
 
-void Client::attachSkill(const QString &skill_name){
-	Self->acquireSkill(skill_name);
-	emit skill_attached(skill_name, true);
+void Client::attachSkill(const QJsonValue &skill_name){
+	QString name = skill_name.toString();
+	Self->acquireSkill(name);
+	emit skill_attached(name, true);
 }
 
 void Client::detachSkill(const QString &detach_str){

@@ -495,7 +495,7 @@ void Room::slashResult(const SlashEffectStruct &effect, const Card *jink){
 
 void Room::attachSkillToPlayer(ServerPlayer *player, const QString &skill_name){
 	player->acquireSkill(skill_name);
-	player->invoke("attachSkill", skill_name);
+	player->notify(BP::AttachSkill, skill_name);
 }
 
 void Room::detachSkillFromPlayer(ServerPlayer *player, const QString &skill_name){

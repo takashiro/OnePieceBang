@@ -174,7 +174,7 @@ public:
 	void recoverGeneral(const QString &);
 	void revealGeneral(const QString &);
 
-	void attachSkill(const QString &skill_name);
+	void attachSkill(const QJsonValue &skill_name);
 	void detachSkill(const QString &skill_name);
 	
 	inline void setCountdown(BP::Countdown countdown) {
