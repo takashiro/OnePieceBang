@@ -909,7 +909,7 @@ void BasaraMode::showGeneral(ServerPlayer *player, QString general_name) const
 				room->setPlayerMark(player, skill_mark[skill_name], 1);
 		}
 	}else{
-		player->notify(BP::Transfigure, player->getGeneral2Name(), general_name);
+		player->notify(BP::Transfigure, BP::toJsonArray(player->getGeneral2Name(), general_name));
 		room->setPlayerProperty(player,"general2",general_name);
 	}
 
@@ -943,9 +943,8 @@ bool BasaraMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &dat
 		{
 			if(Config.EnableHegemony)
 				room->setTag("SkipNormalDeathProcess", true);
-			foreach(ServerPlayer* sp, room->getAlivePlayers())
-			{
-				sp->notify(BP::Transfigure, BP::toJsonArray(sp->getGeneralName(), "anjiang"));
+			foreach(ServerPlayer* sp, room->getAlivePlayers()){
+				sp->notify(BP::Transfigure, BP::toJsonArray(sp->getGeneralName(), QString("anjiang")));
 				room->setPlayerProperty(sp,"general","anjiang");
 				room->setPlayerProperty(sp,"kingdom","god");
 
@@ -954,7 +953,7 @@ bool BasaraMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &dat
 				log.arg = room->getTag(sp->objectName()).toStringList().at(0);
 
 				if(Config.Enable2ndGeneral){
-					sp->notify(BP::Transfigure, BP::toJsonArray(sp->getGeneral2Name(), "anjiang"));
+					sp->notify(BP::Transfigure, BP::toJsonArray(sp->getGeneral2Name(), QString("anjiang")));
 					room->setPlayerProperty(sp,"general2","anjiang");
 
 					log.arg2 = room->getTag(sp->objectName()).toStringList().at(1);

@@ -1201,7 +1201,7 @@ void Room::setPlayerCardLock(ServerPlayer *player, const QString &name){
 
 void Room::clearPlayerCardLock(ServerPlayer *player){
 	player->setCardLocked(".");
-	player->notify(BP::CardLock, ".");
+	player->notify(BP::CardLock, QString("."));
 }
 
 void Room::setPlayerStatistics(ServerPlayer *player, const QString &property_name, const QVariant &value){
