@@ -115,7 +115,7 @@ public:
 	void setMark(const QJsonValue &mark_str);
 	void doFilter(const QJsonValue &);
 	void showCard(const QJsonValue &data);
-	void log(const QString &log_str);
+	void log(const QJsonValue &log_str);
 	void speak(const QJsonValue &speak_data);
 	void addHistory(const QString &card);
 	void moveFocus(const QJsonValue &focus);

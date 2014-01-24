@@ -55,7 +55,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::AskForCardShow] = &Client::showCard;
 	callbacks[BP::SetMark] = &Client::setMark;
 	callbacks[BP::DoFilter] = &Client::doFilter;//deprecated?
-	oldcallbacks["log"] = &Client::log;
+	callbacks[BP::Log] = &Client::log;
 	callbacks[BP::Speak] = &Client::speak;
 	oldcallbacks["acquireSkill"] = &Client::acquireSkill;
 	oldcallbacks["attachSkill"] = &Client::attachSkill;
@@ -1609,8 +1609,8 @@ void Client::onPlayerReplyGuanxing(const QList<int> &up_cards, const QList<int> 
 	setStatus(NotActive);
 }
 
-void Client::log(const QString &log_str){
-	emit log_received(log_str);
+void Client::log(const QJsonValue &log_str){
+	emit log_received(log_str.toString());
 }
 
 void Client::speak(const QJsonValue &speak_data){

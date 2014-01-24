@@ -3815,7 +3815,7 @@ void Room::sendLog(const LogMessage &log){
 	if(log.type.isEmpty())
 		return;
 
-	broadcastInvoke("log", log.toString());
+	doBroadcastNotify(BP::Log, log.toString());
 }
 
 void Room::sendLog(const QString type, ServerPlayer *from, const QString &arg){
