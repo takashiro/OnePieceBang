@@ -195,15 +195,18 @@ void Client::signup(){
 	if(replayer)
 		replayer->start();
 	else{
-		QString base64 = Config.UserName.toUtf8().toBase64();
-		QString command = Config.value("EnableReconnection", false).toBool() ? "signupr" : "signup";
-		QString signup_str = QString("%1 %2:%3").arg(command).arg(base64).arg(Config.UserAvatar);
+		BangProtocol::CommandType command = Config.value("EnableReconnection", false).toBool() ? BangProtocol::SignUpR : BangProtocol::SignUp;
+
+		QJsonArray signup_arr;
+		signup_arr.append(Config.UserName);
+		signup_arr.append(Config.UserAvatar);
 		QString password = Config.Password;
 		if(!password.isEmpty()){
 			password = QCryptographicHash::hash(password.toLatin1(), QCryptographicHash::Md5).toHex();
-			signup_str.append(":" + password);
+			signup_arr.append(password);
 		}
-		request(signup_str);
+
+		notifyServer(command, signup_arr);
 	}
 }
 

@@ -1028,21 +1028,29 @@ void Server::processRequest(char *request){
 	ClientSocket *socket = qobject_cast<ClientSocket *>(sender());
 	socket->disconnect(this, SLOT(processRequest(char*)));
 
-	QRegExp rx("(signupr?) (.+):(.+)(:.+)?\n");
-	if(!rx.exactMatch(request)){
+	BangProtocol::Packet packet;
+	if(!packet.parse(request)){
+		return;
+	}
+
+	BangProtocol::CommandType command = packet.getCommandType();
+	if(command != BangProtocol::SignUp && command != BangProtocol::SignUpR){
+		return;
+	}
+
+	QJsonArray signup = packet.getMessageBody().toArray();
+	if(signup.size() < 2 || signup.size() > 3){
 		emit server_message(tr("Invalid signup string: %1").arg(request));
 		socket->send("warn INVALID_FORMAT");
 		socket->disconnectFromHost();
 		return;
 	}
 
-	QStringList texts = rx.capturedTexts();
-	QString command = texts.at(1);
-	QString screen_name = ConvertFromBase64(texts.at(2));
-	QString avatar = texts.at(3);
+	QString screen_name = signup.at(0).toString();
+	QString avatar = signup.at(1).toString();
 
 	if(Config.ContestMode){
-		QString password = texts.value(4);
+		QString password = signup.at(2).toString();
 		if(password.isEmpty()){
 			socket->send("warn REQUIRE_PASSWORD");
 			socket->disconnectFromHost();
@@ -1058,7 +1066,7 @@ void Server::processRequest(char *request){
 		}
 	}
 
-	if(command == "signupr"){
+	if(command == BangProtocol::SignUpR){
 		foreach(QString objname, name2objname.values(screen_name)){
 			ServerPlayer *player = players.value(objname);
 			if(player && player->getState() == "offline"){

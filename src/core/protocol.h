@@ -85,7 +85,9 @@ namespace BangProtocol{
 		Setup,
 		Speak,
 		AddPlayer,
-		SetScreenName
+		SetScreenName,
+		SignUpR,
+		SignUp
 	};
 
 	enum Game3v3ChooseOrderCommand
