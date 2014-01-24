@@ -377,7 +377,7 @@ QString Engine::getSetupString() const{
 	else if(Config.MaxHpScheme == 2)
 		flags.append("2");
 
-	QString server_name = Config.ServerName.toUtf8().toBase64();
+	QString server_name = Config.ServerName;
 	QStringList setup_items;
 	setup_items << server_name
 			<< Config.GameMode

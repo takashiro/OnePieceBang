@@ -44,7 +44,7 @@ bool ServerInfoStruct::parse(const QString &str){
 	QStringList texts = rx.capturedTexts();
 
 	QString server_name = texts.at(1);
-	Name = QString::fromUtf8(QByteArray::fromBase64(server_name.toLatin1()));
+	Name = server_name;
 
 	GameMode = texts.at(2);
 	OperationTimeout = texts.at(3).toInt();
