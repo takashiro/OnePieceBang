@@ -100,7 +100,7 @@ public:
 	void arrangeSeats(const QJsonValue &seats_data);
 	void activate(const QJsonValue &playerId);
 	void startGame(const QJsonValue &);
-	void hpChange(const QString &change_str);
+	void hpChange(const QJsonValue &change_str);
 	void playSkillEffect(const QString &play_str);
 	void playCardEffect(const QString &play_str);
 	void playAudio(const QString &name);

@@ -241,7 +241,11 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 
 		int new_hp = qMin(player->getHp() + recover, player->getMaxHp());
 		room->setPlayerProperty(player, "hp", new_hp);
-		room->broadcastInvoke("hpChange", QString("%1:%2").arg(player->objectName()).arg(recover));
+
+		QJsonArray arg;
+		arg.append(player->objectName());
+		arg.append(recover);
+		room->doBroadcastNotify(BP::HpChange, arg);
 
 		break;
 	}
@@ -256,8 +260,12 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 		room->sendLog(log);
 
 		room->setPlayerProperty(player, "hp", player->getHp() - lose);
-		QString str = QString("%1:%2L").arg(player->objectName()).arg(-lose);
-		room->broadcastInvoke("hpChange", str);
+
+		QJsonArray arg;
+		arg.append(player->objectName());
+		arg.append(-lose);
+		arg.append(QString("L"));
+		room->doBroadcastNotify(BP::HpChange, arg);
 
 		if(player->getHp() <= 0)
 			room->enterDying(player, NULL);

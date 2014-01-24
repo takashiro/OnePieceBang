@@ -49,7 +49,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::StartGame] = &Client::startGame;
 	callbacks[BP::GameOver] = &Client::gameOver;
 
-	oldcallbacks["hpChange"] = &Client::hpChange;
+	callbacks[BP::HpChange] = &Client::hpChange;
 	oldcallbacks["killPlayer"] = &Client::killPlayer;
 	oldcallbacks["revivePlayer"] = &Client::revivePlayer;
 	callbacks[BP::AskForCardShow] = &Client::showCard;
@@ -635,16 +635,15 @@ void Client::startGame(const QJsonValue &){
 	emit game_started();
 }
 
-void Client::hpChange(const QString &change_str){
-	QRegExp rx("(.+):(-?\\d+)([FTL]*)");
-
-	if(!rx.exactMatch(change_str))
+void Client::hpChange(const QJsonValue &change_str){
+	QJsonArray texts = change_str.toArray();
+	if(texts.size() < 2 || texts.size() > 3){
 		return;
+	}
 
-	QStringList texts = rx.capturedTexts();
-	QString who = texts.at(1);
-	int delta = texts.at(2).toInt();
-	QString nature_str = texts.at(3);
+	QString who = texts.at(0).toString();
+	int delta = (int) texts.at(1).toDouble();
+	QString nature_str = texts.at(2).toString();
 
 	DamageStruct::Nature nature;
 	if(nature_str == "F")

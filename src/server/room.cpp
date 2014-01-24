@@ -2428,16 +2428,18 @@ void Room::loseMaxHp(ServerPlayer *victim, int lose){
 
 void Room::applyDamage(ServerPlayer *victim, const DamageStruct &damage){
 	int new_hp = victim->getHp() - damage.damage;
-
 	setPlayerProperty(victim, "hp", new_hp);
-	QString change_str = QString("%1:%2").arg(victim->objectName()).arg(-damage.damage);
+
+	QJsonArray change_arr;
+	change_arr.append(victim->objectName());
+	change_arr.append(-damage.damage);
 	switch(damage.nature){
-	case DamageStruct::Fire: change_str.append("F"); break;
-	case DamageStruct::Thunder: change_str.append("T"); break;
+	case DamageStruct::Fire: change_arr.append(QString("F")); break;
+	case DamageStruct::Thunder: change_arr.append(QString("T")); break;
 	default: break;
 	}
 
-	broadcastInvoke("hpChange", change_str);
+	doBroadcastNotify(BP::HpChange, change_arr);
 }
 
 void Room::recover(const RecoverStruct &recover, bool set_emotion){
