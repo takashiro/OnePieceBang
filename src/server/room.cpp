@@ -1432,9 +1432,13 @@ lua_State *Room::getLuaState() const{
 void Room::setFixedDistance(Player *from, const Player *to, int distance){
 	QString a = from->objectName();
 	QString b = to->objectName();
-	QString set_str = QString("%1~%2=%3").arg(a).arg(b).arg(distance);
 	from->setFixedDistance(to, distance);
-	broadcastInvoke("setFixedDistance", set_str);
+
+	QJsonArray set_str;
+	set_str.append(a);
+	set_str.append(b);
+	set_str.append(distance);
+	doBroadcastNotify(BP::SetFixedDistance, set_str);
 }
 
 void Room::reverseFor3v3(const Card *card, ServerPlayer *player, QList<ServerPlayer *> &list){

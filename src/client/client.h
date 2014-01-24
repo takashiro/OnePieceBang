@@ -127,7 +127,7 @@ public:
 	void cardLock(const QString &card_str);
 	void judgeResult(const QJsonValue &result_str);
 	void setScreenName(const QJsonValue &set_str);
-	void setFixedDistance(const QString &set_str);
+	void setFixedDistance(const QJsonValue &set_str);
 	void pile(const QString &pile_str);
 	void transfigure(const QString &transfigure_tr);
 	void updateStateItem(const QString &state_str);

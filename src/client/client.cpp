@@ -68,7 +68,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::Animate] = &Client::animate;
 	callbacks[BP::JudgeResult] = &Client::judgeResult;
 	callbacks[BP::SetScreenName] = &Client::setScreenName;
-	oldcallbacks["setFixedDistance"] = &Client::setFixedDistance;
+	callbacks[BP::SetFixedDistance] = &Client::setFixedDistance;
 	oldcallbacks["transfigure"] = &Client::transfigure;
 	oldcallbacks["jilei"] = &Client::jilei;
 	oldcallbacks["cardLock"] = &Client::cardLock;
@@ -1712,15 +1712,11 @@ void Client::setScreenName(const QJsonValue &set_str){
 	player->setScreenName(screen_name);
 }
 
-void Client::setFixedDistance(const QString &set_str){
-	QRegExp rx("(\\w+)~(\\w+)=(-?\\d+)");
-	if(!rx.exactMatch(set_str))
-		return;
-
-	QStringList texts = rx.capturedTexts();
-	ClientPlayer *from = getPlayer(texts.at(1));
-	ClientPlayer *to = getPlayer(texts.at(2));
-	int distance = texts.at(3).toInt();
+void Client::setFixedDistance(const QJsonValue &set_str){
+	QJsonArray texts = set_str.toArray();
+	ClientPlayer *from = getPlayer(texts.at(0).toString());
+	ClientPlayer *to = getPlayer(texts.at(1).toString());
+	int distance = texts.at(2).toDouble();
 
 	if(from && to)
 		from->setFixedDistance(to, distance);
