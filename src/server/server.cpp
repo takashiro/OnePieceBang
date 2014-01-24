@@ -1019,11 +1019,6 @@ void Server::processNewConnection(ClientSocket *socket){
 	connect(socket, SIGNAL(message_got(char*)), this, SLOT(processRequest(char*)));
 }
 
-static inline QString ConvertFromBase64(const QString &base64){
-	QByteArray data = QByteArray::fromBase64(base64.toLatin1());
-	return QString::fromUtf8(data);
-}
-
 void Server::processRequest(char *request){
 	ClientSocket *socket = qobject_cast<ClientSocket *>(sender());
 	socket->disconnect(this, SLOT(processRequest(char*)));

@@ -2655,9 +2655,7 @@ void ScriptExecutor::doScript(){
 		return;
 
 	QString script = box->toPlainText();
-	QByteArray data = script.toLatin1();
-	data = qCompress(data);
-	script = data.toBase64();
+	script = QString::fromLatin1(qCompress(script.toUtf8()));
 
 	ClientInstance->requestCheatRunScript(script);
 }

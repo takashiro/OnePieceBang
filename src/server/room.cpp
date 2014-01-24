@@ -3657,7 +3657,7 @@ void Room::kickCommand(ServerPlayer *player, const QString &arg){
 	to_kick->kick();
 }
 
-bool Room::makeCheat(ServerPlayer* player){
+bool Room::makeCheat(ServerPlayer *player){
 	QJsonArray arg = player->m_cheatArgs.toArray();
 	if (arg.isEmpty() || !arg[0].isDouble()) return false;
 	QJsonArray arg1 = arg[1].toArray();
@@ -3675,9 +3675,9 @@ bool Room::makeCheat(ServerPlayer* player){
 		makeReviving(arg[1].toString());
 	}else if (code == BangProtocol::RunScript){
 		if (!arg[1].isString()) return false;
-		QByteArray data = QByteArray::fromBase64(arg[1].toString().toLatin1());
+		QByteArray data = arg[1].toString().toLatin1();
 		data = qUncompress(data);
-		doScript(data);
+		doScript(QString::fromUtf8(data));
 	}else if(code == BangProtocol::GetOneCard){
 		if (!arg[1].isDouble()) return false;
 		int card_id = arg[1].toDouble();

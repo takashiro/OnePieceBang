@@ -508,8 +508,7 @@ void Client::onPlayerChooseGeneral(const QString &item_name){
 
 }
 
-void Client::requestCheatRunScript(const QString& script)
-{
+void Client::requestCheatRunScript(const QString &script){
 	QJsonArray cheatReq;
 	cheatReq.append((int) BangProtocol::RunScript);
 	cheatReq.append(script);
