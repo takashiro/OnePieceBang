@@ -81,10 +81,6 @@ Client::Client(QObject *parent, const QString &filename)
 	oldcallbacks["playCardEffect"] = &Client::playCardEffect;
 	oldcallbacks["playAudio"] = &Client::playAudio;
 
-	// callbacks["moveNCards"] = &Client::moveNCards;
-	// callbacks["moveCard"] = &Client::moveCard;
-	// callbacks["drawNCards"] = &Client::drawNCards;
-	// callbacks["drawCards"] = &Client::drawCards;    
 	callbacks[BP::GetCard] = &Client::getCards;
 	callbacks[BP::LoseCard] = &Client::loseCards;
 	oldcallbacks["clearPile"] = &Client::resetPiles;
@@ -489,17 +485,17 @@ void Client::onPlayerChooseGeneral(const QString &item_name){
 
 void Client::requestCheatRunScript(const QString &script){
 	QJsonArray cheatReq;
-	cheatReq.append((int) BP::RunScript);
+	cheatReq.append((int) BP::Cheat::RunScript);
 	cheatReq.append(script);
-	requestToServer(BP::Cheat, cheatReq);
+	requestToServer(BP::RequestCheat, cheatReq);
 }
 
 void Client::requestCheatRevive(const QString& name)
 {
 	QJsonArray cheatReq;
-	cheatReq.append((int) BP::RevivePlayer);
+	cheatReq.append((int) BP::Cheat::RevivePlayer);
 	cheatReq.append(name);
-	requestToServer(BP::Cheat, cheatReq);
+	requestToServer(BP::RequestCheat, cheatReq);
 }
 
 void Client::requestCheatDamage(const QString& source, const QString& target, DamageStruct::Nature nature, int points)
@@ -510,31 +506,31 @@ void Client::requestCheatDamage(const QString& source, const QString& target, Da
 	cheatArg.append((int)nature);
 	cheatArg.append(points);
 
-	cheatReq.append((int) BP::MakeDamage);
+	cheatReq.append((int) BP::Cheat::Damage);
 	cheatReq.append(cheatArg);
-	requestToServer(BP::Cheat, cheatReq);
+	requestToServer(BP::RequestCheat, cheatReq);
 }
 
 void Client::requestCheatKill(const QString& killer, const QString& victim)
 {
 	QJsonArray cheatArg;
-	cheatArg.append((int) BP::KillPlayer);
+	cheatArg.append((int) BP::Cheat::KillPlayer);
 	cheatArg.append(BP::toJsonArray(killer, victim));
-	requestToServer(BP::Cheat, cheatArg);
+	requestToServer(BP::RequestCheat, cheatArg);
 }
 
 void Client::requestCheatGetOneCard(int card_id){
 	QJsonArray cheatArg;
-	cheatArg.append((int) BP::GetOneCard);
+	cheatArg.append((int) BP::Cheat::GetOneCard);
 	cheatArg.append(card_id);
-	requestToServer(BP::Cheat, cheatArg);
+	requestToServer(BP::RequestCheat, cheatArg);
 }
 
 void Client::requestCheatChangeGeneral(QString name){
 	QJsonArray cheatArg;
-	cheatArg.append((int) BP::ChangeGeneral);
+	cheatArg.append((int) BP::Cheat::ChangeGeneral);
 	cheatArg.append(name);
-	requestToServer(BP::Cheat, cheatArg);
+	requestToServer(BP::RequestCheat, cheatArg);
 }
 
 void Client::addRobot(){

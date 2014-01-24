@@ -49,7 +49,7 @@ Room::Room(QObject *parent, const QString &mode)
 
 	// client request handlers
 	callbacks[BP::AskForSurrender] = &Room::processRequestSurrender;
-	callbacks[BP::Cheat] = &Room::processRequestCheat;
+	callbacks[BP::RequestCheat] = &Room::processRequestCheat;
 
 	// init callback table
 	oldcallbacks["arrangeCommand"] = &Room::arrangeCommand;
@@ -3660,24 +3660,24 @@ bool Room::makeCheat(ServerPlayer *player){
 	QJsonArray arg = player->m_cheatArgs.toArray();
 	if (arg.isEmpty() || !arg[0].isDouble()) return false;
 	QJsonArray arg1 = arg[1].toArray();
-	BP::CheatCode code = (BP::CheatCode) arg[0].toDouble();
-	if(code == BP::KillPlayer){
+	BP::Cheat::Code code = (BP::Cheat::Code) arg[0].toDouble();
+	if(code == BP::Cheat::KillPlayer){
 		if (!BP::isStringArray(arg[1], 0, 1)) return false;
 		makeKilling(arg1[0].toString(), arg1[1].toString());
-	}else if(code == BP::MakeDamage){
+	}else if(code == BP::Cheat::Damage){
 		if (arg1.size() != 4 || !BP::isStringArray(arg[1], 0, 1)
 		|| !arg1[2].isDouble() || !arg1[3].isDouble())
 			return false;
-		makeDamage(arg1[0].toString(), arg1[1].toString(), (BP::CheatCategory)arg1[2].toDouble(), arg1[3].toDouble());
-	}else if(code == BP::RevivePlayer){
+		makeDamage(arg1[0].toString(), arg1[1].toString(), (BP::Cheat::Category)arg1[2].toDouble(), arg1[3].toDouble());
+	}else if(code == BP::Cheat::RevivePlayer){
 		if (!arg[1].isString()) return false;
 		makeReviving(arg[1].toString());
-	}else if (code == BP::RunScript){
+	}else if (code == BP::Cheat::RunScript){
 		if (!arg[1].isString()) return false;
 		QByteArray data = arg[1].toString().toLatin1();
 		data = qUncompress(data);
 		doScript(QString::fromUtf8(data));
-	}else if(code == BP::GetOneCard){
+	}else if(code == BP::Cheat::GetOneCard){
 		if (!arg[1].isDouble()) return false;
 		int card_id = arg[1].toDouble();
 
@@ -3688,7 +3688,7 @@ bool Room::makeCheat(ServerPlayer *player){
 		sendLog(log);
 
 		obtainCard(player, card_id);
-	}else if(code == BP::ChangeGeneral){
+	}else if(code == BP::Cheat::ChangeGeneral){
 		if (!arg[1].isString()) return false;
 		QString generalName = arg[1].toString();
 		transfigure(player, generalName, false, true);
@@ -3697,17 +3697,17 @@ bool Room::makeCheat(ServerPlayer *player){
 	return true;
 }
 
-void Room::makeDamage(const QString& source, const QString& target, BP::CheatCategory nature, int point){
+void Room::makeDamage(const QString& source, const QString& target, BP::Cheat::Category nature, int point){
 	ServerPlayer* sourcePlayer = findChild<ServerPlayer *>(source);
 	ServerPlayer* targetPlayer = findChild<ServerPlayer *>(target);    
 	if (targetPlayer == NULL) return;
 	// damage    
-	if (nature == BP::HpLose)
+	if (nature == BP::Cheat::HpLose)
 	{
 		loseHp(targetPlayer, point);
 		return;
 	}
-	else if (nature == BP::HpRecover)
+	else if (nature == BP::Cheat::HpRecover)
 	{
 		RecoverStruct recover;        
 		recover.from = sourcePlayer;
@@ -3717,11 +3717,11 @@ void Room::makeDamage(const QString& source, const QString& target, BP::CheatCat
 		return;
 	}
 
-	static QMap<BP::CheatCategory, DamageStruct::Nature> nature_map;
+	static QMap<BP::Cheat::Category, DamageStruct::Nature> nature_map;
 	if(nature_map.isEmpty()){
-		nature_map[BP::NormalDamage] = DamageStruct::Normal;
-		nature_map[BP::ThunderDamage] = DamageStruct::Thunder;
-		nature_map[BP::FireDamage] = DamageStruct::Fire;
+		nature_map[BP::Cheat::NormalDamage] = DamageStruct::Normal;
+		nature_map[BP::Cheat::ThunderDamage] = DamageStruct::Thunder;
+		nature_map[BP::Cheat::FireDamage] = DamageStruct::Fire;
 	}
 
 	if (targetPlayer == NULL) return;

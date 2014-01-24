@@ -24,22 +24,24 @@ namespace BP{
 		ClientInstance
 	};
 
-	enum CheatCode{
+	namespace Cheat{
+	enum Code{
 		GetOneCard,
 		ChangeGeneral,
 		KillPlayer,
 		RevivePlayer,
-		MakeDamage,
+		Damage,
 		RunScript
 	};
 
-	enum CheatCategory{
+	enum Category{
 		FireDamage,
 		ThunderDamage,
 		NormalDamage,
 		HpRecover,
 		HpLose
 	};
+	}
 
 	enum CommandType{
 		UnknownCommand,
@@ -75,7 +77,7 @@ namespace BP{
 		SetProperty,
 		SetHp,
 		SetMaxHp,
-		Cheat,
+		RequestCheat,
 		AskForSurrender,
 		GameOver,
 		MoveCard,
@@ -91,7 +93,45 @@ namespace BP{
 		NetworkDelayTest,
 		RemovePlayer,
 		StartInXSeconds,
-		ArrangeSeats
+		ArrangeSeats,
+		Warn,
+		StartGame,
+		HpChange,
+		KillPlayer,
+		RevivePlayer,
+		SetMark,
+		DoFilter,
+		Log,
+		AcquireSkill,
+		AttachSkill,
+		DetachSkill,
+		SetEmotion,
+		AddHistory,
+		Animate,
+		JudgeResult,
+		SetFixedDistance,
+		Transfigure,
+		Jilei,
+		CardLock,
+		Pile,
+		UpdateStateItem,
+		PlaySkillEffect,
+		PlayCardEffect,
+		PlayAudio,
+		ClearPile,
+		SetPileNumber,
+		SetStatistics,
+		SetCardFlag,
+		FillAG,
+		ClearAG,
+		TakeAG,
+		FillGenerals,
+		AskForGeneral3v3,
+		AskForGeneral1v1,
+		TakeGeneral,
+		StartArrange,
+		RecoverGeneral,
+		RevealGeneral
 	};
 
 	enum Game3v3ChooseOrderCommand

@@ -379,7 +379,7 @@ private:
 
 	bool makeSurrender(ServerPlayer* player);
 	bool makeCheat(ServerPlayer* player);
-	void makeDamage(const QString& source, const QString& target, BP::CheatCategory nature, int point);
+	void makeDamage(const QString& source, const QString& target, BP::Cheat::Category nature, int point);
 	void makeKilling(const QString& killer, const QString& victim);
 	void makeReviving(const QString &name);
 	void doScript(const QString &script);

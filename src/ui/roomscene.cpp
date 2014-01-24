@@ -2704,11 +2704,11 @@ DamageMakerDialog::DamageMakerDialog(QWidget *parent)
 	RoomScene::FillPlayerNames(damage_target, false);
 
 	damage_nature = new QComboBox;
-	damage_nature->addItem(tr("Normal"), BP::NormalDamage);
-	damage_nature->addItem(tr("Thunder"), BP::ThunderDamage);
-	damage_nature->addItem(tr("Fire"), BP::FireDamage);
-	damage_nature->addItem(tr("HP recover"), BP::HpRecover);
-	damage_nature->addItem(tr("Lose HP"), BP::HpLose);
+	damage_nature->addItem(tr("Normal"), BP::Cheat::NormalDamage);
+	damage_nature->addItem(tr("Thunder"), BP::Cheat::ThunderDamage);
+	damage_nature->addItem(tr("Fire"), BP::Cheat::FireDamage);
+	damage_nature->addItem(tr("HP recover"), BP::Cheat::HpRecover);
+	damage_nature->addItem(tr("Lose HP"), BP::Cheat::HpLose);
 
 	damage_point = new QSpinBox;
 	damage_point->setRange(1, 1000);
