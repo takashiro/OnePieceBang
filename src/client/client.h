@@ -123,8 +123,8 @@ public:
 	void skillInvoked(const QJsonValue &invoke_str);
 	void acquireSkill(const QJsonValue &acquire_arr);
 	void animate(const QJsonValue &animate_str);
-	void jilei(const QString &jilei_str);
-	void cardLock(const QString &card_str);
+	void jilei(const QJsonValue &jilei_str);
+	void cardLock(const QJsonValue &card_str);
 	void judgeResult(const QJsonValue &result_str);
 	void setScreenName(const QJsonValue &set_str);
 	void setFixedDistance(const QJsonValue &set_str);

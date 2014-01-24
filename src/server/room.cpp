@@ -1196,12 +1196,12 @@ void Room::setPlayerMark(ServerPlayer *player, const QString &mark, int value){
 
 void Room::setPlayerCardLock(ServerPlayer *player, const QString &name){
 	player->setCardLocked(name);
-	player->invoke("cardLock", name);
+	player->notify(BP::CardLock, name);
 }
 
 void Room::clearPlayerCardLock(ServerPlayer *player){
 	player->setCardLocked(".");
-	player->invoke("cardLock", ".");
+	player->notify(BP::CardLock, ".");
 }
 
 void Room::setPlayerStatistics(ServerPlayer *player, const QString &property_name, const QVariant &value){
