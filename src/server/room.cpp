@@ -371,14 +371,12 @@ void Room::gameOver(const QString &winner){
 	game_finished = true;
 
 	if(Config.ContestMode){
-		BP::Packet packet(BP::ServerNotification, BP::SetScreenName);
 		foreach(ServerPlayer *player, m_players){
 			QJsonArray arg;
 			arg.append(player->objectName());
 			arg.append(player->screenName());
 
-			packet.setMessageBody(arg);
-			broadcastInvoke(packet);
+			doBroadcastNotify(BP::SetScreenName, arg);
 		}
 
 		ContestDB *db = ContestDB::GetInstance();
@@ -667,7 +665,7 @@ bool Room::doNotify(ServerPlayer *player, BP::CommandType command, const QJsonVa
 	return true;
 }
 
-bool Room::doBroadcastNotify(const QList<ServerPlayer*> &players, BP::CommandType command, const QJsonValue &arg){
+bool Room::doBroadcastNotify(BP::CommandType command, const QJsonValue &arg, const QList<ServerPlayer*> &players){
 	foreach (ServerPlayer* player, players){
 		doNotify(player, command, arg);
 	}
