@@ -86,6 +86,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::SetPileNumber] = &Client::setPileNumber;
 	callbacks[BP::SetStatistics] = &Client::setStatistics;
 	callbacks[BP::SetCardFlag] = &Client::setCardFlag;
+	callbacks[BP::SetPlayerProperty] = &Client::setPlayerProperty;
 
 	// interactive methods    
 	interactions[BP::AskForGeneral] = &Client::askForGeneral;
@@ -268,12 +269,14 @@ void Client::processServerPacket(char *cmd){
 			CallBack callback = callbacks[packet.getCommandType()];
 			if(callback){
 				(this->*callback)(packet.getMessageBody());
+			}else{
+				QMessageBox::warning(NULL, tr("Warning"), tr("No such invokable method id \"%1\"").arg((int) packet.getCommandType()));
 			}
 		}else if(packet.getPacketType() == BP::ServerRequest){
 			processServerRequest(packet);
 		}
 	}else{
-		processReply(cmd);
+		QMessageBox::warning(NULL, tr("Warning"), tr("Invalid packet received by client:%1").arg(cmd));
 	}
 }
 
@@ -311,50 +314,29 @@ bool Client::processServerRequest(const BP::Packet &packet){
 	return true;
 }
 
-void Client::processReply(char *reply){    
-	if(strlen(reply) <= 2)
-		return;
+void Client::setPlayerProperty(const QJsonValue &cmd){
+	QJsonArray texts = cmd.toArray();
 
-	static char self_prefix = '.';
-	static char other_prefix = '#';
+	bool self = texts.at(0).toBool();
 
-	if(reply[0] == self_prefix){
-		// client it Self
+	if(self){
+		//client it Self
 		if(Self){
-			buffer_t property, value;
-			sscanf(reply, ".%s %s", property, value);
-			Self->setProperty(property, value);
+			QString property = texts.at(1).toString();
+			QVariant value = texts.at(2).toVariant();
+			Self->setProperty(property.toLatin1().data(), value);
 		}
-	}else if(reply[0] == other_prefix){
-		// others
-		buffer_t object_name, property, value;
-		sscanf(reply, "#%s %s %s", object_name, property, value);
+	}else{
+		//others
+		QString object_name = texts.at(1).toString();
+		QString property = texts.at(2).toString();
+		QVariant value = texts.at(3).toVariant();
 		ClientPlayer *player = getPlayer(object_name);
 		if(player){
-			player->setProperty(property, value);
-		}else
+			player->setProperty(property.toLatin1().data(), value);
+		}else{
 			QMessageBox::warning(NULL, tr("Warning"), tr("There is no player named %1").arg(object_name));
-
-	}else{
-		// invoke methods
-		buffer_t method_name, arg;
-		sscanf(reply, "%s %s", method_name, arg);
-		QString method = method_name;
-
-		if(replayer && (method.startsWith("askFor") || method.startsWith("do") || method == "activate"))
-			return;
-
-		static QSet<QString> deprecated;
-		if(deprecated.isEmpty()){
-			deprecated << "increaseSlashCount"; // replaced by addHistory
 		}
-
-		Callback callback = oldcallbacks.value(method, NULL);
-		if(callback){
-			QString arg_str = arg;
-			(this->*callback)(arg_str);
-		}else if(!deprecated.contains(method))
-			QMessageBox::information(NULL, tr("Warning"), tr("No such invokable method named \"%1\"").arg(method_name));
 	}
 }
 
@@ -388,8 +370,7 @@ void Client::removePlayer(const QJsonValue &player_name){
 	}
 }
 
-bool Client::_loseSingleCard(int card_id, CardsMoveStruct move)
-{    
+bool Client::_loseSingleCard(int card_id, CardsMoveStruct move){
 	const Card *card = Bang->getCard(card_id);
 	if(move.from)
 		move.from->removeCard(card, move.from_place);
@@ -405,8 +386,7 @@ bool Client::_loseSingleCard(int card_id, CardsMoveStruct move)
 	return true;
 }
 
-bool Client::_getSingleCard(int card_id, CardsMoveStruct move)
-{
+bool Client::_getSingleCard(int card_id, CardsMoveStruct move){
 	const Card *card = Bang->getCard(card_id);
 	if(move.to)
 		move.to->addCard(card, move.to_place);
@@ -422,8 +402,8 @@ bool Client::_getSingleCard(int card_id, CardsMoveStruct move)
 	updatePileNum();
 	return true;
 }
-void Client::getCards(const QJsonValue& data)
-{
+
+void Client::getCards(const QJsonValue& data){
 	Q_ASSERT(data.isArray());
 	QJsonArray arg = data.toArray();
 	Q_ASSERT(arg.size() >= 1);
@@ -447,8 +427,7 @@ void Client::getCards(const QJsonValue& data)
 	emit move_cards_got(moveId, moves);
 }
 
-void Client::loseCards(const QJsonValue& data)
-{
+void Client::loseCards(const QJsonValue& data){
 	Q_ASSERT(data.isArray());
 	QJsonArray arg = data.toArray();
 	Q_ASSERT(arg.size() >= 1);

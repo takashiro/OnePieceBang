@@ -83,7 +83,7 @@ namespace BP{
 		AskForYiji,
 		AskForGuanxing,
 		AskForGongxin,
-		SetProperty,
+		SetPlayerProperty,
 		SetHp,
 		SetMaxHp,
 		RequestCheat,

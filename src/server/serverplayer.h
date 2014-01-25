@@ -23,12 +23,12 @@ public:
 	explicit ServerPlayer(Room *room);
 
 	void setSocket(ClientSocket *socket);
-	void notify(BP::CommandType command, const QJsonValue &arg = QJsonValue());
+	void notify(BP::CommandType command, const QJsonValue &arg = QJsonValue()) const;
 	QString reportHeader() const;
 	void sendProperty(const char *property_name, const Player *player = NULL) const;
 	void unicast(const QString &message) const;
-	inline void invoke(const BP::AbstractPacket &packet){unicast(packet.toUtf8());}
-	inline void invoke(const char *method, const QString &arg = "."){unicast(QString("%1 %2").arg(method).arg(arg));}
+	inline void invoke(const BP::AbstractPacket &packet) const{unicast(packet.toUtf8());}
+	inline void invoke(const char *method, const QString &arg = ".") const{unicast(QString("%1 %2").arg(method).arg(arg));}
 	void drawCard(const Card *card);
 	Room *getRoom() const;
 	void playCardEffect(const Card *card) const;

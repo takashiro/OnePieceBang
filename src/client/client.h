@@ -94,8 +94,6 @@ public:
 	void networkDelayTest(const QJsonValue &);
 	void addPlayer(const QJsonValue &player_info);
 	void removePlayer(const QJsonValue &player_name);
-	void drawCards(const QString &cards_str);
-	void drawNCards(const QString &draw_str);    
 	void startInXSeconds(const QJsonValue &);
 	void arrangeSeats(const QJsonValue &seats_data);
 	void activate(const QJsonValue &playerId);
@@ -133,6 +131,7 @@ public:
 	void updateStateItem(const QJsonValue &state_str);
 	void setStatistics(const QJsonValue &property_str);
 	void setCardFlag(const QJsonValue &pattern);
+	void setPlayerProperty(const QJsonValue &cmd);
 
 	void fillAG(const QJsonValue &cards_str);
 	void takeAG(const QJsonValue &take_str);
@@ -175,7 +174,7 @@ public:
 	void revealGeneral(const QJsonValue &);
 
 	void attachSkill(const QJsonValue &skill_name);
-	void detachSkill(const QJsonValue &skill_name);
+	void detachSkill(const QJsonValue &skill_name);	
 	
 	inline void setCountdown(BP::Countdown countdown) {
 		countdown_mutex.lock();
@@ -253,7 +252,6 @@ private slots:
 	void processServerPacket(const QString &cmd);
 	void processServerPacket(char *cmd);
 	bool processServerRequest(const BP::Packet &packet);
-	void processReply(char *reply);
 	void notifyRoleChange(const QString &new_role);
 	void onPlayerChooseSuit();
 	void onPlayerChooseKingdom();

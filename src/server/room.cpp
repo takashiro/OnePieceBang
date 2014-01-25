@@ -1174,7 +1174,13 @@ const Card *Room::askForSingleWine(ServerPlayer *player, ServerPlayer *dying){
 
 void Room::setPlayerFlag(ServerPlayer *player, const QString &flag){
 	player->setFlags(flag);
-	broadcast(QString("#%1 flags %2").arg(player->objectName()).arg(flag));
+
+	QJsonArray arg;
+	arg.append(false);
+	arg.append(player->objectName());
+	arg.append(QString("flags"));
+	arg.append(flag);
+	doBroadcastNotify(BP::SetPlayerProperty, arg);
 }
 
 void Room::setPlayerProperty(ServerPlayer *player, const char *property_name, const QVariant &value){
@@ -2618,7 +2624,8 @@ void Room::reconnect(ServerPlayer *player, ClientSocket *socket){
 void Room::marshal(ServerPlayer *player){
 	player->sendProperty("objectName");
 	player->sendProperty("role");
-	player->unicast(".flags marshalling");
+	player->setFlags("marshalling");
+	player->sendProperty("flags");
 
 	foreach(ServerPlayer *p, m_players){
 		if(p != player)
@@ -2645,7 +2652,8 @@ void Room::marshal(ServerPlayer *player){
 		p->marshal(player);
 	}
 
-	player->unicast(".flags -marshalling");
+	player->setFlags("-marshalling");
+	player->sendProperty("flags");
 	player->notify(BP::SetPileNumber, QJsonValue(draw_pile->length()));
 }
 
@@ -2727,11 +2735,18 @@ void Room::startGame(){
 }
 
 void Room::broadcastProperty(ServerPlayer *player, const char *property_name, const QString &value){
+	QJsonArray arg;
+	arg.append(false);
+	arg.append(player->objectName());
+	arg.append(QString(property_name));
 	if(value.isNull()){
 		QString real_value = player->property(property_name).toString();
-		broadcast(QString("#%1 %2 %3").arg(player->objectName()).arg(property_name).arg(real_value));
-	}else
-		broadcast(QString("#%1 %2 %3").arg(player->objectName()).arg(property_name).arg(value));
+		arg.append(real_value);
+	}else{
+		arg.append(value);
+	}
+
+	doBroadcastNotify(BP::SetPlayerProperty, arg);
 }
 
 void Room::drawCards(ServerPlayer* player, int n, const QString &reason)

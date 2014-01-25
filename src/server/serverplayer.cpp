@@ -306,7 +306,7 @@ void ServerPlayer::castMessage(const QString &message){
 	}
 }
 
-void ServerPlayer::notify(BP::CommandType command, const QJsonValue &arg){
+void ServerPlayer::notify(BP::CommandType command, const QJsonValue &arg) const{
 	BP::Packet packet(BP::ServerNotification, command);
 	packet.setMessageBody(arg);
 	invoke(packet);
@@ -321,11 +321,16 @@ void ServerPlayer::sendProperty(const char *property_name, const Player *player)
 	if(player == NULL)
 		player = this;
 
-	QString value = player->property(property_name).toString();
-	if(player == this)
-		unicast(QString(".%1 %2").arg(property_name).arg(value));
-	else
-		unicast(QString("#%1 %2 %3").arg(player->objectName()).arg(property_name).arg(value));
+	QJsonArray arg;
+	if(player == this){
+		arg.append(true);
+	}else{
+		arg.append(false);
+		arg.append(player->objectName());
+	}
+	arg.append(QString(property_name));
+	arg.append(player->property(property_name).toString());
+	notify(BP::SetPlayerProperty, arg);
 }
 
 void ServerPlayer::removeCard(const Card *card, Place place){
@@ -862,8 +867,14 @@ void ServerPlayer::marshal(ServerPlayer *player) const{
 		player->notify(BP::AcquireSkill, arg);
 	}
 
+	QJsonArray arg;
+	arg.append(false);
+	arg.append(objectName());
+	arg.append(QString("flags"));
+	arg.append(QJsonValue());
 	foreach(QString flag, flags){
-		player->unicast(QString("#%1 flags %2").arg(objectName()).arg(flag));
+		arg[3] = flag;
+		player->notify(BP::SetPlayerProperty, arg);
 	}
 
 	foreach(QString item, history.keys()){
