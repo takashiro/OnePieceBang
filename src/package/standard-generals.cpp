@@ -535,7 +535,7 @@ public:
 				QList<int> swords = player->getPile("sword");
 				room->fillAG(swords, player);
 				int weapon_id = room->askForAG(player, swords, false, "triplesword");
-				room->broadcastInvoke("clearAG");
+				room->clearAG();
 				room->moveCardTo(Bang->getCard(weapon_id), player, Player::EquipArea, true);
 			}
 		}else{

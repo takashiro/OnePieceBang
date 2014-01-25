@@ -134,9 +134,9 @@ public:
 	void setStatistics(const QJsonValue &property_str);
 	void setCardFlag(const QJsonValue &pattern);
 
-	void fillAG(const QString &cards_str);    
-	void takeAG(const QString &take_str);
-	void clearAG(const QString &);
+	void fillAG(const QJsonValue &cards_str);
+	void takeAG(const QJsonValue &take_str);
+	void clearAG(const QJsonValue &);
 
 	//interactive server callbacks
 	void askForCard(const QJsonValue &);

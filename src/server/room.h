@@ -84,6 +84,7 @@ public:
 	const Card *peek();
 	void fillAG(const QList<int> &card_ids, ServerPlayer *who = NULL);
 	void takeAG(ServerPlayer *player, int card_id);
+	inline void clearAG(){doBroadcastNotify(BP::ClearAG);}
 	void provide(const Card *card);
 	QList<ServerPlayer *> getLieges(const QString &kingdom, ServerPlayer *lord) const;
 	void showCard(ServerPlayer *player, int card_id, ServerPlayer *only_viewer = NULL);

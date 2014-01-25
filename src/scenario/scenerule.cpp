@@ -387,7 +387,7 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
 						cardList.removeAt(cardList.indexOf(card));
 						room->takeAG(p->getNextAlive(), card);
 					}
-					room->broadcastInvoke("clearAG");
+					room->clearAG();
 					break;
 				}
 

@@ -24,7 +24,7 @@ void OperatingRoomCard::use(Room *room, ServerPlayer *source, const QList<Server
 		int card_id = room->askForAG(source, cards, false, "operatingroom");
 		cards.removeOne(card_id);
 		room->obtainCard(target, card_id);
-		room->broadcastInvoke("clearAG");
+		room->clearAG();
 	}
 }
 

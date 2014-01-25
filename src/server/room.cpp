@@ -3776,14 +3776,14 @@ void Room::makeReviving(const QString &name){
 }
 
 void Room::fillAG(const QList<int> &card_ids, ServerPlayer *who){
-	QStringList card_str;
+	QJsonArray cards;
 	foreach(int card_id, card_ids)
-		card_str << QString::number(card_id);
+		cards.append(card_id);
 
 	if(who)
-		who->invoke("fillAG", card_str.join("+"));
+		who->notify(BP::FillAG, cards);
 	else{
-		broadcastInvoke("fillAG", card_str.join("+"));
+		doBroadcastNotify(BP::FillAG, cards);
 	}
 }
 
@@ -3791,7 +3791,12 @@ void Room::takeAG(ServerPlayer *player, int card_id){
 	if(player){
 		player->addCard(Bang->getCard(card_id), Player::HandArea);
 		setCardMapping(card_id, player, Player::HandArea);
-		broadcastInvoke("takeAG", QString("%1:%2").arg(player->objectName()).arg(card_id));
+
+		QJsonArray take;
+		take.append(player->objectName());
+		take.append(card_id);
+		doBroadcastNotify(BP::TakeAG, take);
+
 		CardMoveStruct move;
 		move.from = NULL;
 		move.from_place = Player::DrawPile;
@@ -3804,7 +3809,11 @@ void Room::takeAG(ServerPlayer *player, int card_id){
 	}else{
 		discard_pile->prepend(card_id);
 		setCardMapping(card_id, NULL, Player::DiscardPile);
-		broadcastInvoke("takeAG", QString(".:%1").arg(card_id));
+
+		QJsonArray take;
+		take.append(QString("."));
+		take.append(card_id);
+		doBroadcastNotify(BP::TakeAG, take);
 	}
 }
 

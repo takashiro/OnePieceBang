@@ -114,9 +114,9 @@ Client::Client(QObject *parent, const QString &filename)
 	interactions[BP::AskForRole3v3] = &Client::askForRole3v3;
 	interactions[BP::AskForSurrender] = &Client::askForSurrender;
 
-	oldcallbacks["fillAG"] = &Client::fillAG;
-	oldcallbacks["takeAG"] = &Client::takeAG;
-	oldcallbacks["clearAG"] = &Client::clearAG;
+	callbacks[BP::FillAG] = &Client::fillAG;
+	callbacks[BP::TakeAG] = &Client::takeAG;
+	callbacks[BP::ClearAG] = &Client::clearAG;
 
 	// 3v3 mode & 1v1 mode
 	oldcallbacks["fillGenerals"] = &Client::fillGenerals;
@@ -1322,24 +1322,25 @@ void Client::onPlayerDiscardCards(const Card *cards){
 	setStatus(NotActive);
 }
 
-void Client::fillAG(const QString &cards_str){
-	QStringList cards = cards_str.split("+");
+void Client::fillAG(const QJsonValue &cards_str){
+	QJsonArray cards = cards_str.toArray();
+
 	QList<int> card_ids;
-	foreach(QString card, cards){
-		card_ids << card.toInt();
+	foreach(const QJsonValue &card, cards){
+		card_ids << (int) card.toDouble();
 	}
 
 	emit ag_filled(card_ids);
 }
 
-void Client::takeAG(const QString &take_str){
-	QRegExp rx("(.+):(\\d+)");
-	if(!rx.exactMatch(take_str))
+void Client::takeAG(const QJsonValue &take_str){
+	QJsonArray words = take_str.toArray();
+	if(words.size() != 2){
 		return;
+	}
 
-	QStringList words = rx.capturedTexts();
-	QString taker_name = words.at(1);
-	int card_id = words.at(2).toInt();
+	QString taker_name = words.at(0).toString();
+	int card_id = words.at(1).toDouble();
 
 	const Card *card = Bang->getCard(card_id);
 	if(taker_name != "."){
@@ -1352,7 +1353,7 @@ void Client::takeAG(const QString &take_str){
 	}
 }
 
-void Client::clearAG(const QString &){
+void Client::clearAG(const QJsonValue &){
 	emit ag_cleared();
 }
 

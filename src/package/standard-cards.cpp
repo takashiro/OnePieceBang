@@ -535,7 +535,7 @@ void AmazingGrace::use(Room *room, ServerPlayer *source, const QList<ServerPlaye
 		room->takeAG(NULL, card_id.toInt());
 	}
 
-	room->broadcastInvoke("clearAG");
+	room->clearAG();
 }
 
 void AmazingGrace::onEffect(const CardEffectStruct &effect) const{
