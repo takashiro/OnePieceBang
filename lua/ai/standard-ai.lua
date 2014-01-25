@@ -43,13 +43,11 @@ sgs.ai_skill_choice.fretywind = function(self, choices)
 		end
 	end
 
-	for _, c in ipairs(choices) do
-		if c == choice then
-			return choice
-		end
+	if string.find(choices, choice.."+") == nil and string.find(choices, choice.."$") == nil then
+		return "uninvoke"
 	end
 
-	return "uninvoke"
+	return choice
 end
 
 sgs.ai_skill_playerchosen.fretywind = sgs.ai_skill_playerchosen.zero_card_as_slash

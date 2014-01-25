@@ -976,11 +976,14 @@ public:
 		}else{
 			if(player->hasFlag("massiveaxe_enabled")){
 				DamageStruct damage = data.value<DamageStruct>();
-				damage.damage++;
-				data = QVariant::fromValue(damage);
-				room->setPlayerFlag(player, "-massiveaxe_enabled");
 
-				room->sendLog("#TriggerSkill", player, objectName());
+				if(damage.card && (damage.card->inherits("Slash") || damage.card->inherits("Duel"))){
+					damage.damage++;
+					data = QVariant::fromValue(damage);
+					room->setPlayerFlag(player, "-massiveaxe_enabled");
+
+					room->sendLog("#TriggerSkill", player, objectName());
+				}
 			}
 		}
 	}
