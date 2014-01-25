@@ -132,7 +132,7 @@ public:
 	void transfigure(const QJsonValue &transfigure_tr);
 	void updateStateItem(const QJsonValue &state_str);
 	void setStatistics(const QJsonValue &property_str);
-	void setCardFlag(const QString &pattern_str);
+	void setCardFlag(const QJsonValue &pattern);
 
 	void fillAG(const QString &cards_str);    
 	void takeAG(const QString &take_str);

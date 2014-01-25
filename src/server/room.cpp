@@ -1237,11 +1237,13 @@ void Room::setCardFlag(int card_id, const QString &flag, ServerPlayer *who){
 
 	Bang->getCard(card_id)->setFlags(flag);
 
-	QString pattern = QString::number(card_id) + ":" + flag;
+	QJsonArray pattern;
+	pattern.append(card_id);
+	pattern.append(flag);
 	if(who)
-		who->invoke("setCardFlag", pattern);
+		who->notify(BP::SetCardFlag, pattern);
 	else
-		broadcastInvoke("setCardFlag", pattern);
+		doBroadcastNotify(BP::SetCardFlag, pattern);
 }
 
 void Room::clearCardFlag(const Card *card, ServerPlayer *who){
@@ -1254,11 +1256,13 @@ void Room::clearCardFlag(const Card *card, ServerPlayer *who){
 void Room::clearCardFlag(int card_id, ServerPlayer *who){
 	Bang->getCard(card_id)->clearFlags();
 
-	QString pattern = QString::number(card_id) + ":.";
+	QJsonArray pattern;
+	pattern.append(card_id);
+	pattern.append(QString("."));
 	if(who)
-		who->invoke("setCardFlag", pattern);
+		who->notify(BP::SetCardFlag, pattern);
 	else
-		broadcastInvoke("setCardFlag", pattern);
+		doBroadcastNotify(BP::SetCardFlag, pattern);
 }
 
 ServerPlayer *Room::addSocket(ClientSocket *socket){

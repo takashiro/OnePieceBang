@@ -85,7 +85,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::ClearPile] = &Client::resetPiles;
 	callbacks[BP::SetPileNumber] = &Client::setPileNumber;
 	callbacks[BP::SetStatistics] = &Client::setStatistics;
-	oldcallbacks["setCardFlag"] = &Client::setCardFlag;
+	callbacks[BP::SetCardFlag] = &Client::setCardFlag;
 
 	// interactive methods    
 	interactions[BP::AskForGeneral] = &Client::askForGeneral;
@@ -1066,16 +1066,13 @@ void Client::setStatistics(const QJsonValue &property_str){
 	Self->setStatistics(statistics);
 }
 
-void Client::setCardFlag(const QString &pattern_str){
-	QRegExp rx("(\\w+):(.+)");
-	if(!rx.exactMatch(pattern_str))
-		return;
+void Client::setCardFlag(const QJsonValue &pattern){
+	QJsonArray texts = pattern.toArray();
 
-	QStringList texts = rx.capturedTexts();
-	QString object = texts.at(1);
-	QString card_str = texts.at(2);
+	int card_id = texts.at(0).toDouble();
+	QString object = texts.at(1).toString();
 
-	Bang->getCard(card_str.toInt())->setFlags(object);
+	Bang->getCard(card_id)->setFlags(object);
 }
 
 void Client::updatePileNum(){
