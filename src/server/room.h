@@ -337,9 +337,7 @@ private:
 	QSemaphore sem_room_mutex; // Provide per-room  (rather than per-player) level protection of any shared variables
 
 	
-	QHash<QString, Callback> oldcallbacks; // Legacy protocol callbacks
-	QHash<BP::CommandType, CallBack> callbacks; // Stores the callbacks for client request. Do not use this
-															// this map for anything else but S_CLIENT_REQUEST!!!!!
+	QHash<BP::CommandType, CallBack> callbacks; // Stores the callbacks for client request & notification
 	QHash<BP::CommandType, BP::CommandType> request_response_pair; 
 		// Stores the expected client response for each server request, any unmatched client response will be discarded.
 

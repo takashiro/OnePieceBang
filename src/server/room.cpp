@@ -1821,7 +1821,7 @@ void Room::processClientPacket(const QString &request){
 
 	BP::Packet packet;
 	//@todo: remove this thing after the new protocol is fully deployed
-	if (packet.parse(request.toUtf8().constData())){
+	if(packet.parse(request.toUtf8().constData())){
 		if (packet.getPacketType() == BP::ClientReply){
 			if (player == NULL) return; 
 			player->setClientReplyString(request);            
@@ -1833,21 +1833,10 @@ void Room::processClientPacket(const QString &request){
 			if (!callback) return;
 			(this->*callback)(player, packet.getMessageBody());
 
-		}else{
+		}else if(packet.getPacketType() == BP::ClientNotification){
 			CallBack callback = callbacks[packet.getCommandType()];
 			if(!callback) return;
 			(this->*callback)(player, packet.getMessageBody());
-		}
-	}else{
-		QStringList args = request.split(" ");
-		QString command = args.first();
-		if(player == NULL)
-			return;
-
-		command.append("Command");
-		Callback callback = oldcallbacks.value(command, NULL);
-		if(callback){
-			(this->*callback)(player, args.at(1));
 		}
 	}
 
