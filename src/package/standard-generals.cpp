@@ -839,21 +839,24 @@ public:
 class TopSwordman: public TriggerSkill{
 public:
 	TopSwordman(): TriggerSkill("topswordman"){
-		events << Damaged << Predamaging;
+		events << Damaged << Damaging;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+		DamageStruct damage = data.value<DamageStruct>();
+		if(damage.nature != DamageStruct::Normal || damage.card == NULL || !damage.card->inherits("Slash")){
+			return false;
+		}
+
 		if(event == Damaged){
-			DamageStruct damage = data.value<DamageStruct>();
-			if(damage.from && damage.from->getWeapon() && damage.card && damage.card->inherits("Slash")){
+			if(damage.from && damage.from->getWeapon()){
 				damage.damage--;
 				data = QVariant::fromValue(damage);
 
 				player->getRoom()->sendLog("#TriggerSkill", player, objectName());
 			}
-		}else if(event == Predamaging){
-			DamageStruct damage = data.value<DamageStruct>();
-			if(player->getWeapon() && damage.nature == DamageStruct::Normal && damage.card && damage.card->inherits("Slash")){
+		}else if(event == Damaging){
+			if(player->getWeapon()){
 				damage.damage++;
 				data = QVariant::fromValue(damage);
 
