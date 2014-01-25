@@ -22,11 +22,10 @@ Features
     * Use Lua as AI script
 
 2. Operation experience
-    * Full package (include all yoka extension package)
+    * Full package
     * Drag card to target to use card
     * Keyboard shortcut
     * Cards sorting (by card type and card suit)
-    * Multilayer display when cards are more than an upperlimit
 
 3. Extensible
     * Some MODs are available based on this game
