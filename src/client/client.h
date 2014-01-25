@@ -86,8 +86,7 @@ public:
 	QTextDocument *getLinesDoc() const;
 	QTextDocument *getPromptDoc() const;
 
-	typedef void (Client::*Callback)(const QString &);
-	typedef void (Client::*CallBack)(const QJsonValue &);
+	typedef void (Client::*Callback)(const QJsonValue &);
 
 	void checkVersion(const QJsonValue &server_version);
 	void setup(const QJsonValue &setup);
@@ -220,12 +219,11 @@ protected:
 
 private:
 	ClientSocket *socket;
-	bool m_isGameOver;
+	bool is_game_over;
 	Status status;
 	int alive_count;
-	QHash<QString, Callback> oldcallbacks;
-	QHash<BP::CommandType, CallBack> interactions;
-	QHash<BP::CommandType, CallBack> callbacks;
+	QHash<BP::CommandType, Callback> interactions;
+	QHash<BP::CommandType, Callback> callbacks;
 	QList<const ClientPlayer *> players;
 	bool m_isUseCard;
 	QStringList ban_packages;

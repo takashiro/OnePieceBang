@@ -178,7 +178,7 @@ void Client::roomError(const QString &errorStr){
 		map["NO_SUCH_ROOM"] = tr("No such room!");
 		map["ROOM_IS_FULL"] = tr("Room is full!");
 		map["INVALID_SETUP_STRING"] = tr("Invalid setup string!");
-	 }
+	}
 
 	QString msg = map.value(errorStr, tr("Unknown room error: %1").arg(errorStr));
 	QMessageBox::warning(HallDialogInstance, tr("Warning"), msg);

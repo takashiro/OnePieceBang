@@ -26,7 +26,7 @@ Client::Client(QObject *parent, const QString &filename)
 {
 
 	ClientInstance = this;
-	m_isGameOver = false;
+	is_game_over = false;
 
 	callbacks[BP::CheckVersion] = &Client::checkVersion;
 
@@ -261,12 +261,12 @@ void Client::processServerPacket(const QString &cmd){
 }
 
 void Client::processServerPacket(char *cmd){
-	if(m_isGameOver) return;
+	if(is_game_over) return;
 
 	BP::Packet packet;
 	if(packet.parse(cmd)){
 		if(packet.getPacketType() == BP::ServerNotification){
-			CallBack callback = callbacks[packet.getCommandType()];
+			Callback callback = callbacks[packet.getCommandType()];
 			if(callback){
 				(this->*callback)(packet.getMessageBody());
 			}else{
@@ -305,7 +305,7 @@ bool Client::processServerRequest(const BP::Packet &packet){
 
 	setCountdown(countdown);
 
-	CallBack callback = interactions[command];
+	Callback callback = interactions[command];
 	if(!callback){
 		return false;
 	}
@@ -1101,7 +1101,7 @@ void Client::askForExchange(const QJsonValue &exchange_str){
 void Client::gameOver(const QJsonValue &argdata){
 	if(!argdata.isArray()) return;
 	QJsonArray arg = argdata.toArray();
-	m_isGameOver = true;
+	is_game_over = true;
 	setStatus(Client::NotActive);
 	QString winner = arg[0].toString();
 	QStringList roles;
