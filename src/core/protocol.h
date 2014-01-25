@@ -140,7 +140,13 @@ namespace BP{
 		TakeGeneral,
 		StartArrange,
 		RecoverGeneral,
-		RevealGeneral
+		RevealGeneral,
+		Arrange,
+		ToggleReady,
+		AddRobot,
+		FillRobots,
+		Trust,
+		Kick
 	};
 
 	enum Game3v3ChooseOrderCommand

@@ -3813,7 +3813,7 @@ void RoomScene::selectGeneral(){
 	CardItem *item = qobject_cast<CardItem *>(sender());
 
 	if(item){
-		ClientInstance->request("takeGeneral " + item->objectName());
+		ClientInstance->notifyServer(BP::TakeGeneral, item->objectName());
 
 		foreach(CardItem *item, general_items){
 			item->setFlag(QGraphicsItem::ItemIsFocusable, false);
@@ -3935,11 +3935,11 @@ void RoomScene::finishArrange(){
 	arrange_button->deleteLater();
 	arrange_button = NULL;
 
-	QStringList names;
+	QJsonArray names;
 	foreach(CardItem *item, arrange_items)
-		names << item->objectName();
+		names.append(item->objectName());
 
-	ClientInstance->request("arrange " + names.join("+"));
+	ClientInstance->notifyServer(BP::Arrange, names);
 }
 
 static inline void AddRoleIcon(QMap<QChar, QPixmap> &map, char c, const QString &role){

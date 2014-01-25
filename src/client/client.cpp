@@ -241,7 +241,7 @@ void Client::setup(const QJsonValue &setup){
 	QString setup_str = setup.toString();
 	if(ServerInfo.parse(setup_str)){
 		emit server_connected();
-		request("toggleReady .");
+		notifyServer(BP::ToggleReady);
 	}else{
 		QMessageBox::warning(NULL, tr("Warning"), tr("Setup string can not be parsed: %1").arg(setup_str));
 	}
@@ -512,35 +512,28 @@ void Client::requestCheatChangeGeneral(QString name){
 }
 
 void Client::addRobot(){
-	request("addRobot .");
+	notifyServer(BP::AddRobot);
 }
 
 void Client::fillRobots(){
-	request("fillRobots .");
+	notifyServer(BP::FillRobots);
 }
 
 void Client::arrange(const QStringList &order){
 	Q_ASSERT(order.length() == 3);
-
-	request(QString("arrange %1").arg(order.join("+")));
+	notifyServer(BP::Arrange, BP::toJsonArray(order));
 }
 
 void Client::onPlayerUseCard(const Card *card, const QList<const Player *> &targets){
 
 	if(card == NULL){
 		replyToServer(BP::AskForUseCard, QJsonValue());
-		// request("useCard .");
 	}else{
 		QJsonArray targetNames;
 		foreach(const Player *target, targets)
 		targetNames.append(target->objectName());
 
 		replyToServer(BP::AskForUseCard, BP::toJsonArray(card->toString(), targetNames));
-
-		//if(target_names.isEmpty())
-		//    request(QString("useCard %1->.").arg(card->toString()));
-		//else
-		//    request(QString("useCard %1->%2").arg(card->toString()).arg(target_names.join("+")));
 
 		if(status == Responsing)
 			card_pattern.clear();
@@ -909,7 +902,7 @@ void Client::onPlayerChoosePlayer(const Player *player){
 }
 
 void Client::trust(){
-	request("trust .");
+	notifyServer(BP::Trust);
 
 	if(Self->getState() == "trust")
 		Bang->playAudio("untrust");
@@ -980,7 +973,7 @@ ClientPlayer *Client::getPlayer(const QString &name){
 }
 
 void Client::kick(const QString &to_kick){
-	request("kick " + to_kick);
+	notifyServer(BP::Kick, to_kick);
 }
 
 bool Client::save(const QString &filename) const{

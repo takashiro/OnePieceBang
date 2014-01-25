@@ -51,17 +51,17 @@ Room::Room(QObject *parent, const QString &mode)
 	callbacks[BP::RequestCheat] = &Room::processRequestCheat;
 
 	// init callback table
-	oldcallbacks["arrangeCommand"] = &Room::arrangeCommand;
-	oldcallbacks["takeGeneralCommand"] = &Room::takeGeneralCommand;
+	callbacks[BP::Arrange] = &Room::arrangeCommand;
+	callbacks[BP::TakeGeneral] = &Room::takeGeneralCommand;
 
 	// Client notifications
-	oldcallbacks["toggleReadyCommand"] = &Room::toggleReadyCommand;
-	oldcallbacks["addRobotCommand"] = &Room::addRobotCommand;
-	oldcallbacks["fillRobotsCommand"] = &Room::fillRobotsCommand;
+	callbacks[BP::ToggleReady] = &Room::toggleReadyCommand;
+	callbacks[BP::AddRobot] = &Room::addRobotCommand;
+	callbacks[BP::FillRobots] = &Room::fillRobotsCommand;
 
 	callbacks[BP::Speak] = &Room::speakCommand;
-	oldcallbacks["trustCommand"] = &Room::trustCommand;
-	oldcallbacks["kickCommand"] = &Room::kickCommand;
+	callbacks[BP::Trust] = &Room::trustCommand;
+	callbacks[BP::Kick] = &Room::kickCommand;
 
 	//Client request
 	callbacks[BP::NetworkDelayTest] = &Room::networkDelayTestCommand;
@@ -1687,7 +1687,7 @@ void Room::reportDisconnection(){
 	}
 }
 
-void Room::trustCommand(ServerPlayer *player, const QString &){
+void Room::trustCommand(ServerPlayer *player, const QJsonValue &){
 	player->acquireLock(ServerPlayer::SEMA_MUTEX);
 	if (player->isOnline()){
 		player->setState("trust");
@@ -1857,7 +1857,7 @@ void Room::processClientPacket(const QString &request){
 #endif
 }
 
-void Room::addRobotCommand(ServerPlayer *player, const QString &){
+void Room::addRobotCommand(ServerPlayer *player, const QJsonValue &){
 	if(player && !player->isOwner())
 		return;
 
@@ -1885,7 +1885,7 @@ void Room::addRobotCommand(ServerPlayer *player, const QString &){
 	broadcastProperty(robot, "state");
 }
 
-void Room::fillRobotsCommand(ServerPlayer *player, const QString &){
+void Room::fillRobotsCommand(ServerPlayer *player, const QJsonValue &){
 	int left = player_count - m_players.length();
 	for(int i=0; i<left; i++){
 		addRobotCommand(player, QString());
@@ -1901,7 +1901,7 @@ ServerPlayer *Room::getOwner() const{
 	return NULL;
 }
 
-void Room::toggleReadyCommand(ServerPlayer *player, const QString &){
+void Room::toggleReadyCommand(ServerPlayer *player, const QJsonValue &){
 	if(game_started)
 		return;
 
@@ -3234,7 +3234,7 @@ void Room::playSkillEffect(const QString &skill_name, int index){
 }
 
 void Room::startTest(const QString &to_test){
-	fillRobotsCommand(NULL, ".");
+	fillRobotsCommand(NULL, QString("."));
 	setProperty("to_test", to_test);
 }
 
@@ -3673,7 +3673,7 @@ QString Room::askForGeneral(ServerPlayer *player, const QStringList &generals, Q
 	return default_choice;
 }
 
-void Room::kickCommand(ServerPlayer *player, const QString &arg){
+void Room::kickCommand(ServerPlayer *player, const QJsonValue &arg){
 	// kicking is not allowed at contest mode
 	if(Config.ContestMode)
 		return;
@@ -3682,7 +3682,7 @@ void Room::kickCommand(ServerPlayer *player, const QString &arg){
 	if(player != getLord())
 		return;
 
-	ServerPlayer *to_kick = findChild<ServerPlayer *>(arg);
+	ServerPlayer *to_kick = findChild<ServerPlayer *>(arg.toString());
 	if(to_kick == NULL)
 		return;
 
@@ -3952,18 +3952,24 @@ QString Room::generatePlayerName(){
 	return QString("sgs%1").arg(id);
 }
 
-void Room::arrangeCommand(ServerPlayer *player, const QString &arg){
+void Room::arrangeCommand(ServerPlayer *player, const QJsonValue &arg){
+	QStringList arranged;
+	QJsonArray generals = arg.toArray();
+	foreach(const QJsonValue &general, generals){
+		arranged << general.toString();
+	}
+
 	if(mode == "06_3v3")
-		thread_3v3->arrange(player, arg.split("+"));
+		thread_3v3->arrange(player, arranged);
 	else if(mode == "02_1v1")
-		thread_1v1->arrange(player, arg.split("+"));
+		thread_1v1->arrange(player, arranged);
 }
 
-void Room::takeGeneralCommand(ServerPlayer *player, const QString &arg){
+void Room::takeGeneralCommand(ServerPlayer *player, const QJsonValue &arg){
 	if(mode == "06_3v3")
-		thread_3v3->takeGeneral(player, arg);
+		thread_3v3->takeGeneral(player, arg.toString());
 	else if(mode == "02_1v1")
-		thread_1v1->takeGeneral(player, arg);
+		thread_1v1->takeGeneral(player, arg.toString());
 }
 
 QString Room::askForOrder(ServerPlayer *player){

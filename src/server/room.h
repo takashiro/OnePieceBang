@@ -268,13 +268,13 @@ public:
 	QString askForGeneral(ServerPlayer *player, const QStringList &generals, QString default_choice = QString());    
 	const Card *askForSingleWine(ServerPlayer *player, ServerPlayer *dying);
 	
-	void toggleReadyCommand(ServerPlayer *player, const QString &);
+	void toggleReadyCommand(ServerPlayer *player, const QJsonValue &);
 	void speakCommand(ServerPlayer *player, const QJsonValue &content);
-	void trustCommand(ServerPlayer *player, const QString &arg);
-	void kickCommand(ServerPlayer *player, const QString &arg);
+	void trustCommand(ServerPlayer *player, const QJsonValue &arg);
+	void kickCommand(ServerPlayer *player, const QJsonValue &arg);
 	void processResponse(ServerPlayer *player, const BP::Packet* arg);
-	void addRobotCommand(ServerPlayer *player, const QString &arg);
-	void fillRobotsCommand(ServerPlayer *player, const QString &arg);
+	void addRobotCommand(ServerPlayer *player, const QJsonValue &arg);
+	void fillRobotsCommand(ServerPlayer *player, const QJsonValue &arg);
 	void broadcastProperty(ServerPlayer *player, const char *property_name, const QString &value = QString());
 	void broadcastInvoke(const BP::AbstractPacket &packet, ServerPlayer *except = NULL);
 	void broadcastInvoke(const char *method, const QString &arg = ".", ServerPlayer *except = NULL);
@@ -368,8 +368,8 @@ private:
 	void chooseGenerals();
 	AI *cloneAI(ServerPlayer *player);
 	void broadcast(const QString &message, ServerPlayer *except = NULL);
-	void arrangeCommand(ServerPlayer *player, const QString &arg);
-	void takeGeneralCommand(ServerPlayer *player, const QString &arg);
+	void arrangeCommand(ServerPlayer *player, const QJsonValue &arg);
+	void takeGeneralCommand(ServerPlayer *player, const QJsonValue &arg);
 	QString askForOrder(ServerPlayer *player);
 	QString askForRole(ServerPlayer *player, const QStringList &roles, const QString &scheme);
 
