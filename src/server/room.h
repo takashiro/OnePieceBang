@@ -312,7 +312,7 @@ private:
 		QString m_from_pile_name;
 		QString m_from_player_name; 
 	};
-	int _m_lastMovementId;
+	int last_movement_id;
 	void _fillMoveInfo(CardMoveStruct &move) const;
 	void _fillMoveInfo(CardsMoveStruct &moves, int card_index) const;
 	QString _chooseDefaultGeneral(ServerPlayer* player) const;
@@ -333,21 +333,21 @@ private:
 	RoomThread3v3 *thread_3v3;
 	RoomThread1v1 *thread_1v1;
 	QSemaphore *sem; // Legacy semaphore, expected to be reomved after new synchronization is fully deployed.
-	QSemaphore _m_semRaceRequest; // When race starts, server waits on his semaphore for the first replier
-	QSemaphore _m_semRoomMutex; // Provide per-room  (rather than per-player) level protection of any shared variables
+	QSemaphore sem_race_request; // When race starts, server waits on his semaphore for the first replier
+	QSemaphore sem_room_mutex; // Provide per-room  (rather than per-player) level protection of any shared variables
 
 	
 	QHash<QString, Callback> oldcallbacks; // Legacy protocol callbacks
 	QHash<BP::CommandType, CallBack> callbacks; // Stores the callbacks for client request. Do not use this
 															// this map for anything else but S_CLIENT_REQUEST!!!!!
-	QHash<BP::CommandType, BP::CommandType> m_requestResponsePair; 
+	QHash<BP::CommandType, BP::CommandType> request_response_pair; 
 		// Stores the expected client response for each server request, any unmatched client response will be discarded.
 
 	QTime _m_timeSinceLastSurrenderRequest; // Timer used to ensure that surrender polls are not initiated too frequently
 	bool _m_isFirstSurrenderRequest; // We allow the first surrender poll to go through regardless of the timer.
 	
 	//helper variables for race request function
-	bool _m_raceStarted; 
+	bool race_started; 
 	ServerPlayer* _m_raceWinner;
 
 	QMap<int, Player::Place> place_map;
@@ -359,7 +359,7 @@ private:
 	QVariantMap tag;
 	const Scenario *scenario;
 
-	bool m_surrenderRequestReceived;
+	bool surrender_request_received;
 	bool _virtual;
 
 	static QString generatePlayerName();

@@ -28,23 +28,23 @@ Room::Room(QObject *parent, const QString &mode)
 	:QThread(parent), mode(mode), current(NULL), pile1(Bang->getRandomCards()),
 	draw_pile(&pile1), discard_pile(&pile2),
 	game_started(false), game_finished(false), L(NULL), thread(NULL),
-	thread_3v3(NULL), sem(new QSemaphore), _m_semRaceRequest(0), _m_semRoomMutex(1),
-	_m_raceStarted(false), provided(NULL), has_provided(false),
-	m_surrenderRequestReceived(false), _virtual(false)
+	thread_3v3(NULL), sem(new QSemaphore), sem_race_request(0), sem_room_mutex(1),
+	race_started(false), provided(NULL), has_provided(false),
+	surrender_request_received(false), _virtual(false)
 {
-	_m_lastMovementId = 0;
+	last_movement_id = 0;
 	player_count = Bang->getPlayerCount(mode);
 	scenario = Bang->getScenario(mode);
 
 	// init request response pair
-	m_requestResponsePair[BP::Activate] = BP::AskForUseCard;
-	m_requestResponsePair[BP::AskForNullification] = BP::AskForCard;
-	m_requestResponsePair[BP::AskForCardShow] = BP::AskForCard;
-	m_requestResponsePair[BP::AskForSingleWine] = BP::AskForCard;
-	m_requestResponsePair[BP::AskForPindian] = BP::AskForCard;
-	m_requestResponsePair[BP::AskForExchange] = BP::AskForDiscard;
-	m_requestResponsePair[BP::AskForDirection] = BP::AskForChoice;
-	m_requestResponsePair[BP::ShowAllCards] = BP::AskForGongxin;
+	request_response_pair[BP::Activate] = BP::AskForUseCard;
+	request_response_pair[BP::AskForNullification] = BP::AskForCard;
+	request_response_pair[BP::AskForCardShow] = BP::AskForCard;
+	request_response_pair[BP::AskForSingleWine] = BP::AskForCard;
+	request_response_pair[BP::AskForPindian] = BP::AskForCard;
+	request_response_pair[BP::AskForExchange] = BP::AskForDiscard;
+	request_response_pair[BP::AskForDirection] = BP::AskForChoice;
+	request_response_pair[BP::ShowAllCards] = BP::AskForGongxin;
 
 	// client request handlers
 	callbacks[BP::AskForSurrender] = &Room::processRequestSurrender;
@@ -59,7 +59,7 @@ Room::Room(QObject *parent, const QString &mode)
 	oldcallbacks["addRobotCommand"] = &Room::addRobotCommand;
 	oldcallbacks["fillRobotsCommand"] = &Room::fillRobotsCommand;
 
-	callbacks[BP::Speak] = &Room::speakCommand;//oldcallbacks["speakCommand"] = &Room::speakCommand;
+	callbacks[BP::Speak] = &Room::speakCommand;
 	oldcallbacks["trustCommand"] = &Room::trustCommand;
 	oldcallbacks["kickCommand"] = &Room::kickCommand;
 
@@ -554,8 +554,8 @@ bool Room::doRequest(ServerPlayer *player, BP::CommandType command, const QJsonV
 	player->setClientReplyString(QString());
 	player->m_isWaitingReply = true;
 	player->m_expectedReplySerial = packet.global_serial;
-	if (m_requestResponsePair.contains(command))
-		player->m_expectedReplyCommand = m_requestResponsePair[command];
+	if (request_response_pair.contains(command))
+		player->m_expectedReplyCommand = request_response_pair[command];
 	else 
 		player->m_expectedReplyCommand = command;             
 
@@ -592,11 +592,11 @@ bool Room::doBroadcastRequest(QList<ServerPlayer*> &players, BP::CommandType com
 ServerPlayer* Room::doBroadcastRaceRequest(QList<ServerPlayer*> &players, BP::CommandType command, 
 											time_t timeOut, ResponseVerifyFunction validateFunc, void* funcArg)
 {
-	_m_semRoomMutex.acquire();
-	_m_raceStarted = true;
+	sem_room_mutex.acquire();
+	race_started = true;
 	_m_raceWinner = NULL;
-	while (_m_semRaceRequest.tryAcquire(1)) ; //drain lock
-	_m_semRoomMutex.release();
+	while (sem_race_request.tryAcquire(1)) ; //drain lock
+	sem_room_mutex.release();
 	foreach (ServerPlayer* player, players)
 	{
 		doRequest(player, command, player->m_commandArgs, timeOut, false);
@@ -616,17 +616,17 @@ ServerPlayer* Room::getRaceResult(QList<ServerPlayer*> &players, BP::CommandType
 		if (timeRemain < 0) timeRemain = 0;
 		bool tryAcquireResult = true;
 		if (Config.OperationNoLimit)
-			_m_semRaceRequest.acquire();
+			sem_race_request.acquire();
 		else
-			tryAcquireResult = _m_semRaceRequest.tryAcquire(1, timeRemain);
+			tryAcquireResult = sem_race_request.tryAcquire(1, timeRemain);
 				
 		if (!tryAcquireResult)
-			_m_semRoomMutex.tryAcquire(1); 
+			sem_room_mutex.tryAcquire(1);
 		// So that processResponse cannot update raceWinner when we are reading it.
 
 		if (_m_raceWinner == NULL) 
 		{
-			_m_semRoomMutex.release();
+			sem_room_mutex.release();
 			continue;
 		}
 
@@ -641,12 +641,12 @@ ServerPlayer* Room::getRaceResult(QList<ServerPlayer*> &players, BP::CommandType
 			// Don't give this player any more chance for this race
 			_m_raceWinner->m_isWaitingReply = false;
 			_m_raceWinner = NULL;
-			_m_semRoomMutex.release();
+			sem_room_mutex.release();
 		}
 	}
 
-	if (!validResult) _m_semRoomMutex.acquire();
-	_m_raceStarted = false;
+	if (!validResult) sem_room_mutex.acquire();
+	race_started = false;
 	foreach (ServerPlayer* player, players)
 	{
 		player->acquireLock(ServerPlayer::SEMA_MUTEX);
@@ -655,7 +655,7 @@ ServerPlayer* Room::getRaceResult(QList<ServerPlayer*> &players, BP::CommandType
 		player->m_expectedReplySerial = -1;
 		player->releaseLock(ServerPlayer::SEMA_MUTEX);
 	}
-	_m_semRoomMutex.release();
+	sem_room_mutex.release();
 	return _m_raceWinner;
 }
 
@@ -1805,7 +1805,7 @@ void Room::processRequestSurrender(ServerPlayer *player, const QJsonValue &){
 	}
 	_m_isFirstSurrenderRequest = false;
 	_m_timeSinceLastSurrenderRequest.restart();
-	m_surrenderRequestReceived = true;
+	surrender_request_received = true;
 	player->releaseLock(ServerPlayer::SEMA_COMMAND_INTERACTIVE);    
 	return;
 }
@@ -2362,8 +2362,8 @@ void Room::processResponse(ServerPlayer *player, const BP::Packet *packet){
 		player->releaseLock(ServerPlayer::SEMA_MUTEX);
 		return;
 	}else{
-		_m_semRoomMutex.acquire();
-		if (_m_raceStarted){     
+		sem_room_mutex.acquire();
+		if (race_started){
 		player->setClientReply(packet->getMessageBody());
 			player->m_isClientResponseReady = true; 
 			// Warning: the statement below must be the last one before releasing the lock!!!
@@ -2376,11 +2376,11 @@ void Room::processResponse(ServerPlayer *player, const BP::Packet *packet){
 			// broadcastRaceRequest.
 		_m_raceWinner = player;
 			// the _m_semRoomMutex.release() signal is in getRaceResult();            
-			_m_semRaceRequest.release();
+			sem_race_request.release();
 		}
 		else
 		{ 
-			_m_semRoomMutex.release();
+			sem_room_mutex.release();
 			player->setClientReply(packet->getMessageBody());
 			player->m_isClientResponseReady = true; 
 			player->releaseLock(ServerPlayer::SEMA_COMMAND_INTERACTIVE);    
@@ -3196,10 +3196,10 @@ bool Room::notifyMoveCards(bool is_lost_phase, QList<CardsMoveStruct> cards_move
 	// Notify clients
 	int moveId;
 	if (is_lost_phase)
-		moveId = _m_lastMovementId++;
+		moveId = last_movement_id++;
 	else
-		moveId = --_m_lastMovementId;
-	Q_ASSERT(_m_lastMovementId >= 0);
+		moveId = --last_movement_id;
+	Q_ASSERT(last_movement_id >= 0);
 	foreach (ServerPlayer* player, m_players)
 	{
 		if (player->isOffline()) continue;
@@ -3312,7 +3312,7 @@ void Room::activate(ServerPlayer *player, CardUseStruct &card_use){
 		bool success = doRequest(player, BP::Activate, player->objectName(), true);
 		QJsonValue clientReply = player->getClientReply();       
 
-		if (m_surrenderRequestReceived)
+		if (surrender_request_received)
 		{
 			makeSurrender(player);
 			if (!game_finished)
