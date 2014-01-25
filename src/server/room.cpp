@@ -949,9 +949,7 @@ int Room::askForCardChosen(ServerPlayer *player, ServerPlayer *who, const QStrin
 	return card_id;
 }
 
-const Card *Room::askForCard(ServerPlayer *player, const QString &pattern, const QString &prompt,
-							 const QVariant &data, TriggerEvent trigger_event)
-{
+const Card *Room::askForCard(ServerPlayer *player, const QString &pattern, const QString &prompt, const QVariant &data, TriggerEvent trigger_event){
 	notifyMoveFocus(player, BP::AskForCard);
 	const Card *card = NULL;
 	QVariant asked = pattern;
@@ -966,11 +964,11 @@ const Card *Room::askForCard(ServerPlayer *player, const QString &pattern, const
 			card = ai->askForCard(pattern, prompt, data);
 			if(card)
 				thread->delay(Config.AIDelay);
-		}else{            
+		}else{
 			bool success = doRequest(player, BP::AskForCard, BP::toJsonArray(pattern, prompt), true);
 			QJsonValue clientReply = player->getClientReply();
 			if (success && !clientReply.isNull()){
-		card = Card::Parse(clientReply.toString());
+				card = Card::Parse(clientReply.toString());
 			}
 		}
 	}
@@ -982,18 +980,17 @@ const Card *Room::askForCard(ServerPlayer *player, const QString &pattern, const
 	}
 
 	bool continuable = false;
-	CardUseStruct card_use;
-	card_use.card = card;
-	card_use.from = player;
 	card = card->validateInResposing(player, &continuable);
 
 	if(card){
-		if(card->getTypeId() != Card::Skill){
-			const CardPattern *card_pattern = Bang->getPattern(pattern);
-			if(card_pattern == NULL || card_pattern->willThrow())
+		if(trigger_event != NonTrigger){
+			if(card->getTypeId() != Card::Skill){
+				const CardPattern *card_pattern = Bang->getPattern(pattern);
+				if(card_pattern == NULL || card_pattern->willThrow())
+					throwCard(card);
+			}else if(card->willThrow())
 				throwCard(card);
-		}else if(card->willThrow())
-			throwCard(card);
+		}
 
 		QVariant decisionData = QVariant::fromValue("cardResponsed:"+pattern+":"+prompt+":_"+card->toString()+"_");
 		thread->trigger(ChoiceMade, player, decisionData);
@@ -1011,7 +1008,9 @@ const Card *Room::askForCard(ServerPlayer *player, const QString &pattern, const
 			player->playCardEffect(card);
 		}
 
-		thread->trigger(trigger_event, player, card_star);
+		if(trigger_event != NonTrigger){
+			thread->trigger(trigger_event, player, card_star);
+		}
 
 	}else if(continuable)
 		return askForCard(player, pattern, prompt);
