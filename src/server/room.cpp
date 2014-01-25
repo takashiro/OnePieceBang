@@ -667,9 +667,11 @@ bool Room::doNotify(ServerPlayer *player, BP::CommandType command, const QJsonVa
 	return true;
 }
 
-bool Room::doBroadcastNotify(BP::CommandType command, const QJsonValue &arg){
-	foreach (ServerPlayer* player, m_players){
-		doNotify(player, command, arg);
+bool Room::doBroadcastNotify(BP::CommandType command, const QJsonValue &arg, ServerPlayer *except){
+	foreach (ServerPlayer *player, m_players){
+		if(player != except){
+			doNotify(player, command, arg);
+		}
 	}
 	return true;
 }
@@ -2687,7 +2689,7 @@ void Room::startGame(){
 			broadcastProperty(player, "general");
 
 		if(mode == "02_1v1")
-			broadcastInvoke("revealGeneral", QString("%1:%2").arg(player->objectName()).arg(player->getGeneralName()), player);
+			doBroadcastNotify(BP::RevealGeneral, BP::toJsonArray(player->objectName(), player->getGeneralName()), player);
 		
 		if((Config.Enable2ndGeneral) && mode != "02_1v1" && mode != "06_3v3" 
 			&& mode != "04_1v3" && !Config.EnableBasara)

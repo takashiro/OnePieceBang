@@ -119,13 +119,13 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::ClearAG] = &Client::clearAG;
 
 	// 3v3 mode & 1v1 mode
-	oldcallbacks["fillGenerals"] = &Client::fillGenerals;
-	oldcallbacks["askForGeneral3v3"] = &Client::askForGeneral3v3;
-	oldcallbacks["askForGeneral1v1"] = &Client::askForGeneral3v3;
-	oldcallbacks["takeGeneral"] = &Client::takeGeneral;
-	oldcallbacks["startArrange"] = &Client::startArrange;
-	oldcallbacks["recoverGeneral"] = &Client::recoverGeneral;
-	oldcallbacks["revealGeneral"] = &Client::revealGeneral;
+	callbacks[BP::FillGenerals] = &Client::fillGenerals;
+	callbacks[BP::AskForGeneral3v3] = &Client::askForGeneral3v3;
+	callbacks[BP::AskForGeneral1v1] = &Client::askForGeneral3v3;
+	callbacks[BP::TakeGeneral] = &Client::takeGeneral;
+	callbacks[BP::StartArrange] = &Client::startArrange;
+	callbacks[BP::RecoverGeneral] = &Client::recoverGeneral;
+	callbacks[BP::RevealGeneral] = &Client::revealGeneral;
 
 	m_isUseCard = false;
 
@@ -1750,23 +1750,32 @@ void Client::transfigure(const QJsonValue &transfigure_tr){
 	}
 }
 
-void Client::fillGenerals(const QString &generals){
-	emit generals_filled(generals.split("+"));
+void Client::fillGenerals(const QJsonValue &generals){
+	QStringList generallist;
+	foreach(const QJsonValue &general, generals.toArray()){
+		generallist << general.toString();
+	}
+
+	emit generals_filled(generallist);
 }
 
-void Client::askForGeneral3v3(const QString &){
+void Client::askForGeneral3v3(const QJsonValue &){
 	emit general_asked();
 }
 
-void Client::takeGeneral(const QString &take_str){
-	QStringList texts = take_str.split(":");
-	QString who = texts.at(0);
-	QString name = texts.at(1);
+void Client::takeGeneral(const QJsonValue &take_str){
+	QJsonArray texts = take_str.toArray();
+	if(texts.size() != 2){
+		return;
+	}
+
+	QString who = texts.at(0).toString();
+	QString name = texts.at(1).toString();
 
 	emit general_taken(who, name);
 }
 
-void Client::startArrange(const QString &){
+void Client::startArrange(const QJsonValue &){
 	emit arrange_started();
 }
 
@@ -1775,26 +1784,26 @@ void Client::onPlayerChooseRole3v3(){
 	setStatus(NotActive);
 }
 
-void Client::recoverGeneral(const QString &recover_str){
-	QRegExp rx("(\\d):(\\w+)");
-	if(!rx.exactMatch(recover_str))
+void Client::recoverGeneral(const QJsonValue &recover_str){
+	QJsonArray texts = recover_str.toArray();
+	if(texts.size() != 2){
 		return;
+	}
 
-	QStringList texts = rx.capturedTexts();
-	int index = texts.at(1).toInt();
-	QString name = texts.at(2);
+	int index = texts.at(0).toDouble();
+	QString name = texts.at(1).toString();
 
 	emit general_recovered(index, name);
 }
 
-void Client::revealGeneral(const QString &reveal_str){
-	QRegExp rx("(\\w+):(\\w+)");
-	if(!rx.exactMatch(reveal_str))
+void Client::revealGeneral(const QJsonValue &reveal_str){
+	QJsonArray texts = reveal_str.toArray();
+	if(texts.size() != 2){
 		return;
+	}
 
-	QStringList texts = rx.capturedTexts();
-	bool self = texts.at(1) == Self->objectName();
-	QString general = texts.at(2);
+	bool self = texts.at(0).toString() == Self->objectName();
+	QString general = texts.at(1).toString();
 
 	emit general_revealed(self, general);
 }

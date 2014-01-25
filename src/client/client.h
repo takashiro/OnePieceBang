@@ -166,13 +166,13 @@ public:
 	void askForDirection(const QJsonValue &);    
 
 	// 3v3 & 1v1 methods
-	void fillGenerals(const QString &generals);
-	void askForGeneral3v3(const QString &);
-	void takeGeneral(const QString &take_str);
-	void startArrange(const QString &);    
+	void fillGenerals(const QJsonValue &generals);
+	void askForGeneral3v3(const QJsonValue &);
+	void takeGeneral(const QJsonValue &take_str);
+	void startArrange(const QJsonValue &);
 	
-	void recoverGeneral(const QString &);
-	void revealGeneral(const QString &);
+	void recoverGeneral(const QJsonValue &);
+	void revealGeneral(const QJsonValue &);
 
 	void attachSkill(const QJsonValue &skill_name);
 	void detachSkill(const QJsonValue &skill_name);

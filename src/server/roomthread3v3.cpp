@@ -17,7 +17,7 @@ RoomThread3v3::RoomThread3v3(Room *room)
 QStringList RoomThread3v3::getGeneralsWithoutExtension() const{
 	QList<const General *> generals;
 
-	const Package *stdpack = Bang->findChild<const Package *>("standard");
+	const Package *stdpack = Bang->findChild<const Package *>("Standard");
 	const Package *windpack = Bang->findChild<const Package *>("wind");
 
 	generals << stdpack->findChildren<const General *>()
@@ -77,7 +77,7 @@ void RoomThread3v3::run()
 	qShuffle(general_names);
 	general_names = general_names.mid(0, 16);
 
-	room->broadcastInvoke("fillGenerals", general_names.join("+"));
+	room->doBroadcastNotify(BP::FillGenerals, BP::toJsonArray(general_names));
 
 	QString order = room->askForOrder(warm_leader);
 	ServerPlayer *first, *next;
@@ -112,7 +112,7 @@ void RoomThread3v3::askForTakeGeneral(ServerPlayer *player){
 		name = GeneralSelector::GetInstance()->select3v3(player, general_names);
 
 	if(name.isNull()){
-		player->invoke("askForGeneral3v3");
+		player->notify(BP::AskForGeneral3v3);
 	}else{
 		msleep(1000);
 		takeGeneral(player, name);
@@ -126,7 +126,7 @@ void RoomThread3v3::takeGeneral(ServerPlayer *player, const QString &name){
 	player->addToSelected(name);
 
 	QString group = player->isLord() ? "warm" : "cool";
-	room->broadcastInvoke("takeGeneral", QString("%1:%2").arg(group).arg(name));
+	room->doBroadcastNotify(BP::TakeGeneral, BP::toJsonArray(group, name));
 
 	room->sem->release();
 }
@@ -136,7 +136,7 @@ void RoomThread3v3::startArrange(ServerPlayer *player){
 		GeneralSelector *selector = GeneralSelector::GetInstance();
 		arrange(player, selector->arrange3v3(player));
 	}else{
-		player->invoke("startArrange");        
+		player->notify(BP::StartArrange);
 	}
 }
 

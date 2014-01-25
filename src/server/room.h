@@ -149,7 +149,7 @@ public:
 	// Broadcast a event to a list of players by sending S_SERVER_NOTIFICATION packets. No replies should be expected from
 	// the clients for S_SERVER_NOTIFICATION as it's a one way notice. Any message from the client in reply to this call
 	// will be rejected.    
-	bool doBroadcastNotify(BP::CommandType command, const QJsonValue &arg = QJsonValue());
+	bool doBroadcastNotify(BP::CommandType command, const QJsonValue &arg = QJsonValue(), ServerPlayer *except = NULL);
 
 	// Ask a server player to wait for the client response. Call is blocking until client replies or server times out, 
 	// whichever is earlier.
