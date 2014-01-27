@@ -5,7 +5,7 @@
 #include <QMessageBox>
 #include <QImageReader>
 
-Pixmap::Pixmap(const QString &filename, bool center_as_origin)    
+Pixmap::Pixmap(const QString &filename, bool center_as_origin)
 {
 	load(filename, center_as_origin);
 	markable = false;
@@ -33,7 +33,7 @@ bool Pixmap::_load(const QString &filename, QSize size, bool useNewSize, bool ce
 		QString error_string = reader.errorString();
 
 		QString warning = tr("Can not load image %1[%2], error string is %3").arg(filename).arg(metaObject()->className()).arg(error_string);
-		QMessageBox::warning(NULL, tr("Warning"), warning);        
+		QMessageBox::warning(NULL, tr("Warning"), warning);
 	} else {
 		if(useNewSize){
 			_m_width = size.width();
@@ -51,7 +51,7 @@ bool Pixmap::_load(const QString &filename, QSize size, bool useNewSize, bool ce
 		else
 			this->prepareGeometryChange();
 	}
-	return success; 
+	return success;
 }
 
 void Pixmap::setPixmap(const QPixmap &pixmap){

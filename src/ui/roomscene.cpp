@@ -61,8 +61,8 @@ struct RoomLayout {
 	double m_chatBoxHeightPercentage;
 	double m_infoPlaneWidthPercentage;
 	double m_photoRoomPadding;
-	double m_photoPhotoPadding;    
-	QSize m_minimumSceneSize;    
+	double m_photoPhotoPadding;
+	QSize m_minimumSceneSize;
 };
 
 struct CircularRoomLayout : public RoomLayout{
@@ -81,9 +81,9 @@ struct CircularRoomLayout : public RoomLayout{
 	}
 };
 
-static RoomLayout *GetRoomLayout(){    
-	static CircularRoomLayout circular;   
-	return &circular;    
+static RoomLayout *GetRoomLayout(){
+	static CircularRoomLayout circular;
+	return &circular;
 }
 
 RoomScene *RoomSceneInstance;
@@ -96,7 +96,7 @@ void RoomScene::resetPiles()
 #include "irregularbutton.h"
 
 RoomScene::RoomScene(QMainWindow *main_window)
-	:focused(NULL), special_card(NULL), 
+	:focused(NULL), special_card(NULL),
 	  main_window(main_window),game_started(false)
 {
 	m_choiceDialog = NULL;
@@ -138,7 +138,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
 		addItem(m_discardPile);
 		// create dashboard
 		dashboard = new Dashboard(button_widget);
-		dashboard->setObjectName("dashboard");         
+		dashboard->setObjectName("dashboard");
 		dashboard->setZValue(0.8);
 		addItem(dashboard);
 
@@ -280,7 +280,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
 			self_box = new KOFOrderBox(true, this);
 
 			enemy_box->hide();
-			self_box->hide();           
+			self_box->hide();
 
 			connect(ClientInstance, SIGNAL(general_revealed(bool,QString)), this, SLOT(revealGeneral(bool,QString)));
 		}
@@ -298,7 +298,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
 		connect(ClientInstance, SIGNAL(line_spoken(QString)), this, SLOT(appendChatBox(QString)));
 
 		// chat edit
-		chat_edit = new QLineEdit;        
+		chat_edit = new QLineEdit;
 		chat_edit->setObjectName("chat_edit");
 		chat_edit_widget = addWidget(chat_edit);
 		chat_edit_widget->setObjectName("chat_edit_widget");
@@ -312,7 +312,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
 		chat_widget->setZValue(-0.2);
 		addItem(chat_widget);
 		connect(chat_widget,SIGNAL(return_button_click()),this, SLOT(speak()));
-		connect(chat_widget,SIGNAL(chat_widget_msg(QString)),this, SLOT(appendChatEdit(QString)));        
+		connect(chat_widget,SIGNAL(chat_widget_msg(QString)),this, SLOT(appendChatEdit(QString)));
 
 		if(ServerInfo.DisableChat)
 			chat_edit_widget->hide();
@@ -398,9 +398,9 @@ RoomScene::RoomScene(QMainWindow *main_window)
 
 	m_rolesBoxBackground.load("image/system/state.png");
 	m_rolesBox = new QGraphicsPixmapItem;
-	addItem(m_rolesBox);    
+	addItem(m_rolesBox);
 	QString roles = Bang->getRoles(ServerInfo.GameMode);
-	m_pileCardNumInfoTextBox = addText("");    
+	m_pileCardNumInfoTextBox = addText("");
 	m_pileCardNumInfoTextBox->setParentItem(m_rolesBox);
 	m_pileCardNumInfoTextBox->setDocument(ClientInstance->getLinesDoc());
 	m_pileCardNumInfoTextBox->setDefaultTextColor(Qt::white);
@@ -460,7 +460,7 @@ void RoomScene::createExtraButtons(){
 	m_reverseSelectionButton = dashboard->createButton("reverse-select");
 	m_reverseSelectionButton->setEnabled(true);
 
-	dashboard->addWidget(m_reverseSelectionButton, room_layout->m_scenePadding 
+	dashboard->addWidget(m_reverseSelectionButton, room_layout->m_scenePadding
 		+ room_layout->m_photoRoomPadding * 3 + Photo::S_NORMAL_PHOTO_WIDTH, true);
 	connect(m_reverseSelectionButton, SIGNAL(clicked()), dashboard, SLOT(reverseSelection()));
 
@@ -540,7 +540,7 @@ void ReplayerControlBar::setTime(int secs){
 }
 
 void RoomScene::createReplayControlBar(){
-	// hide all buttons    
+	// hide all buttons
 	m_reverseSelectionButton->hide();
 
 	new ReplayerControlBar(dashboard);
@@ -569,14 +569,14 @@ void RoomScene::adjustItems(){
 	// set dashboard
 	dashboard->setX(displayRegion.x());
 	dashboard->setWidth(displayRegion.width());
-	dashboard->setY(displayRegion.height() - dashboard->boundingRect().height());    
+	dashboard->setY(displayRegion.height() - dashboard->boundingRect().height());
 	
 	// set infoplane
 	QRectF infoPlane;
-	infoPlane.setWidth(displayRegion.width() * room_layout->m_infoPlaneWidthPercentage);    
+	infoPlane.setWidth(displayRegion.width() * room_layout->m_infoPlaneWidthPercentage);
 	infoPlane.moveRight(displayRegion.right());
 	infoPlane.setTop(displayRegion.top() + room_layout->m_roleBoxHeight);
-	infoPlane.setBottom(dashboard->y() - room_layout->m_chatTextBoxHeight);    
+	infoPlane.setBottom(dashboard->y() - room_layout->m_chatTextBoxHeight);
 	m_rolesBoxBackground = m_rolesBoxBackground.scaled(infoPlane.width(), room_layout->m_roleBoxHeight);
 	m_rolesBox->setPixmap(m_rolesBoxBackground);
 	m_rolesBox->setPos(infoPlane.left(), displayRegion.top());
@@ -591,13 +591,13 @@ void RoomScene::adjustItems(){
 		chat_edit_widget->y() + (room_layout->m_chatTextBoxHeight - chat_widget->boundingRect().height()) / 2);
 	
 	 if(self_box)
-		 self_box->setPos(infoPlane.left() - padding - self_box->boundingRect().width(), 
+		 self_box->setPos(infoPlane.left() - padding - self_box->boundingRect().width(),
 			sceneRect().height() - padding * 3 - self_box->boundingRect().height() - dashboard->boundingRect().height() - m_reverseSelectionButton->height());
 	 if(enemy_box)
 		 enemy_box->setPos(padding * 2, padding * 2);
 	
 	updateTable();
-	updateRolesBox();     
+	updateRolesBox();
 }
 
 void RoomScene::_dispersePhotos(QList<Photo*> &photos, QRectF fillRegion, int minDistanceBetweenPhotos, Qt::Alignment align)
@@ -606,7 +606,7 @@ void RoomScene::_dispersePhotos(QList<Photo*> &photos, QRectF fillRegion, int mi
 	if(numPhotos == 0) return;
 	if(align == Qt::AlignHCenter){
 		double maxWidth = fillRegion.width();
-		double photoWidth = Photo::S_NORMAL_PHOTO_WIDTH; 
+		double photoWidth = Photo::S_NORMAL_PHOTO_WIDTH;
 		double step = qMax(photoWidth  + minDistanceBetweenPhotos, maxWidth / numPhotos);
 		for(int i = 0; i < numPhotos; i++){
 			Photo* photo = photos[i];
@@ -617,25 +617,25 @@ void RoomScene::_dispersePhotos(QList<Photo*> &photos, QRectF fillRegion, int mi
 	}
 	else if(align == Qt::AlignVCenter){
 		double maxHeight = fillRegion.height();
-		double photoHeight = Photo::S_NORMAL_PHOTO_HEIGHT; 
+		double photoHeight = Photo::S_NORMAL_PHOTO_HEIGHT;
 		double step = qMax(photoHeight + minDistanceBetweenPhotos, maxHeight / numPhotos);
 		for(int i = 0; i < numPhotos; i++){
 			Photo* photo = photos[i];
 			double newY = fillRegion.center().y() + step * (i - (numPhotos - 1) / 2.0);
 			QPointF newPos = QPointF(fillRegion.center().x(), newY);
-			photo->setPos(newPos);            
+			photo->setPos(newPos);
 		}
 	}
 	else if(align == Qt::AlignBottom){
-		double photoHeight = Photo::S_NORMAL_PHOTO_HEIGHT; 
+		double photoHeight = Photo::S_NORMAL_PHOTO_HEIGHT;
 		double step = minDistanceBetweenPhotos + photoHeight;
 		for(int i = 0; i < numPhotos; i++){
 			Photo* photo = photos[i];
 			double newY = fillRegion.bottom() - photoHeight / 2 - step * (numPhotos - i - 1);
 			QPointF newPos = QPointF(fillRegion.center().x(), newY);
-			photo->setPos(newPos);            
+			photo->setPos(newPos);
 		}
-	} 
+	}
 }
 
 void RoomScene::updateTable()
@@ -643,19 +643,19 @@ void RoomScene::updateTable()
 	int &pad = room_layout->m_scenePadding;
 	int tablew = log_box_widget->x() - pad;
 	int tableh = sceneRect().height() - pad * 2 - dashboard->boundingRect().height() - room_layout->m_photoRoomPadding;
-   
+
 	// Layout:
 	//    col1           col2
 	// _______________________
 	// |_2_|______1_______|_0_| row1
 	// |   |              |   |
-	// | 4 |    table     | 3 | 
+	// | 4 |    table     | 3 |
 	// |___|______________|___|
 	// |      dashboard       |
 	// ------------------------
 	// region 5 = 0 + 3, region 6 = 2 + 4, region 7 = 0 + 1 + 2
-	// region 8 = heightened 3, region 9 = heightened 4    
-	static int regularSeatIndex[][9] = 
+	// region 8 = heightened 3, region 9 = heightened 4
+	static int regularSeatIndex[][9] =
 	{
 		{1},    // 2 players
 		{5, 6}, // 3 players
@@ -673,9 +673,9 @@ void RoomScene::updateTable()
 		{3, 1, 4},
 		{1, 4, 4}
 	};
-	static int kof3v3SeatIndex[][5] = 
+	static int kof3v3SeatIndex[][5] =
 	{
-		{3, 1, 1, 1, 4}, // lord        
+		{3, 1, 1, 1, 4}, // lord
 		{1, 1, 1, 4, 4}, // rebel (left), same with loyalist (left)
 		{3, 3, 1, 1, 1} // loyalist (right), same with rebel (right)
 	};
@@ -686,7 +686,7 @@ void RoomScene::updateTable()
 	double row2 = tableh;
 
 	const int C_NUM_REGIONS = 10;
-	QRectF seatRegions[] = 
+	QRectF seatRegions[] =
 	{
 		QRectF(col2, 0, col1, row1),
 		QRectF(col1, 0, col2 - col1, row1),
@@ -730,7 +730,7 @@ void RoomScene::updateTable()
 	for(int i = 0; i < n; i++){
 		int regionIndex = seatToRegion[i];
 		if(regionIndex == 4 || regionIndex == 6 || regionIndex == 9)
-			photosInRegion[regionIndex].append(photos[i]);            
+			photosInRegion[regionIndex].append(photos[i]);
 		else
 			photosInRegion[regionIndex].prepend(photos[i]);
 	}
@@ -739,7 +739,7 @@ void RoomScene::updateTable()
 		Qt::Alignment align;
 		if(i < 3 || i == 7) align = Qt::AlignHCenter;
 		// else if(pkMode) align = Qt::AlignBottom;
-		else align = Qt::AlignVCenter;  
+		else align = Qt::AlignVCenter;
 		_dispersePhotos(photosInRegion[i], seatRegions[i], room_layout->m_photoPhotoPadding, align);
 	}
 
@@ -892,7 +892,7 @@ void RoomScene::keyReleaseEvent(QKeyEvent *event){
 			break;
 		}
 
-	case Qt::Key_Escape : {            
+	case Qt::Key_Escape : {
 			if(ClientInstance->getStatus() == Client::Playing){
 				dashboard->unselectAll();
 				enableTargets(NULL);
@@ -999,7 +999,7 @@ void RoomScene::chooseGeneral(const QStringList &generals){
 	
 	if(generals.isEmpty())
 		dialog = new FreeChooseDialog(main_window);
-	else    
+	else
 		dialog = new ChooseGeneralDialog(generals, main_window);
 	
 	delete m_choiceDialog;
@@ -1009,7 +1009,7 @@ void RoomScene::chooseGeneral(const QStringList &generals){
 void RoomScene::chooseSuit(const QStringList &suits)
 {
 	QDialog *dialog = new QDialog;
-	QVBoxLayout *layout = new QVBoxLayout;   
+	QVBoxLayout *layout = new QVBoxLayout;
 
 	foreach(QString suit, suits){
 		QCommandLinkButton *button = new QCommandLinkButton;
@@ -1064,10 +1064,10 @@ void RoomScene::chooseKingdom(const QStringList &kingdoms)
 }
 
 void RoomScene::chooseOption(const QString &skillName, const QStringList &options)
-{    
+{
 	QDialog *dialog = new QDialog;
 	QVBoxLayout *layout = new QVBoxLayout;
-	dialog->setWindowTitle(Bang->translate(skillName));   
+	dialog->setWindowTitle(Bang->translate(skillName));
 	layout->addWidget(new QLabel(tr("Please choose:")));
 
 	foreach(QString option, options){
@@ -1102,7 +1102,7 @@ void RoomScene::chooseCard(const ClientPlayer *player, const QString &flags, con
 	connect(dialog, SIGNAL(card_id_chosen(int)), ClientInstance, SLOT(onPlayerChooseCard(int)));
 	connect(dialog, SIGNAL(rejected()), ClientInstance, SLOT(onPlayerChooseCard()));
 	delete m_choiceDialog;
-	m_choiceDialog = dialog;    
+	m_choiceDialog = dialog;
 }
 
 void RoomScene::chooseOrder(BP::Game3v3ChooseOrderCommand reason)
@@ -1145,7 +1145,7 @@ void RoomScene::chooseRole(const QString &scheme, const QStringList &roles)
 	QLabel *prompt = new QLabel(tr("Please select a role"));
 	QVBoxLayout *layout = new QVBoxLayout;
 
-	layout->addWidget(prompt);    
+	layout->addWidget(prompt);
 
 	static QMap<QString, QString> jargon;
 	if(jargon.isEmpty()){
@@ -1173,7 +1173,7 @@ void RoomScene::chooseRole(const QString &scheme, const QStringList &roles)
 		layout->addWidget(button);
 		button->setObjectName(role);
 		connect(button, SIGNAL(clicked()), ClientInstance, SLOT(onPlayerChooseRole3v3()));
-		connect(button, SIGNAL(clicked()), dialog, SLOT(accept()));        
+		connect(button, SIGNAL(clicked()), dialog, SLOT(accept()));
 	}
 
 	QCommandLinkButton *abstain_button = new QCommandLinkButton(tr("Abstain"));
@@ -1236,7 +1236,7 @@ PlayerCardContainer* RoomScene::_getPlayerCardContainer(Player::Place place, Pla
 		return card_container;
 	else if(player == Self)
 		return dashboard;
-	else 
+	else
 		return name2photo.value(player->objectName(), NULL);
 }
 
@@ -1266,7 +1266,7 @@ void RoomScene::getCards(int moveId, QList<CardsMoveStruct> card_moves)
 		card_container->m_currentPlayer = (ClientPlayer*)movement.to;
 		PlayerCardContainer* to_container = _getPlayerCardContainer(movement.to_place, movement.to);
 		QList<CardItem*> cards = _m_cardsMoveStash[moveId][i];
-		for(int j = 0; j < cards.size(); j++){            
+		for(int j = 0; j < cards.size(); j++){
 			CardItem* card = cards[j];
 			int card_id = card->getId();
 			if(!card_moves[i].card_ids.contains(card_id)){
@@ -1369,7 +1369,7 @@ void RoomScene::keepGetCardLog(const CardsMoveStruct &move)
 			if(card_item != NULL);
 			else if(movement.from == Self){
 				card_item = new CardItem(Bang->getCard(card_id));
-				card_item->setPos(avatar->scenePos());                
+				card_item->setPos(avatar->scenePos());
 			}
 			else
 			{
@@ -1378,12 +1378,12 @@ void RoomScene::keepGetCardLog(const CardsMoveStruct &move)
 				card_item->showAvatar(NULL);
 				special_card = NULL;
 			}
-		}*/  
+		}*/
 		/*if(movement.to_place == Player::Special){
 			special_card = card_item;
-			dstPos = avatar->scenePos();            
+			dstPos = avatar->scenePos();
 		}*/
-		   /*    
+		   /*
 	if(src)
 		card_item->setOpacity(src == Self ? 1.0 : 0.0);
 
@@ -1393,12 +1393,12 @@ void RoomScene::keepGetCardLog(const CardsMoveStruct &move)
 	if(src != NULL && src_place != Player::Judging){
 		QString from_general;
 		from_general= src->getGeneralName();
-		from_general = Bang->translate(from_general);        
+		from_general = Bang->translate(from_general);
 	}
 	else{
 		if(src_place == Player::DiscardPile || dest_place == Player::Hand){
 			card_item->deleteCardDescription();
-		}        
+		}
 	}   */
 	
 }
@@ -1446,7 +1446,7 @@ void RoomScene::addSkillButton(const Skill *skill, bool from_left){
 	}else if(skill->inherits("FilterSkill")){
 		const FilterSkill *filter = qobject_cast<const FilterSkill *>(skill);
 		if(filter && dashboard->getFilter() == NULL)
-			dashboard->setFilter(filter);        
+			dashboard->setFilter(filter);
 		button = new QPushButton();
 
 	}else if(skill->inherits("ViewAsSkill")){
@@ -1974,7 +1974,7 @@ void RoomScene::unselectAllTargets(const QGraphicsItem *except){
 
 void RoomScene::doTimeout(){
 	switch(ClientInstance->getStatus())
-	{    
+	{
 	case Client::Playing:{
 		discard_button->click();
 		break;}
@@ -1982,7 +1982,7 @@ void RoomScene::doTimeout(){
 	case Client::Discarding:
 	case Client::ExecDialog:{
 		doCancelButton();
-		break;}                     
+		break;}
 	case Client::AskForPlayerChoose:{
 		ClientInstance->onPlayerChoosePlayer(NULL);
 		dashboard->stopPending();
@@ -1992,7 +1992,7 @@ void RoomScene::doTimeout(){
 		int card_id = card_container->getFirstEnabled();
 		if(card_id != -1)
 			ClientInstance->onPlayerChooseAG(card_id);
-		break;}        
+		break;}
 	case Client::AskForSkillInvoke:
 	case Client::AskForYiji:{
 		cancel_button->click();
@@ -2012,7 +2012,7 @@ void RoomScene::showPromptBox()
 	prompt_box->appear();
 }
 
-void RoomScene::updateStatus(Client::Status oldStatus, Client::Status newStatus){    
+void RoomScene::updateStatus(Client::Status oldStatus, Client::Status newStatus){
 	switch(newStatus){
 	case Client::NotActive:{
 			if(oldStatus == Client::ExecDialog){
@@ -2099,7 +2099,7 @@ void RoomScene::updateStatus(Client::Status oldStatus, Client::Status newStatus)
 				m_choiceDialog->show();
 				ok_button->setEnabled(false);
 				cancel_button->setEnabled(true);
-				discard_button->setEnabled(false);                
+				discard_button->setEnabled(false);
 			}
 			break;
 		}
@@ -2201,11 +2201,11 @@ void RoomScene::updateStatus(Client::Status oldStatus, Client::Status newStatus)
 	if(ServerInfo.OperationTimeout == 0)
 		return;
 
-	// do timeout    
-	if(newStatus != Client::NotActive){    
+	// do timeout
+	if(newStatus != Client::NotActive){
 		if(focused) focused->hideProgressBar();
 		QApplication::alert(main_window);
-		connect(dashboard, SIGNAL(progressBarTimedOut()), this, SLOT(doTimeout()));        
+		connect(dashboard, SIGNAL(progressBarTimedOut()), this, SLOT(doTimeout()));
 		dashboard->showProgressBar(ClientInstance->getCountdown());
 	}
 }
@@ -3248,7 +3248,7 @@ void RoomScene::moveFocus(const QString &who, BP::Countdown countdown){
 	if(who == Self->objectName() && focused != NULL){
 		focused->hideProgressBar();
 		if(focused->getPlayer()->getPhase() == Player::NotActive)
-			focused->setFrame(Photo::NoFrame);        
+			focused->setFrame(Photo::NoFrame);
 	}
 	Photo *photo = name2photo[who];
 	if(photo){
@@ -3291,7 +3291,7 @@ void RoomScene::showSkillInvocation(const QString &who, const QString &skill_nam
 	}
 }
 
-void RoomScene::removeLightBox(){    
+void RoomScene::removeLightBox(){
 	QPropertyAnimation *animation = qobject_cast<QPropertyAnimation *>(sender());
 	QGraphicsTextItem *line = qobject_cast<QGraphicsTextItem *>(animation->targetObject());
 	removeItem(line->parentItem());
@@ -3500,7 +3500,7 @@ void RoomScene::doHuashen(const QString &, const QStringList &args){
 		CardItem *item = new CardItem(arg);
 		item->scaleSmoothly(0.5);
 		generals.append(item);
-	}    
+	}
 	dashboard->addCardItems(generals, Player::SpecialArea);
 
 	Self->tag["Huashens"] = huashen_list;
@@ -3628,7 +3628,7 @@ void RoomScene::fillGenerals1v1(const QStringList &names){
 	selector_box = new Pixmap("image/system/1v1/select.png", true);
 	selector_box->setPos(m_tableCenterPos);
 	addItem(selector_box);
-	selector_box->setZValue(10000); 
+	selector_box->setZValue(10000);
 	
 	const static int start_x = 43;
 	const static int width = 86;
@@ -3711,12 +3711,12 @@ void RoomScene::fillGenerals(const QStringList &names){
 
 void RoomScene::bringToFront(QGraphicsItem* front_item)
 {
-	m_zValueMutex.lock();    
+	m_zValueMutex.lock();
 	if(_m_last_front_item != NULL)
 		_m_last_front_item->setZValue(_m_last_front_ZValue);
 	_m_last_front_item = front_item;
 	_m_last_front_ZValue = front_item->zValue();
-	front_item->setZValue(10000);    
+	front_item->setZValue(10000);
 	m_zValueMutex.unlock();
 }
 
@@ -3751,7 +3751,7 @@ void RoomScene::takeGeneral(const QString &who, const QString &name){
 		y = self_taken ? 60 + 120 * 3 : 60;
 	}
 
-	general_item->setHomePos(QPointF(x, y));    
+	general_item->setHomePos(QPointF(x, y));
 	general_item->goBack(true);
 }
 
@@ -3934,7 +3934,7 @@ void RoomScene::updateRoles(const QString &roles)
 
 	foreach(QChar c, roles){
 		if(map.contains(c)){
-			QGraphicsPixmapItem *item = addPixmap(map.value(c));    
+			QGraphicsPixmapItem *item = addPixmap(map.value(c));
 			role_items << item;
 		}
 	}

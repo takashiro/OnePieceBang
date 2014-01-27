@@ -18,7 +18,7 @@ ServerPlayer::ServerPlayer(Room *room)
 	semas = new QSemaphore*[S_NUM_SEMAPHORES];
 	for(int i=0; i< S_NUM_SEMAPHORES; i++){
 		semas[i] = new QSemaphore(0);
-	}        
+	}
 }
 
 void ServerPlayer::drawCard(const Card *card){

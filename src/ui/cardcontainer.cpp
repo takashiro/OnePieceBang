@@ -8,7 +8,7 @@
 #include <QGraphicsSceneMouseEvent>
 
 
-CardContainer::CardContainer()    
+CardContainer::CardContainer()
 {
 	Pixmap::load("image/system/card-container.png", true);
 	setFlag(ItemIsFocusable);
@@ -37,14 +37,14 @@ void CardContainer::fillCards(const QList<int> &card_ids){
 
 	for(int i = 0; i < n; i++){
 		QPointF pos;
-		if(n <= 10){                    
+		if(n <= 10){
 			if(i < 5){
 				pos = pos1;
 				pos.setX(pos.x() + i * skip);
 			}else{
 				pos = pos2;
 				pos.setX(pos.x() + (i - 5) * skip);
-			}            
+			}
 		}else{
 			int half = n / 2 + 1;
 			qreal real_skip = whole_width / half;
@@ -55,21 +55,21 @@ void CardContainer::fillCards(const QList<int> &card_ids){
 			}else{
 				pos = pos2;
 				pos.setX(pos.x() + (i-half) * real_skip);
-			}        
-		}      
+			}
+		}
 		CardItem* item = items[i];
 		item->setPos(pos);
 		item->setHomePos(pos);
 		item->setOpacity(1.0);
 		item->setHomeOpacity(1.0);
 		item->setFlag(QGraphicsItem::ItemIsFocusable);
-	}    
+	}
 }
 
 bool CardContainer::_addCardItems(QList<CardItem*> &card_items, Player::Place place){
 	// foreach(CardItem* card_item, card_items) card_item->setHomePos
 	
-	return true;    
+	return true;
 }
 
 void CardContainer::clear(){
@@ -206,7 +206,7 @@ void CardContainer::view(const ClientPlayer *player){
 
 	QGraphicsPixmapItem *avatar = new QGraphicsPixmapItem(this);
 	avatar->setPixmap(QPixmap(player->getGeneral()->getPixmapPath("tiny")));
-	avatar->setPos(496, 288);    
+	avatar->setPos(496, 288);
 }
 
 GuanxingBox::GuanxingBox()

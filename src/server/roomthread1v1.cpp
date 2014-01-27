@@ -96,7 +96,7 @@ void RoomThread1v1::takeGeneral(ServerPlayer *player, const QString &name){
 }
 
 void RoomThread1v1::startArrange(ServerPlayer *player){
-	if(player->getState() != "online"){        
+	if(player->getState() != "online"){
 		GeneralSelector *selector = GeneralSelector::GetInstance();
 		arrange(player, selector->arrange1v1(player));
 	}else{

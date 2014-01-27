@@ -37,7 +37,7 @@ QStringList MiniSceneRule::existedGenerals() const
 
 bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const
 {
-	Room* room;        
+	Room* room;
 	if(player == NULL)
 		room = data.value<RoomStar>();
 	else

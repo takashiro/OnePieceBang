@@ -417,9 +417,9 @@ int Engine::getPlayerCount(const QString &mode) const{
 QString Engine::getRoles(const QString &mode) const{
 	int n = getPlayerCount(mode);
 
-	if(mode == "02_1v1"){        
+	if(mode == "02_1v1"){
 		return "ZN";
-	}else if(mode == "04_1v3"){        
+	}else if(mode == "04_1v3"){
 		return "ZFFF";
 	}
 

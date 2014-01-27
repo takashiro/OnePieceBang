@@ -216,7 +216,7 @@ void RoomThread3v3::assignRoles(const QString &scheme){
 			<< "renegade"  << "rebel" << "loyalist";
 
 	if(scheme == "Random"){
-		// the easiest way        
+		// the easiest way
 		qShuffle(room->m_players);
 
 		int i;

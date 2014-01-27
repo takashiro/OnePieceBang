@@ -15,7 +15,7 @@
 
 CardItem::CardItem(const Card *card)
 {
-	setCard(card);    
+	setCard(card);
 	m_isSelected = false;
 	auto_back = true;
 	frozen = false;
@@ -40,7 +40,7 @@ CardItem::CardItem(const Card *card)
 }
 
 void CardItem::setCard(const Card* card)
-{      
+{
 	if(card != NULL){
 		Pixmap::load(card->getPixmapPath());
 		icon_pixmap.load(card->getIconPath());
@@ -57,7 +57,7 @@ void CardItem::setCard(const Card* card)
 
 void CardItem::setEnabled(bool enabled)
 {
-	 Pixmap::setEnabled(enabled);    
+	 Pixmap::setEnabled(enabled);
 }
 
 CardItem::CardItem(const QString &general_name)
@@ -130,7 +130,7 @@ void CardItem::goBack(bool playAnimation, bool doFade){
 			delete m_currentAnimation;
 			m_currentAnimation = NULL;
 		}
-		setPos(homePos());        
+		setPos(homePos());
 		m_animationMutex.unlock();
 	}
 }
@@ -152,9 +152,9 @@ QAbstractAnimation* CardItem::getGoBackAnimation(bool doFade)
 	if(doFade){
 		QParallelAnimationGroup *group = new QParallelAnimationGroup;
 
-		QPropertyAnimation *disappear = new QPropertyAnimation(this, "opacity");        
+		QPropertyAnimation *disappear = new QPropertyAnimation(this, "opacity");
 		double middleOpacity = qMax(opacity(), m_opacityAtHome);
-		if(middleOpacity == 0) middleOpacity = 1.0;        
+		if(middleOpacity == 0) middleOpacity = 1.0;
 		disappear->setEndValue(m_opacityAtHome);
 		disappear->setKeyValueAt(0.2, middleOpacity);
 		disappear->setKeyValueAt(0.8, middleOpacity);
@@ -164,7 +164,7 @@ QAbstractAnimation* CardItem::getGoBackAnimation(bool doFade)
 		group->addAnimation(disappear);
 
 		// card is disabled while moving
-		// setEnabled(false);       
+		// setEnabled(false);
 		m_currentAnimation = group;
 	}else{
 		m_currentAnimation = goback;
@@ -264,7 +264,7 @@ void CardItem::mousePressEvent(QGraphicsSceneMouseEvent *){
 void CardItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *){
 	if(isFrozen()) return;
 
-	if(auto_back){        
+	if(auto_back){
 		goBack(true, false);
 	}else{
 		emit released();

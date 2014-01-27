@@ -148,7 +148,7 @@ void ClientLogBox::appendLog(const QString &log_str){
 		return;
 	}
 
-	QStringList texts = rx.capturedTexts();   
+	QStringList texts = rx.capturedTexts();
 
 	QString type = texts.at(1);
 	QString from = texts.at(2);

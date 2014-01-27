@@ -47,8 +47,8 @@ bool CardsMoveStruct::tryParse(const QJsonValue &data){
 		!BP::isIntArray(arg, 1, 2) || !BP::isStringArray(arg, 3, 6)) return false;
 	if(arg[0].isDouble()){
 		int size = arg[0].toDouble();
-		for(int i = 0; i < size; i++)        
-			card_ids.append(Card::S_UNKNOWN_CARD_ID);        
+		for(int i = 0; i < size; i++)
+			card_ids.append(Card::S_UNKNOWN_CARD_ID);
 	}
 	else if(!BP::tryParse(arg[0], card_ids))
 		return false;

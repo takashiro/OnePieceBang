@@ -370,7 +370,7 @@ void Photo::installDelayedTrick(CardItem *trick){
 
 QList<CardItem*> Photo::removeCardItems(const QList<int> &card_ids, Player::Place place)
 {
-	QList<CardItem*> result;    
+	QList<CardItem*> result;
 	if(place == Player::HandArea || place == Player::SpecialArea){
 		 result = _createCards(card_ids);
 	}else if(place == Player::EquipArea){
@@ -380,7 +380,7 @@ QList<CardItem*> Photo::removeCardItems(const QList<int> &card_ids, Player::Plac
 				result.append(equip);
 				*equip_ptr = NULL;
 				int index = equips.indexOf(equip_ptr);
-				equip_rects[index]->setToolTip(QString());                
+				equip_rects[index]->setToolTip(QString());
 			}
 		}
 	}else if(place == Player::JudgingArea){
@@ -409,7 +409,7 @@ QList<CardItem*> Photo::removeCardItems(const QList<int> &card_ids, Player::Plac
 				card_item->setCard(card);
 			}
 			result.append(card_item);
-		}    
+		}
 	}
 	_disperseCards(result, S_CARD_MOVE_REGION, Qt::AlignCenter, true, false);
 	update();
@@ -564,7 +564,7 @@ void Photo::updatePile(const QString &pile_name){
 		}
 
 		qSort(cards.begin(), cards.end(), CompareByNumber);
-		foreach(const Card *card, cards){            
+		foreach(const Card *card, cards){
 			menu->addAction(card->getSuitIcon(),
 							QString("%1 (%2)").arg(card->getFullName())
 							.arg(Bang->translate(pile_name)));
@@ -584,10 +584,10 @@ void Photo::updatePile(const QString &pile_name){
 void Photo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
 	painter->setPen(Qt::white);
 	QRect avatarRect = avatar_area->boundingRect().toRect();
-	static QPixmap wait_frame("image/system/wait-frame.png");    
+	static QPixmap wait_frame("image/system/wait-frame.png");
 	if(_m_kindomColorMaskIcon.isNull())
 		painter->drawPixmap(avatarRect, wait_frame);
-	if(!hide_avatar){        
+	if(!hide_avatar){
 		// avatar related
 		painter->drawPixmap(avatarRect, avatar);
 		painter->drawPixmap(small_avatar_area->boundingRect().toRect(), small_avatar);
@@ -652,7 +652,7 @@ void Photo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 		stateArea.moveRight(avatarRect.right());
 		painter->fillRect(stateArea, Qt::gray);
 		painter->drawText(stateArea, Bang->translate(state_str));
-	}    
+	}
 
 	if(player->getPhase() != Player::NotActive){
 		static QList<QPixmap> phase_pixmaps;

@@ -88,7 +88,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::SetCardFlag] = &Client::setCardFlag;
 	callbacks[BP::SetPlayerProperty] = &Client::setPlayerProperty;
 
-	// interactive methods    
+	// interactive methods
 	interactions[BP::AskForGeneral] = &Client::askForGeneral;
 	interactions[BP::AskForPlayerChosen] = &Client::askForPlayerChosen;
 	interactions[BP::AskForAssign] = &Client::askForAssign;
@@ -380,7 +380,7 @@ bool Client::_loseSingleCard(int card_id, CardsMoveStruct move){
 		if(move.from_place == Player::DiscardPile)
 			discarded_list.removeOne(card);
 		else if(move.from_place == Player::DrawPile && !Self->hasFlag("marshalling"))
-				pile_num--;        
+				pile_num--;
 	}
 	updatePileNum();
 	return true;
@@ -396,7 +396,7 @@ bool Client::_getSingleCard(int card_id, CardsMoveStruct move){
 			pile_num++;
 		// @todo: synchronize discard pile when "marshal"
 		else if(move.to_place == Player::DiscardPile)
-			discarded_list.prepend(card);        
+			discarded_list.prepend(card);
 	}
 
 	updatePileNum();
@@ -414,7 +414,7 @@ void Client::getCards(const QJsonValue& data){
 		if(!move.tryParse(arg[i])) return;
 		move.from = getPlayer(move.from_player_name);
 		move.to = getPlayer(move.to_player_name);
-		Player::Place dstPlace = move.to_place;        
+		Player::Place dstPlace = move.to_place;
 	
 		if(dstPlace == Player::SpecialArea)
 			((ClientPlayer*)move.to)->changePile(move.to_pile_name, true, move.card_ids);
@@ -438,9 +438,9 @@ void Client::loseCards(const QJsonValue& data){
 		if(!move.tryParse(arg[i])) return;
 		move.from = getPlayer(move.from_player_name);
 		move.to = getPlayer(move.to_player_name);
-		Player::Place srcPlace = move.from_place;   
+		Player::Place srcPlace = move.from_place;
 		
-		if(srcPlace == Player::SpecialArea)        
+		if(srcPlace == Player::SpecialArea)
 			((ClientPlayer*)move.from)->changePile(move.from_pile_name, false, move.card_ids);
 		else {
 			foreach(int card_id, move.card_ids)
@@ -448,7 +448,7 @@ void Client::loseCards(const QJsonValue& data){
 		}
 		moves.append(move);
 	}
-	emit move_cards_lost(moveId, moves);    
+	emit move_cards_lost(moveId, moves);
 }
 
 void Client::onPlayerChooseGeneral(const QString &item_name){
@@ -591,7 +591,7 @@ void Client::notifyRoleChange(const QString &new_role){
 	}
 }
 
-void Client::activate(const QJsonValue& playerId){    
+void Client::activate(const QJsonValue& playerId){
 	if(playerId.toString() == Self->objectName())
 		setStatus(Playing);
 	else
@@ -626,7 +626,7 @@ void Client::hpChange(const QJsonValue &change_str){
 	emit hp_changed(who, delta, nature, nature_str == "L");
 }
 
-void Client::setStatus(Status status){    
+void Client::setStatus(Status status){
 	Status old_status = this->status;
 	this->status = status;
 	emit status_changed(old_status, status);
@@ -683,7 +683,7 @@ QString Client::getSkillNameToInvoke() const{
 	return skill_to_invoke;
 }
 
-void Client::onPlayerInvokeSkill(bool invoke){    
+void Client::onPlayerInvokeSkill(bool invoke){
 	if(skill_name == "surrender")
 		replyToServer(BP::AskForSurrender, invoke);
 	else
@@ -795,7 +795,7 @@ void Client::onPlayerMakeChoice(){
 
 void Client::askForSurrender(const QJsonValue &initiator){
 	
-	if(!initiator.isString()) return;    
+	if(!initiator.isString()) return;
 
 	QString text = tr("%1 initiated a vote for disadvataged side to claim "
 						"capitulation. Click \"OK\" to surrender or \"Cancel\" to resist.")
@@ -884,7 +884,7 @@ void Client::playCardEffect(const QJsonValue &play_str){
 
 void Client::onPlayerChooseCard(int card_id){
 	QJsonValue reply;
-	if(card_id != -2){   
+	if(card_id != -2){
 		reply = card_id;
 	}
 	replyToServer(BP::AskForCardChosen, reply);
@@ -1488,7 +1488,7 @@ void Client::askForGongxin(const QJsonValue &data){
 void Client::onPlayerReplyGongxin(int card_id){
 	QJsonValue reply;
 	if(card_id != -1)
-		reply = card_id;    
+		reply = card_id;
 	replyToServer(BP::AskForGongxin, reply);
 	setStatus(NotActive);
 }

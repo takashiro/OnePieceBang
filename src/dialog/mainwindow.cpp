@@ -44,10 +44,10 @@ public:
 			setMatrix(QMatrix());
 
 		MainWindow *main_window = qobject_cast<MainWindow *>(parentWidget());
-		if(scene()->inherits("RoomScene")){            
-			RoomScene *room_scene = qobject_cast<RoomScene *>(scene());            
+		if(scene()->inherits("RoomScene")){
+			RoomScene *room_scene = qobject_cast<RoomScene *>(scene());
 			QRectF newSceneRect(0, 0, event->size().width(), event->size().height());
-			room_scene->setSceneRect(newSceneRect);            
+			room_scene->setSceneRect(newSceneRect);
 			room_scene->adjustItems();
 			setSceneRect(room_scene->sceneRect());
 			if(Config.FitInView)
@@ -56,7 +56,7 @@ public:
 			return;
 		}
 		if(main_window)
-			main_window->setBackgroundBrush(true);           
+			main_window->setBackgroundBrush(true);
 	}
 };
 
@@ -433,16 +433,16 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::setBackgroundBrush(bool centerAsOrigin){
 	if(scene){
-		QPixmap pixmap(Config.BackgroundImage);        
+		QPixmap pixmap(Config.BackgroundImage);
 		QBrush brush(pixmap);
 		qreal sx = qMax((qreal)width(), scene->width()) / qreal(pixmap.width());
 		qreal sy = qMax((qreal)height(), scene->height()) / qreal(pixmap.height());
-			   
+			
 
 		QTransform transform;
 		if(centerAsOrigin)
 			transform.translate(-qMax((qreal)width(), scene->width()) / 2,
-				-qMax((qreal)height(), scene->height()) / 2);        
+				-qMax((qreal)height(), scene->height()) / 2);
 		transform.scale(sx, sy);
 		brush.setTransform(transform);
 		scene->setBackgroundBrush(brush);
@@ -631,7 +631,7 @@ void MainWindow::on_actionScript_editor_triggered()
 MeleeDialog::MeleeDialog(QWidget *parent)
 	:QDialog(parent)
 {
-	server=NULL;    
+	server=NULL;
 	room_count=0;
 
 	setWindowTitle(tr("AI Melee"));
@@ -938,7 +938,7 @@ void MainWindow::sendLowLevelCommand()
 		ClientInstance->request(command);
 }
 
-void MeleeDialog::updateResultBox(QString role, int win){    
+void MeleeDialog::updateResultBox(QString role, int win){
 	QLineEdit *edit = result_box->findChild<QLineEdit *>(role + "_edit");
 	double roleCount = ++(this->roleCount[role]);
 	double winCount = (this->winCount[role] += win);

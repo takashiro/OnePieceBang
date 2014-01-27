@@ -46,7 +46,7 @@ void NativeServerSocket::processNewConnection(){
 
 // ---------------------------------
 
-NativeClientSocket::NativeClientSocket()    
+NativeClientSocket::NativeClientSocket()
 	:socket(new QTcpSocket(this))
 {
 	init();
@@ -87,13 +87,13 @@ void NativeClientSocket::connectToHost(){
 void NativeClientSocket::getMessage(){
 	while(socket->canReadLine()){
 		buffer_t msg;
-		socket->readLine(msg, sizeof(msg));        
+		socket->readLine(msg, sizeof(msg));
 
 		emit message_got(msg);
 	}
 }
 
-void NativeClientSocket::disconnectFromHost(){    
+void NativeClientSocket::disconnectFromHost(){
 	socket->disconnectFromHost();
 }
 

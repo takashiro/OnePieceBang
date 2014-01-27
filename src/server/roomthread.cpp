@@ -160,8 +160,8 @@ void CardUseStruct::parse(const QString &str, Room *room){
 	// only returns one QString, which is "a". Suspect
 	// it's a bug with QT regular expression. Figure out
 	// the cause of the issue.
-	if(words.length() == 2 && !words.at(1).isEmpty()) 
-		target_str = words.at(1);    
+	if(words.length() == 2 && !words.at(1).isEmpty())
+		target_str = words.at(1);
 
 	card = Card::Parse(card_str);
 
@@ -200,7 +200,7 @@ void RoomThread::addPlayerSkills(ServerPlayer *player, bool invoke_game_start){
 void RoomThread::constructTriggerTable(){
 	foreach(ServerPlayer *player, room->getPlayers()){
 		addPlayerSkills(player, true);
-	}    
+	}
 }
 
 void RoomThread::run3v3(){
@@ -304,7 +304,7 @@ void RoomThread::run(){
 			run3v3();
 		}else if(room->getMode() == "04_1v3"){
 			ServerPlayer *shenlvbu = room->getLord();
-			try {            
+			try {
 				QList<ServerPlayer *> league = room->getPlayers();
 				league.removeOne(shenlvbu);
 
@@ -319,7 +319,7 @@ void RoomThread::run(){
 						trigger(TurnStart, room->getCurrent());
 
 						if(!player->hasFlag("actioned"))
-							room->setPlayerFlag(player, "actioned");                                       
+							room->setPlayerFlag(player, "actioned");
 
 						if(player->isAlive()){
 							room->setCurrent(shenlvbu);

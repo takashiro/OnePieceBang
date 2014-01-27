@@ -10,12 +10,12 @@ void TimedProgressBar::showEvent(QShowEvent* showEvent)
 	}
 	m_timer = startTimer(m_step);
 	this->setMaximum(m_max);
-	this->setValue(m_val);    
+	this->setValue(m_val);
 }
 
 void TimedProgressBar::hide()
 {
-	if(m_timer != 0){        
+	if(m_timer != 0){
 		killTimer(m_timer);
 		m_timer = NULL;
 	}
@@ -29,11 +29,11 @@ void TimedProgressBar::timerEvent(QTimerEvent* timerEvent)
 		m_val = m_max;
 		if(m_autoHide) hide();
 		else
-		{            
+		{
 			killTimer(m_timer);
 			m_timer = NULL;
 		}
-		emit timedOut();    
+		emit timedOut();
 	}
 	this->setValue(m_val);
 }
@@ -73,20 +73,20 @@ void QSanCommandProgressBar::paintEvent(QPaintEvent *e)
 	QPainter painter(this);
 	if(orientation() == Qt::Vertical){
 		painter.translate(0, height);
-		qSwap(width, height); 
+		qSwap(width, height);
 		painter.rotate(-90);
-	}    
+	}
 	painter.drawPixmap(0, 0, width, height, *sm_progress_0_image,
 		0, 0, S_PROGRESS_IMAGE_WIDTH, S_PROGRESS_IMAGE_HEIGHT);
 	const QPixmap *image;
 	double percent = 1 - (double) m_val / m_max;
 	if(percent >= 0.8)
 		image = sm_progress_100_image;
-	else if(percent >= 0.5)    
+	else if(percent >= 0.5)
 		image = sm_progress_80_image;
-	else if(percent >= 0.2)    
+	else if(percent >= 0.2)
 		image = sm_progress_50_image;
-	else 
+	else
 		image = sm_progress_20_image;
 	int drawWidth = percent * S_PROGRESS_IMAGE_WIDTH;
 	painter.drawPixmap(0, 0, percent * width, height, *image, 0, 0, drawWidth, S_PROGRESS_IMAGE_HEIGHT);

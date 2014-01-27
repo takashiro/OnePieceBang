@@ -15,7 +15,7 @@
 
 const QRect Dashboard::S_EQUIP_CARD_MOVE_REGION(0, -10,
 	CardItem::S_NORMAL_CARD_WIDTH * 1.5, CardItem::S_NORMAL_CARD_HEIGHT);
-const QRect Dashboard::S_JUDGE_CARD_MOVE_REGION(0, -20, 
+const QRect Dashboard::S_JUDGE_CARD_MOVE_REGION(0, -20,
 	CardItem::S_NORMAL_CARD_WIDTH * 1.5, CardItem::S_NORMAL_CARD_HEIGHT);
 
 Dashboard::Dashboard(QGraphicsItem *button_widget)
@@ -193,7 +193,7 @@ bool Dashboard::_addCardItems(QList<CardItem*> &card_items, Player::Place place)
 	}
 	else if(place == Player::SpecialArea){
 		foreach(CardItem* card, card_items){
-			card->setHomeOpacity(0.0);            
+			card->setHomeOpacity(0.0);
 		}
 		_disperseCards(card_items, m_cardSpecialRegion, Qt::AlignCenter, true, false);
 		return true;
@@ -209,7 +209,7 @@ bool Dashboard::_addCardItems(QList<CardItem*> &card_items, Player::Place place)
 	}
 	
 	if(place == Player::HandArea)
-		sortCards(sort_type, true);        
+		sortCards(sort_type, true);
 	return false;
 }
 
@@ -230,7 +230,7 @@ void Dashboard::_addHandCard(CardItem* card_item){
 	connect(card_item, SIGNAL(clicked()), this, SLOT(onCardItemClicked()));
 	connect(card_item, SIGNAL(thrown()), this, SLOT(onCardItemThrown()));
 	connect(card_item, SIGNAL(enter_hover()), this, SLOT(onCardItemHover()));
-	connect(card_item, SIGNAL(leave_hover()), this, SLOT(onCardItemLeaveHover()));      
+	connect(card_item, SIGNAL(leave_hover()), this, SLOT(onCardItemLeaveHover()));
 }
 
 void Dashboard::setPlayer(const ClientPlayer *player){
@@ -366,20 +366,20 @@ const Card *Dashboard::getSelected() const{
 
 void Dashboard::selectCard(CardItem* item, bool isSelected){
 	//if(Self && Self->getHandcardNum() > Config.MaxCards)
-	//    frame->show();    
+	//    frame->show();
 	bool oldState = item->isSelected();
 	if(oldState == isSelected) return;
-	m_mutex.lock();     
+	m_mutex.lock();
 	item->setSelected(isSelected);
 	QPointF oldPos = item->homePos();
 	QPointF newPos = oldPos;
 	if(isSelected)
 		newPos.setY(newPos.y() + S_PENDING_OFFSET_Y);
-	else 
+	else
 		newPos.setY(newPos.y() - S_PENDING_OFFSET_Y);
-	item->setHomePos(newPos);    
+	item->setHomePos(newPos);
 	//setY(PendingY);
-	if(!hasFocus()) item->goBack(true);    
+	if(!hasFocus()) item->goBack(true);
 	m_mutex.unlock();
 }
 
@@ -451,7 +451,7 @@ void Dashboard::setWidth(int width){
 	setMiddleWidth(middle_width);
 	prepareGeometryChange();
 	adjustCards();
-	m_cardTakeOffRegion = middle->boundingRect();    
+	m_cardTakeOffRegion = middle->boundingRect();
 	m_cardTakeOffRegion.setY(middle->pos().y() - CardItem::S_NORMAL_CARD_HEIGHT * 1.5);
 	m_cardTakeOffRegion.setHeight(CardItem::S_NORMAL_CARD_HEIGHT);
 }
@@ -493,7 +493,7 @@ QPushButton *Dashboard::addButton(const QString &name, int x, bool from_left){
 }
 
 void Dashboard::_addProgressBar()
-{    
+{
 	m_progressBar.setFixedSize(300, 26);
 	m_progressBar.setTextVisible(false);
 	QGraphicsProxyWidget *widget = new QGraphicsProxyWidget(right);
@@ -501,7 +501,7 @@ void Dashboard::_addProgressBar()
 	widget->setParentItem(middle);
 	widget->setPos(200, -25);
 	connect(&m_progressBar, SIGNAL(timedOut()), this, SIGNAL(progressBarTimedOut()));
-	m_progressBar.hide();    
+	m_progressBar.hide();
 }
 
 void Dashboard::hideProgressBar()
@@ -655,13 +655,13 @@ void Dashboard::drawEquip(QPainter *painter, const CardItem *equip, int order){
 	if(equip->isMarked()){
 		painter->drawRect(8, y + 2, label.width(), label.height());
 	}
-}    
+}
 
 void Dashboard::adjustCards(bool playAnimation){
 	_adjustCards();
 	foreach(CardItem* card, m_handCards){
 		card->goBack(playAnimation);
-	}        
+	}
 }
 
 void Dashboard::_adjustCards(){
@@ -715,7 +715,7 @@ void Dashboard::_adjustCards(){
 	}
 }
 
-void Dashboard::_adjustCards(const QList<CardItem *> &list, int y){    
+void Dashboard::_adjustCards(const QList<CardItem *> &list, int y){
 	if(list.isEmpty()) return;
 
 	int max_width = middle->rect().width() - getButtonWidgetWidth();
@@ -741,7 +741,7 @@ void Dashboard::_adjustCards(const QList<CardItem *> &list, int y){
 	}
 }
 
-void Dashboard::_installEquip(CardItem *equip){    
+void Dashboard::_installEquip(CardItem *equip){
 	int index = -1;
 	equip->setHomeOpacity(0.0);
 	const EquipCard *equip_card = qobject_cast<const EquipCard *>(equip->getCard());
@@ -763,7 +763,7 @@ QList<CardItem*> Dashboard::removeCardItems(const QList<int> &card_ids, Player::
 		if(place == Player::HandArea){
 			card_item = CardItem::FindItem(m_handCards, card_id);
 			if(card_item == selected) selected = NULL;
-			m_handCards.removeOne(card_item);            
+			m_handCards.removeOne(card_item);
 			card_item->hideFrame();
 		}
 		else if(place == Player::EquipArea){
@@ -807,14 +807,14 @@ QList<CardItem*> Dashboard::removeCardItems(const QList<int> &card_ids, Player::
 			card_item->setOpacity(1.0);
 		}else if(place == Player::SpecialArea){
 			card_item = _createCard(card_id);
-			card_item->setOpacity(0.0);            
+			card_item->setOpacity(0.0);
 		}
 		if(card_item){
 			card_item->disconnect(this);
-			result.append(card_item);            
+			result.append(card_item);
 		}
 	}
-	/*if(place == Player::Hand)    
+	/*if(place == Player::Hand)
 		adjustCards();
 	else*/ if(place == Player::EquipArea)
 		_disperseCards(result, S_EQUIP_CARD_MOVE_REGION, Qt::AlignCenter, false, false);
@@ -864,7 +864,7 @@ void Dashboard::sortCards(int sort_type, bool doAnimation){
 
 	CompareFunc func = compare_funcs[sort_type];
 	if(func)
-		qSort(m_handCards.begin(), m_handCards.end(), func);    
+		qSort(m_handCards.begin(), m_handCards.end(), func);
 	if(doAnimation)
 		adjustCards();
 }
@@ -980,7 +980,7 @@ void Dashboard::onCardItemClicked(){
 			emit card_selected(NULL);
 		}else{
 			unselectAll();
-			selectCard(card_item, true);          
+			selectCard(card_item, true);
 			selected = card_item;
 
 			emit card_selected(selected->getFilteredCard());

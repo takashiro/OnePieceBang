@@ -49,7 +49,7 @@ void CardOverview::loadFromList(const QList<const Card*> &list){
 	int i, n = list.length();
 	ui->tableWidget->setRowCount(n);
 	for(i=0; i<n; i++)
-		addCard(i, list.at(i));    
+		addCard(i, list.at(i));
 
 	if(n>0)
 		ui->tableWidget->setCurrentItem(ui->tableWidget->item(0,0));
@@ -72,7 +72,7 @@ void CardOverview::addCard(int i, const Card *card){
 	ui->tableWidget->setItem(i, 2, new QTableWidgetItem(point));
 	ui->tableWidget->setItem(i, 3, new QTableWidgetItem(type));
 	ui->tableWidget->setItem(i, 4, new QTableWidgetItem(subtype));
-	ui->tableWidget->setItem(i, 5, new QTableWidgetItem(package));    
+	ui->tableWidget->setItem(i, 5, new QTableWidgetItem(package));
 }
 
 CardOverview::~CardOverview()

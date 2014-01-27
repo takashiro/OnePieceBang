@@ -45,7 +45,7 @@ bool BP::tryParse(const QJsonValue& argdata, QList<int>& result)
 	}
 	for(unsigned int i = 0; i< arg.size(); i++){
 		result.append(arg[i].toDouble());
-	}    
+	}
 	return true;
 }
 
@@ -70,10 +70,10 @@ bool BP::tryParse(const QJsonValue& argdata, QStringList& result)
 	if(!argdata.isArray()) return false;
 	QJsonArray arg = argdata.toArray();
 	for(unsigned int i = 0; i< arg.size(); i++){
-		if(!arg[i].isString()) return false;        
+		if(!arg[i].isString()) return false;
 	}
 	for(unsigned int i = 0; i< arg.size(); i++){
 		result.append(arg[i].toString());
-	}    
+	}
 	return true;
 }
