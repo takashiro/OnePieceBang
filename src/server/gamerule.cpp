@@ -126,7 +126,7 @@ void GameRule::onPhaseChange(ServerPlayer *player) const{
 
 			player->clearFlags();
 			player->clearHistory();
-
+			room->doBroadcastNotify(BP::ClearPile);
 			return;
 		}
 	}

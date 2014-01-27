@@ -33,8 +33,7 @@ bool PlayerCardContainer::_horizontalPosLessThan(const CardItem* card1, const Ca
 	return (card1->x() < card2->x());
 }
 
-void PlayerCardContainer::_disperseCards(QList<CardItem*> &cards, QRectF fillRegion,
-											Qt::Alignment align, bool useHomePos, bool keepOrder)
+void PlayerCardContainer::_disperseCards(QList<CardItem*> &cards, QRectF fillRegion, Qt::Alignment align, bool useHomePos, bool keepOrder)
 {
 	int numCards = cards.size();
 	if(numCards == 0) return;

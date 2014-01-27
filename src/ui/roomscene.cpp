@@ -90,7 +90,7 @@ RoomScene *RoomSceneInstance;
 
 void RoomScene::resetPiles()
 {
-	// @todo: fix this...
+	m_discardPile->clearCards();
 }
 
 #include "irregularbutton.h"

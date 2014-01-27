@@ -21,20 +21,21 @@ public:
 	}
 	inline void setSize(double width, double height) 
 	{
-		m_cardsDisplayRegion = QRect(0, 0, width, height);
-		m_numCardsVisible = width / CardItem::S_NORMAL_CARD_WIDTH + 1;
+		cards_display_region = QRect(0, 0, width, height);
+		visible_card_num = width / CardItem::S_NORMAL_CARD_WIDTH + 1;
 		resetTransform();
 		setTransform(QTransform::fromTranslate(-width / 2, -height / 2), true);
 	}
-	inline void setNumCardsVisible(int num) { m_numCardsVisible = num; }
-	inline int getNumCardsVisible() { return m_numCardsVisible; }
+	inline void setVisibleCardNum(int num) { visible_card_num = num; }
+	inline int getVisibleCardNum() { return visible_card_num; }
 	void adjustCards();
+	void clearCards();
 protected:
 	virtual bool _addCardItems(QList<CardItem*> &card_items, Player::Place place);
-	QList<CardItem*> m_visibleCards;
-	QMutex _m_mutex_pileCards;
-	int m_numCardsVisible;
-	QRect m_cardsDisplayRegion;
+	QList<CardItem*> visible_cards;
+	QMutex pile_mutex;
+	int visible_card_num;
+	QRect cards_display_region;
 };
 
 class DrawPile: public PlayerCardContainer
