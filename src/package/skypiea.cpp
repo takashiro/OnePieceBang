@@ -12,6 +12,7 @@ public:
 
 		DamageStruct damage = data.value<DamageStruct>();
 		if(damage.nature == DamageStruct::Thunder){
+			room->broadcastSkillInvoked(player, objectName());
 			room->sendLog("#TriggerSkill", player, objectName());
 
 			RecoverStruct recover;
@@ -43,6 +44,7 @@ public:
 
 		DamageStruct damage = data.value<DamageStruct>();
 		if(damage.card && damage.card->inherits("Lightning")){
+			room->broadcastSkillInvoked(player, "godthunder");
 			room->sendLog("#TriggerSkill", player, "godthunder");
 
 			damage.from = room->findPlayerBySkillName("godthunder");

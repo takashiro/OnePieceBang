@@ -226,7 +226,9 @@ public:
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 		SlashEffectStruct effect = data.value<SlashEffectStruct>();
 		if(effect.slash->getNature() == DamageStruct::Normal){
-			player->getRoom()->sendLog("#TriggerSkill", player, objectName());
+			Room *room = player->getRoom();
+			room->broadcastSkillInvoked(player, objectName());
+			room->sendLog("#TriggerSkill", player, objectName());
 			return true;
 		}
 
@@ -706,6 +708,7 @@ public:
 		CardEffectStruct effect = data.value<CardEffectStruct>();
 		if(effect.from && effect.card && effect.card->isNDTrick() && !player->inMyAttackRange(effect.from)){
 			Room *room = player->getRoom();
+			room->broadcastSkillInvoked(player, objectName());
 			room->sendLog("#TriggerSkill", player, objectName());
 			return true;
 		}
@@ -798,17 +801,20 @@ public:
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+		Room *room = player->getRoom();
 		if(event == CardEffected){
 			CardEffectStruct effect = data.value<CardEffectStruct>();
 			if(effect.card && effect.card->isNDTrick()){
-				player->getRoom()->sendLog("#TriggerSkill", player, "fogbarrier");
+				room->broadcastSkillInvoked(player, "fogbarrier");
+				room->sendLog("#TriggerSkill", player, "fogbarrier");
 				return true;
 			}
 
 		}else if(event == Damaged){
 			DamageStruct damage = data.value<DamageStruct>();
 			if(damage.nature != DamageStruct::Normal){
-				player->getRoom()->sendLog("#TriggerSkill", player, "fogbarrier");
+				room->broadcastSkillInvoked(player, "fogbarrier");
+				room->sendLog("#TriggerSkill", player, "fogbarrier");
 				damage.damage++;
 				data = QVariant::fromValue(damage);
 			}
@@ -827,7 +833,9 @@ public:
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 		DamageStruct damage = data.value<DamageStruct>();
 		if(damage.card && damage.card->getSuit() == Card::Spade){
-			player->getRoom()->sendLog("#TriggerSkill", player, objectName());
+			Room *room = player->getRoom();
+			room->broadcastSkillInvoked(player, objectName());
+			room->sendLog("#TriggerSkill", player, objectName());
 			return true;
 		}
 		return false;
@@ -846,18 +854,21 @@ public:
 			return false;
 		}
 
+		Room *room = player->getRoom();
 		if(event == Damaged){
 			if(damage.from && damage.from->getWeapon()){
 				damage.damage--;
 				data = QVariant::fromValue(damage);
 
-				player->getRoom()->sendLog("#TriggerSkill", player, objectName());
+				room->broadcastSkillInvoked(player, objectName());
+				room->sendLog("#TriggerSkill", player, objectName());
 			}
 		}else if(event == Damaging){
 			if(player->getWeapon()){
 				damage.damage++;
 				data = QVariant::fromValue(damage);
 
+				room->broadcastSkillInvoked(player, objectName());
 				player->getRoom()->sendLog("#TriggerSkill", player, objectName());
 			}
 		}
@@ -983,6 +994,7 @@ public:
 					data = QVariant::fromValue(damage);
 					room->setPlayerFlag(player, "-massiveaxe_enabled");
 
+					room->broadcastSkillInvoked(player, objectName());
 					room->sendLog("#TriggerSkill", player, objectName());
 				}
 			}

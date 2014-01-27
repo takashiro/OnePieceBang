@@ -197,7 +197,9 @@ public:
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 		CardEffectStruct effect = data.value<CardEffectStruct>();
 		if(effect.card != NULL && (effect.card->inherits("NeptunianAttack") || effect.card->inherits("BusterCall"))){
-			player->getRoom()->sendLog("#TriggerSkill", player, objectName());
+			Room *room = player->getRoom();
+			room->broadcastSkillInvoked(player, objectName());
+			room->sendLog("#TriggerSkill", player, objectName());
 			return true;
 		}
 		return false;
@@ -234,7 +236,7 @@ public:
 class RumbleBall: public TriggerSkill{
 public:
 	RumbleBall(): TriggerSkill("rumbleball"){
-		events << Predamaging << BeforeRecovering;
+		events << Damaging << Recovering;
 	}
 
 	virtual bool triggerable(const ServerPlayer *target) const{
@@ -244,7 +246,8 @@ public:
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 		Room *room = player->getRoom();
 
-		if(event == Predamaging){
+		if(event == Damaging){
+			room->broadcastSkillInvoked(player, objectName());
 			room->sendLog("#TriggerSkill", player, objectName());
 
 			DamageStruct damage = data.value<DamageStruct>();
@@ -253,6 +256,7 @@ public:
 		}else{
 			RecoverStruct recover = data.value<RecoverStruct>();
 			if(recover.card && recover.card->inherits("Wine")){
+				room->broadcastSkillInvoked(player, objectName());
 				room->sendLog("#TriggerSkill", player, objectName());
 
 				recover.recover++;

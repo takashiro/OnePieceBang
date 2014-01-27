@@ -135,11 +135,13 @@ public:
 
 			if(judge->isBad()){//effect
 				foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){
+					room->broadcastSkillInvoked(player, objectName());
 					room->sendLog("#TriggerSkill", player, objectName());
 					player->drawCards(1);
 				}
 			}else{
 				foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){
+					room->broadcastSkillInvoked(player, objectName());
 					room->sendLog("#TriggerSkill", player, objectName());
 
 					DamageStruct damage;

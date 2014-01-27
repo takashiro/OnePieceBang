@@ -1306,39 +1306,46 @@ public:
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+		Room *room = player->getRoom();
 		if(event == SlashEffected){
 			SlashEffectStruct effect = data.value<SlashEffectStruct>();
 			if(effect.nature == DamageStruct::Normal){
+				room->broadcastSkillInvoked(player, objectName());
+
 				LogMessage log;
 				log.from = player;
 				log.type = "#ArmorNullify";
 				log.arg = objectName();
 				log.arg2 = effect.slash->objectName();
-				player->getRoom()->sendLog(log);
+				room->sendLog(log);
 
 				return true;
 			}
 		}else if(event == CardEffected){
 			CardEffectStruct effect = data.value<CardEffectStruct>();
 			if(effect.card->inherits("AOE")){
+				room->broadcastSkillInvoked(player, objectName());
+
 				LogMessage log;
 				log.from = player;
 				log.type = "#ArmorNullify";
 				log.arg = objectName();
 				log.arg2 = effect.card->objectName();
-				player->getRoom()->sendLog(log);
+				room->sendLog(log);
 
 				return true;
 			}
 		}else if(event == Damaged){
 			DamageStruct damage = data.value<DamageStruct>();
 			if(damage.nature == DamageStruct::Fire){
+				room->broadcastSkillInvoked(player, objectName());
+
 				LogMessage log;
 				log.type = "#CandleWallDamage";
 				log.from = player;
 				log.arg = QString::number(damage.damage);
 				log.arg2 = QString::number(damage.damage + 1);
-				player->getRoom()->sendLog(log);
+				room->sendLog(log);
 
 				damage.damage ++;
 				data = QVariant::fromValue(damage);

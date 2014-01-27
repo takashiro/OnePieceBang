@@ -51,10 +51,13 @@ public:
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+		Room *room = player->getRoom();
+
 		if(event == Damaged){
 			DamageStruct damage = data.value<DamageStruct>();
 			if(damage.nature == DamageStruct::Normal){
-				player->getRoom()->sendLog("#TriggerSkill", player, objectName());
+				room->broadcastSkillInvoked(player, objectName());
+				room->sendLog("#TriggerSkill", player, objectName());
 				damage.damage++;
 				data = QVariant::fromValue(damage);
 			}
@@ -65,7 +68,7 @@ public:
 				recover.card = use.card;
 				recover.from = player;
 				recover.to = player;
-				player->getRoom()->recover(recover);
+				room->recover(recover);
 			}
 		}
 		return false;
@@ -99,6 +102,7 @@ public:
 
 			if(card && card->isRed() && card->getTypeId() == Card::Basic){
 				ServerPlayer *player = room->findPlayerBySkillName("blackhole");
+				room->broadcastSkillInvoked(player, "blackhole");
 				room->sendLog("#TriggerSkill", player, "blackhole");
 				return true;
 			}
