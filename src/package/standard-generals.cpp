@@ -13,7 +13,7 @@ public:
 
 		if(damage.nature == DamageStruct::Thunder){
 			Room *room = player->getRoom();
-			room->playSkillEffect(objectName());
+			room->broadcastSkillInvoked(player, objectName());
 			room->sendLog("#TriggerSkill", player, objectName());
 			return true;
 		}

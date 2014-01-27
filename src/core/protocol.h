@@ -62,7 +62,7 @@ namespace BP{
 		ShowAllCards,
 		AskForExchange,
 		AskForDiscard,
-		AskForSkillInvoke,
+		SkillInvoke,
 		MoveFocus,
 		AskForGeneral,
 		AskForKingdom,

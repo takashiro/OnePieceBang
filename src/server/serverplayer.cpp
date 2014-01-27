@@ -776,13 +776,10 @@ void ServerPlayer::introduceTo(ServerPlayer *player){
 	intro.append(screen_name);
 	intro.append(avatar);
 
-	BP::Packet intro_packet(BP::ServerNotification, BP::AddPlayer);
-	intro_packet.setMessageBody(intro);
-
 	if(player){
-		player->invoke(intro_packet);
+		player->notify(BP::AddPlayer, intro);
 	}else{
-		room->broadcastInvoke(intro_packet, this);
+		room->doBroadcastNotify(BP::AddPlayer, intro, this);
 	}
 
 	if(isReady())

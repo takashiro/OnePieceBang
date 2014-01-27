@@ -964,14 +964,12 @@ Server::Server(QObject *parent)
 }
 
 void Server::broadcast(const QString &msg){
-	BP::Packet speak(BP::ServerNotification, BP::Speak);
 	QJsonArray to_sent;
 	to_sent.append(QString("."));
 	to_sent.append(msg);
-	speak.setMessageBody(to_sent);
 
 	foreach(Room *room, rooms){
-		room->broadcastInvoke(speak);
+		room->doBroadcastNotify(BP::Speak, to_sent);
 	}
 }
 

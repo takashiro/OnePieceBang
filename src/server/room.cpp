@@ -647,14 +647,14 @@ ServerPlayer* Room::getRaceResult(QList<ServerPlayer*> &players, BP::CommandType
 	return _m_raceWinner;
 }
 
-bool Room::doNotify(ServerPlayer *player, BP::CommandType command, const QJsonValue &arg){
+bool Room::doNotify(ServerPlayer *player, BP::CommandType command, const QJsonValue &arg) const{
 	BP::Packet packet(BP::ServerNotification, command);
 	packet.setMessageBody(arg);
 	player->invoke(packet);
 	return true;
 }
 
-bool Room::doBroadcastNotify(BP::CommandType command, const QJsonValue &arg, ServerPlayer *except){
+bool Room::doBroadcastNotify(BP::CommandType command, const QJsonValue &arg, ServerPlayer *except) const{
 	foreach(ServerPlayer *player, m_players){
 		if(player != except){
 			doNotify(player, command, arg);
@@ -663,11 +663,7 @@ bool Room::doBroadcastNotify(BP::CommandType command, const QJsonValue &arg, Ser
 	return true;
 }
 
-void Room::broadcastInvoke(const char *method, const QString &arg, ServerPlayer *except){
-	broadcast(QString("%1 %2").arg(method).arg(arg), except);
-}
-
-void Room::broadcastInvoke(const BP::AbstractPacket &packet, ServerPlayer *except){
+void Room::broadcast(const BP::AbstractPacket &packet, ServerPlayer *except){
 	broadcast(packet.toUtf8(), except);
 }
 
@@ -713,7 +709,7 @@ bool Room::notifyMoveFocus(ServerPlayer* player, BP::CommandType command){
 }
 
 bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, const QVariant &data){
-	notifyMoveFocus(player, BP::AskForSkillInvoke);
+	notifyMoveFocus(player, BP::SkillInvoke);
 	bool invoked = false;
 	AI *ai = player->getAI();
 	if(ai){
@@ -727,7 +723,7 @@ bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, co
 		else
 			skillCommand = BP::toJsonArray(skill_name, QString());
 
-		if(!doRequest(player, BP::AskForSkillInvoke, skillCommand, true)){
+		if(!doRequest(player, BP::SkillInvoke, skillCommand, true)){
 			invoked = false;
 		}else{
 			QJsonValue clientReply = player->getClientReply();
@@ -737,8 +733,7 @@ bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, co
 	}
 
 	if(invoked){
-		QJsonValue msg = BP::toJsonArray(skill_name, player->objectName());
-		doBroadcastNotify(BP::AskForSkillInvoke, msg);
+		broadcastSkillInvoked(player, skill_name);
 	}
 
 	QVariant decisionData = QVariant::fromValue("skillInvoke:"+skill_name+":"+(invoked ? "yes" : "no"));
@@ -2267,7 +2262,7 @@ void Room::speakCommand(ServerPlayer *player, const QJsonValue &content){
 	body.append(content);
 	speak.setMessageBody(body);
 
-	broadcastInvoke(speak);
+	broadcast(speak);
 }
 
 void Room::processResponse(ServerPlayer *player, const BP::Packet *packet){
@@ -3135,11 +3130,16 @@ bool Room::notifyMoveCards(bool is_lost_phase, QList<CardsMoveStruct> cards_move
 	return true;
 }
 
-void Room::playSkillEffect(const QString &skill_name, int index){
+void Room::playSkillEffect(const QString &skill_name, int index) const{
 	QJsonArray arg;
 	arg.append(skill_name);
 	arg.append(index);
 	doBroadcastNotify(BP::PlaySkillEffect, arg);
+}
+
+void Room::broadcastSkillInvoked(ServerPlayer *player, const QString &skill_name) const{
+	QJsonValue msg = BP::toJsonArray(skill_name, player->objectName());
+	doBroadcastNotify(BP::SkillInvoke, msg);
 }
 
 void Room::startTest(const QString &to_test){

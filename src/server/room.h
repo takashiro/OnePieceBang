@@ -35,7 +35,8 @@ public:
 	QString getMode() const;
 	const Scenario *getScenario() const;
 	RoomThread *getThread() const;
-	void playSkillEffect(const QString &skill_name, int index = -1);
+	void playSkillEffect(const QString &skill_name, int index = -1) const;
+	void broadcastSkillInvoked(ServerPlayer *player, const QString &skill_name) const;
 	ServerPlayer *getCurrent() const;
 	void setCurrent(ServerPlayer *current);
 	int alivePlayerCount() const;
@@ -144,12 +145,12 @@ public:
 	// Notify a player of a event by sending S_SERVER_NOTIFICATION packets. No reply should be expected from
 	// the client for S_SERVER_NOTIFICATION as it's a one way notice. Any message from the client in reply to this call
 	// will be rejected.
-	bool doNotify(ServerPlayer* player, BP::CommandType command, const QJsonValue &arg); 
+	bool doNotify(ServerPlayer* player, BP::CommandType command, const QJsonValue &arg) const;
 
 	// Broadcast a event to a list of players by sending S_SERVER_NOTIFICATION packets. No replies should be expected from
 	// the clients for S_SERVER_NOTIFICATION as it's a one way notice. Any message from the client in reply to this call
 	// will be rejected.    
-	bool doBroadcastNotify(BP::CommandType command, const QJsonValue &arg = QJsonValue(), ServerPlayer *except = NULL);
+	bool doBroadcastNotify(BP::CommandType command, const QJsonValue &arg = QJsonValue(), ServerPlayer *except = NULL) const;
 
 	// Ask a server player to wait for the client response. Call is blocking until client replies or server times out, 
 	// whichever is earlier.
@@ -276,8 +277,6 @@ public:
 	void addRobotCommand(ServerPlayer *player, const QJsonValue &arg);
 	void fillRobotsCommand(ServerPlayer *player, const QJsonValue &arg);
 	void broadcastProperty(ServerPlayer *player, const char *property_name, const QString &value = QString());
-	void broadcastInvoke(const BP::AbstractPacket &packet, ServerPlayer *except = NULL);
-	void broadcastInvoke(const char *method, const QString &arg = ".", ServerPlayer *except = NULL);
 	void startTest(const QString &to_test);
 	void networkDelayTestCommand(ServerPlayer *player, const QJsonValue &);
 
@@ -366,6 +365,7 @@ private:
 	void chooseGenerals();
 	AI *cloneAI(ServerPlayer *player);
 	void broadcast(const QString &message, ServerPlayer *except = NULL);
+	void broadcast(const BP::AbstractPacket &packet, ServerPlayer *except = NULL);
 	void arrangeCommand(ServerPlayer *player, const QJsonValue &arg);
 	void takeGeneralCommand(ServerPlayer *player, const QJsonValue &arg);
 	QString askForOrder(ServerPlayer *player);
