@@ -2405,10 +2405,14 @@ void Room::recover(const RecoverStruct &recover, bool set_emotion){
 	}
 
 	if(recover.from != NULL){
-		thread->trigger(Recovering, recover.from, data);
+		if(thread->trigger(Recovering, recover.from, data)){
+			return;
+		}
 	}
 
-	thread->trigger(Recovered, recover.to, data);
+	if(thread->trigger(Recovered, recover.to, data)){
+		return;
+	}
 
 	if(set_emotion){
 		setEmotion(recover.to, "recover");
