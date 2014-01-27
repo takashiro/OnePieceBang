@@ -61,12 +61,7 @@ void DiscardPile::clearCards(){
 		card_item->setZValue(0.0);
 		card_item->setHomeOpacity(0.0);
 		connect(card_item, SIGNAL(movement_animation_finished()), this, SLOT(_destroyCard()));
-	}
 
-	foreach(CardItem *card_item, visible_cards){
-		card_item->setZValue(0.0);
-		card_item->setHomeOpacity(0.0);
-		connect(card_item, SIGNAL(movement_animation_finished()), this, SLOT(_destroyCard()));
 		card_item->goBack(true);
 	}
 
