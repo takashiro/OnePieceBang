@@ -963,7 +963,12 @@ void Lightning::takeEffect(ServerPlayer *target) const{
 	damage.to = target;
 	damage.nature = DamageStruct::Thunder;
 
-	target->getRoom()->damage(damage);
+	Room *room = target->getRoom();
+	room->setEmotion(target, "bad");
+	room->doBroadcastNotify(BP::Animate, BP::toJsonArray("lightning", target->objectName()));
+	room->doBroadcastNotify(BP::PlayAudio, QString("lightning"));
+
+	room->damage(damage);
 }
 
 Rain::Rain(Suit suit, int number):Disaster(suit, number){
@@ -996,6 +1001,13 @@ Tornado::Tornado(Suit suit, int number):Disaster(suit, number){
 
 void Tornado::takeEffect(ServerPlayer *target) const{
 	target->throwAllEquips();
+
+	Room *room = target->getRoom();
+	room->setEmotion(target, "bad");
+	room->doBroadcastNotify(BP::Animate, BP::toJsonArray("tornado", target->objectName()));
+	room->doBroadcastNotify(BP::PlayAudio, QString("tornado"));
+
+	room->getThread()->delay();
 }
 
 // EX cards

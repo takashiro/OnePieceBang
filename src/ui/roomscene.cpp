@@ -3553,7 +3553,7 @@ void RoomScene::doAnimation(const QString &name, const QStringList &args){
 		map["busou_haki"] = &RoomScene::doAppearingAnimation;
 		map["fire"] = &RoomScene::doAppearingAnimation;
 		map["lightning"] = &RoomScene::doAppearingAnimation;
-		map["typhoon"] = &RoomScene::doAppearingAnimation;
+		map["tornado"] = &RoomScene::doAppearingAnimation;
 
 		map["lightbox"] = &RoomScene::doLightboxAnimation;
 		map["huashen"] = &RoomScene::doHuashen;
