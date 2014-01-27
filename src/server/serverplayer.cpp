@@ -254,22 +254,19 @@ QString ServerPlayer::findReasonable(const QStringList &generals, bool no_unreas
 					continue;
 			}
 
-			if(Config.EnableHegemony)
-			{
+			if(Config.EnableHegemony){
 				if(getGeneral())
 					if((getGeneral()->getKingdom()
 							!= Bang->getGeneral(name)->getKingdom()))
 						continue;
 			}
 		}
-		if(Config.EnableBasara)
-		{
+		if(Config.EnableBasara){
 			QStringList ban_list = Config.value("Banlist/Basara").toStringList();
 
 			if(ban_list.contains(name))continue;
 		}
-		if(Config.GameMode == "zombie_mode")
-		{
+		if(Config.GameMode == "zombie_mode"){
 			QStringList ban_list = Config.value("Banlist/Zombie").toStringList();
 
 			if(ban_list.contains(name))continue;

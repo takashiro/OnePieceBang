@@ -1094,7 +1094,7 @@ public:
 	virtual const Card *viewAs(CardItem *card_item) const{
 		const Card *card = card_item->getCard();
 		Card *new_card = Card::Clone(card);
-		if(new_card) {
+		if(new_card){
 			new_card->setSuit(Card::Spade);
 			new_card->setSkillName(objectName());
 			return new_card;

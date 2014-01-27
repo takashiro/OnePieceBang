@@ -141,8 +141,7 @@ bool CardUseStruct::tryParse(const QJsonValue &usage_data, Room *room){
 
 	const QJsonArray targets = usage[1].toArray();
 
-	for(unsigned int i = 0; i < targets.size(); i++)
-	{
+	for(unsigned int i = 0; i < targets.size(); i++){
 		if(!targets[i].isString()) return false;
 		this->to << room->findChild<ServerPlayer *>(targets[i].toString());
 	}
@@ -359,7 +358,7 @@ void RoomThread::run(){
 			if(room->getMode() == "02_1v1")
 				room->setCurrent(room->getPlayers().at(1));
 
-			forever {
+			forever{
 				trigger(TurnStart, room->getCurrent());
 				if(room->isFinished()) break;
 				room->setCurrent(room->getCurrent()->getNextAlive());

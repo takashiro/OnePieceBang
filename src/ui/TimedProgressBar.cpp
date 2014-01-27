@@ -4,8 +4,7 @@
 
 void TimedProgressBar::showEvent(QShowEvent* showEvent)
 {
-	if(!m_hasTimer || m_max <= 0) 
-	{
+	if(!m_hasTimer || m_max <= 0){
 		showEvent->setAccepted(false);
 		return;
 	}
@@ -16,8 +15,7 @@ void TimedProgressBar::showEvent(QShowEvent* showEvent)
 
 void TimedProgressBar::hide()
 {
-	if(m_timer != 0)
-	{        
+	if(m_timer != 0){        
 		killTimer(m_timer);
 		m_timer = NULL;
 	}
@@ -47,8 +45,7 @@ QSanCommandProgressBar::QSanCommandProgressBar()
 	m_step = Config.S_PROGRESS_BAR_UPDATE_INTERVAL;
 	m_hasTimer = (ServerInfo.OperationTimeout != 0);
 	m_instanceType = ClientInstance;
-	if(sm_progress_100_image == NULL)
-	{
+	if(sm_progress_100_image == NULL){
 		sm_progress_100_image = new QPixmap("image/system/controls/progress-100.png");
 		sm_progress_80_image = new QPixmap("image/system/controls/progress-79.png");
 		sm_progress_50_image = new QPixmap("image/system/controls/progress-49.png");
@@ -74,8 +71,7 @@ void QSanCommandProgressBar::paintEvent(QPaintEvent *e)
 	int width = this->width();
 	int height = this->height();
 	QPainter painter(this);
-	if(orientation() == Qt::Vertical)
-	{
+	if(orientation() == Qt::Vertical){
 		painter.translate(0, height);
 		qSwap(width, height); 
 		painter.rotate(-90);

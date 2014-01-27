@@ -28,7 +28,7 @@ void Sprite::start(int loops)
 	QMapIterator<QString, AnimationLine*> i(lines);
 	QParallelAnimationGroup *pgroup = new QParallelAnimationGroup;
 
-	while(i.hasNext())  {
+	while(i.hasNext()){
 		i.next();
 		AnimationLine * line = i.value();
 		const QByteArray &name = i.key().toLocal8Bit();
@@ -36,15 +36,13 @@ void Sprite::start(int loops)
 
 		QMapIterator<int,qreal> j(line->frames);
 
-		while(j.hasNext())
-		{
+		while(j.hasNext()){
 			j.next();
 
 			QPropertyAnimation *trans = new QPropertyAnimation(this,name);
 			trans->setStartValue(j.value());
 			trans->setEasingCurve(line->easings[j.key()]);
-			if(j.hasNext())
-			{
+			if(j.hasNext()){
 				trans->setEndValue(j.peekNext().value());
 				trans->setDuration(j.peekNext().key()-j.key());
 			}
@@ -101,8 +99,7 @@ void EffectAnimation::fade(QGraphicsItem *map)
 {
 	QAnimatedEffect * effect = qobject_cast<QAnimatedEffect *>(map->graphicsEffect());
 
-	if(effect)
-	{
+	if(effect){
 		effectOut(map);
 
 		effect = registered.value(map);
@@ -123,8 +120,7 @@ void EffectAnimation::emphasize(QGraphicsItem *map,bool stay)
 {
 	QAnimatedEffect * effect = qobject_cast<QAnimatedEffect *>(map->graphicsEffect());
 
-	if(effect)
-	{
+	if(effect){
 		effectOut(map);
 
 		effect = registered.value(map);
@@ -144,8 +140,7 @@ void EffectAnimation::sendBack(QGraphicsItem *map)
 {
 	QAnimatedEffect * effect = qobject_cast<QAnimatedEffect *>(map->graphicsEffect());
 
-	if(effect)
-	{
+	if(effect){
 		effectOut(map);
 
 		effect = registered.value(map);
@@ -165,8 +160,7 @@ void EffectAnimation::effectOut(QGraphicsItem *map)
 {
 	QAnimatedEffect * effect = qobject_cast<QAnimatedEffect *>(map->graphicsEffect());
 
-	if(effect)
-	{
+	if(effect){
 		//deleteEffect(effect);
 		effect->setStay(false);
 		connect(effect,SIGNAL(loop_finished()),this,SLOT(deleteEffect()));
@@ -191,8 +185,7 @@ void EffectAnimation::deleteEffect(QAnimatedEffect *effect)
 	effect->deleteLater();
 
 	QGraphicsItem *pix = effects.key(effect);
-	if(pix)
-	{
+	if(pix){
 		QAnimatedEffect * effect = registered.value(pix);
 		if(effect)effect->reset();
 		pix->setGraphicsEffect(registered.value(pix));
@@ -256,8 +249,7 @@ void QAnimatedEffect::setStay(bool stay)
 {
 	this->stay=stay;
 
-	if(!stay)
-	{
+	if(!stay){
 		QPropertyAnimation * anim = new QPropertyAnimation(this,"index");
 		anim->setEndValue(0);
 		anim->setDuration(index * 5);
@@ -301,8 +293,7 @@ void SentbackEffect::draw(QPainter *painter)
 
 	QPixmap pixmap = sourcePixmap(Qt::LogicalCoordinates, &offset);
 
-	if(!grayed)
-	{
+	if(!grayed){
 		grayed = new QImage(pixmap.size(),QImage::Format_ARGB32);
 
 		QImage image = pixmap.toImage();
@@ -312,10 +303,8 @@ void SentbackEffect::draw(QPainter *painter)
 
 		QRgb col;
 
-		for(int i = 0; i < width; ++i)
-		{
-			for(int j = 0; j < height; ++j)
-			{
+		for(int i = 0; i < width; ++i){
+			for(int j = 0; j < height; ++j){
 				col = image.pixel(i, j);
 				gray = qGray(col) >> 1;
 				grayed->setPixel(i, j, qRgba(gray,gray,gray,qAlpha(col)));

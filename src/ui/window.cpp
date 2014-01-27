@@ -33,8 +33,7 @@ Window::Window(const QString &title, const QSizeF &size)
 	qreal yc = (h - 2*pad)/(th - 2*pad);
 
 	for(int i=0;i<tw;i++)
-		for(int j=0;j<th;j++)
-		{
+		for(int j=0;j<th;j++){
 			int x = i;
 			int y = j;
 

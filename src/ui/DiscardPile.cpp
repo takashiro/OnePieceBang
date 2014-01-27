@@ -7,12 +7,9 @@ QList<CardItem*> DiscardPile::removeCardItems(const QList<int> &card_ids, Player
 	_m_mutex_pileCards.lock();    
 	result = _createCards(card_ids);
 	_disperseCards(result, m_cardsDisplayRegion, Qt::AlignCenter, false, true);
-	foreach(CardItem* card, result)
-	{        
-		for(int i = m_visibleCards.size() - 1; i >= 0; i--)
-		{
-			if(m_visibleCards[i]->getCard()->getId() == card->getId())
-			{
+	foreach(CardItem* card, result){        
+		for(int i = m_visibleCards.size() - 1; i >= 0; i--){
+			if(m_visibleCards[i]->getCard()->getId() == card->getId()){
 				card->setPos(m_visibleCards[i]->pos());
 				break;
 			}
@@ -29,8 +26,7 @@ bool DiscardPile::_addCardItems(QList<CardItem*> &card_items, Player::Place plac
 	m_visibleCards.append(card_items);
 	int numAdded = card_items.size();
 	int numRemoved = m_visibleCards.size() - qMax(m_numCardsVisible, numAdded + 1);
-	for(int i = 0; i <  numRemoved; i++)
-	{
+	for(int i = 0; i <  numRemoved; i++){
 		CardItem* toRemove = m_visibleCards.first();
 		toRemove->setZValue(0.0);
 		toRemove->setHomeOpacity(0.0);
@@ -38,12 +34,10 @@ bool DiscardPile::_addCardItems(QList<CardItem*> &card_items, Player::Place plac
 		toRemove->goBack(true);
 		m_visibleCards.removeFirst();
 	}
-	foreach(CardItem* card_item, m_visibleCards)
-	{
+	foreach(CardItem* card_item, m_visibleCards){
 		card_item->setHomeOpacity(0.7);
 	}
-	foreach(CardItem* card_item, card_items)
-	{
+	foreach(CardItem* card_item, card_items){
 		card_item->setHomeOpacity(1.0);
 	}
 	m_visibleCards.last()->setHomeOpacity(1.0);
@@ -73,8 +67,7 @@ QList<CardItem*> DrawPile::removeCardItems(const QList<int> &card_ids, Player::P
 
 bool DrawPile::_addCardItems(QList<CardItem*> &card_items, Player::Place place)
 {    
-	foreach(CardItem* card_item, card_items)
-	{
+	foreach(CardItem* card_item, card_items){
 		card_item->setHomeOpacity(0.0);
 	}
 	return true;

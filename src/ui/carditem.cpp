@@ -41,8 +41,7 @@ CardItem::CardItem(const Card *card)
 
 void CardItem::setCard(const Card* card)
 {      
-	if(card != NULL)
-	{
+	if(card != NULL){
 		Pixmap::load(card->getPixmapPath());
 		icon_pixmap.load(card->getIconPath());
 		suit_pixmap.load(QString("image/system/suit/%1.png").arg(card->getSuitString()));
@@ -72,8 +71,7 @@ CardItem::CardItem(const QString &general_name)
 CardItem::~CardItem()
 {
 	m_animationMutex.lock();
-	if(m_currentAnimation != NULL)
-	{
+	if(m_currentAnimation != NULL){
 		m_currentAnimation->deleteLater();
 		m_currentAnimation = NULL;
 	}
@@ -118,19 +116,16 @@ QPointF CardItem::homePos() const{
 }
 
 void CardItem::goBack(bool playAnimation, bool doFade){
-	if(playAnimation)
-	{
+	if(playAnimation){
 		getGoBackAnimation(doFade);
-		if(m_currentAnimation != NULL)
-		{
+		if(m_currentAnimation != NULL){
 			m_currentAnimation->start();
 		}
 	}
 	else
 	{
 		m_animationMutex.lock();
-		if(m_currentAnimation != NULL)
-		{
+		if(m_currentAnimation != NULL){
 			m_currentAnimation->stop();
 			delete m_currentAnimation;
 			m_currentAnimation = NULL;
@@ -143,8 +138,7 @@ void CardItem::goBack(bool playAnimation, bool doFade){
 QAbstractAnimation* CardItem::getGoBackAnimation(bool doFade)
 {
 	m_animationMutex.lock();
-	if(m_currentAnimation != NULL)
-	{
+	if(m_currentAnimation != NULL){
 		m_currentAnimation->stop();
 		delete m_currentAnimation;
 		m_currentAnimation = NULL;
@@ -238,8 +232,7 @@ bool CardItem::isFrozen() const{
 
 CardItem *CardItem::FindItem(const QList<CardItem *> &items, int card_id){
 	foreach(CardItem *item, items){
-		if(item->getCard() == NULL)
-		{
+		if(item->getCard() == NULL){
 			if(card_id == Card::S_UNKNOWN_CARD_ID) return item;
 			else continue;
 		}
@@ -310,15 +303,14 @@ void CardItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
 
 void CardItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
 	
-	if(!isEnabled())
-	{
+	if(!isEnabled()){
 		painter->fillRect(this->boundingRect(), QColor(100, 100, 100, 255 * opacity()));
 		painter->setOpacity(0.7 * opacity());
 	}
 
 	Pixmap::paint(painter, option, widget);
 
-	if(m_card) {
+	if(m_card){
 		painter->drawPixmap(0, 14, cardsuit_pixmap);
 		painter->drawPixmap(0, 2, number_pixmap);
 	}

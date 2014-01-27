@@ -5,8 +5,7 @@
 QList<CardItem*> PlayerCardContainer::_createCards(QList<int> card_ids)
 {
 	QList<CardItem*> result;
-	foreach(int card_id, card_ids)
-	{
+	foreach(int card_id, card_ids){
 		CardItem* item = _createCard(card_id);
 		result.append(item);
 	}
@@ -44,8 +43,7 @@ void PlayerCardContainer::_disperseCards(QList<CardItem*> &cards, QRectF fillReg
 	double maxWidth = fillRegion.width();
 	double step = qMin(cards.first()->boundingRect().width(), maxWidth / numCards);
 	align &= Qt::AlignHorizontal_Mask;
-	for(int i = 0; i < numCards; i++)
-	{
+	for(int i = 0; i < numCards; i++){
 		CardItem* card = cards[i];
 		double newX = 0;
 		if(align == Qt::AlignHCenter)
@@ -76,8 +74,7 @@ void PlayerCardContainer::_doUpdate()
 
 void PlayerCardContainer::_playMoveCardsAnimation(QList<CardItem*> &cards, bool destroyCards)
 {    
-	if(destroyCards)    
-	{
+	if(destroyCards){
 		_mutex_cardsToBeDestroyed.lock();
 		_cardsToBeDestroyed.append(cards);
 		_mutex_cardsToBeDestroyed.unlock();
@@ -97,8 +94,7 @@ void PlayerCardContainer::_playMoveCardsAnimation(QList<CardItem*> &cards, bool 
 
 void PlayerCardContainer::addCardItems(QList<CardItem*> &card_items, Player::Place place)
 {
-	foreach(CardItem* card_item, card_items)
-	{        
+	foreach(CardItem* card_item, card_items){        
 		card_item->setPos(mapFromScene(card_item->scenePos()));
 		card_item->setParentItem(this);        
 	}

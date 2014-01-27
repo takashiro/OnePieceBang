@@ -81,8 +81,7 @@ void GameRule::onPhaseChange(ServerPlayer *player) const{
 		}
 
 	case Player::Discard:{
-			while(player->getHandcardNum() > player->getMaxCards())
-			{
+			while(player->getHandcardNum() > player->getMaxCards()){
 				int discard_num = player->getHandcardNum() - player->getMaxCards();
 				if(player->hasFlag("jilei")){
 					QSet<const Card *> jilei_cards;
@@ -105,8 +104,7 @@ void GameRule::onPhaseChange(ServerPlayer *player) const{
 						return;
 					}
 				}
-				if(discard_num > 0)
-				{
+				if(discard_num > 0){
 					room->askForDiscard(player, "gamerule", discard_num, 1);
 				}
 			}
@@ -172,8 +170,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 	// Handle global events
 	if(player == NULL){
 		if(event == GameStart){
-			foreach(ServerPlayer* player, room->getPlayers())
-			{
+			foreach(ServerPlayer* player, room->getPlayers()){
 				if(player->getGeneral()->getKingdom() == "god" && player->getGeneralName() != "anjiang"){
 					QString new_kingdom = room->askForKingdom(player);
 					room->setPlayerProperty(player, "kingdom", new_kingdom);
@@ -655,8 +652,7 @@ QString GameRule::getWinner(ServerPlayer *victim) const{
 			QString aliveKingdom = room->getAlivePlayers().first()->getKingdom();
 			foreach(ServerPlayer *p, room->getPlayers()){
 				if(p->isAlive())winners << p->objectName();
-				if(p->getKingdom() == aliveKingdom)
-				{
+				if(p->getKingdom() == aliveKingdom){
 					QStringList generals = room->getTag(p->objectName()).toStringList();
 					if(generals.size()&&!Config.Enable2ndGeneral)continue;
 					if(generals.size()>1)continue;
@@ -727,12 +723,10 @@ bool HulaoPassMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 					  }
 	case GameStart: {
 		// Handle global events
-		if(player == NULL)
-		{            
+		if(player == NULL){            
 			ServerPlayer* lord = room->getLord();
 			lord->drawCards(8, false);
-			foreach(ServerPlayer* player, room->getPlayers())
-			{
+			foreach(ServerPlayer* player, room->getPlayers()){
 				if(player->isLord())
 					continue;
 				else
@@ -935,10 +929,8 @@ bool BasaraMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &dat
 		room = player->getRoom();
 
 	// Handle global events
-	if(player == NULL)
-	{
-		if(event == GameStart)
-		{
+	if(player == NULL){
+		if(event == GameStart){
 			if(Config.EnableHegemony)
 				room->setTag("SkipNormalDeathProcess", true);
 			foreach(ServerPlayer* sp, room->getAlivePlayers()){

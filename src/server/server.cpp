@@ -345,8 +345,7 @@ BanlistDialog::BanlistDialog(QWidget *parent, bool view)
 	layout->addWidget(tab);
 	connect(tab,SIGNAL(currentChanged(int)),this,SLOT(switchTo(int)));
 
-	foreach(QString item, ban_list)
-	{
+	foreach(QString item, ban_list){
 		if(item == "Pairs") continue;
 		QWidget *apage = new QWidget;
 
@@ -415,8 +414,7 @@ BanlistDialog::BanlistDialog(QWidget *parent, bool view)
 
 	setLayout(layout);
 
-	foreach(QListWidget * alist , lists)
-	{
+	foreach(QListWidget * alist , lists){
 		if(alist->objectName() == "Pairs")continue;
 		alist->setIconSize(General::TinyIconSize);
 		alist->setViewMode(QListView::IconMode);
@@ -489,8 +487,7 @@ void BanlistDialog::save(){
 
 void BanlistDialog::saveAll()
 {
-	for(int i=0;i<lists.length();i++)
-	{
+	for(int i=0;i<lists.length();i++){
 		switchTo(i);
 		save();
 	}
@@ -616,8 +613,7 @@ QGroupBox *ServerDialog::createGameModeBox(){
 		mini_scene_combobox = new QComboBox;
 		int index = -1;
 		int stage = Config.value("MiniSceneStage",1).toInt();
-		for(int i =1;i<=stage;i++)
-		{
+		for(int i =1;i<=stage;i++){
 			QString name = QString::number(i);
 			name = name.rightJustified(2,'0');
 			name = name.prepend("_mini_");
@@ -630,8 +626,7 @@ QGroupBox *ServerDialog::createGameModeBox(){
 			if(name == Config.GameMode)index = i-1;
 		}
 
-		if(index>=0)
-		{
+		if(index>=0){
 			mini_scene_combobox->setCurrentIndex(index);
 			mini_scenes->setChecked(true);
 		}

@@ -64,8 +64,7 @@ void Button::init()
 	qreal yc = (h - 2*pad)/(th - 2*pad);
 
 	for(int i=0;i<tw;i++)
-		for(int j=0;j<th;j++)
-		{
+		for(int j=0;j<th;j++){
 			int x = i;
 			int y = j;
 
@@ -153,14 +152,12 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 void Button::timerEvent(QTimerEvent *)
 {
 	update();
-	if(hasFocus())
-	{
+	if(hasFocus()){
 		if(glow<5)glow++;
 	}else
 	{
 		if(glow>0)glow--;
-		else if(timer_id)
-		{
+		else if(timer_id){
 			QObject::killTimer(timer_id);
 			timer_id = 0;
 		}

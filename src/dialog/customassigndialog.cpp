@@ -34,8 +34,7 @@ CustomAssignDialog *CustomInstance = NULL;
 CustomAssignDialog::CustomAssignDialog(QWidget *parent)
 	:QDialog(parent),
 	  choose_general2(false),
-	  is_single_turn(false), is_before_next(false), is_random_roles(false)
-{
+	  is_single_turn(false), is_before_next(false), is_random_roles(false){
 	setWindowTitle(tr("Custom mini scene"));
 
 	CustomInstance = this;
@@ -897,8 +896,7 @@ void CustomAssignDialog::setMoveButtonAvaliable(bool toggled){
 }
 
 void CustomAssignDialog::accept(){
-	if(save("etc/customScenes/custom_scenario.txt"))
-	{
+	if(save("etc/customScenes/custom_scenario.txt")){
 		const Scenario * scene = Bang->getScenario("custom_scenario");
 		MiniSceneRule *rule = qobject_cast<MiniSceneRule*>(scene->getRule());
 
@@ -1160,7 +1158,7 @@ void CustomAssignDialog::load()
 	role_index["renegade"] = 1;
 	role_index["rebel"] = 2;
 
-	while(!in.atEnd()) {
+	while(!in.atEnd()){
 		QString line = in.readLine();
 		line = line.trimmed();
 		if(line.isEmpty()) continue;
@@ -1171,11 +1169,9 @@ void CustomAssignDialog::load()
 			return;
 		}
 
-		if(line.startsWith("setPile:"))
-		{
+		if(line.startsWith("setPile:")){
 			QStringList list = line.replace("setPile:","").split(",");
-			foreach(QString id,list)
-			{
+			foreach(QString id,list){
 				set_pile.prepend(id.toInt());
 			}
 			continue;
@@ -1201,8 +1197,7 @@ void CustomAssignDialog::load()
 		QStringList features;
 		if(line.contains("|"))features= line.split("|");
 		else features = line.split(" ");
-		foreach(QString str, features)
-		{
+		foreach(QString str, features){
 			QStringList keys = str.split(":");
 			if(keys.size()<2)continue;
 			if(keys.first().size()<1)continue;
@@ -1259,10 +1254,8 @@ void CustomAssignDialog::load()
 			}
 		}
 
-		if(player["hand"]!=NULL)
-		{
-			foreach(QString id,player["hand"].split(","))
-			{
+		if(player["hand"]!=NULL){
+			foreach(QString id,player["hand"].split(",")){
 				bool ok;
 				int num = id.toInt(&ok);
 				if(!ok){
@@ -1277,10 +1270,8 @@ void CustomAssignDialog::load()
 			}
 		}
 
-		if(player["equip"]!=NULL)
-		{
-			foreach(QString id,player["equip"].split(","))
-			{
+		if(player["equip"]!=NULL){
+			foreach(QString id,player["equip"].split(",")){
 				bool ok;
 				int num = id.toInt(&ok);
 				if(!ok){
@@ -1295,10 +1286,8 @@ void CustomAssignDialog::load()
 			}
 		}
 
-		if(player["judge"]!=NULL)
-		{
-			foreach(QString id,player["judge"].split(","))
-			{
+		if(player["judge"]!=NULL){
+			foreach(QString id,player["judge"].split(",")){
 				bool ok;
 				int num = id.toInt(&ok);
 				if(!ok){
@@ -1318,8 +1307,7 @@ void CustomAssignDialog::load()
 	}
 
 	updateNumber(numPlayer-2);
-	for(int i=list->count()-1;i>=0;i--)
-	{
+	for(int i=list->count()-1;i>=0;i--){
 		list->setCurrentItem(list->item(i));
 		if(list->item(i)->data(Qt::UserRole).toString() == starter)
 			starter_box->setChecked(true);
@@ -1391,11 +1379,9 @@ bool CustomAssignDialog::save(QString path)
 	line.remove(line.length()-1, 1);
 	line.append("\n");
 
-	if(set_pile.length())
-	{
+	if(set_pile.length()){
 		line.append("setPile:");
-		for(int i = set_pile.length()-1; i >= 0; i--)
-		{
+		for(int i = set_pile.length()-1; i >= 0; i--){
 			int id = set_pile.at(i);
 			line.append(QString::number(id));
 			line.append(",");
@@ -1404,8 +1390,7 @@ bool CustomAssignDialog::save(QString path)
 		line.append("\n");
 	}
 
-	for(int i=0;i<list->count();i++)
-	{
+	for(int i=0;i<list->count();i++){
 		QString name = i==0 ? "Player" : QString("AI%1").arg(i);
 
 		if(free_choose_general[name])line.append("general:select ");
@@ -1466,24 +1451,21 @@ bool CustomAssignDialog::save(QString path)
 		if(player_start_draw.contains(name) && player_start_draw[name] != 4)
 			line.append(QString("draw:%1 ").arg(player_start_draw[name]));
 
-		if(player_equips[name].length())
-		{
+		if(player_equips[name].length()){
 			line.append("equip:");
 			foreach(int equip,player_equips[name])line.append(QString("%1,").arg(equip));
 			line.chop(1);
 			line.append(" ");
 		}
 
-		if(player_handcards[name].length())
-		{
+		if(player_handcards[name].length()){
 			line.append("hand:");
 			foreach(int hand,player_handcards[name])line.append(QString("%1,").arg(hand));
 			line.chop(1);
 			line.append(" ");
 		}
 
-		if(player_judges[name].length())
-		{
+		if(player_judges[name].length()){
 			line.append("judge:");
 			foreach(int judge,player_judges[name])line.append(QString("%1,").arg(judge));
 			line.chop(1);

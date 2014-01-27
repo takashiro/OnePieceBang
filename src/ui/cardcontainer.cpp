@@ -35,7 +35,7 @@ void CardContainer::fillCards(const QList<int> &card_ids){
 	items.append(card_items);
 	int n = items.length();
 
-	for(int i = 0; i < n; i++) {
+	for(int i = 0; i < n; i++){
 		QPointF pos;
 		if(n <= 10){                    
 			if(i < 5){
@@ -96,8 +96,7 @@ void CardContainer::freezeCards(bool is_frozen){
 
 QList<CardItem*> CardContainer::removeCardItems(const QList<int> &card_ids, Player::Place place){
 	QList<CardItem*> result;
-	foreach(int card_id, card_ids)
-	{
+	foreach(int card_id, card_ids){
 		CardItem *to_take = NULL;
 
 		foreach(CardItem *item, items){

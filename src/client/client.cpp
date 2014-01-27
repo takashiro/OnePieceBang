@@ -433,8 +433,7 @@ void Client::loseCards(const QJsonValue& data){
 	Q_ASSERT(arg.size() >= 1);
 	int moveId = arg[0].toDouble();
 	QList<CardsMoveStruct> moves;
-	for(unsigned int i = 1; i < arg.size(); i++)
-	{
+	for(unsigned int i = 1; i < arg.size(); i++){
 		CardsMoveStruct move;
 		if(!move.tryParse(arg[i])) return;
 		move.from = getPlayer(move.from_player_name);
@@ -1076,8 +1075,7 @@ void Client::askForDiscard(const QJsonValue &reqdata){
 }
 
 void Client::askForExchange(const QJsonValue &exchange_str){
-	if(!exchange_str.isDouble())
-	{
+	if(!exchange_str.isDouble()){
 		QMessageBox::warning(NULL, tr("Warning"), tr("Exchange string is not well formatted!"));
 		return;
 	}
@@ -1609,8 +1607,7 @@ void Client::speak(const QJsonValue &speak_data){
 void Client::moveFocus(const QJsonValue &focus){
 	QString who;
 	BP::Countdown countdown;
-	if(focus.isString())
-	{
+	if(focus.isString()){
 		who = focus.toString();
 		countdown.type = BP::Countdown::Unlimited;
 	}

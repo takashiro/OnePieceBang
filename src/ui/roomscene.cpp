@@ -604,38 +604,32 @@ void RoomScene::_dispersePhotos(QList<Photo*> &photos, QRectF fillRegion, int mi
 {
 	int numPhotos = photos.size();
 	if(numPhotos == 0) return;
-	if(align == Qt::AlignHCenter)
-	{
+	if(align == Qt::AlignHCenter){
 		double maxWidth = fillRegion.width();
 		double photoWidth = Photo::S_NORMAL_PHOTO_WIDTH; 
 		double step = qMax(photoWidth  + minDistanceBetweenPhotos, maxWidth / numPhotos);
-		for(int i = 0; i < numPhotos; i++)
-		{
+		for(int i = 0; i < numPhotos; i++){
 			Photo* photo = photos[i];
 			double newX = fillRegion.center().x() + step * (i - (numPhotos - 1) / 2.0);
 			QPointF newPos = QPointF(newX, fillRegion.center().y());
 			photo->setPos(newPos);
 		}
 	}
-	else if(align == Qt::AlignVCenter)
-	{
+	else if(align == Qt::AlignVCenter){
 		double maxHeight = fillRegion.height();
 		double photoHeight = Photo::S_NORMAL_PHOTO_HEIGHT; 
 		double step = qMax(photoHeight + minDistanceBetweenPhotos, maxHeight / numPhotos);
-		for(int i = 0; i < numPhotos; i++)
-		{
+		for(int i = 0; i < numPhotos; i++){
 			Photo* photo = photos[i];
 			double newY = fillRegion.center().y() + step * (i - (numPhotos - 1) / 2.0);
 			QPointF newPos = QPointF(fillRegion.center().x(), newY);
 			photo->setPos(newPos);            
 		}
 	}
-	else if(align == Qt::AlignBottom)
-	{
+	else if(align == Qt::AlignBottom){
 		double photoHeight = Photo::S_NORMAL_PHOTO_HEIGHT; 
 		double step = minDistanceBetweenPhotos + photoHeight;
-		for(int i = 0; i < numPhotos; i++)
-		{
+		for(int i = 0; i < numPhotos; i++){
 			Photo* photo = photos[i];
 			double newY = fillRegion.bottom() - photoHeight / 2 - step * (numPhotos - i - 1);
 			QPointF newPos = QPointF(fillRegion.center().x(), newY);
@@ -675,8 +669,7 @@ void RoomScene::updateTable()
 	};
 	static int hulaoSeatIndex[][3] =
 	{
-		{1, 1, 1}, // if self is lubu
-		{3, 3, 1},
+		{1, 1, 1}, // if self is lubu{3, 3, 1},
 		{3, 1, 4},
 		{1, 4, 4}
 	};
@@ -720,13 +713,11 @@ void RoomScene::updateTable()
 
 	int* seatToRegion;
 	bool pkMode = false;
-	if(ServerInfo.GameMode == "04_1v3" && game_started)
-	{
+	if(ServerInfo.GameMode == "04_1v3" && game_started){
 		seatToRegion = hulaoSeatIndex[Self->getSeat() - 1];
 		pkMode = true;
 	}
-	else if(ServerInfo.GameMode == "06_3v3" && game_started)
-	{
+	else if(ServerInfo.GameMode == "06_3v3" && game_started){
 		seatToRegion = kof3v3SeatIndex[(Self->getSeat() - 1) % 3];
 		pkMode = true;
 	}
@@ -736,16 +727,14 @@ void RoomScene::updateTable()
 	}
 	QList<Photo*> photosInRegion[C_NUM_REGIONS];
 	int n = photos.length();
-	for(int i = 0; i < n; i++)
-	{
+	for(int i = 0; i < n; i++){
 		int regionIndex = seatToRegion[i];
 		if(regionIndex == 4 || regionIndex == 6 || regionIndex == 9)
 			photosInRegion[regionIndex].append(photos[i]);            
 		else
 			photosInRegion[regionIndex].prepend(photos[i]);
 	}
-	for(int i = 0; i < C_NUM_REGIONS; i++)
-	{
+	for(int i = 0; i < C_NUM_REGIONS; i++){
 		if(photosInRegion[i].isEmpty()) continue;
 		Qt::Alignment align;
 		if(i < 3 || i == 7) align = Qt::AlignHCenter;
@@ -1177,8 +1166,7 @@ void RoomScene::chooseRole(const QString &scheme, const QStringList &roles)
 	else
 		possibleRoles << "leader1" << "guard1" << "leader2" << "guard2";
 
-	foreach(QString role, possibleRoles)
-	{
+	foreach(QString role, possibleRoles){
 		QCommandLinkButton *button = new QCommandLinkButton(jargon[role]);
 		if(scheme == "AllRoles")
 			button->setIcon(QIcon(QString("image/system/roles/%1.png").arg(role)));
@@ -1254,8 +1242,7 @@ PlayerCardContainer* RoomScene::_getPlayerCardContainer(Player::Place place, Pla
 
 void RoomScene::loseCards(int moveId, QList<CardsMoveStruct> card_moves)
 {
-	for(int i = 0; i < card_moves.size(); i++) 
-	{
+	for(int i = 0; i < card_moves.size(); i++){
 		CardsMoveStruct &movement = card_moves[i];
 		card_container->m_currentPlayer = (ClientPlayer*)movement.to;
 		PlayerCardContainer* from_container = _getPlayerCardContainer(movement.from_place, movement.from);
@@ -1274,18 +1261,15 @@ void RoomScene::loseCards(int moveId, QList<CardsMoveStruct> card_moves)
 void RoomScene::getCards(int moveId, QList<CardsMoveStruct> card_moves)
 {
 	bool doAdjust = false;
-	for(int i = 0; i < card_moves.size(); i++) 
-	{
+	for(int i = 0; i < card_moves.size(); i++){
 		CardsMoveStruct &movement = card_moves[i];
 		card_container->m_currentPlayer = (ClientPlayer*)movement.to;
 		PlayerCardContainer* to_container = _getPlayerCardContainer(movement.to_place, movement.to);
 		QList<CardItem*> cards = _m_cardsMoveStash[moveId][i];
-		for(int j = 0; j < cards.size(); j++)
-		{            
+		for(int j = 0; j < cards.size(); j++){            
 			CardItem* card = cards[j];
 			int card_id = card->getId();
-			if(!card_moves[i].card_ids.contains(card_id))
-			{
+			if(!card_moves[i].card_ids.contains(card_id)){
 				cards.removeAt(j);
 				j--;
 			}
@@ -1310,26 +1294,22 @@ void RoomScene::keepGetCardLog(const CardsMoveStruct &move)
 {
 	if(move.card_ids.isEmpty()) return;
 	//DrawNCards
-	if(move.from_place == Player::DrawPile && move.to_place == Player::HandArea)
-	{
+	if(move.from_place == Player::DrawPile && move.to_place == Player::HandArea){
 		QString to_general = move.to->getGeneralName();
 		log_box->appendLog("#DrawNCards", to_general, QStringList(), QString(),
 							QString::number(move.card_ids.length()));
 	}
-	if(move.from_place == Player::DiscardPile && move.to_place == Player::HandArea)
-	{
+	if(move.from_place == Player::DiscardPile && move.to_place == Player::HandArea){
 		QString to_general = move.to->getGeneralName();
 		foreach(int card_id, move.card_ids)
 			log_box->appendLog("$RecycleCard", to_general, QStringList(), QString::number(card_id));
 	}
-	if(move.from && move.from_place != Player::HandArea && move.to && move.from != move.to)
-	{
+	if(move.from && move.from_place != Player::HandArea && move.to && move.from != move.to){
 		QString from_general = move.from->getGeneralName();
 		QStringList tos;
 		tos << move.to->getGeneralName();
 		int hide = 0;
-		foreach(int card_id, move.card_ids)
-		{
+		foreach(int card_id, move.card_ids){
 			if(card_id != Card::S_UNKNOWN_CARD_ID)
 				log_box->appendLog("$MoveCard", from_general, tos, QString::number(card_id));
 			else
@@ -1339,8 +1319,7 @@ void RoomScene::keepGetCardLog(const CardsMoveStruct &move)
 			log_box->appendLog("#MoveNCards", from_general, tos, QString(),
 			QString::number(hide));
 	}
-	if(move.from_place == Player::HandArea && move.to_place == Player::HandArea)
-	{
+	if(move.from_place == Player::HandArea && move.to_place == Player::HandArea){
 		QString from_general = move.from->getGeneralName();
 		QStringList tos;
 		tos << move.to->getGeneralName();
@@ -1388,8 +1367,7 @@ void RoomScene::keepGetCardLog(const CardsMoveStruct &move)
 			/*if(movement.from_place == Player::Special){
 			CardItem *card_item = card_container->take(NULL, card_id);
 			if(card_item != NULL);
-			else if(movement.from == Self)
-			{
+			else if(movement.from == Self){
 				card_item = new CardItem(Bang->getCard(card_id));
 				card_item->setPos(avatar->scenePos());                
 			}
@@ -1412,8 +1390,7 @@ void RoomScene::keepGetCardLog(const CardsMoveStruct &move)
 	if(card_item->scene() == NULL)
 		addItem(card_item);
 
-	if(src != NULL && src_place != Player::Judging)
-	{
+	if(src != NULL && src_place != Player::Judging){
 		QString from_general;
 		from_general= src->getGeneralName();
 		from_general = Bang->translate(from_general);        
@@ -2038,10 +2015,8 @@ void RoomScene::showPromptBox()
 void RoomScene::updateStatus(Client::Status oldStatus, Client::Status newStatus){    
 	switch(newStatus){
 	case Client::NotActive:{
-			if(oldStatus == Client::ExecDialog)
-			{
-				if(m_choiceDialog != NULL && m_choiceDialog->isVisible())
-				{
+			if(oldStatus == Client::ExecDialog){
+				if(m_choiceDialog != NULL && m_choiceDialog->isVisible()){
 					m_choiceDialog->hide();
 				}
 			}
@@ -2119,8 +2094,7 @@ void RoomScene::updateStatus(Client::Status oldStatus, Client::Status newStatus)
 		}
 
 	case Client::ExecDialog:{
-			if(m_choiceDialog != NULL)
-			{
+			if(m_choiceDialog != NULL){
 				m_choiceDialog->setParent(main_window, Qt::Dialog);
 				m_choiceDialog->show();
 				ok_button->setEnabled(false);
@@ -2578,8 +2552,7 @@ void RoomScene::addRestartButton(QDialog *dialog){
 	dialog->resize(main_window->width()/2, dialog->height());
 
 	bool goto_next =false;
-	if(Config.GameMode.contains("_mini_") && Self->property("win").toBool())
-	{
+	if(Config.GameMode.contains("_mini_") && Self->property("win").toBool()){
 		QString id = Config.GameMode;
 		id.replace("_mini_","");
 		int stage = Config.value("MiniSceneStage",1).toInt();
@@ -3252,8 +3225,7 @@ void RoomScene::onGameStart(){
 void RoomScene::freeze(){
 	dashboard->setEnabled(false);
 	avatar->setEnabled(false);
-	foreach(Photo *photo, photos)
-	{
+	foreach(Photo *photo, photos){
 		photo->hideProgressBar();
 		photo->setEnabled(false);
 	}
@@ -3273,8 +3245,7 @@ void RoomScene::freeze(){
 }
 
 void RoomScene::moveFocus(const QString &who, BP::Countdown countdown){
-	if(who == Self->objectName() && focused != NULL)
-	{
+	if(who == Self->objectName() && focused != NULL){
 		focused->hideProgressBar();
 		if(focused->getPlayer()->getPhase() == Player::NotActive)
 			focused->setFrame(Photo::NoFrame);        
@@ -3301,8 +3272,7 @@ void RoomScene::setEmotion(const QString &who, const QString &emotion ,bool perm
 		return;
 	}
 	PixmapAnimation * pma = PixmapAnimation::GetPixmapAnimation(dashboard, emotion);
-	if(pma)
-	{
+	if(pma){
 		pma->moveBy(0,- dashboard->boundingRect().height()/2);
 		pma->setZValue(8.0);
 	}
@@ -3371,8 +3341,7 @@ void RoomScene::animateHpChange(const QString &, const QStringList &args)
 	if(player->getHp() + delta < player->getMaxHp())
 		index = qBound(0, hp, 5);
 
-	if(player == Self)
-	{
+	if(player == Self){
 		int max_hp = Self->getMaxHp();
 
 		qreal width = max_hp > 6 ? 14 : 22;
@@ -3380,8 +3349,7 @@ void RoomScene::animateHpChange(const QString &, const QStringList &args)
 		qreal skip = (121 - total_width)/(max_hp+1);
 		qreal start_x = dashboard->getRightPosition();
 
-		for(int i = 0;i < delta;i++)
-		{
+		for(int i = 0;i < delta;i++){
 			Pixmap *aniMaga = new Pixmap;
 			QPixmap *qpixmap = max_hp > 6 ? MagatamaWidget::GetSmallMagatama(index) : MagatamaWidget::GetMagatama(index);
 			aniMaga->setPixmap(*qpixmap);
@@ -3414,8 +3382,7 @@ void RoomScene::animateHpChange(const QString &, const QStringList &args)
 	}
 
 	Photo *photo = name2photo[who];
-	for(int i=0;i<delta;i++)
-	{
+	for(int i=0;i<delta;i++){
 		i+=player->getHp();
 		Pixmap *aniMaga = new Pixmap(QString("image/system/magatamas/small-%1.png").arg(index));
 		addItem(aniMaga);
@@ -3476,8 +3443,7 @@ void RoomScene::animatePopup(const QString &name, const QStringList &args)
 
 void RoomScene::doAppearingAnimation(const QString &name, const QStringList &args){
 
-	if(name == "busou_haki" || name == "wine")
-	{
+	if(name == "busou_haki" || name == "wine"){
 		setEmotion(args.at(0),name);
 		return;
 	}
@@ -3601,8 +3567,7 @@ void RoomScene::doAnimation(const QString &name, const QStringList &args){
 		(this->*func)(name, args);
 }
 
-void RoomScene::showServerInformation()
-{
+void RoomScene::showServerInformation(){
 	QDialog *dialog = new QDialog(main_window);
 	dialog->setWindowTitle(tr("Server information"));
 
@@ -3980,8 +3945,7 @@ void RoomScene::updateRolesBox()
 {
 	double centerX = m_rolesBox->boundingRect().width() / 2;
 	int n = role_items.length();
-	for(int i = 0; i < n; i++)
-	{
+	for(int i = 0; i < n; i++){
 		QGraphicsPixmapItem *item = role_items[i];
 		item->setParentItem(m_rolesBox);
 		item->setPos(21 * (i - n / 2) + centerX, 6);
@@ -4002,8 +3966,7 @@ void RoomScene::adjustPrompt()
 	ft.setPixelSize(fz);
 	prompt_box_widget->setFont(ft);
 
-	while(ClientInstance->getPromptDoc()->size().height() > fitSize)
-	{
+	while(ClientInstance->getPromptDoc()->size().height() > fitSize){
 		ft.setPixelSize(ft.pixelSize()-1);
 		prompt_box_widget->setFont(ft);
 	}

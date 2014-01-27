@@ -14,12 +14,10 @@ time_t ServerInfoStruct::getCommandTimeout(BP::CommandType command, BP::ProcessI
 {
 	time_t timeOut;
 	if(OperationTimeout == 0) return 0;
-	else if(command == BP::AskForGeneral)
-	{
+	else if(command == BP::AskForGeneral){
 		timeOut = Config.S_CHOOSE_GENERAL_TIMEOUT * 1000;
 	}
-	else if(command == BP::AskForGuanxing)
-	{
+	else if(command == BP::AskForGuanxing){
 		timeOut = Config.S_GUANXING_TIMEOUT * 1000;
 	}
 	else

@@ -41,10 +41,8 @@ bool ExpPattern::matchOne(const Player *player, const Card *card, QString exp) c
 	QStringList card_numbers = factors.at(2).split(',');
 	int cdn = card->getNumber();
 
-	foreach(QString number,card_numbers)
-	{
-		if(number.contains('~'))
-		{
+	foreach(QString number,card_numbers){
+		if(number.contains('~')){
 			QStringList params = number.split('~');
 			int from,to;
 			if(!params.at(0).size())from = 1;

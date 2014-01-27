@@ -530,8 +530,7 @@ QStringList Engine::getRandomLords() const{
 
 	QStringList lords;
 
-	foreach(QString alord,getLords())
-	{
+	foreach(QString alord,getLords()){
 		if(banlist_ban.contains(alord))continue;
 
 		lords << alord;

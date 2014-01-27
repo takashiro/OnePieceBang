@@ -11,8 +11,7 @@ PixmapAnimation::PixmapAnimation(QGraphicsScene *scene){
 void PixmapAnimation::advance(int phase)
 {
 	if(phase)current++;
-	if(current>=frames.size())
-	{
+	if(current>=frames.size()){
 		current = 0;
 		emit finished();
 	}
@@ -63,8 +62,7 @@ PixmapAnimation* PixmapAnimation::GetPixmapAnimation(QGraphicsObject *parent, co
 {
 	PixmapAnimation *pma = new PixmapAnimation();
 	pma->setPath(QString("image/system/emotion/%1/").arg(emotion));
-	if(pma->valid())
-	{
+	if(pma->valid()){
 		if(emotion == "slash_red" ||
 				emotion == "slash_black" ||
 				emotion == "thunder_slash" ||
@@ -75,8 +73,7 @@ PixmapAnimation* PixmapAnimation::GetPixmapAnimation(QGraphicsObject *parent, co
 						pma->boundingRect().height()*0.15);
 			pma->setScale(0.7);
 		}
-		else if(emotion == "no-success")
-		{
+		else if(emotion == "no-success"){
 			pma->moveBy(pma->boundingRect().width()*0.15,
 						pma->boundingRect().height()*0.15);
 			pma->setScale(0.7);

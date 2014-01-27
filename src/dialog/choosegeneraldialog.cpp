@@ -52,8 +52,7 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
 
 	QList<const General *> generals;
 	foreach(QString general_name, general_names){
-		if(general_name.contains("(lord)"))
-		{
+		if(general_name.contains("(lord)")){
 			general_name.chop(6);
 			lord_name = general_name;
 			continue;
@@ -93,8 +92,7 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
 			&&generals.length()>2)
 	{
 		int index = 0;
-		foreach(const General *general, generals)
-		{
+		foreach(const General *general, generals){
 			int party = 0;
 			foreach(const General *other, generals)
 				if(other->getKingdom() == general->getKingdom())
@@ -114,8 +112,7 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
 	if(generals.length() <= columns){
 		layout = new QHBoxLayout;
 
-		if(lord_name.size())
-		{
+		if(lord_name.size()){
 			const General * lord = Bang->getGeneral(lord_name);
 
 			QLabel *label = new QLabel;
@@ -131,8 +128,7 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
 		QGridLayout *grid_layout = new QGridLayout;
 		layout = grid_layout;
 
-		if(lord_name.size())
-		{
+		if(lord_name.size()){
 			const General * lord = Bang->getGeneral(lord_name);
 
 			QLabel *label = new QLabel;
@@ -151,10 +147,8 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
 	}
 
 	QString default_name = generals.first()->objectName();
-	for(int i=0;i<buttons.size();i++)
-	{
-		if(buttons.at(i)->isEnabled())
-		{
+	for(int i=0;i<buttons.size();i++){
+		if(buttons.at(i)->isEnabled()){
 			default_name = generals.at(i)->objectName();
 			break;
 		}
@@ -206,8 +200,7 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
 
 void ChooseGeneralDialog::done(int result)
 {
-	if(m_freeChooseDialog != NULL)
-	{
+	if(m_freeChooseDialog != NULL){
 		m_freeChooseDialog->reject();
 		delete m_freeChooseDialog;
 		m_freeChooseDialog = NULL;

@@ -55,7 +55,7 @@ public:
 		case Death:{
 			bool hasHuman=false;
 			if(player->isLord()){
-				foreach(ServerPlayer *p, room->getAlivePlayers()) {
+				foreach(ServerPlayer *p, room->getAlivePlayers()){
 					if(p->getRoleEnum()==Player::Loyalist){
 						room->setPlayerProperty(player, "role", "loyalist");
 						room->setPlayerProperty(p, "role", "lord");
@@ -111,10 +111,8 @@ public:
 					qShuffle(players);
 
 					bool hasZombie=false;
-					foreach(ServerPlayer *p,players)
-					{
-						if(p->getGeneral2Name()=="zombie")
-						{
+					foreach(ServerPlayer *p,players){
+						if(p->getGeneral2Name()=="zombie"){
 							hasZombie=true;
 							break;
 						}
@@ -122,8 +120,7 @@ public:
 
 					if(round>2&&!hasZombie)room->gameOver("lord+loyalist");
 
-					if(player->getMark("@round") > 7)
-					{
+					if(player->getMark("@round") > 7){
 						LogMessage log;
 						log.type = "#survive_victory";
 						log.from = player;
@@ -136,8 +133,7 @@ public:
 						players.at(1)->tag["zombie"]=true;
 					}
 
-				}else if(player->tag.contains("zombie"))
-				{
+				}else if(player->tag.contains("zombie")){
 
 					player->bury();
 					room->killPlayer(player);

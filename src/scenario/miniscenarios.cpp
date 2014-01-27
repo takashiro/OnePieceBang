@@ -10,8 +10,7 @@ MiniSceneRule::MiniSceneRule(Scenario *scenario)
 }
 
 void MiniSceneRule::assign(QStringList &generals, QStringList &roles) const{
-	for(int i=0;i<players.length();i++)
-	{
+	for(int i=0;i<players.length();i++){
 		QMap<QString,QString> sp =players.at(i);
 		QString name = sp["general"];
 		if(name == "select")name = "sujiang";
@@ -23,8 +22,7 @@ void MiniSceneRule::assign(QStringList &generals, QStringList &roles) const{
 QStringList MiniSceneRule::existedGenerals() const
 {
 	QStringList names;
-	for(int i=0;i<players.length();i++)
-	{
+	for(int i=0;i<players.length();i++){
 		QMap<QString,QString> sp =players.at(i);
 		QString name = sp["general"];
 		if(name == "select")name = "sujiang";
@@ -45,8 +43,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 	else
 		room = player->getRoom();
 
-	if(event == PhaseChange)
-	{
+	if(event == PhaseChange){
 		if(player == room->getTag("Starter").value<PlayerStar>()){
 			if(player->getPhase() == Player::Start){
 				room->setTag("Round", room->getTag("Round").toInt()+1);
@@ -87,8 +84,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 		players.append(players.takeFirst());
 
 	QStringList cards= setup.split(",", QString::SkipEmptyParts);
-	foreach(QString id,cards)
-	{
+	foreach(QString id,cards){
 		room->moveCardTo(Bang->getCard(id.toInt()),NULL,Player::DrawPile,true);
 		room->doBroadcastNotify(BP::AddHistory, QString("pushPile"));
 	}
@@ -105,18 +101,15 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 		QString general = this->players.at(i)["general"];
 		{
 			QString original = sp->getGeneralName();
-			if(general == "select")
-			{
+			if(general == "select"){
 				QStringList available,all,existed;
 				existed = existedGenerals();
 				all = Bang->getRandomGenerals(Bang->getGeneralCount());
 				qShuffle(all);
-				for(int i=0;i<5;i++)
-				{
+				for(int i=0;i<5;i++){
 					sp->setGeneral(NULL);
 					QString choice = sp->findReasonable(all);
-					if(existed.contains(choice))
-					{
+					if(existed.contains(choice)){
 						all.removeOne(choice);
 						i--;
 						continue;
@@ -131,18 +124,15 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 		}
 		general = this->players.at(i)["general2"];
 		if(!general.isEmpty()){
-			if(general == "select")
-			{
+			if(general == "select"){
 				QStringList available,all,existed;
 				existed = existedGenerals();
 				all = Bang->getRandomGenerals(Bang->getGeneralCount());
 				qShuffle(all);
-				for(int i=0;i<5;i++)
-				{
+				for(int i=0;i<5;i++){
 					room->setPlayerProperty(sp,"general2", QVariant());
 					QString choice = sp->findReasonable(all);
-					if(existed.contains(choice))
-					{
+					if(existed.contains(choice)){
 						all.removeOne(choice);
 						i--;
 						continue;
@@ -174,8 +164,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 
 		str = this->players.at(i)["equip"];
 		QStringList equips = str.split(",");
-		foreach(QString equip,equips)
-		{
+		foreach(QString equip,equips){
 			bool ok;
 			equip.toInt(&ok);
 			if(!ok)room->installEquip(sp,equip);
@@ -183,21 +172,17 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 		}
 
 		str = this->players.at(i)["judge"];
-		if(str != NULL)
-		{
+		if(str != NULL){
 			QStringList judges = str.split(",");
-			foreach(QString judge,judges)
-			{
+			foreach(QString judge,judges){
 				room->moveCardTo(Bang->getCard(judge.toInt()),sp,Player::JudgingArea);
 			}
 		}
 
 		str = this->players.at(i)["hand"];
-		if(str !=NULL)
-		{
+		if(str !=NULL){
 			QStringList hands = str.split(",");
-			foreach(QString hand,hands)
-			{
+			foreach(QString hand,hands){
 				room->obtainCard(sp,hand.toInt());
 			}
 
@@ -240,11 +225,9 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 		str = this->players.at(i)["draw"];
 		if(str == NULL)str = "4";
 		room->drawCards(sp,str.toInt());
-		if(this->players.at(i)["marks"] != NULL)
-		{
+		if(this->players.at(i)["marks"] != NULL){
 			QStringList marks = this->players.at(i)["marks"].split(",");
-			foreach(QString qs,marks)
-			{
+			foreach(QString qs,marks){
 				QStringList keys = qs.split("*");
 				str = keys.at(1);
 				room->setPlayerMark(sp, keys.at(0), str.toInt());
@@ -263,8 +246,7 @@ void MiniSceneRule::addNPC(QString feature)
 	QStringList features;
 	if(feature.contains("|"))features= feature.split("|");
 	else features = feature.split(" ");
-	foreach(QString str, features)
-	{
+	foreach(QString str, features){
 		QStringList keys = str.split(":");
 		if(keys.size()<2)continue;
 		if(keys.first().size()<1)continue;
