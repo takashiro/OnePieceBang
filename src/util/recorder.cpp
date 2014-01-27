@@ -196,7 +196,7 @@ void Replayer::initCommandPair(){
 	if(m_commandMapping.isEmpty()){
 		m_commandMapping["showCard"]            = BP::AskForCardShow;
 		m_commandMapping["moveFocus"]           = BP::MoveFocus;
-		m_commandMapping["skillInvoked"]        = BP::AskForSkillInvoke;
+		m_commandMapping["skillInvoked"]        = BP::SkillInvoke;
 		m_commandMapping["doGongxin"]           = BP::AskForGongxin;
 		m_commandMapping["askForGeneral"]       = BP::AskForGeneral;
 		m_commandMapping["askForPlayerChosen"]  = BP::AskForPlayerChosen;
@@ -239,7 +239,7 @@ void Replayer::initCommandPair(){
 				<< BP::AskForKingdom
 				<< BP::AskForCard
 				<< BP::AskForUseCard
-				<< BP::AskForSkillInvoke
+				<< BP::SkillInvoke
 				<< BP::AskForChoice
 				<< BP::AskForNullification
 				<< BP::AskForCardShow
@@ -253,7 +253,7 @@ void Replayer::initCommandPair(){
 		commands.clear();
 		commands << BP::AskForCardShow
 				<< BP::MoveFocus
-				<< BP::AskForSkillInvoke
+				<< BP::SkillInvoke
 				<< BP::AskForGongxin;
 		m_packetTypeMapping[BP::ServerRequest] = commands;
 	}

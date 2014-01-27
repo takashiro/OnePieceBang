@@ -61,7 +61,7 @@ Client::Client(QObject *parent, const QString &filename)
 	callbacks[BP::DetachSkill] = &Client::detachSkill;
 	callbacks[BP::MoveFocus] = &Client::moveFocus;
 	callbacks[BP::SetEmotion] = &Client::setEmotion;
-	callbacks[BP::AskForSkillInvoke] = &Client::skillInvoked;
+	callbacks[BP::SkillInvoke] = &Client::skillInvoked;
 	callbacks[BP::ShowAllCards] = &Client::askForGongxin;
 	callbacks[BP::AskForGongxin] = &Client::askForGongxin;
 	callbacks[BP::AddHistory] = &Client::addHistory;
@@ -104,7 +104,7 @@ Client::Client(QObject *parent, const QString &filename)
 	interactions[BP::AskForKingdom] = &Client::askForKingdom;
 	interactions[BP::AskForCard] = &Client::askForCard;
 	interactions[BP::AskForUseCard] = &Client::askForUseCard;
-	interactions[BP::AskForSkillInvoke] = &Client::askForSkillInvoke;
+	interactions[BP::SkillInvoke] = &Client::askForSkillInvoke;
 	interactions[BP::AskForChoice] = &Client::askForChoice;
 	interactions[BP::AskForNullification] = &Client::askForNullification;
 	interactions[BP::AskForCardShow] = &Client::askForCardShow;
@@ -687,7 +687,7 @@ void Client::onPlayerInvokeSkill(bool invoke){
 	if(skill_name == "surrender")
 		replyToServer(BP::AskForSurrender, invoke);
 	else
-		replyToServer(BP::AskForSkillInvoke, invoke);
+		replyToServer(BP::SkillInvoke, invoke);
 	setStatus(NotActive);
 }
 
