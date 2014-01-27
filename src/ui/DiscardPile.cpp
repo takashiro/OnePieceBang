@@ -76,7 +76,7 @@ void DiscardPile::clearCards(){
 }
 
 // @todo: adjust here!!!
-const QRect DrawPile::S_DISPLAY_CARD_REGION(0, 0, CardItem::S_NORMAL_CARD_WIDTH, CardItem::S_NORMAL_CARD_HEIGHT);
+const QRect DrawPile::S_DISPLAY_CARD_REGION(0, CardItem::S_NORMAL_CARD_HEIGHT / 2, CardItem::S_NORMAL_CARD_WIDTH, CardItem::S_NORMAL_CARD_HEIGHT);
 
 QList<CardItem*> DrawPile::removeCardItems(const QList<int> &card_ids, Player::Place place){
 	QList<CardItem*> result = _createCards(card_ids);
