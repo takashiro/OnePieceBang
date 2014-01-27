@@ -79,7 +79,7 @@ bool BP::Packet::parse(const QByteArray &s){
 	packet_type = (PacketType)result[2].toDouble();
 	command = (CommandType)result[3].toDouble();
 
-	if (result.size() == 5)
+	if(result.size() == 5)
 		parseBody(result[4]);
 
 	return true;
@@ -93,7 +93,7 @@ QByteArray BP::Packet::toUtf8() const{
 	result.append(command);
 
 	const QJsonValue &body = constructBody();
-	if (!body.isNull())
+	if(!body.isNull())
 		result.append(body);
 
 	return QJsonDocument(result).toJson(QJsonDocument::Compact);

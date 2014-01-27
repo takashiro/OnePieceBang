@@ -70,8 +70,8 @@ bool ExpPattern::matchOne(const Player *player, const Card *card, QString exp) c
 
 	QString color = factors.at(4);
 	if(color == ".")return true;
-	else if (color == "red" && card->isRed())return true;
-	else if (color == "black" && card->isBlack())return true;
+	else if(color == "red" && card->isRed())return true;
+	else if(color == "black" && card->isBlack())return true;
 
 	return false;
 

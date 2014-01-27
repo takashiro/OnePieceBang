@@ -28,14 +28,14 @@ bool Pixmap::_load(const QString &filename, QSize size, bool useNewSize, bool ce
 {
 	bool success = pixmap.load(filename);
 
-	if (!success){
+	if(!success){
 		QImageReader reader(filename);
 		QString error_string = reader.errorString();
 
 		QString warning = tr("Can not load image %1[%2], error string is %3").arg(filename).arg(metaObject()->className()).arg(error_string);
 		QMessageBox::warning(NULL, tr("Warning"), warning);        
 	} else {
-		if (useNewSize)
+		if(useNewSize)
 		{
 			_m_width = size.width();
 			_m_height = size.height();

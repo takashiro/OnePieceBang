@@ -4,7 +4,7 @@
 
 void TimedProgressBar::showEvent(QShowEvent* showEvent)
 {
-	if (!m_hasTimer || m_max <= 0) 
+	if(!m_hasTimer || m_max <= 0) 
 	{
 		showEvent->setAccepted(false);
 		return;
@@ -16,7 +16,7 @@ void TimedProgressBar::showEvent(QShowEvent* showEvent)
 
 void TimedProgressBar::hide()
 {
-	if (m_timer != 0)
+	if(m_timer != 0)
 	{        
 		killTimer(m_timer);
 		m_timer = NULL;
@@ -29,7 +29,7 @@ void TimedProgressBar::timerEvent(QTimerEvent* timerEvent)
 	m_val += m_step;
 	if(m_val >= m_max){
 		m_val = m_max;
-		if (m_autoHide) hide();
+		if(m_autoHide) hide();
 		else
 		{            
 			killTimer(m_timer);
@@ -47,7 +47,7 @@ QSanCommandProgressBar::QSanCommandProgressBar()
 	m_step = Config.S_PROGRESS_BAR_UPDATE_INTERVAL;
 	m_hasTimer = (ServerInfo.OperationTimeout != 0);
 	m_instanceType = ClientInstance;
-	if (sm_progress_100_image == NULL)
+	if(sm_progress_100_image == NULL)
 	{
 		sm_progress_100_image = new QPixmap("image/system/controls/progress-100.png");
 		sm_progress_80_image = new QPixmap("image/system/controls/progress-79.png");
@@ -70,11 +70,11 @@ QPixmap* QSanCommandProgressBar::sm_progress_0_image = NULL;
 
 void QSanCommandProgressBar::paintEvent(QPaintEvent *e)
 {
-	if (this->m_val <= 0) return;
+	if(this->m_val <= 0) return;
 	int width = this->width();
 	int height = this->height();
 	QPainter painter(this);
-	if (orientation() == Qt::Vertical)
+	if(orientation() == Qt::Vertical)
 	{
 		painter.translate(0, height);
 		qSwap(width, height); 
@@ -84,11 +84,11 @@ void QSanCommandProgressBar::paintEvent(QPaintEvent *e)
 		0, 0, S_PROGRESS_IMAGE_WIDTH, S_PROGRESS_IMAGE_HEIGHT);
 	const QPixmap *image;
 	double percent = 1 - (double) m_val / m_max;
-	if (percent >= 0.8)
+	if(percent >= 0.8)
 		image = sm_progress_100_image;
-	else if (percent >= 0.5)    
+	else if(percent >= 0.5)    
 		image = sm_progress_80_image;
-	else if (percent >= 0.2)    
+	else if(percent >= 0.2)    
 		image = sm_progress_50_image;
 	else 
 		image = sm_progress_20_image;
@@ -99,7 +99,7 @@ void QSanCommandProgressBar::paintEvent(QPaintEvent *e)
 
 void QSanCommandProgressBar::setCountdown(Countdown countdown)
 {
-	if (countdown.type == Countdown::Unlimited)
+	if(countdown.type == Countdown::Unlimited)
 		m_hasTimer = false;
 	m_max = countdown.max;
 	m_val = countdown.current;

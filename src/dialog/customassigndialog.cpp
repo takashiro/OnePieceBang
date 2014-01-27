@@ -1121,7 +1121,7 @@ void CustomAssignDialog::load()
 
 	QFile file(filename);
 
-	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+	if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
 		return;
 
 	set_pile.clear();
@@ -1160,7 +1160,7 @@ void CustomAssignDialog::load()
 	role_index["renegade"] = 1;
 	role_index["rebel"] = 2;
 
-	while (!in.atEnd()) {
+	while(!in.atEnd()) {
 		QString line = in.readLine();
 		line = line.trimmed();
 		if(line.isEmpty()) continue;
@@ -1500,7 +1500,7 @@ bool CustomAssignDialog::save(QString path)
 													tr("Pure text replay file (*.txt)"));
 
 	QFile file(filename);
-	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+	if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
 		return false;
 
 

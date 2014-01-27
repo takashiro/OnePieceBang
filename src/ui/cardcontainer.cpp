@@ -35,7 +35,7 @@ void CardContainer::fillCards(const QList<int> &card_ids){
 	items.append(card_items);
 	int n = items.length();
 
-	for (int i = 0; i < n; i++) {
+	for(int i = 0; i < n; i++) {
 		QPointF pos;
 		if(n <= 10){                    
 			if(i < 5){
@@ -89,18 +89,18 @@ void CardContainer::clear(){
 }
 
 void CardContainer::freezeCards(bool is_frozen){
-	foreach (CardItem *item, items){
+	foreach(CardItem *item, items){
 		item->setFrozen(is_frozen);
 	}
 }
 
 QList<CardItem*> CardContainer::removeCardItems(const QList<int> &card_ids, Player::Place place){
 	QList<CardItem*> result;
-	foreach (int card_id, card_ids)
+	foreach(int card_id, card_ids)
 	{
 		CardItem *to_take = NULL;
 
-		foreach (CardItem *item, items){
+		foreach(CardItem *item, items){
 			if(item->getCard()->getId() == card_id){
 				to_take = item;
 				break;
@@ -134,14 +134,14 @@ int CardContainer::getFirstEnabled() const{
 
 void CardContainer::startChoose(){
 	close_button->hide();
-	foreach (CardItem *item, items){
+	foreach(CardItem *item, items){
 		connect(item, SIGNAL(leave_hover()), this, SLOT(grabItem()));
 		connect(item, SIGNAL(double_clicked()), this, SLOT(chooseItem()));
 	}
 }
 
 void CardContainer::startGongxin(){
-	foreach (CardItem *item, items){
+	foreach(CardItem *item, items){
 		if(item->getCard()->getSuit() == Card::Heart){
 			connect(item, SIGNAL(double_clicked()), this, SLOT(gongxinItem()));
 		}

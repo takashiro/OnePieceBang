@@ -58,7 +58,7 @@ void RoleCombobox::setPos(qreal x, qreal y)
 }
 
 void RoleCombobox::hide(){
-	foreach (QGraphicsItem *item, items)
+	foreach(QGraphicsItem *item, items)
 		item->hide();
 }
 
@@ -68,14 +68,14 @@ void RoleCombobox::show(){
 }
 
 void RoleCombobox::onItemClicked(){
-	if (items.length() < 2) return;
+	if(items.length() < 2) return;
 
 	RoleComboboxItem *clicked_item = qobject_cast<RoleComboboxItem *>(sender());
 
 	if(_m_expanded){
 		int i = 0;
-		foreach (RoleComboboxItem *item, items){
-			if  (item == clicked_item) continue;
+		foreach(RoleComboboxItem *item, items){
+			if(item == clicked_item) continue;
 			else i++;
 			item->setPos(_m_posX, _m_posY + i * (S_ROLE_COMBO_BOX_HEIGHT + S_ROLE_COMBO_BOX_GAP));
 			item->setZValue(1.0);

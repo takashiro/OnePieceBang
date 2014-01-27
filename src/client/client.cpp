@@ -409,17 +409,17 @@ void Client::getCards(const QJsonValue& data){
 	Q_ASSERT(arg.size() >= 1);
 	int moveId = arg[0].toDouble();
 	QList<CardsMoveStruct> moves;
-	for (unsigned int i = 1; i < arg.size(); i++){
+	for(unsigned int i = 1; i < arg.size(); i++){
 		CardsMoveStruct move;
-		if (!move.tryParse(arg[i])) return;
+		if(!move.tryParse(arg[i])) return;
 		move.from = getPlayer(move.from_player_name);
 		move.to = getPlayer(move.to_player_name);
 		Player::Place dstPlace = move.to_place;        
 	
-		if (dstPlace == Player::SpecialArea)
+		if(dstPlace == Player::SpecialArea)
 			((ClientPlayer*)move.to)->changePile(move.to_pile_name, true, move.card_ids);
 		else{
-			foreach (int card_id, move.card_ids)
+			foreach(int card_id, move.card_ids)
 				_getSingleCard(card_id, move); // DDHEJ->DDHEJ, DDH/EJ->EJ
 		}
 		moves.append(move);
@@ -433,18 +433,18 @@ void Client::loseCards(const QJsonValue& data){
 	Q_ASSERT(arg.size() >= 1);
 	int moveId = arg[0].toDouble();
 	QList<CardsMoveStruct> moves;
-	for (unsigned int i = 1; i < arg.size(); i++)
+	for(unsigned int i = 1; i < arg.size(); i++)
 	{
 		CardsMoveStruct move;
-		if (!move.tryParse(arg[i])) return;
+		if(!move.tryParse(arg[i])) return;
 		move.from = getPlayer(move.from_player_name);
 		move.to = getPlayer(move.to_player_name);
 		Player::Place srcPlace = move.from_place;   
 		
-		if (srcPlace == Player::SpecialArea)        
+		if(srcPlace == Player::SpecialArea)        
 			((ClientPlayer*)move.from)->changePile(move.from_pile_name, false, move.card_ids);
 		else {
-			foreach (int card_id, move.card_ids)
+			foreach(int card_id, move.card_ids)
 				_loseSingleCard(card_id, move); // DDHEJ->DDHEJ, DDH/EJ->EJ
 		}
 		moves.append(move);
@@ -544,7 +544,7 @@ void Client::onPlayerUseCard(const Card *card, const QList<const Player *> &targ
 
 void Client::startInXSeconds(const QJsonValue &left_seconds){
 	int seconds = left_seconds.toDouble();
-	if (seconds > 0)
+	if(seconds > 0)
 		lines_doc->setHtml(tr("<p align = \"center\">Game will start in <b>%1</b> seconds...</p>").arg(seconds));
 	else
 		lines_doc->setHtml(QString());
@@ -559,7 +559,7 @@ void Client::arrangeSeats(const QJsonValue &seats_data){
 	QJsonArray player_names = seats_data.toArray();
 	players.clear();
 	
-	for (int i = 0; i < player_names.size(); i++){
+	for(int i = 0; i < player_names.size(); i++){
 		ClientPlayer *player = findChild<ClientPlayer*>(player_names.at(i).toString());
 
 		Q_ASSERT(player != NULL);
@@ -573,7 +573,7 @@ void Client::arrangeSeats(const QJsonValue &seats_data){
 
 	Q_ASSERT(self_index != -1);
 
-	for (int i = self_index+1; i < players.length(); i++)
+	for(int i = self_index+1; i < players.length(); i++)
 		seats.append(players.at(i));
 	for(int i = 0; i < self_index; i++)
 		seats.append(players.at(i));
@@ -685,7 +685,7 @@ QString Client::getSkillNameToInvoke() const{
 }
 
 void Client::onPlayerInvokeSkill(bool invoke){    
-	if (skill_name == "surrender")
+	if(skill_name == "surrender")
 		replyToServer(BP::AskForSurrender, invoke);
 	else
 		replyToServer(BP::AskForSkillInvoke, invoke);
@@ -754,7 +754,7 @@ void Client::askForCard(const QJsonValue &data){
 	if(!data.isArray()) return;
 
 	QJsonArray req = data.toArray();
-	if (req.size() == 0) return;
+	if(req.size() == 0) return;
 	m_isUseCard = req[0].toString().startsWith("@@");
 	_askForCardOrUseCard(req);
 }
@@ -767,7 +767,7 @@ void Client::askForUseCard(const QJsonValue &req){
 void Client::askForSkillInvoke(const QJsonValue &argdata){
 	if(!argdata.isArray()) return;
 	QJsonArray arg = argdata.toArray();
-	if (!BP::isStringArray(arg, 0, 1)) return;
+	if(!BP::isStringArray(arg, 0, 1)) return;
 	QString skill_name = arg[0].toString();
 	QString data = arg[1].toString();
 
@@ -796,7 +796,7 @@ void Client::onPlayerMakeChoice(){
 
 void Client::askForSurrender(const QJsonValue &initiator){
 	
-	if (!initiator.isString()) return;    
+	if(!initiator.isString()) return;    
 
 	QString text = tr("%1 initiated a vote for disadvataged side to claim "
 						"capitulation. Click \"OK\" to surrender or \"Cancel\" to resist.")
@@ -825,7 +825,7 @@ void Client::playSkillEffect(const QJsonValue &play_str){
 void Client::askForNullification(const QJsonValue &argdata){
 	if(!argdata.isArray()) return;
 	QJsonArray arg = argdata.toArray();
-	if (arg.size() != 3 || !arg[0].isString()
+	if(arg.size() != 3 || !arg[0].isString()
 		|| !(arg[1].isNull() ||arg[1].isString())
 		|| !arg[2].isString()) return;
 	
@@ -833,7 +833,7 @@ void Client::askForNullification(const QJsonValue &argdata){
 	QJsonValue source_name = arg[1].toString();
 	ClientPlayer* target_player = getPlayer(arg[2].toString());
 
-	if (!target_player || !target_player->getGeneral()) return;
+	if(!target_player || !target_player->getGeneral()) return;
 
 	const Card *trick_card = Bang->findChild<const Card *>(trick_name);
 	ClientPlayer *source = NULL;
@@ -896,7 +896,7 @@ void Client::onPlayerChoosePlayer(const Player *player){
 	if(player == NULL)
 		player = findChild<const Player *>(players_to_choose.first());
 
-	if (player == NULL) return;
+	if(player == NULL) return;
 	replyToServer(BP::AskForPlayerChosen, player->objectName());
 	setStatus(NotActive);
 }
@@ -968,7 +968,7 @@ bool Client::hasNoTargetResponsing() const{
 }
 
 ClientPlayer *Client::getPlayer(const QString &name){
-	if (name == Self->objectName()) return Self;
+	if(name == Self->objectName()) return Self;
 	else return findChild<ClientPlayer *>(name);
 }
 
@@ -1056,7 +1056,7 @@ void Client::updatePileNum(){
 void Client::askForDiscard(const QJsonValue &reqdata){
 	if(!reqdata.isArray()) return;
 	QJsonArray req = reqdata.toArray();
-	if (!req[0].isDouble() || !req[2].isBool() || !req[3].isBool() || !req[1].isDouble())
+	if(!req[0].isDouble() || !req[2].isBool() || !req[3].isBool() || !req[1].isDouble())
 		return;
 
 	discard_num = req[0].toDouble();
@@ -1076,7 +1076,7 @@ void Client::askForDiscard(const QJsonValue &reqdata){
 }
 
 void Client::askForExchange(const QJsonValue &exchange_str){
-	if (!exchange_str.isDouble())
+	if(!exchange_str.isDouble())
 	{
 		QMessageBox::warning(NULL, tr("Warning"), tr("Exchange string is not well formatted!"));
 		return;
@@ -1188,7 +1188,7 @@ void Client::warn(const QJsonValue &reason){
 
 void Client::askForGeneral(const QJsonValue &arg){
 	QStringList generals;
-	if (!BP::tryParse(arg, generals)) return;
+	if(!BP::tryParse(arg, generals)) return;
 	emit generals_got(generals);
 	setStatus(ExecDialog);
 }
@@ -1211,7 +1211,7 @@ void Client::askForKingdom(const QJsonValue&){
 void Client::askForChoice(const QJsonValue &ask_str_raw){
 	if(!ask_str_raw.isArray()) return;
 	QJsonArray ask_str = ask_str_raw.toArray();
-	if (!BP::isStringArray(ask_str, 0, 1)) return;
+	if(!BP::isStringArray(ask_str, 0, 1)) return;
 	QString skill_name = ask_str[0].toString();
 	QStringList options = ask_str[1].toString().split("+");
 	emit options_got(skill_name, options);
@@ -1221,19 +1221,19 @@ void Client::askForChoice(const QJsonValue &ask_str_raw){
 void Client::askForCardChosen(const QJsonValue &ask_str_raw){
 	if(!ask_str_raw.isArray()) return;
 	QJsonArray ask_str = ask_str_raw.toArray();
-	if (!BP::isStringArray(ask_str, 0, 2)) return;
+	if(!BP::isStringArray(ask_str, 0, 2)) return;
 	QString player_name = ask_str[0].toString();
 	QString flags = ask_str[1].toString();
 	QString reason = ask_str[2].toString();
 	ClientPlayer *player = getPlayer(player_name);
-	if (player == NULL) return;
+	if(player == NULL) return;
 	emit cards_got(player, flags, reason);
 	setStatus(ExecDialog);
 }
 
 
 void Client::askForOrder(const QJsonValue &arg){
-	if (!arg.isDouble()) return;
+	if(!arg.isDouble()) return;
 	BP::Game3v3ChooseOrderCommand reason = (BP::Game3v3ChooseOrderCommand) arg.toDouble();
 	emit orders_got(reason);
 	setStatus(ExecDialog);
@@ -1242,9 +1242,9 @@ void Client::askForOrder(const QJsonValue &arg){
 void Client::askForRole3v3(const QJsonValue &argdata){
 	if(!argdata.isArray()) return;
 	QJsonArray arg = argdata.toArray();
-	if (arg.size() != 2 || !arg[0].isString() || !arg[1].isArray()) return;
+	if(arg.size() != 2 || !arg[0].isString() || !arg[1].isArray()) return;
 	QStringList roles;
-	if (!BP::tryParse(arg[1], roles)) return;
+	if(!BP::tryParse(arg[1], roles)) return;
 	QString scheme = arg[0].toString();
 	emit roles_got(scheme, roles);
 	setStatus(ExecDialog);
@@ -1352,7 +1352,7 @@ void Client::askForSingleWine(const QJsonValue &argdata){
 }
 
 void Client::askForCardShow(const QJsonValue &requestor){
-	if (!requestor.isString()) return;
+	if(!requestor.isString()) return;
 	QString name = Bang->translate(requestor.toString());
 	prompt_doc->setHtml(tr("%1 request you to show one hand card").arg(name));
 
@@ -1363,7 +1363,7 @@ void Client::askForCardShow(const QJsonValue &requestor){
 }
 
 void Client::askForAG(const QJsonValue &arg){
-	if (!arg.isBool()) return;
+	if(!arg.isBool()) return;
 	is_discard_action_refusable = arg.toBool();
 	setStatus(AskForAG);
 }
@@ -1479,7 +1479,7 @@ void Client::askForGongxin(const QJsonValue &data){
 	ClientPlayer *who = getPlayer(arg[0].toString());
 	bool enable_heart = arg[1].toBool();
 	QList<int> card_ids;
-	if (!BP::tryParse(arg[2], card_ids)) return;
+	if(!BP::tryParse(arg[2], card_ids)) return;
 
 	who->setCards(card_ids);
 
@@ -1501,7 +1501,7 @@ void Client::askForPindian(const QJsonValue &data){
 	}
 
 	QJsonArray ask_str = data.toArray();
-	if (!BP::isStringArray(ask_str, 0, 1)){
+	if(!BP::isStringArray(ask_str, 0, 1)){
 		return;
 	}
 	QString from = ask_str[0].toString();
@@ -1518,13 +1518,13 @@ void Client::askForPindian(const QJsonValue &data){
 }
 
 void Client::askForYiji(const QJsonValue &card_list_data){
-	if (!card_list_data.isArray()) return;
+	if(!card_list_data.isArray()) return;
 	QJsonArray card_list = card_list_data.toArray();
 	int count = card_list.size();
 	prompt_doc->setHtml(tr("Please distribute %1 cards as you wish").arg(count));
 	//@todo: use cards directly rather than the QString
 	QStringList card_str;
-	for (unsigned int i = 0; i < card_list.size(); i++)
+	for(unsigned int i = 0; i < card_list.size(); i++)
 		card_str << QString::number((int) card_list[i].toDouble());
 	card_pattern = card_str.join("+");
 	setStatus(AskForYiji);
@@ -1533,13 +1533,13 @@ void Client::askForYiji(const QJsonValue &card_list_data){
 void Client::askForPlayerChosen(const QJsonValue &playerdata){
 	if(!playerdata.isArray()) return;
 	QJsonArray players = playerdata.toArray();
-	if (players.size() != 2) return;
-	if (!players[1].isString() || !players[0].isArray()) return;
+	if(players.size() != 2) return;
+	if(!players[1].isString() || !players[0].isArray()) return;
 	QJsonArray players0 = players[0].toArray();
-	if (players0.size() == 0) return;
+	if(players0.size() == 0) return;
 	skill_name = players[1].toString();
 	players_to_choose.clear();
-	for (unsigned int i = 0; i < players0.size(); i++)
+	for(unsigned int i = 0; i < players0.size(); i++)
 		players_to_choose.push_back(players0[i].toString());
 
 	setStatus(AskForPlayerChoose);
@@ -1609,7 +1609,7 @@ void Client::speak(const QJsonValue &speak_data){
 void Client::moveFocus(const QJsonValue &focus){
 	QString who;
 	BP::Countdown countdown;
-	if (focus.isString())
+	if(focus.isString())
 	{
 		who = focus.toString();
 		countdown.type = BP::Countdown::Unlimited;
@@ -1622,7 +1622,7 @@ void Client::moveFocus(const QJsonValue &focus){
 		who = focusarr[0].toString();
 	
 		bool success = countdown.tryParse(focusarr[1]);
-		if (!success){
+		if(!success){
 			Q_ASSERT(focusarr[1].isDouble());
 			BP::CommandType command = (BP::CommandType) focusarr[1].toDouble();
 			countdown.max = ServerInfo.getCommandTimeout(command, BP::ClientInstance);
@@ -1643,7 +1643,7 @@ void Client::setEmotion(const QJsonValue &set_str){
 void Client::skillInvoked(const QJsonValue &argdata){
 	if(!argdata.isArray()) return;
 	QJsonArray arg = argdata.toArray();
-	if (!BP::isStringArray(arg,0,1)) return;
+	if(!BP::isStringArray(arg,0,1)) return;
 	emit skill_invoked(arg[1].toString(), arg[0].toString());
 }
 
@@ -1792,7 +1792,7 @@ void Client::onPlayerChooseOrder(){
 			order = "cool";
 	}
 	int req;
-	if (order == "warm") req = (int) BP::WarmCamp;
+	if(order == "warm") req = (int) BP::WarmCamp;
 	else req = (int) BP::CoolCamp;
 	replyToServer(BP::AskForOrder, req);
 	setStatus(NotActive);

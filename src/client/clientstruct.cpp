@@ -13,12 +13,12 @@ ServerInfoStruct ServerInfo;
 time_t ServerInfoStruct::getCommandTimeout(BP::CommandType command, BP::ProcessInstanceType instance)
 {
 	time_t timeOut;
-	if (OperationTimeout == 0) return 0;
-	else if (command == BP::AskForGeneral)
+	if(OperationTimeout == 0) return 0;
+	else if(command == BP::AskForGeneral)
 	{
 		timeOut = Config.S_CHOOSE_GENERAL_TIMEOUT * 1000;
 	}
-	else if (command == BP::AskForGuanxing)
+	else if(command == BP::AskForGuanxing)
 	{
 		timeOut = Config.S_GUANXING_TIMEOUT * 1000;
 	}
@@ -26,7 +26,7 @@ time_t ServerInfoStruct::getCommandTimeout(BP::CommandType command, BP::ProcessI
 	{
 		timeOut = OperationTimeout * 1000;
 	}
-	if (instance == BP::ServerInstance)
+	if(instance == BP::ServerInstance)
 		timeOut += Config.S_SERVER_TIMEOUT_GRACIOUS_PERIOD;
 	return timeOut;
 }

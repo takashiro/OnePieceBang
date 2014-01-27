@@ -709,7 +709,7 @@ void Collateral::onEffect(const CardEffectStruct &effect) const{
 			.arg(effect.from->objectName()).arg(victim->objectName());
 	const Card *slash = room->askForCard(effect.to, "slash", prompt, QVariant(), NonTrigger);
 	if(victim->isDead()){
-		if (effect.from->isDead()){
+		if(effect.from->isDead()){
 			if(effect.to->isAlive() && effect.to->getWeapon()){
 				int card_id = weapon->getId();
 				room->throwCard(card_id, effect.from);
@@ -721,8 +721,8 @@ void Collateral::onEffect(const CardEffectStruct &effect) const{
 		}
 	}
 
-	if (effect.from->isDead()){
-		if (effect.to->isAlive()){
+	if(effect.from->isDead()){
+		if(effect.to->isAlive()){
 			if(slash){
 				CardUseStruct use;
 				use.card = slash;
@@ -1178,7 +1178,7 @@ void BusouHaki::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *
 
 void BusouHaki::onUse(Room *room, const CardUseStruct &card_use) const{
 	CardUseStruct use = card_use;
-	if (use.to.isEmpty())
+	if(use.to.isEmpty())
 		use.to << use.from;
 	BasicCard::onUse(room, use);
 }

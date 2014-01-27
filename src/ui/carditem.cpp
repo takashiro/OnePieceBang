@@ -41,7 +41,7 @@ CardItem::CardItem(const Card *card)
 
 void CardItem::setCard(const Card* card)
 {      
-	if (card != NULL)
+	if(card != NULL)
 	{
 		Pixmap::load(card->getPixmapPath());
 		icon_pixmap.load(card->getIconPath());
@@ -72,7 +72,7 @@ CardItem::CardItem(const QString &general_name)
 CardItem::~CardItem()
 {
 	m_animationMutex.lock();
-	if (m_currentAnimation != NULL)
+	if(m_currentAnimation != NULL)
 	{
 		m_currentAnimation->deleteLater();
 		m_currentAnimation = NULL;
@@ -118,10 +118,10 @@ QPointF CardItem::homePos() const{
 }
 
 void CardItem::goBack(bool playAnimation, bool doFade){
-	if (playAnimation)
+	if(playAnimation)
 	{
 		getGoBackAnimation(doFade);
-		if (m_currentAnimation != NULL)
+		if(m_currentAnimation != NULL)
 		{
 			m_currentAnimation->start();
 		}
@@ -129,7 +129,7 @@ void CardItem::goBack(bool playAnimation, bool doFade){
 	else
 	{
 		m_animationMutex.lock();
-		if (m_currentAnimation != NULL)
+		if(m_currentAnimation != NULL)
 		{
 			m_currentAnimation->stop();
 			delete m_currentAnimation;
@@ -143,7 +143,7 @@ void CardItem::goBack(bool playAnimation, bool doFade){
 QAbstractAnimation* CardItem::getGoBackAnimation(bool doFade)
 {
 	m_animationMutex.lock();
-	if (m_currentAnimation != NULL)
+	if(m_currentAnimation != NULL)
 	{
 		m_currentAnimation->stop();
 		delete m_currentAnimation;
@@ -160,7 +160,7 @@ QAbstractAnimation* CardItem::getGoBackAnimation(bool doFade)
 
 		QPropertyAnimation *disappear = new QPropertyAnimation(this, "opacity");        
 		double middleOpacity = qMax(opacity(), m_opacityAtHome);
-		if (middleOpacity == 0) middleOpacity = 1.0;        
+		if(middleOpacity == 0) middleOpacity = 1.0;        
 		disappear->setEndValue(m_opacityAtHome);
 		disappear->setKeyValueAt(0.2, middleOpacity);
 		disappear->setKeyValueAt(0.8, middleOpacity);
@@ -238,9 +238,9 @@ bool CardItem::isFrozen() const{
 
 CardItem *CardItem::FindItem(const QList<CardItem *> &items, int card_id){
 	foreach(CardItem *item, items){
-		if (item->getCard() == NULL)
+		if(item->getCard() == NULL)
 		{
-			if (card_id == Card::S_UNKNOWN_CARD_ID) return item;
+			if(card_id == Card::S_UNKNOWN_CARD_ID) return item;
 			else continue;
 		}
 		if(item->getCard()->getId() == card_id)
@@ -252,12 +252,12 @@ CardItem *CardItem::FindItem(const QList<CardItem *> &items, int card_id){
 
 void CardItem::reduceZ()
 {
-	if (this->zValue()>0) this->setZValue(this->zValue()-0.8);
+	if(this->zValue()>0) this->setZValue(this->zValue()-0.8);
 }
 
 void CardItem::promoteZ()
 {
-	if (this->zValue()<0) this->setZValue(this->zValue()+0.8);
+	if(this->zValue()<0) this->setZValue(this->zValue()+0.8);
 }
 
 void CardItem::mousePressEvent(QGraphicsSceneMouseEvent *){
@@ -269,9 +269,9 @@ void CardItem::mousePressEvent(QGraphicsSceneMouseEvent *){
 }
 
 void CardItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *){
-	if (isFrozen()) return;
+	if(isFrozen()) return;
 
-	if (auto_back){        
+	if(auto_back){        
 		goBack(true, false);
 	}else{
 		emit released();
@@ -310,7 +310,7 @@ void CardItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
 
 void CardItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
 	
-	if (!isEnabled())
+	if(!isEnabled())
 	{
 		painter->fillRect(this->boundingRect(), QColor(100, 100, 100, 255 * opacity()));
 		painter->setOpacity(0.7 * opacity());
@@ -318,7 +318,7 @@ void CardItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 	Pixmap::paint(painter, option, widget);
 
-	if (m_card) {
+	if(m_card) {
 		painter->drawPixmap(0, 14, cardsuit_pixmap);
 		painter->drawPixmap(0, 2, number_pixmap);
 	}

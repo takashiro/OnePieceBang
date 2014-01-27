@@ -305,7 +305,7 @@ SPConvertSkill::SPConvertSkill(const QString &name, const QString &from, const Q
 }
 
 bool SPConvertSkill::triggerable(const ServerPlayer *target) const{
-	if (target == NULL || Bang->getGeneral(to) == NULL) return false;
+	if(target == NULL || Bang->getGeneral(to) == NULL) return false;
 	QString package = Bang->getGeneral(to)->getPackage();
 	if(Bang->getBanPackages().contains(package)) return false;
 	return GameStartSkill::triggerable(target) && target->getGeneralName() == from;
@@ -362,7 +362,7 @@ WeaponSkill::WeaponSkill(const QString &name)
 }
 
 bool WeaponSkill::triggerable(const ServerPlayer *target) const{
-	if (target == NULL) return false;
+	if(target == NULL) return false;
 	return target->hasWeapon(objectName());
 }
 
@@ -373,7 +373,7 @@ ArmorSkill::ArmorSkill(const QString &name)
 }
 
 bool ArmorSkill::triggerable(const ServerPlayer *target) const{
-	if (target == NULL) return false;
+	if(target == NULL) return false;
 	return target->hasArmorEffect(objectName()) && target->getArmor()->getSkill() == this;
 }
 

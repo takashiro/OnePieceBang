@@ -38,13 +38,13 @@ QJsonArray BP::toJsonArray(const QList<int>& arg)
 
 bool BP::tryParse(const QJsonValue& argdata, QList<int>& result)
 {
-	if (!argdata.isArray()) return false;
+	if(!argdata.isArray()) return false;
 	QJsonArray arg = argdata.toArray();
-	for (unsigned int i = 0; i< arg.size(); i++)
+	for(unsigned int i = 0; i< arg.size(); i++)
 	{
-		if (!arg[i].isDouble()) return false;
+		if(!arg[i].isDouble()) return false;
 	}
-	for (unsigned int i = 0; i< arg.size(); i++)
+	for(unsigned int i = 0; i< arg.size(); i++)
 	{
 		result.append(arg[i].toDouble());
 	}    
@@ -69,13 +69,13 @@ QJsonArray BP::toJsonArray(const QStringList& arg)
 
 bool BP::tryParse(const QJsonValue& argdata, QStringList& result)
 {
-	if (!argdata.isArray()) return false;
+	if(!argdata.isArray()) return false;
 	QJsonArray arg = argdata.toArray();
-	for (unsigned int i = 0; i< arg.size(); i++)
+	for(unsigned int i = 0; i< arg.size(); i++)
 	{
-		if (!arg[i].isString()) return false;        
+		if(!arg[i].isString()) return false;        
 	}
-	for (unsigned int i = 0; i< arg.size(); i++)
+	for(unsigned int i = 0; i< arg.size(); i++)
 	{
 		result.append(arg[i].toString());
 	}    

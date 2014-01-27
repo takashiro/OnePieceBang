@@ -17,7 +17,7 @@ LogMessage::LogMessage()
 QString LogMessage::toString() const{
 	QStringList tos;
 	foreach(ServerPlayer *player, to)
-		if (player != NULL) tos << player->objectName();
+		if(player != NULL) tos << player->objectName();
 
 	return QString("%1:%2->%3:%4:%5:%6")
 			.arg(type)
@@ -134,16 +134,16 @@ bool CardUseStruct::isValid() const{
 
 bool CardUseStruct::tryParse(const QJsonValue &usage_data, Room *room){
 	QJsonArray usage = usage_data.toArray();
-	if (usage.size() < 2 || !usage[0].isString() || !usage[1].isArray())
+	if(usage.size() < 2 || !usage[0].isString() || !usage[1].isArray())
 		return false;
 
 	card = Card::Parse(usage[0].toString());
 
 	const QJsonArray targets = usage[1].toArray();
 
-	for (unsigned int i = 0; i < targets.size(); i++)
+	for(unsigned int i = 0; i < targets.size(); i++)
 	{
-		if (!targets[i].isString()) return false;
+		if(!targets[i].isString()) return false;
 		this->to << room->findChild<ServerPlayer *>(targets[i].toString());
 	}
 	return true;
@@ -161,7 +161,7 @@ void CardUseStruct::parse(const QString &str, Room *room){
 	// only returns one QString, which is "a". Suspect
 	// it's a bug with QT regular expression. Figure out
 	// the cause of the issue.
-	if (words.length() == 2 && !words.at(1).isEmpty()) 
+	if(words.length() == 2 && !words.at(1).isEmpty()) 
 		target_str = words.at(1);    
 
 	card = Card::Parse(card_str);
@@ -287,7 +287,7 @@ void RoomThread::run(){
 		game_rule = new GameRule(this);
 
 	addTriggerSkill(game_rule);
-	if (Config.EnableBasara) addTriggerSkill(new BasaraMode(this));
+	if(Config.EnableBasara) addTriggerSkill(new BasaraMode(this));
 
 	if(room->getScenario() != NULL){
 		const ScenarioRule *rule = room->getScenario()->getRule();
@@ -361,12 +361,12 @@ void RoomThread::run(){
 
 			forever {
 				trigger(TurnStart, room->getCurrent());
-				if (room->isFinished()) break;
+				if(room->isFinished()) break;
 				room->setCurrent(room->getCurrent()->getNextAlive());
 			}
 		}
 	} catch (TriggerEvent event) {
-		if (event == GameFinished)
+		if(event == GameFinished)
 			return;
 	}
 }

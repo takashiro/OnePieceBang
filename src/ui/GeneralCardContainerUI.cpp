@@ -5,7 +5,7 @@
 QList<CardItem*> PlayerCardContainer::_createCards(QList<int> card_ids)
 {
 	QList<CardItem*> result;
-	foreach (int card_id, card_ids)
+	foreach(int card_id, card_ids)
 	{
 		CardItem* item = _createCard(card_id);
 		result.append(item);
@@ -38,26 +38,26 @@ void PlayerCardContainer::_disperseCards(QList<CardItem*> &cards, QRectF fillReg
 											Qt::Alignment align, bool useHomePos, bool keepOrder)
 {
 	int numCards = cards.size();
-	if (numCards == 0) return;
-	if (!keepOrder)
+	if(numCards == 0) return;
+	if(!keepOrder)
 		qSort(cards.begin(), cards.end(), PlayerCardContainer::_horizontalPosLessThan);
 	double maxWidth = fillRegion.width();
 	double step = qMin(cards.first()->boundingRect().width(), maxWidth / numCards);
 	align &= Qt::AlignHorizontal_Mask;
-	for (int i = 0; i < numCards; i++)
+	for(int i = 0; i < numCards; i++)
 	{
 		CardItem* card = cards[i];
 		double newX = 0;
-		if (align == Qt::AlignHCenter)
+		if(align == Qt::AlignHCenter)
 			newX = fillRegion.center().x() - card->boundingRect().width() / 2.0
 					+ step * (i - (numCards - 1) / 2.0);
-		else if (align == Qt::AlignLeft)
+		else if(align == Qt::AlignLeft)
 			newX = fillRegion.left() + step * i;
-		else if (align == Qt::AlignRight)
+		else if(align == Qt::AlignRight)
 			newX = fillRegion.right() + step * (i - numCards);
 		else continue;
 		QPointF newPos = QPointF(newX, fillRegion.center().y() - card->boundingRect().height());
-		if (useHomePos)
+		if(useHomePos)
 			card->setHomePos(newPos);
 		else
 			card->setPos(newPos);
@@ -76,7 +76,7 @@ void PlayerCardContainer::_doUpdate()
 
 void PlayerCardContainer::_playMoveCardsAnimation(QList<CardItem*> &cards, bool destroyCards)
 {    
-	if (destroyCards)    
+	if(destroyCards)    
 	{
 		_mutex_cardsToBeDestroyed.lock();
 		_cardsToBeDestroyed.append(cards);
@@ -85,7 +85,7 @@ void PlayerCardContainer::_playMoveCardsAnimation(QList<CardItem*> &cards, bool 
 	
 	QParallelAnimationGroup* animation = new QParallelAnimationGroup;
 	foreach(CardItem* card_item, cards){
-		if (destroyCards)
+		if(destroyCards)
 			connect(card_item, SIGNAL(movement_animation_finished()), this, SLOT(_destroyCard()));
 		animation->addAnimation(card_item->getGoBackAnimation(true));
 	}
@@ -97,7 +97,7 @@ void PlayerCardContainer::_playMoveCardsAnimation(QList<CardItem*> &cards, bool 
 
 void PlayerCardContainer::addCardItems(QList<CardItem*> &card_items, Player::Place place)
 {
-	foreach (CardItem* card_item, card_items)
+	foreach(CardItem* card_item, card_items)
 	{        
 		card_item->setPos(mapFromScene(card_item->scenePos()));
 		card_item->setParentItem(this);        

@@ -548,7 +548,7 @@ void RoomScene::createReplayControlBar(){
 
 void RoomScene::adjustItems(){
 	QRectF displayRegion = sceneRect();
-	if (displayRegion.left() != 0 || displayRegion.top() != 0 ||
+	if(displayRegion.left() != 0 || displayRegion.top() != 0 ||
 		displayRegion.bottom() < room_layout->m_minimumSceneSize.height() ||
 		displayRegion.right() < room_layout->m_minimumSceneSize.width())
 	{
@@ -590,10 +590,10 @@ void RoomScene::adjustItems(){
 	chat_widget->setPos(infoPlane.right() - chat_widget->boundingRect().width(),
 		chat_edit_widget->y() + (room_layout->m_chatTextBoxHeight - chat_widget->boundingRect().height()) / 2);
 	
-	 if (self_box)
+	 if(self_box)
 		 self_box->setPos(infoPlane.left() - padding - self_box->boundingRect().width(), 
 			sceneRect().height() - padding * 3 - self_box->boundingRect().height() - dashboard->boundingRect().height() - m_reverseSelectionButton->height());
-	 if (enemy_box)
+	 if(enemy_box)
 		 enemy_box->setPos(padding * 2, padding * 2);
 	
 	updateTable();
@@ -603,13 +603,13 @@ void RoomScene::adjustItems(){
 void RoomScene::_dispersePhotos(QList<Photo*> &photos, QRectF fillRegion, int minDistanceBetweenPhotos, Qt::Alignment align)
 {
 	int numPhotos = photos.size();
-	if (numPhotos == 0) return;
-	if (align == Qt::AlignHCenter)
+	if(numPhotos == 0) return;
+	if(align == Qt::AlignHCenter)
 	{
 		double maxWidth = fillRegion.width();
 		double photoWidth = Photo::S_NORMAL_PHOTO_WIDTH; 
 		double step = qMax(photoWidth  + minDistanceBetweenPhotos, maxWidth / numPhotos);
-		for (int i = 0; i < numPhotos; i++)
+		for(int i = 0; i < numPhotos; i++)
 		{
 			Photo* photo = photos[i];
 			double newX = fillRegion.center().x() + step * (i - (numPhotos - 1) / 2.0);
@@ -617,12 +617,12 @@ void RoomScene::_dispersePhotos(QList<Photo*> &photos, QRectF fillRegion, int mi
 			photo->setPos(newPos);
 		}
 	}
-	else if (align == Qt::AlignVCenter)
+	else if(align == Qt::AlignVCenter)
 	{
 		double maxHeight = fillRegion.height();
 		double photoHeight = Photo::S_NORMAL_PHOTO_HEIGHT; 
 		double step = qMax(photoHeight + minDistanceBetweenPhotos, maxHeight / numPhotos);
-		for (int i = 0; i < numPhotos; i++)
+		for(int i = 0; i < numPhotos; i++)
 		{
 			Photo* photo = photos[i];
 			double newY = fillRegion.center().y() + step * (i - (numPhotos - 1) / 2.0);
@@ -630,11 +630,11 @@ void RoomScene::_dispersePhotos(QList<Photo*> &photos, QRectF fillRegion, int mi
 			photo->setPos(newPos);            
 		}
 	}
-	else if (align == Qt::AlignBottom)
+	else if(align == Qt::AlignBottom)
 	{
 		double photoHeight = Photo::S_NORMAL_PHOTO_HEIGHT; 
 		double step = minDistanceBetweenPhotos + photoHeight;
-		for (int i = 0; i < numPhotos; i++)
+		for(int i = 0; i < numPhotos; i++)
 		{
 			Photo* photo = photos[i];
 			double newY = fillRegion.bottom() - photoHeight / 2 - step * (numPhotos - i - 1);
@@ -720,12 +720,12 @@ void RoomScene::updateTable()
 
 	int* seatToRegion;
 	bool pkMode = false;
-	if (ServerInfo.GameMode == "04_1v3" && game_started)
+	if(ServerInfo.GameMode == "04_1v3" && game_started)
 	{
 		seatToRegion = hulaoSeatIndex[Self->getSeat() - 1];
 		pkMode = true;
 	}
-	else if (ServerInfo.GameMode == "06_3v3" && game_started)
+	else if(ServerInfo.GameMode == "06_3v3" && game_started)
 	{
 		seatToRegion = kof3v3SeatIndex[(Self->getSeat() - 1) % 3];
 		pkMode = true;
@@ -736,20 +736,20 @@ void RoomScene::updateTable()
 	}
 	QList<Photo*> photosInRegion[C_NUM_REGIONS];
 	int n = photos.length();
-	for (int i = 0; i < n; i++)
+	for(int i = 0; i < n; i++)
 	{
 		int regionIndex = seatToRegion[i];
-		if (regionIndex == 4 || regionIndex == 6 || regionIndex == 9)
+		if(regionIndex == 4 || regionIndex == 6 || regionIndex == 9)
 			photosInRegion[regionIndex].append(photos[i]);            
 		else
 			photosInRegion[regionIndex].prepend(photos[i]);
 	}
-	for (int i = 0; i < C_NUM_REGIONS; i++)
+	for(int i = 0; i < C_NUM_REGIONS; i++)
 	{
-		if (photosInRegion[i].isEmpty()) continue;
+		if(photosInRegion[i].isEmpty()) continue;
 		Qt::Alignment align;
-		if (i < 3 || i == 7) align = Qt::AlignHCenter;
-		// else if (pkMode) align = Qt::AlignBottom;
+		if(i < 3 || i == 7) align = Qt::AlignHCenter;
+		// else if(pkMode) align = Qt::AlignBottom;
 		else align = Qt::AlignVCenter;  
 		_dispersePhotos(photosInRegion[i], seatRegions[i], room_layout->m_photoPhotoPadding, align);
 	}
@@ -1119,9 +1119,9 @@ void RoomScene::chooseCard(const ClientPlayer *player, const QString &flags, con
 void RoomScene::chooseOrder(BP::Game3v3ChooseOrderCommand reason)
 {
 	QDialog *dialog = new QDialog;
-	if (reason == BP::ChooseOrderSelect)
+	if(reason == BP::ChooseOrderSelect)
 		dialog->setWindowTitle(tr("The order who first choose general"));
-	else if (reason == BP::ChooseOrderTurn)
+	else if(reason == BP::ChooseOrderTurn)
 		dialog->setWindowTitle(tr("The order who first in turn"));
 
 	QLabel *prompt = new QLabel(tr("Please select the order"));
@@ -1177,7 +1177,7 @@ void RoomScene::chooseRole(const QString &scheme, const QStringList &roles)
 	else
 		possibleRoles << "leader1" << "guard1" << "leader2" << "guard2";
 
-	foreach (QString role, possibleRoles)
+	foreach(QString role, possibleRoles)
 	{
 		QCommandLinkButton *button = new QCommandLinkButton(jargon[role]);
 		if(scheme == "AllRoles")
@@ -1240,13 +1240,13 @@ void RoomScene::toggleDiscards(){
 
 PlayerCardContainer* RoomScene::_getPlayerCardContainer(Player::Place place, Player* player)
 {
-	if (place == Player::DiscardPile)
+	if(place == Player::DiscardPile)
 		return m_discardPile;
-	else if (place == Player::DrawPile)
+	else if(place == Player::DrawPile)
 		return m_drawPile;
-	else if (player == NULL && place == Player::SpecialArea)
+	else if(player == NULL && place == Player::SpecialArea)
 		return card_container;
-	else if (player == Self)
+	else if(player == Self)
 		return dashboard;
 	else 
 		return name2photo.value(player->objectName(), NULL);
@@ -1254,13 +1254,13 @@ PlayerCardContainer* RoomScene::_getPlayerCardContainer(Player::Place place, Pla
 
 void RoomScene::loseCards(int moveId, QList<CardsMoveStruct> card_moves)
 {
-	for (int i = 0; i < card_moves.size(); i++) 
+	for(int i = 0; i < card_moves.size(); i++) 
 	{
 		CardsMoveStruct &movement = card_moves[i];
 		card_container->m_currentPlayer = (ClientPlayer*)movement.to;
 		PlayerCardContainer* from_container = _getPlayerCardContainer(movement.from_place, movement.from);
 		QList<CardItem*> cards = from_container->removeCardItems(movement.card_ids, movement.from_place);
-		foreach (CardItem* card, cards){
+		foreach(CardItem* card, cards){
 			card->setHomePos(from_container->pos() + card->homePos());
 			card->setPos(from_container->pos() + card->pos());
 			card->goBack(true);
@@ -1274,17 +1274,17 @@ void RoomScene::loseCards(int moveId, QList<CardsMoveStruct> card_moves)
 void RoomScene::getCards(int moveId, QList<CardsMoveStruct> card_moves)
 {
 	bool doAdjust = false;
-	for (int i = 0; i < card_moves.size(); i++) 
+	for(int i = 0; i < card_moves.size(); i++) 
 	{
 		CardsMoveStruct &movement = card_moves[i];
 		card_container->m_currentPlayer = (ClientPlayer*)movement.to;
 		PlayerCardContainer* to_container = _getPlayerCardContainer(movement.to_place, movement.to);
 		QList<CardItem*> cards = _m_cardsMoveStash[moveId][i];
-		for (int j = 0; j < cards.size(); j++)
+		for(int j = 0; j < cards.size(); j++)
 		{            
 			CardItem* card = cards[j];
 			int card_id = card->getId();
-			if (!card_moves[i].card_ids.contains(card_id))
+			if(!card_moves[i].card_ids.contains(card_id))
 			{
 				cards.removeAt(j);
 				j--;
@@ -1294,10 +1294,10 @@ void RoomScene::getCards(int moveId, QList<CardsMoveStruct> card_moves)
 		bringToFront(to_container);
 		to_container->addCardItems(cards, movement.to_place);
 		keepGetCardLog(movement);
-		if (movement.from == Self || movement.to == Self)
+		if(movement.from == Self || movement.to == Self)
 			doAdjust = true;
 	}
-	if (doAdjust)
+	if(doAdjust)
 		dashboard->adjustCards();
 	_m_cardsMoveStash[moveId].clear();
 }
@@ -1308,9 +1308,9 @@ void RoomScene::keepLoseCardLog(const CardsMoveStruct &move)
 
 void RoomScene::keepGetCardLog(const CardsMoveStruct &move)
 {
-	if (move.card_ids.isEmpty()) return;
+	if(move.card_ids.isEmpty()) return;
 	//DrawNCards
-	if (move.from_place == Player::DrawPile && move.to_place == Player::HandArea)
+	if(move.from_place == Player::DrawPile && move.to_place == Player::HandArea)
 	{
 		QString to_general = move.to->getGeneralName();
 		log_box->appendLog("#DrawNCards", to_general, QStringList(), QString(),
@@ -1385,10 +1385,10 @@ void RoomScene::keepGetCardLog(const CardsMoveStruct &move)
 		foreach(int card_id, move.card_ids)
 			log_box->appendLog(type, to_general, QStringList(), QString::number(card_id));
 	}
-			/*if (movement.from_place == Player::Special){
+			/*if(movement.from_place == Player::Special){
 			CardItem *card_item = card_container->take(NULL, card_id);
-			if (card_item != NULL);
-			else if (movement.from == Self)
+			if(card_item != NULL);
+			else if(movement.from == Self)
 			{
 				card_item = new CardItem(Bang->getCard(card_id));
 				card_item->setPos(avatar->scenePos());                
@@ -1401,7 +1401,7 @@ void RoomScene::keepGetCardLog(const CardsMoveStruct &move)
 				special_card = NULL;
 			}
 		}*/  
-		/*if (movement.to_place == Player::Special){
+		/*if(movement.to_place == Player::Special){
 			special_card = card_item;
 			dstPos = avatar->scenePos();            
 		}*/
@@ -2038,14 +2038,14 @@ void RoomScene::showPromptBox()
 void RoomScene::updateStatus(Client::Status oldStatus, Client::Status newStatus){    
 	switch(newStatus){
 	case Client::NotActive:{
-			if (oldStatus == Client::ExecDialog)
+			if(oldStatus == Client::ExecDialog)
 			{
-				if (m_choiceDialog != NULL && m_choiceDialog->isVisible())
+				if(m_choiceDialog != NULL && m_choiceDialog->isVisible())
 				{
 					m_choiceDialog->hide();
 				}
 			}
-			else if (oldStatus == Client::AskForGuanxing ||
+			else if(oldStatus == Client::AskForGuanxing ||
 					 oldStatus == Client::AskForGongxin)
 			{
 				guanxing_box->hide();
@@ -2119,7 +2119,7 @@ void RoomScene::updateStatus(Client::Status oldStatus, Client::Status newStatus)
 		}
 
 	case Client::ExecDialog:{
-			if (m_choiceDialog != NULL)
+			if(m_choiceDialog != NULL)
 			{
 				m_choiceDialog->setParent(main_window, Qt::Dialog);
 				m_choiceDialog->show();
@@ -2335,7 +2335,7 @@ void RoomScene::doCancelButton(){
 	switch(ClientInstance->getStatus()){
 	case Client::Playing:{
 			const ViewAsSkill *skill = dashboard->currentSkill();
-			if (skill)
+			if(skill)
 				cancelViewAsSkill();
 			else
 				dashboard->unselectAll();
@@ -3012,7 +3012,7 @@ void RoomScene::viewDistance(){
 }
 
 void RoomScene::speak(){
-	if (game_started && ServerInfo.DisableChat)
+	if(game_started && ServerInfo.DisableChat)
 		chat_box->append(tr("This room does not allow chatting!"));
 	else
 		ClientInstance->speakToServer(chat_edit->text());
@@ -3273,10 +3273,10 @@ void RoomScene::freeze(){
 }
 
 void RoomScene::moveFocus(const QString &who, BP::Countdown countdown){
-	if (who == Self->objectName() && focused != NULL)
+	if(who == Self->objectName() && focused != NULL)
 	{
 		focused->hideProgressBar();
-		if (focused->getPlayer()->getPhase() == Player::NotActive)
+		if(focused->getPlayer()->getPhase() == Player::NotActive)
 			focused->setFrame(Photo::NoFrame);        
 	}
 	Photo *photo = name2photo[who];
@@ -3747,7 +3747,7 @@ void RoomScene::fillGenerals(const QStringList &names){
 void RoomScene::bringToFront(QGraphicsItem* front_item)
 {
 	m_zValueMutex.lock();    
-	if (_m_last_front_item != NULL)
+	if(_m_last_front_item != NULL)
 		_m_last_front_item->setZValue(_m_last_front_ZValue);
 	_m_last_front_item = front_item;
 	_m_last_front_ZValue = front_item->zValue();
@@ -3980,7 +3980,7 @@ void RoomScene::updateRolesBox()
 {
 	double centerX = m_rolesBox->boundingRect().width() / 2;
 	int n = role_items.length();
-	for (int i = 0; i < n; i++)
+	for(int i = 0; i < n; i++)
 	{
 		QGraphicsPixmapItem *item = role_items[i];
 		item->setParentItem(m_rolesBox);
@@ -3997,7 +3997,7 @@ void RoomScene::adjustPrompt()
 
 	QFont ft=prompt_box_widget->font();
 	int fz = ft.pixelSize() * qSqrt(fitSize * 1.0 / height);
-	if (fz > 21) fz = 21;
+	if(fz > 21) fz = 21;
 
 	ft.setPixelSize(fz);
 	prompt_box_widget->setFont(ft);

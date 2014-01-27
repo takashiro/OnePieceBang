@@ -40,7 +40,7 @@ QStringList MiniSceneRule::existedGenerals() const
 bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const
 {
 	Room* room;        
-	if (player == NULL)
+	if(player == NULL)
 		room = data.value<RoomStar>();
 	else
 		room = player->getRoom();
@@ -160,7 +160,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 		room->setPlayerProperty(sp,"kingdom",sp->getGeneral()->getKingdom());
 
 		QString str = this->players.at(i)["maxhp"];
-		if (str == NULL) str = QString::number(sp->getGeneralMaxHp());
+		if(str == NULL) str = QString::number(sp->getGeneralMaxHp());
 		room->setPlayerProperty(sp,"maxhp",str.toInt());
 
 		str = this->players.at(i)["hpadj"];

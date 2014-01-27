@@ -108,7 +108,7 @@ void ClientPlayer::changePile(const QString &name, bool add, QList<int> card_ids
 	if(add)
 		piles[name].append(card_ids);
 	else
-		foreach (int card_id, card_ids)
+		foreach(int card_id, card_ids)
 			piles[name].removeOne(card_id);
 
 	if(!name.startsWith("#"))

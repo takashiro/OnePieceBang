@@ -81,7 +81,7 @@ void GameRule::onPhaseChange(ServerPlayer *player) const{
 		}
 
 	case Player::Discard:{
-			while (player->getHandcardNum() > player->getMaxCards())
+			while(player->getHandcardNum() > player->getMaxCards())
 			{
 				int discard_num = player->getHandcardNum() - player->getMaxCards();
 				if(player->hasFlag("jilei")){
@@ -159,7 +159,7 @@ void GameRule::setGameProcess(Room *room) const{
 
 bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 	Room *room;
-	if (player == NULL)    
+	if(player == NULL)    
 		room = data.value<RoomStar>();    
 	else
 		room = player->getRoom();
@@ -170,9 +170,9 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 	}
 
 	// Handle global events
-	if (player == NULL){
+	if(player == NULL){
 		if(event == GameStart){
-			foreach (ServerPlayer* player, room->getPlayers())
+			foreach(ServerPlayer* player, room->getPlayers())
 			{
 				if(player->getGeneral()->getKingdom() == "god" && player->getGeneralName() != "anjiang"){
 					QString new_kingdom = room->askForKingdom(player);
@@ -710,7 +710,7 @@ HulaoPassMode::HulaoPassMode(QObject *parent)
 
 bool HulaoPassMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 	Room *room;
-	if (player == NULL)    
+	if(player == NULL)    
 		room = data.value<RoomStar>();    
 	else
 		room = player->getRoom();
@@ -727,11 +727,11 @@ bool HulaoPassMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 					  }
 	case GameStart: {
 		// Handle global events
-		if (player == NULL)
+		if(player == NULL)
 		{            
 			ServerPlayer* lord = room->getLord();
 			lord->drawCards(8, false);
-			foreach (ServerPlayer* player, room->getPlayers())
+			foreach(ServerPlayer* player, room->getPlayers())
 			{
 				if(player->isLord())
 					continue;
@@ -929,15 +929,15 @@ void BasaraMode::showGeneral(ServerPlayer *player, QString general_name) const
 
 bool BasaraMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
 	Room *room;
-	if (player == NULL)    
+	if(player == NULL)    
 		room = data.value<RoomStar>();    
 	else
 		room = player->getRoom();
 
 	// Handle global events
-	if (player == NULL)
+	if(player == NULL)
 	{
-		if (event == GameStart)
+		if(event == GameStart)
 		{
 			if(Config.EnableHegemony)
 				room->setTag("SkipNormalDeathProcess", true);

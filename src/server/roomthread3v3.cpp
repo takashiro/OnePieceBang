@@ -167,7 +167,7 @@ void RoomThread3v3::assignRoles(const QStringList &roles, const QString &scheme)
 	QStringList roleChoices = all_roles;
 	roleChoices.removeDuplicates();
 	QList<ServerPlayer *> new_players, abstained;
-	for (int i = 0; i < 6; i++)
+	for(int i = 0; i < 6; i++)
 		new_players << NULL;
 
 	foreach(ServerPlayer *player, room->m_players){

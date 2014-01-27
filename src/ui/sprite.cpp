@@ -28,7 +28,7 @@ void Sprite::start(int loops)
 	QMapIterator<QString, AnimationLine*> i(lines);
 	QParallelAnimationGroup *pgroup = new QParallelAnimationGroup;
 
-	while (i.hasNext())  {
+	while(i.hasNext())  {
 		i.next();
 		AnimationLine * line = i.value();
 		const QByteArray &name = i.key().toLocal8Bit();
@@ -312,9 +312,9 @@ void SentbackEffect::draw(QPainter *painter)
 
 		QRgb col;
 
-		for (int i = 0; i < width; ++i)
+		for(int i = 0; i < width; ++i)
 		{
-			for (int j = 0; j < height; ++j)
+			for(int j = 0; j < height; ++j)
 			{
 				col = image.pixel(i, j);
 				gray = qGray(col) >> 1;

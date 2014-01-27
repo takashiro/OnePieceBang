@@ -113,7 +113,7 @@ public:
 					bool hasZombie=false;
 					foreach(ServerPlayer *p,players)
 					{
-						if (p->getGeneral2Name()=="zombie")
+						if(p->getGeneral2Name()=="zombie")
 						{
 							hasZombie=true;
 							break;

@@ -206,7 +206,7 @@ ChooseGeneralDialog::ChooseGeneralDialog(const QStringList &general_names, QWidg
 
 void ChooseGeneralDialog::done(int result)
 {
-	if (m_freeChooseDialog != NULL)
+	if(m_freeChooseDialog != NULL)
 	{
 		m_freeChooseDialog->reject();
 		delete m_freeChooseDialog;

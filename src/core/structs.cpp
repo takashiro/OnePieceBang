@@ -11,7 +11,7 @@ bool CardMoveStruct::tryParse(const QJsonValue &data){
 		return false;
 	}
 
-	if (!arg[0].isDouble() || !BP::isIntArray(arg, 1, 2) || !BP::isStringArray(arg, 3, 6)) return false;
+	if(!arg[0].isDouble() || !BP::isIntArray(arg, 1, 2) || !BP::isStringArray(arg, 3, 6)) return false;
 	card_id = arg[0].toDouble();
 	from_place = (Player::Place)arg[1].toDouble();
 	to_place = (Player::Place)arg[2].toDouble();
@@ -25,7 +25,7 @@ bool CardMoveStruct::tryParse(const QJsonValue &data){
 QJsonValue CardMoveStruct::toJsonValue() const
 {
 	QJsonArray arg;
-	if (open) arg.append(card_id);
+	if(open) arg.append(card_id);
 	else arg.append(Card::S_UNKNOWN_CARD_ID);
 	arg.append((int)from_place);
 	arg.append((int)to_place);
@@ -42,16 +42,16 @@ bool CardsMoveStruct::tryParse(const QJsonValue &data){
 	}
 
 	QJsonArray arg = data.toArray();
-	if (arg.size() != 7) return false;
-	if ((!arg[0].isDouble() && !arg[0].isArray()) ||
+	if(arg.size() != 7) return false;
+	if((!arg[0].isDouble() && !arg[0].isArray()) ||
 		!BP::isIntArray(arg, 1, 2) || !BP::isStringArray(arg, 3, 6)) return false;
-	if (arg[0].isDouble())
+	if(arg[0].isDouble())
 	{
 		int size = arg[0].toDouble();
-		for (int i = 0; i < size; i++)        
+		for(int i = 0; i < size; i++)        
 			card_ids.append(Card::S_UNKNOWN_CARD_ID);        
 	}
-	else if (!BP::tryParse(arg[0], card_ids))
+	else if(!BP::tryParse(arg[0], card_ids))
 		return false;
 	from_place = (Player::Place)arg[1].toDouble();
 	to_place = (Player::Place)arg[2].toDouble();
@@ -64,7 +64,7 @@ bool CardsMoveStruct::tryParse(const QJsonValue &data){
 
 QJsonValue CardsMoveStruct::toJsonValue() const{
 	QJsonArray arg;
-	if (open) arg.append(BP::toJsonArray(card_ids));
+	if(open) arg.append(BP::toJsonArray(card_ids));
 	else arg.append(card_ids.size());
 	arg.append((int)from_place);
 	arg.append((int)to_place);
@@ -77,7 +77,7 @@ QJsonValue CardsMoveStruct::toJsonValue() const{
 
 QList<CardMoveStruct> CardsMoveStruct::flatten() const{
 	QList<CardMoveStruct> result;
-	foreach (int card_id, card_ids)
+	foreach(int card_id, card_ids)
 	{
 		CardMoveStruct move;
 		move.from = from;

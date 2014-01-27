@@ -440,7 +440,7 @@ void MainWindow::setBackgroundBrush(bool centerAsOrigin){
 			   
 
 		QTransform transform;
-		if (centerAsOrigin)
+		if(centerAsOrigin)
 			transform.translate(-qMax((qreal)width(), scene->width()) / 2,
 				-qMax((qreal)height(), scene->height()) / 2);        
 		transform.scale(sx, sy);
