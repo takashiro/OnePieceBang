@@ -8,16 +8,14 @@ public:
 		frequency = Compulsory;
 	}
 
-	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
+	virtual bool trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
 		DamageStruct damage = data.value<DamageStruct>();
 
 		if(damage.nature == DamageStruct::Thunder){
-			player->getRoom()->sendLog("#TriggerSkill", player, objectName());
+			Room *room = player->getRoom();
+			room->playSkillEffect(objectName());
+			room->sendLog("#TriggerSkill", player, objectName());
 			return true;
-		}else if(damage.nature == DamageStruct::Fire){
-			player->getRoom()->sendLog("#TriggerSkill", player, objectName());
-			damage.damage++;
-			data = QVariant::fromValue(damage);
 		}
 
 		return false;
