@@ -139,7 +139,7 @@ void GameRule::setGameProcess(Room *room) const{
 	foreach(ServerPlayer *player, players){
 		switch(player->getRoleEnum()){
 		case Player::Lord:
-		case Player::Loyalist: good ++; break;
+		case Player::Loyalist: good++; break;
 		case Player::Rebel: bad++; break;
 		case Player::Renegade: break;
 		}

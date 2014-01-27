@@ -809,35 +809,55 @@ void ServerPlayer::marshal(ServerPlayer *player) const{
 	if(isChained())
 		player->sendProperty("chained", this);
 
+	QJsonArray moves;
+
 	if(!isKongcheng()){
 		if(player != this){
-			player->invoke("drawNCards",
-						   QString("%1:%2")
-						   .arg(objectName())
-						   .arg(getHandcardNum()));
+			QJsonArray arg;
+			arg.append(false);
+			arg.append(objectName());
+			arg.append(QString("handcard"));
+			arg.append(getHandcardNum());
+			player->notify(BP::SetPlayerProperty, arg);
 		}else{
-			QStringList card_str;
+			CardsMoveStruct move;
 			foreach(const Card *card, handcards){
-				card_str << QString::number(card->getId());
+				move.card_ids << card->getId();
 			}
+			move.from_place = DrawPile;
+			move.to_player_name = objectName();
+			move.to_place = HandArea;
+			move.to = player;
 
-			player->invoke("drawCards", card_str.join("+"));
+			moves.append(move.toJsonValue());
 		}
 	}
 
 
-	foreach(const Card *equip, getEquips()){
-		player->invoke("moveCard",
-					   QString("%1:_@=->%2@equip")
-					   .arg(equip->getId())
-					   .arg(objectName()));
+	if(hasEquip()){
+		CardsMoveStruct move;
+		foreach(const Card *equip, getEquips()){
+			move.card_ids << equip->getId();
+		}
+		move.from_place = DrawPile;
+		move.to_player_name = objectName();
+		move.to_place = EquipArea;
+		moves.append(move.toJsonValue());
 	}
 
-	foreach(const Card *card, getJudgingArea()){
-		player->invoke("moveCard",
-					   QString("%1:_@=->%2@judging")
-					   .arg(card->getId())
-					   .arg(objectName()));
+	if(!getJudgingArea().isEmpty()){
+		CardsMoveStruct move;
+		foreach(const Card *card, getJudgingArea()){
+			move.card_ids << card->getId();
+		}
+		move.from_place = DrawPile;
+		move.to_player_name = objectName();
+		move.to_place = JudgingArea;
+		moves.append(move.toJsonValue());
+	}
+
+	if(!moves.isEmpty()){
+		player->notify(BP::GetCard, moves);
 	}
 
 	foreach(QString mark_name, marks.keys()){
