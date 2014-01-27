@@ -86,7 +86,7 @@ bool MiniSceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 	QStringList cards= setup.split(",", QString::SkipEmptyParts);
 	foreach(QString id,cards){
 		room->moveCardTo(Bang->getCard(id.toInt()),NULL,Player::DrawPile,true);
-		room->doBroadcastNotify(BP::AddHistory, QString("pushPile"));
+		room->broadcastNotification(BP::AddHistory, QString("pushPile"));
 	}
 
 	int i=0, j=0;

@@ -138,8 +138,8 @@ void Typhoon::takeEffect(ServerPlayer *target) const{
 				room->setEmotion(player, "good");
 			else{
 				room->setEmotion(player, "bad");
-				room->doBroadcastNotify(BP::Animate, BP::toJsonArray("typhoon", player->objectName()));
-				room->doBroadcastNotify(BP::PlayAudio, QString("typhoon"));
+				room->broadcastNotification(BP::Animate, BP::toJsonArray("typhoon", player->objectName()));
+				room->broadcastNotification(BP::PlayAudio, QString("typhoon"));
 
 				room->askForDiscard(player, objectName(), discard_num, discard_num);
 			}
@@ -171,7 +171,7 @@ void Earthquake::takeEffect(ServerPlayer *target) const{
 				room->setEmotion(player, "good");
 			}else{
 				room->setEmotion(player, "bad");
-				room->doBroadcastNotify(BP::PlayAudio, QString("earthquake"));
+				room->broadcastNotification(BP::PlayAudio, QString("earthquake"));
 				player->throwAllEquips();
 			}
 
@@ -208,7 +208,7 @@ void Volcano::takeEffect(ServerPlayer *target) const{
 			damage.to = player;
 			damage.nature = DamageStruct::Fire;
 
-			room->doBroadcastNotify(BP::PlayAudio, QString("volcano"));
+			room->broadcastNotification(BP::PlayAudio, QString("volcano"));
 			room->damage(damage);
 		}
 	}
@@ -230,7 +230,7 @@ void MudSlide::takeEffect(ServerPlayer *target) const{
 	QList<ServerPlayer *> players = room->getAllPlayers();
 	int to_destroy = 4;
 	foreach(ServerPlayer *player, players){
-		room->doBroadcastNotify(BP::PlayAudio, QString("mudslide"));
+		room->broadcastNotification(BP::PlayAudio, QString("mudslide"));
 
 		QList<const Card *> equips = player->getEquips();
 		if(equips.isEmpty()){

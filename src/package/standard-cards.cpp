@@ -131,7 +131,7 @@ void Wine::onEffect(const CardEffectStruct &effect) const{
 	Room *room = effect.to->getRoom();
 
 	// do animation
-	room->doBroadcastNotify(BP::Animate, BP::toJsonArray("wine", effect.from->objectName(), effect.to->objectName()));
+	room->broadcastNotification(BP::Animate, BP::toJsonArray("wine", effect.from->objectName(), effect.to->objectName()));
 
 	// recover hp
 	RecoverStruct recover;
@@ -965,8 +965,8 @@ void Lightning::takeEffect(ServerPlayer *target) const{
 
 	Room *room = target->getRoom();
 	room->setEmotion(target, "bad");
-	room->doBroadcastNotify(BP::Animate, BP::toJsonArray("lightning", target->objectName()));
-	room->doBroadcastNotify(BP::PlayAudio, QString("lightning"));
+	room->broadcastNotification(BP::Animate, BP::toJsonArray("lightning", target->objectName()));
+	room->broadcastNotification(BP::PlayAudio, QString("lightning"));
 
 	room->damage(damage);
 }
@@ -1004,8 +1004,8 @@ void Tornado::takeEffect(ServerPlayer *target) const{
 
 	Room *room = target->getRoom();
 	room->setEmotion(target, "bad");
-	room->doBroadcastNotify(BP::Animate, BP::toJsonArray("tornado", target->objectName()));
-	room->doBroadcastNotify(BP::PlayAudio, QString("tornado"));
+	room->broadcastNotification(BP::Animate, BP::toJsonArray("tornado", target->objectName()));
+	room->broadcastNotification(BP::PlayAudio, QString("tornado"));
 
 	room->getThread()->delay();
 }

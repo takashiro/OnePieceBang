@@ -32,7 +32,7 @@ public:
 		room->sendLog(log);
 
 		QString gender = player->getGeneral()->isMale() ? "male" : "female";
-		room->doBroadcastNotify(BP::PlayAudio, QString("zombify-%1").arg(gender));
+		room->broadcastNotification(BP::PlayAudio, QString("zombify-%1").arg(gender));
 		room->updateStateItem();
 
 		player->tag.remove("zombie");

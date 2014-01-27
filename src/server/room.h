@@ -85,7 +85,7 @@ public:
 	const Card *peek();
 	void fillAG(const QList<int> &card_ids, ServerPlayer *who = NULL);
 	void takeAG(ServerPlayer *player, int card_id);
-	inline void clearAG(){doBroadcastNotify(BP::ClearAG);}
+	inline void clearAG(){broadcastNotification(BP::ClearAG);}
 	void provide(const Card *card);
 	QList<ServerPlayer *> getLieges(const QString &kingdom, ServerPlayer *lord) const;
 	void showCard(ServerPlayer *player, int card_id, ServerPlayer *only_viewer = NULL);
@@ -114,8 +114,8 @@ public:
 	//    command only once in all with broadcast = true if the poll is to everypody).
 	// 2. Call getResult(player, timeout) on each player to retrieve the result. Read manual for getResults
 	//    before you use.
-	bool doRequest(ServerPlayer* player, BP::CommandType command, const QJsonValue &arg, time_t timeOut, bool wait);
-	bool doRequest(ServerPlayer* player, BP::CommandType command, const QJsonValue &arg, bool wait);
+	bool requestPlayer(ServerPlayer* player, BP::CommandType command, const QJsonValue &arg, time_t timeOut, bool wait);
+	bool requestPlayer(ServerPlayer* player, BP::CommandType command, const QJsonValue &arg, bool wait);
 
 	// Broadcast a request to a list of players and get the client responses. Call is blocking until all client
 	// replies or server times out, whichever is earlier. Check each player's m_isClientResponseReady to see if a valid
@@ -128,8 +128,8 @@ public:
 	//        Maximum total milliseconds that server will wait for all clients to respond before returning. Any client 
 	//        response after the timeOut will be rejected.
 	// @return True if the a valid response is returned from client.  
-	bool doBroadcastRequest(QList<ServerPlayer*> &players, BP::CommandType command, time_t timeOut);
-	bool doBroadcastRequest(QList<ServerPlayer*> &players, BP::CommandType command);
+	bool broadcastRequest(QList<ServerPlayer*> &players, BP::CommandType command, time_t timeOut);
+	bool broadcastRequest(QList<ServerPlayer*> &players, BP::CommandType command);
 
 	// Broadcast a request to a list of players and get the first valid client response. Call is blocking until the first
 	// client response is received or server times out, whichever is earlier. Any client response is verified by the validation
@@ -139,18 +139,18 @@ public:
 	//        Validation function that verifies whether the reply is a valid one. The first parameter passed to the function
 	//        is the response sender, the second parameter is the response content, the third parameter is funcArg passed in.
 	// @return The player that first send a legal request to the server. NULL if no such request is received.
-	ServerPlayer* doBroadcastRaceRequest(QList<ServerPlayer*> &players, BP::CommandType command, 
+	ServerPlayer* broadcastRaceRequest(QList<ServerPlayer*> &players, BP::CommandType command,
 		   time_t timeOut, ResponseVerifyFunction validateFunc = NULL, void* funcArg = NULL);
 	
 	// Notify a player of a event by sending S_SERVER_NOTIFICATION packets. No reply should be expected from
 	// the client for S_SERVER_NOTIFICATION as it's a one way notice. Any message from the client in reply to this call
 	// will be rejected.
-	bool doNotify(ServerPlayer* player, BP::CommandType command, const QJsonValue &arg) const;
+	bool notifyPlayer(ServerPlayer *player, BP::CommandType command, const QJsonValue &arg) const;
 
 	// Broadcast a event to a list of players by sending S_SERVER_NOTIFICATION packets. No replies should be expected from
 	// the clients for S_SERVER_NOTIFICATION as it's a one way notice. Any message from the client in reply to this call
 	// will be rejected.    
-	bool doBroadcastNotify(BP::CommandType command, const QJsonValue &arg = QJsonValue(), ServerPlayer *except = NULL) const;
+	bool broadcastNotification(BP::CommandType command, const QJsonValue &arg = QJsonValue(), ServerPlayer *except = NULL) const;
 
 	// Ask a server player to wait for the client response. Call is blocking until client replies or server times out, 
 	// whichever is earlier.

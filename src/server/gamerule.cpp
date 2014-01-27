@@ -126,7 +126,7 @@ void GameRule::onPhaseChange(ServerPlayer *player) const{
 
 			player->clearFlags();
 			player->clearHistory();
-			room->doBroadcastNotify(BP::ClearPile);
+			room->broadcastNotification(BP::ClearPile);
 			return;
 		}
 	}
@@ -242,7 +242,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 		QJsonArray arg;
 		arg.append(player->objectName());
 		arg.append(recover);
-		room->doBroadcastNotify(BP::HpChange, arg);
+		room->broadcastNotification(BP::HpChange, arg);
 
 		break;
 	}
@@ -262,7 +262,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 		arg.append(player->objectName());
 		arg.append(-lose);
 		arg.append(QString("L"));
-		room->doBroadcastNotify(BP::HpChange, arg);
+		room->broadcastNotification(BP::HpChange, arg);
 
 		if(player->getHp() <= 0)
 			room->enterDying(player, NULL);
@@ -589,7 +589,7 @@ void GameRule::changeGeneral1v1(ServerPlayer *player) const{
 	if(player->getKingdom() != player->getGeneral()->getKingdom())
 		room->setPlayerProperty(player, "kingdom", player->getGeneral()->getKingdom());
 
-	room->doBroadcastNotify(BP::RevealGeneral, BP::toJsonArray(player->objectName(), new_general), player);
+	room->broadcastNotification(BP::RevealGeneral, BP::toJsonArray(player->objectName(), new_general), player);
 
 	if(!player->faceUp())
 		player->turnOver();
@@ -918,7 +918,7 @@ void BasaraMode::showGeneral(ServerPlayer *player, QString general_name) const
 	log.arg2 = player->getGeneral2Name();
 
 	room->sendLog(log);
-	room->doBroadcastNotify(BP::PlayAudio, QString("choose-item"));
+	room->broadcastNotification(BP::PlayAudio, QString("choose-item"));
 }
 
 bool BasaraMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{

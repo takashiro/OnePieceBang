@@ -33,7 +33,7 @@ void ServerPlayer::playCardEffect(const QString &card_name) const{
 	QJsonArray arg;
 	arg.append(card_name);
 	arg.append(getGender() == General::Male);
-	room->doBroadcastNotify(BP::PlayCardEffect, arg);
+	room->broadcastNotification(BP::PlayCardEffect, arg);
 }
 
 void ServerPlayer::playCardEffect(const Card *card) const{
@@ -119,7 +119,7 @@ void ServerPlayer::clearPrivatePiles(){
 			arg.append(objectName());
 			arg.append(pile_name);
 			arg.append(card_id);
-			room->doBroadcastNotify(BP::Pile, arg);
+			room->broadcastNotification(BP::Pile, arg);
 		}
 	}
 	piles.clear();
@@ -779,7 +779,7 @@ void ServerPlayer::introduceTo(ServerPlayer *player){
 	if(player){
 		player->notify(BP::AddPlayer, intro);
 	}else{
-		room->doBroadcastNotify(BP::AddPlayer, intro, this);
+		room->broadcastNotification(BP::AddPlayer, intro, this);
 	}
 
 	if(isReady())

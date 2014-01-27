@@ -969,7 +969,7 @@ void Server::broadcast(const QString &msg){
 	to_sent.append(msg);
 
 	foreach(Room *room, rooms){
-		room->doBroadcastNotify(BP::Speak, to_sent);
+		room->broadcastNotification(BP::Speak, to_sent);
 	}
 }
 

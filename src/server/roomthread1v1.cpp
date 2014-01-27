@@ -31,7 +31,7 @@ void RoomThread1v1::run(){
 		choice_list.append(general_names[i + 6]);
 	}
 
-	room->doBroadcastNotify(BP::FillGenerals, choice_list);
+	room->broadcastNotification(BP::FillGenerals, choice_list);
 
 	ServerPlayer *first = room->getPlayers().at(0), *next = room->getPlayers().at(1);
 	askForTakeGeneral(first);
@@ -73,7 +73,7 @@ void RoomThread1v1::askForTakeGeneral(ServerPlayer *player){
 void RoomThread1v1::takeGeneral(ServerPlayer *player, const QString &name){
 	QString group = player->isLord() ? "warm" : "cool";
 	QJsonArray group_data = BP::toJsonArray(group, name);
-	room->doBroadcastNotify(BP::TakeGeneral, group_data, player);
+	room->broadcastNotification(BP::TakeGeneral, group_data, player);
 
 	QRegExp unknown_rx("x(\\d)");
 	QString general_name = name;

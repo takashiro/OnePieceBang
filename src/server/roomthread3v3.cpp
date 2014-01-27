@@ -77,7 +77,7 @@ void RoomThread3v3::run()
 	qShuffle(general_names);
 	general_names = general_names.mid(0, 16);
 
-	room->doBroadcastNotify(BP::FillGenerals, BP::toJsonArray(general_names));
+	room->broadcastNotification(BP::FillGenerals, BP::toJsonArray(general_names));
 
 	QString order = room->askForOrder(warm_leader);
 	ServerPlayer *first, *next;
@@ -126,7 +126,7 @@ void RoomThread3v3::takeGeneral(ServerPlayer *player, const QString &name){
 	player->addToSelected(name);
 
 	QString group = player->isLord() ? "warm" : "cool";
-	room->doBroadcastNotify(BP::TakeGeneral, BP::toJsonArray(group, name));
+	room->broadcastNotification(BP::TakeGeneral, BP::toJsonArray(group, name));
 
 	room->sem->release();
 }
