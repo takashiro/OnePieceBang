@@ -370,7 +370,7 @@ ForecastCard::ForecastCard(){
 
 class ForecastViewAsSkill: public OneCardViewAsSkill{
 public:
-	ForecastViewAsSkill(): OneCardViewAsSkill(""){
+	ForecastViewAsSkill(): OneCardViewAsSkill("forecast"){
 
 	}
 
@@ -557,7 +557,6 @@ class Gentleman: public TriggerSkill{
 public:
 	Gentleman(): TriggerSkill("gentleman"){
 		events << AfterRecovering << AfterRecovered;
-		frequency = Frequent;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
@@ -566,13 +565,13 @@ public:
 		if(event == AfterRecovering){
 			if(recover.to->getGender() == General::Female){
 				if(player->askForSkillInvoke(objectName())){
-					player->drawCards(1, true, objectName());
+					player->drawCards(recover.recover, true, objectName());
 				}
 			}
 		}else{
 			if(recover.from->getGender() == General::Female){
 				if(player->askForSkillInvoke(objectName())){
-					recover.from->drawCards(1, true, objectName());
+					recover.from->drawCards(recover.recover, true, objectName());
 				}
 			}
 		}
@@ -609,7 +608,7 @@ public:
 		return Slash::IsAvailable(player) || player->isWounded();
 	}
 
-	virtual bool isEnabledAtResponse(const Player *player, const QString &pattern) const{
+	virtual bool isEnabledAtResponse(const Player *, const QString &pattern) const{
 		return pattern == "slash" || pattern.contains("wine");
 	}
 
@@ -677,6 +676,7 @@ public:
 		if(damage.from && player->getHandcardNum() > 0 && !damage.from->getCards("he").isEmpty()){
 			Room *room = player->getRoom();
 
+			player->tag["SwordFanDamage"] = data;
 			QString prompt = QString("@swordfan-card:%1").arg(damage.from->objectName());
 			if(room->askForUseCard(player, "@@swordfan", prompt)){
 				int card_id = room->askForCardChosen(player, damage.from, "he", objectName());

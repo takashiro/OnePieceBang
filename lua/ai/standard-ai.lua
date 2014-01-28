@@ -176,6 +176,13 @@ sgs.ai_skill_cardchosen.mirage = function(self, who, flags)
 	return judges[0]
 end
 
+--Gentleman
+
+sgs.ai_skill_invoke.gentleman = function(self, data)
+	local recover = data:toRecover()
+	return self:isFriend(recover.from)
+end
+
 --Black Feet
 sgs.ai_view_as.blackfeet = function(card, player, card_place)
 	if card_place ~= sgs.Player_HandArea then
@@ -272,4 +279,57 @@ sgs.ai_view_as.ironpunch = function(card, player, card_place)
 	local number = card:getNumberString()
 	local card_id = card:getEffectiveId()
 	return ("slash:ironpunch[%s:%s]=%d"):format(suit, number, card_id)
+end
+
+--Sword Fan
+sgs.ai_skill_use["@@swordfan"] = function(self, data)
+	local damage = self.player:getTag("SwordFanDamage"):toDamage()
+	if not damage.from then
+		return "."
+	end
+
+	if self:isEnemy(damage.from) then
+		if damage.from:hasSkill("fretywind") and damage.from:isKongcheng() then
+			return "."
+		end
+
+		local cards = damage.from:getCards("he")
+		if cards:length() == 1 and cards:at(0):inherits("DiamondArmor") then
+			return "."
+		end
+	else
+		if not (damage.from:hasSkill("fretywind") and damage.from:hasEquip()) and not (damage.from:isWounded() and damage.from:getArmor():inherits("DiamondArmor")) then
+			return "."
+		end
+	end
+
+	local card_id
+	local cards = self.player:getCards("h")
+	cards=sgs.QList2Table(cards)
+	self:sortByUseValue(cards,true)
+	for _,card in ipairs(cards) do
+		if not card:inherits("Wine") then
+			card_id = card:getId()
+			break
+		end
+	end
+	if card_id then
+		return "@SwordFanCard="..card_id
+	else
+		return "."
+	end
+end
+
+sgs.ai_skill_cardchosen.swordfan = function(self, who, flags)
+	if self:isFriend(who) then
+		if who:getArmor():inherits("DiamondArmor") then
+			return who:getArmor()
+		end
+	end
+
+	if self.player:isWounded() and who:getWeapon() then
+		return who:getWeapon()
+	end
+
+	return nil
 end

@@ -3,7 +3,7 @@ sgs.ai_view_as.firepunch = function(card, player, card_place)
 	local suit = card:getSuitString()
 	local number = card:getNumberString()
 	local card_id = card:getEffectiveId()
-	if card:isRed() then
+	if card:getSuit() == sgs.Card_Spade then
 		return ("fire_slash:firepunch[%s:%s]=%d"):format(suit, number, card_id)
 	end
 end
@@ -38,8 +38,7 @@ sgs.ai_view_as.leechcraft = function(card, player, card_place)
 	end
 end
 
-sgs.chopper_suit_value = 
-{
+sgs.chopper_suit_value = {
 	club = 6
 }
 
