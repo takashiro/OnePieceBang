@@ -419,11 +419,21 @@ public:
 		const Card *card = room->askForCard(player, "@forecast-card", prompt, data);
 
 		if(card){
-			judge->card = Bang->getCard(card->getEffectiveId());
-			CardsMoveStruct move(QList<int>(), NULL, Player::DiscardPile);
-			move.card_ids.append(card->getEffectiveId());
 			QList<CardsMoveStruct> moves;
-			moves.append(move);
+
+			CardsMoveStruct old_move;
+			old_move.card_ids << judge->card->getId();
+			old_move.to_place = Player::DiscardPile;
+			moves << old_move;
+
+			judge->card = Bang->getCard(card->getEffectiveId());
+
+			CardsMoveStruct new_move;
+			new_move.card_ids << judge->card->getId();
+			new_move.to = player;
+			new_move.to_place = Player::HandlingArea;
+			moves << new_move;
+
 			room->moveCardsAtomic(moves, true);
 
 			LogMessage log;
