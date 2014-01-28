@@ -681,7 +681,7 @@ public:
 			if(room->askForUseCard(player, "@@swordfan", prompt)){
 				int card_id = room->askForCardChosen(player, damage.from, "he", objectName());
 				const Card *card = Bang->getCard(card_id);
-				room->obtainCard(player, card, true);
+				player->obtainCard(card, true);
 
 				if(card->inherits("Weapon")){
 					RecoverStruct recover;

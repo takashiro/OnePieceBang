@@ -733,6 +733,7 @@ bool Room::askForSkillInvoke(ServerPlayer *player, const QString &skill_name, co
 	}
 
 	if(invoked){
+		sendLog("#InvokeSkill", player, skill_name);
 		broadcastSkillInvoked(player, skill_name);
 	}
 

@@ -3279,12 +3279,7 @@ void RoomScene::setEmotion(const QString &who, const QString &emotion ,bool perm
 }
 
 void RoomScene::showSkillInvocation(const QString &who, const QString &skill_name){
-	QString type = "#InvokeSkill";
 	const ClientPlayer *player = ClientInstance->findChild<const ClientPlayer *>(who);
-	QString from_general = player->getGeneralName();
-	QString arg = skill_name;
-	log_box->appendLog(type, from_general, QStringList(), QString(), arg);
-
 	if(player != Self){
 		Photo *photo = name2photo.value(who);
 		photo->showSkillName(skill_name);
