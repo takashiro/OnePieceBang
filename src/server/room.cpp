@@ -325,9 +325,8 @@ void Room::judge(JudgeStruct &judge_struct){
 
 	thread->trigger(StartJudge, judge_star->who, data);
 
-
 	int delay = Config.AIDelay;
-	if (judge_struct.time_consuming) delay /= 2.5;
+	if(judge_struct.time_consuming) delay /= 2.5;
 	thread->delay(delay);
 
 	QList<ServerPlayer *> players = getAllPlayers();
