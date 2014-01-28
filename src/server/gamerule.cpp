@@ -548,11 +548,6 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 		log.from = player;
 		log.card_str = judge->card->getEffectIdString();
 		room->sendLog(log);
-
-		int delay = Config.AIDelay;
-		if (judge->time_consuming) delay /= 1.25;
-		room->getThread()->delay(delay);
-
 		room->sendJudgeResult(judge);
 		break;
 	}
