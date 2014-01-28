@@ -1,4 +1,4 @@
-#include "DiscardPile.h"
+#include "commonpiles.h"
 #include <QParallelAnimationGroup>
 
 QList<CardItem*> DiscardPile::removeCardItems(const QList<int> &card_ids, Player::Place place)
@@ -7,7 +7,7 @@ QList<CardItem*> DiscardPile::removeCardItems(const QList<int> &card_ids, Player
 	pile_mutex.lock();
 	result = _createCards(card_ids);
 	_disperseCards(result, cards_display_region, Qt::AlignCenter, false, true);
-	foreach(CardItem* card, result){
+	foreach(CardItem *card, result){
 		for(int i = visible_cards.size() - 1; i >= 0; i--){
 			if(visible_cards[i]->getCard()->getId() == card->getId()){
 				card->setPos(visible_cards[i]->pos());
@@ -71,7 +71,7 @@ void DiscardPile::clearCards(){
 }
 
 // @todo: adjust here!!!
-const QRect DrawPile::S_DISPLAY_CARD_REGION(0, CardItem::S_NORMAL_CARD_HEIGHT / 2, CardItem::S_NORMAL_CARD_WIDTH, CardItem::S_NORMAL_CARD_HEIGHT);
+const QRect DrawPile::S_DISPLAY_CARD_REGION(0, 0, CardItem::S_NORMAL_CARD_WIDTH, CardItem::S_NORMAL_CARD_HEIGHT);
 
 QList<CardItem*> DrawPile::removeCardItems(const QList<int> &card_ids, Player::Place place){
 	QList<CardItem*> result = _createCards(card_ids);

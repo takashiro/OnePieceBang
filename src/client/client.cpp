@@ -721,7 +721,7 @@ void Client::commandFormatWarning(const QString &str, const QRegExp &rx, const c
 void Client::_askForCardOrUseCard(const QJsonValue &cardUsageData){
 	Q_ASSERT(cardUsageData.isArray());
 	QJsonArray cardUsage = cardUsageData.toArray();
-	Q_ASSERT(isStringArray(cardUsage, 0, 1));
+	Q_ASSERT(BP::isStringArray(cardUsage, 0, 1));
 	card_pattern = cardUsage[0].toString();
 	QStringList texts = cardUsage[1].toString().split(":");
 

@@ -17,8 +17,6 @@ CONFIG += warn_off audio exceptions
 SOURCES += \
         src/main.cpp \
         src/client/aux-skills.cpp \
-        src/ui/GeneralCardContainerUI.cpp \
-        src/ui/DiscardPile.cpp \
         src/core/structs.cpp \
         src/client/client.cpp \
         src/client/clientplayer.cpp \
@@ -84,7 +82,6 @@ SOURCES += \
         src/ui/roomscene.cpp \
         src/ui/sprite.cpp \
         src/ui/startscene.cpp \
-        src/ui/TimedProgressBar.cpp \
         src/ui/window.cpp \
         src/util/detector.cpp \
         src/util/nativesocket.cpp \
@@ -127,14 +124,15 @@ SOURCES += \
     src/package/water7.cpp \
     src/package/fishmanisland.cpp \
     src/package/summitwar.cpp \
-    src/package/skypiea.cpp
+    src/package/skypiea.cpp \
+    src/ui/commonpiles.cpp \
+    src/ui/generalcardcontainer.cpp \
+    src/ui/timedprogressbar.cpp
 HEADERS += \
         src/client/aux-skills.h \
         src/client/client.h \
         src/client/clientplayer.h \
         src/client/clientstruct.h \
-         src/ui/GeneralCardContainerUI.h \
-    src/ui/DiscardPile.h \
     src/core/structs.h \
         src/core/audio.h \
         src/core/banpair.h \
@@ -227,17 +225,6 @@ HEADERS += \
         src/lua/lcode.h \
         src/lua/lauxlib.h \
         src/lua/lapi.h \
-        src/jsoncpp/src/json_tool.h \
-        src/jsoncpp/src/json_batchallocator.h \
-        src/jsoncpp/include/json/writer.h \
-        src/jsoncpp/include/json/value.h \
-        src/jsoncpp/include/json/reader.h \
-        src/jsoncpp/include/json/json.h \
-        src/jsoncpp/include/json/forwards.h \
-        src/jsoncpp/include/json/features.h \
-        src/jsoncpp/include/json/config.h \
-        src/jsoncpp/include/json/autolink.h \
-        src/jsoncpp/include/json/assertions.h \
     src/package/standard-generals.h \
     src/package/test.h \
     src/package/alabastan.h \
@@ -245,7 +232,9 @@ HEADERS += \
     src/package/water7.h \
     src/package/fishmanisland.h \
     src/package/summitwar.h \
-    src/package/skypiea.h
+    src/package/skypiea.h \
+    src/ui/generalcardcontainer.h \
+    src/ui/commonpiles.h
 
 FORMS += \
         src/dialog/cardoverview.ui \

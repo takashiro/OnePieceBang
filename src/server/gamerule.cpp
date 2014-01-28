@@ -526,7 +526,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 
 		JudgeStar judge = data.value<JudgeStar>();
 		judge->card = Bang->getCard(card_id);
-		room->moveCardTo(judge->card, judge->who, Player::HandlingArea);
+		room->moveCardTo(judge->card, NULL, Player::HandlingArea, true);
 
 		LogMessage log;
 		log.type = "$InitialJudge";

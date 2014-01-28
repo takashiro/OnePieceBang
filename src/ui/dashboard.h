@@ -7,8 +7,8 @@
 #include "skill.h"
 #include "sprite.h"
 #include "protocol.h"
-#include "TimedProgressBar.h"
-#include "GeneralCardContainerUI.h"
+#include "timedprogressbar.h"
+#include "generalcardcontainer.h"
 
 #include <QPushButton>
 #include <QComboBox>
@@ -91,15 +91,14 @@ protected:
 	void _adjustCards();
 	void _adjustCards(const QList<CardItem *> &list, int y);
 	// ui controls
-	QSanCommandProgressBar m_progressBar;
+	QSanCommandProgressBar progress_bar;
 	const static QRect S_EQUIP_CARD_MOVE_REGION;
 	const static QRect S_JUDGE_CARD_MOVE_REGION;
-	QRectF m_cardTakeOffRegion;
-	QRectF m_cardSpecialRegion;
+	QRectF card_special_region;
 
 	// sync objects
-	QMutex m_mutex;
-	QMutex m_mutexEnableCards;
+	QMutex main_mutex;
+	QMutex enable_cards_mutex;
 
 private:
 	QPixmap left_pixmap, right_pixmap;
@@ -116,7 +115,6 @@ private:
 	int sort_type;
 	QGraphicsSimpleTextItem *handcard_num;    
 	QList<CardItem*> m_handCards;
-	QList<CardItem *> m_takenOffCards;
 	QList<CardItem *> judging_area;
 	QList<QGraphicsItem *> delayed_tricks;
 	QGraphicsPixmapItem *death_item;

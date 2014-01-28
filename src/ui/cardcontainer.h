@@ -6,7 +6,7 @@ class ClientPlayer;
 
 #include "pixmap.h"
 #include "carditem.h"
-#include "GeneralCardContainerUI.h"
+#include "generalcardcontainer.h"
 
 #include <QStack>
 

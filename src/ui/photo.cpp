@@ -25,12 +25,11 @@
 
 using namespace BP;
 
-const QRect Photo::S_CARD_MOVE_REGION(-50, Photo::S_NORMAL_PHOTO_HEIGHT / 2,
-										200, CardItem::S_NORMAL_CARD_HEIGHT);
+const QRect Photo::S_CARD_MOVE_REGION(-50, Photo::S_NORMAL_PHOTO_HEIGHT / 2, 200, CardItem::S_NORMAL_CARD_HEIGHT);
 
 Photo::Photo(): player(NULL),
-				_m_mainFrame("image/system/photo-back.png"),
-				_m_handCardIcon("image/system/handcard.png"),
+				main_frame("image/system/photo-back.png"),
+				handCard_icon("image/system/handcard.png"),
 				action_item(NULL), save_me_item(NULL), permanent(false),
 				weapon(NULL), armor(NULL), defensive_horse(NULL), offensive_horse(NULL),
 				order_item(NULL), hide_avatar(false)
@@ -251,14 +250,14 @@ void Photo::updateAvatar(){
 			success = avatar.load(general->getPixmapPath("card"));
 			avatar = avatar.copy(45, 60, S_NORMAL_PHOTO_WIDTH, S_NORMAL_PHOTO_HEIGHT);
 		}
-		_m_kingdomIcon.load(player->getKingdomIcon());
-		_m_kindomColorMaskIcon = QPixmap(20, S_NORMAL_PHOTO_HEIGHT);
-		_m_kindomColorMaskIcon.fill(QColor(0, 0, 0, 0));
+		kingdom_icon.load(player->getKingdomIcon());
+		kindom_color_mask_icon = QPixmap(20, S_NORMAL_PHOTO_HEIGHT);
+		kindom_color_mask_icon.fill(QColor(0, 0, 0, 0));
 
 		QPainter painter(&pixmap);
 		painter.setPen(Qt::white);
 		painter.setFont(Config.SmallFont);
-		painter.drawText(0, 0, _m_kindomColorMaskIcon.width(), _m_kindomColorMaskIcon.height(), Qt::AlignCenter, Bang->translate(player->getGeneralName()));
+		painter.drawText(0, 0, kindom_color_mask_icon.width(), kindom_color_mask_icon.height(), Qt::AlignCenter, Bang->translate(player->getGeneralName()));
 
 		if(!success){
 			QPixmap pixmap(General::SmallIconSize);
@@ -268,7 +267,7 @@ void Photo::updateAvatar(){
 
 	}else{
 		avatar = QPixmap();
-		_m_kindomColorMaskIcon = QPixmap();
+		kindom_color_mask_icon = QPixmap();
 
 		avatar_area->setToolTip(QString());
 		small_avatar_area->setToolTip(QString());
@@ -393,23 +392,6 @@ QList<CardItem*> Photo::removeCardItems(const QList<int> &card_ids, Player::Plac
 				judging_area.removeAt(index);
 			}
 		}
-	}else if(place == Player::HandlingArea){
-		foreach(int card_id, card_ids){
-			CardItem* card_item = CardItem::FindItem(m_takenOffCards, card_id);
-			 if(card_item == NULL)
-				 card_item = CardItem::FindItem(m_takenOffCards, Card::S_UNKNOWN_CARD_ID);
-			if(card_item == NULL){
-				Q_ASSERT(!m_takenOffCards.isEmpty());
-				card_item = m_takenOffCards.first();
-			}
-			int index = m_takenOffCards.indexOf(card_item);
-			m_takenOffCards.removeAt(index);
-			if(card_item->getId() == Card::S_UNKNOWN_CARD_ID){
-				const Card* card = Bang->getCard(card_id);
-				card_item->setCard(card);
-			}
-			result.append(card_item);
-		}
 	}
 	_disperseCards(result, S_CARD_MOVE_REGION, Qt::AlignCenter, true, false);
 	update();
@@ -421,19 +403,14 @@ bool Photo::_addCardItems(QList<CardItem*> &card_items, Player::Place place)
 	_disperseCards(card_items, S_CARD_MOVE_REGION, Qt::AlignCenter, true, false);
 	double homeOpacity = 0.0;
 	bool destroy = true;
-	if(place == Player::HandlingArea){
-		homeOpacity = 1.0;
-		destroy  = false;
-		m_takenOffCards.append(card_items);
-	}
+
 	foreach(CardItem* card_item, card_items)
 		card_item->setHomeOpacity(homeOpacity);
 	if(place == Player::EquipArea){
 		foreach(CardItem* card, card_items)
 			installEquip(card);
 		destroy = false;
-	}
-	else if(place == Player::JudgingArea){
+	}else if(place == Player::JudgingArea){
 		foreach(CardItem* card, card_items)
 			installDelayedTrick(card);
 		destroy = false;
@@ -585,15 +562,15 @@ void Photo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 	painter->setPen(Qt::white);
 	QRect avatarRect = avatar_area->boundingRect().toRect();
 	static QPixmap wait_frame("image/system/wait-frame.png");
-	if(_m_kindomColorMaskIcon.isNull())
+	if(kindom_color_mask_icon.isNull())
 		painter->drawPixmap(avatarRect, wait_frame);
 	if(!hide_avatar){
 		// avatar related
 		painter->drawPixmap(avatarRect, avatar);
 		painter->drawPixmap(small_avatar_area->boundingRect().toRect(), small_avatar);
-		if(!_m_kindomColorMaskIcon.isNull()){
-			QRect kingdom_mask_rect(0, 0, _m_kindomColorMaskIcon.width(), S_NORMAL_PHOTO_HEIGHT / 2);
-			painter->drawPixmap(kingdom_mask_rect, _m_kindomColorMaskIcon);
+		if(!kindom_color_mask_icon.isNull()){
+			QRect kingdom_mask_rect(0, 0, kindom_color_mask_icon.width(), S_NORMAL_PHOTO_HEIGHT / 2);
+			painter->drawPixmap(kingdom_mask_rect, kindom_color_mask_icon);
 		}
 	}
 	if(player != NULL && player->isAlive()){
@@ -606,9 +583,9 @@ void Photo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 		if(player->isChained())
 			painter->drawPixmap(-8, avatarRect.top() + 5, chain_icon);
 	}
-	painter->drawPixmap(QRect(0, 0, S_SHADOW_INCLUSIVE_PHOTO_WIDTH, S_SHADOW_INCLUSIVE_PHOTO_HEIGHT), _m_mainFrame);
+	painter->drawPixmap(QRect(0, 0, S_SHADOW_INCLUSIVE_PHOTO_WIDTH, S_SHADOW_INCLUSIVE_PHOTO_HEIGHT), main_frame);
 	if(!hide_avatar){
-		painter->drawPixmap(QRect(0, 0, 36, 36), _m_kingdomIcon);
+		painter->drawPixmap(QRect(0, 0, 36, 36), kingdom_icon);
 	}
 
 	if(player == NULL) return;
@@ -621,7 +598,7 @@ void Photo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 	drawHp(painter);
 	int n = player->getHandcardNum();
 	if(n > 0){
-		painter->drawPixmap(QRect(0, 68, 18, 18), _m_handCardIcon);
+		painter->drawPixmap(QRect(0, 68, 18, 18), handCard_icon);
 		QFont hpFont("Arial");
 		hpFont.setBold(true);
 		painter->setFont(hpFont);
@@ -706,7 +683,7 @@ void Photo::killPlayer(){
 	if(!small_avatar.isNull())
 		MakeGray(small_avatar);
 
-	_m_kindomColorMaskIcon = QPixmap();
+	kindom_color_mask_icon = QPixmap();
 	
 	role_combobox->fix(player->getRole());
 

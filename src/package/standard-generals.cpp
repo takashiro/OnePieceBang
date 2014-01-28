@@ -430,7 +430,6 @@ public:
 
 			CardsMoveStruct new_move;
 			new_move.card_ids << judge->card->getId();
-			new_move.to = player;
 			new_move.to_place = Player::HandlingArea;
 			moves << new_move;
 

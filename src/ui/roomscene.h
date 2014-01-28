@@ -3,7 +3,7 @@
 
 #include "photo.h"
 #include "dashboard.h"
-#include "DiscardPile.h"
+#include "commonpiles.h"
 #include "card.h"
 #include "client.h"
 #include "aux-skills.h"
@@ -188,14 +188,14 @@ protected:
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 	virtual void keyReleaseEvent(QKeyEvent *event);
 	virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);    
-	QMutex m_roomMutex;
-	QMutex m_zValueMutex;
+	QMutex room_mutex;
+	QMutex z_value_mutex;
 
 private:
 	QGraphicsItem* _m_last_front_item;
-	double _m_last_front_ZValue;
+	double last_front_z_value;
 	PlayerCardContainer* _getPlayerCardContainer(Player::Place place, Player* player);
-	QMap<int, QList<QList<CardItem*> > > _m_cardsMoveStash;
+	QMap<int, QList<QList<CardItem*> > > cards_move_stash;
 	Button* add_robot, *fill_robots;
 	QList<Photo*> photos;
 	QMap<QString, Photo*> name2photo;
@@ -203,20 +203,21 @@ private:
 	CardItem *special_card;
 	Dashboard *dashboard;
 	Pixmap *avatar;
-	DiscardPile *m_discardPile;
-	DrawPile *m_drawPile;
+	DiscardPile *discard_pile;
+	DiscardPile *handling_area;
+	DrawPile *draw_pile;
 	// QQueue<CardItem*> piled_discards;
 	QMainWindow *main_window;
 	QComboBox *role_combobox;
 	IrregularButton *ok_button, *cancel_button, *discard_button;
 	TrustButton *trust_button;
-	QPushButton *m_reverseSelectionButton, *m_freeDiscardButton;
+	QPushButton *reverse_selection_button, *free_discard_button;
 	QMenu *known_cards_menu, *change_general_menu;
 	Window *prompt_box;
 	QGraphicsItem *control_panel;
 	QMap<QGraphicsItem *, const ClientPlayer *> item2player;
 	QComboBox *sort_combobox;    
-	QDialog *m_choiceDialog; // Dialog for choosing generals, suits, card/equip, or kingdoms
+	QDialog *choice_dialog; // Dialog for choosing generals, suits, card/equip, or kingdoms
 
 	int timer_id;
 	int tick;
@@ -248,9 +249,9 @@ private:
 	QGraphicsTextItem *prompt_box_widget;
 	ChatWidget *chat_widget;
 	RoomLayout *room_layout;
-	QPixmap m_rolesBoxBackground;
-	QGraphicsPixmapItem *m_rolesBox;
-	QGraphicsTextItem *m_pileCardNumInfoTextBox;
+	QPixmap roles_box_background;
+	QGraphicsPixmapItem *roles_box;
+	QGraphicsTextItem *pile_card_num_info_text_box;
 	
 #ifdef AUDIO_SUPPORT
 	QSharedMemory *memory;
@@ -264,7 +265,7 @@ private:
 	QList<CardItem *> arrange_items;
 	Button *arrange_button;
 	KOFOrderBox *enemy_box, *self_box;
-	QPointF m_tableCenterPos;
+	QPointF table_center_pos;
  
 	void useCard(const Card *card);
 	void fillTable(QTableWidget *table, const QList<const ClientPlayer *> &players);

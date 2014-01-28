@@ -3,7 +3,7 @@
 
 class General;
 
-#include "TimedProgressBar.h"
+#include "timedprogressbar.h"
 
 #include <QDialog>
 #include <QGroupBox>

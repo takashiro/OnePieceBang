@@ -5,8 +5,8 @@
 #include "player.h"
 #include "carditem.h"
 #include "protocol.h"
-#include "TimedProgressBar.h"
-#include "GeneralCardContainerUI.h"
+#include "timedprogressbar.h"
+#include "generalcardcontainer.h"
 
 #include <QGraphicsObject>
 #include <QPixmap>
@@ -71,15 +71,14 @@ protected:
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 	virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 	static const QRect S_CARD_MOVE_REGION;
-	QList<CardItem*> m_takenOffCards;
 private:
 	const ClientPlayer *player;
 	QPixmap avatar, small_avatar;
 	QGraphicsPixmapItem *ready_item;    
-	QPixmap _m_mainFrame;
-	QPixmap _m_handCardIcon;
-	QPixmap _m_kingdomIcon;
-	QPixmap _m_kindomColorMaskIcon;
+	QPixmap main_frame;
+	QPixmap handCard_icon;
+	QPixmap kingdom_icon;
+	QPixmap kindom_color_mask_icon;
 	RoleCombobox *role_combobox;
 	QGraphicsProxyWidget  *pile_button;
 	QGraphicsPixmapItem *action_item, *save_me_item;    

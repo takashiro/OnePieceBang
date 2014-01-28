@@ -26,7 +26,7 @@
 
 Room::Room(QObject *parent, const QString &mode)
 	:QThread(parent), mode(mode), current(NULL), pile1(Bang->getRandomCards()),
-	draw_pile(&pile1), discard_pile(&pile2),
+	draw_pile(&pile1), discard_pile(&pile2), handling_area(&pile3),
 	game_started(false), game_finished(false), L(NULL), thread(NULL),
 	thread_3v3(NULL), sem(new QSemaphore), sem_race_request(0), sem_room_mutex(1),
 	race_started(false), provided(NULL), has_provided(false),
@@ -2864,11 +2864,8 @@ void Room::moveCardsAtomic(QList<CardsMoveStruct> cards_moves, bool force_visibl
 			switch(cards_move.from_place){
 			case Player::DiscardPile: discard_pile->removeOne(card_id); break;
 			case Player::DrawPile: draw_pile->removeOne(card_id); break;
-			case Player::SpecialArea:
-				{
-					table_cards.removeOne(card_id);
-					break;
-				}
+			case Player::HandlingArea: handling_area->removeOne(card_id); break;
+			case Player::SpecialArea: table_cards.removeOne(card_id); break;
 			default:
 				break;
 			}
@@ -2891,6 +2888,9 @@ void Room::moveCardsAtomic(QList<CardsMoveStruct> cards_moves, bool force_visibl
 				break;
 			case Player::DrawPile:
 				draw_pile->prepend(card_id);
+				break;
+			case Player::HandlingArea:
+				handling_area->prepend(card_id);
 				break;
 			case Player::SpecialArea:
 				table_cards.append(card_id);
@@ -3018,6 +3018,9 @@ void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool force_visible, bo
 			case Player::DrawPile:
 				draw_pile->removeOne(card_id);
 				break;
+			case Player::HandlingArea:
+				handling_area->removeOne(card_id);
+				break;
 			case Player::SpecialArea:
 				table_cards.removeOne(card_id);
 				break;
@@ -3077,6 +3080,9 @@ void Room::_moveCards(QList<CardsMoveStruct> cards_moves, bool force_visible, bo
 				break;
 			case Player::DrawPile:
 				draw_pile->prepend(card_id);
+				break;
+			case Player::HandlingArea:
+				handling_area->prepend(card_id);
 				break;
 			case Player::SpecialArea:
 				table_cards.append(card_id);
@@ -3954,9 +3960,11 @@ void Room::copyFrom(Room* rRoom)
 
 	pile1 = QList<int> (rRoom->pile1);
 	pile2 = QList<int> (rRoom->pile2);
+	pile3 = QList<int> (rRoom->pile3);
 	table_cards = QList<int> (rRoom->table_cards);
 	draw_pile = &pile1;
 	discard_pile = &pile2;
+	handling_area = &pile3;
 
 	place_map = QMap<int, Player::Place> (rRoom->place_map);
 	owner_map = QMap<int, ServerPlayer*>();

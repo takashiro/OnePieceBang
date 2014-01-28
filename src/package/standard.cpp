@@ -16,7 +16,7 @@ Card::CardType BasicCard::getTypeId() const{
 }
 
 void BasicCard::onUse(Room *room, const CardUseStruct &card_use) const{
-	room->moveCardTo(card_use.card, card_use.from, Player::HandlingArea);
+	room->moveCardTo(card_use.card, NULL, Player::HandlingArea, true);
 	Card::onUse(room, card_use);
 }
 
@@ -48,7 +48,7 @@ bool TrickCard::isCancelable(const CardEffectStruct &effect) const{
 
 void TrickCard::onUse(Room *room, const CardUseStruct &card_use) const{
 	if(card_use.card && card_use.card->isNDTrick()){
-		room->moveCardTo(card_use.card, card_use.from, Player::HandlingArea);
+		room->moveCardTo(card_use.card, NULL, Player::HandlingArea, true);
 	}
 	Card::onUse(room, card_use);
 }

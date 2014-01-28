@@ -1,4 +1,4 @@
-#include "GeneralCardContainerUI.h"
+#include "generalcardcontainer.h"
 #include <QParallelAnimationGroup>
 #include "engine.h"
 

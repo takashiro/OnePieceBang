@@ -320,9 +320,9 @@ private:
 	QList<ServerPlayer*> m_players, m_alivePlayers;
 	int player_count;
 	ServerPlayer *current;
-	QList<int> pile1, pile2;
+	QList<int> pile1, pile2, pile3;
 	QList<int> table_cards;
-	QList<int> *draw_pile, *discard_pile;
+	QList<int> *draw_pile, *discard_pile, *handling_area;
 	bool game_started;
 	bool game_finished;
 	lua_State *L;
