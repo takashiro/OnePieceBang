@@ -11,9 +11,9 @@
 const int ServerPlayer::S_NUM_SEMAPHORES = 6;
 
 ServerPlayer::ServerPlayer(Room *room)
-	: Player(room), m_isClientResponseReady(false), m_isWaitingReply(false),
+	: Player(room), is_client_response_ready(false), is_waiting_for_reply(false),
 	socket(NULL), room(room),
-	ai(NULL), trust_ai(new TrustAI(this)), recorder(NULL), next(NULL), _m_clientResponse()
+	ai(NULL), trust_ai(new TrustAI(this)), recorder(NULL), next(NULL), client_response_data()
 {
 	semas = new QSemaphore*[S_NUM_SEMAPHORES];
 	for(int i=0; i< S_NUM_SEMAPHORES; i++){

@@ -549,16 +549,15 @@ bool Room::requestPlayer(ServerPlayer *player, BP::CommandType command, const QJ
 	BP::Packet packet(BP::ServerRequest, command);
 	packet.setMessageBody(arg);
 	player->acquireLock(ServerPlayer::SEMA_MUTEX);
-	player->m_isClientResponseReady = false;
+	player->is_client_response_ready = false;
 	player->drainLock(ServerPlayer::SEMA_COMMAND_INTERACTIVE);
 	player->setClientReply(QJsonValue());
-	player->setClientReplyString(QString());
-	player->m_isWaitingReply = true;
-	player->m_expectedReplySerial = packet.global_serial;
+	player->is_waiting_for_reply = true;
+	player->expected_reply_serial = packet.global_serial;
 	if(request_response_pair.contains(command))
-		player->m_expectedReplyCommand = request_response_pair[command];
+		player->expected_reply_command = request_response_pair[command];
 	else
-		player->m_expectedReplyCommand = command;
+		player->expected_reply_command = command;
 
 	player->invoke(packet);
 	player->releaseLock(ServerPlayer::SEMA_MUTEX);
@@ -575,7 +574,7 @@ bool Room::broadcastRequest(QList<ServerPlayer*> &players, BP::CommandType comma
 bool Room::broadcastRequest(QList<ServerPlayer*> &players, BP::CommandType command, time_t timeOut)
 {
 	foreach(ServerPlayer* player, players){
-		requestPlayer(player, command, player->m_commandArgs, timeOut, false);
+		requestPlayer(player, command, player->command_arguments, timeOut, false);
 	}
 	QTime timer;
 	time_t remainTime = timeOut;
@@ -596,7 +595,7 @@ ServerPlayer* Room::broadcastRaceRequest(QList<ServerPlayer*> &players, BP::Comm
 	while(sem_race_request.tryAcquire(1)) ; //drain lock
 	sem_room_mutex.release();
 	foreach(ServerPlayer* player, players){
-		requestPlayer(player, command, player->m_commandArgs, timeOut, false);
+		requestPlayer(player, command, player->command_arguments, timeOut, false);
 	}
 	return getRaceResult(players, command, timeOut, validateFunc, funcArg);
 }
@@ -624,7 +623,7 @@ ServerPlayer* Room::getRaceResult(QList<ServerPlayer*> &players, BP::CommandType
 			continue;
 		}
 
-		if(validateFunc == NULL || (_m_raceWinner->m_isClientResponseReady &&
+		if(validateFunc == NULL || (_m_raceWinner->is_client_response_ready &&
 			(this->*validateFunc)(_m_raceWinner, _m_raceWinner->getClientReply(), funcArg)))
 		{
 			validResult = true;
@@ -633,7 +632,7 @@ ServerPlayer* Room::getRaceResult(QList<ServerPlayer*> &players, BP::CommandType
 		else
 		{
 			// Don't give this player any more chance for this race
-			_m_raceWinner->m_isWaitingReply = false;
+			_m_raceWinner->is_waiting_for_reply = false;
 			_m_raceWinner = NULL;
 			sem_room_mutex.release();
 		}
@@ -643,9 +642,9 @@ ServerPlayer* Room::getRaceResult(QList<ServerPlayer*> &players, BP::CommandType
 	race_started = false;
 	foreach(ServerPlayer* player, players){
 		player->acquireLock(ServerPlayer::SEMA_MUTEX);
-		player->m_expectedReplyCommand = BP::UnknownCommand;
-		player->m_isWaitingReply = false;
-		player->m_expectedReplySerial = -1;
+		player->expected_reply_command = BP::UnknownCommand;
+		player->is_waiting_for_reply = false;
+		player->expected_reply_serial = -1;
 		player->releaseLock(ServerPlayer::SEMA_MUTEX);
 	}
 	sem_room_mutex.release();
@@ -673,7 +672,7 @@ void Room::broadcast(const BP::AbstractPacket &packet, ServerPlayer *except){
 }
 
 bool Room::getResult(ServerPlayer* player, time_t timeOut){
-	Q_ASSERT(player->m_isWaitingReply);
+	Q_ASSERT(player->is_waiting_for_reply);
 	bool validResult = false;
 	player->acquireLock(ServerPlayer::SEMA_MUTEX);
 
@@ -693,11 +692,11 @@ bool Room::getResult(ServerPlayer* player, time_t timeOut){
 		// It is ensured by trustCommand and reportDisconnection that the player reports these status
 		// is the player waiting the lock. In these cases, the serial number and command type doesn't matter.
 		player->acquireLock(ServerPlayer::SEMA_MUTEX);
-		validResult = player->m_isClientResponseReady;
+		validResult = player->is_client_response_ready;
 	}
-	player->m_expectedReplyCommand = BP::UnknownCommand;
-	player->m_isWaitingReply = false;
-	player->m_expectedReplySerial = -1;
+	player->expected_reply_command = BP::UnknownCommand;
+	player->is_waiting_for_reply = false;
+	player->expected_reply_serial = -1;
 	player->releaseLock(ServerPlayer::SEMA_MUTEX);
 	return validResult;
 }
@@ -831,7 +830,7 @@ bool Room::_askForNullification(const TrickCard *trick, ServerPlayer *from, Serv
 	foreach(ServerPlayer *player, m_players){
 		if(player->hasNullification()){
 			if(player->isOnline()){
-				player->m_commandArgs = arg;
+				player->command_arguments = arg;
 				validHumanPlayers << player;
 			}
 			else
@@ -1628,7 +1627,7 @@ void Room::reportDisconnection(){
 		}
 	}else{
 		// fourth case
-		if(player->m_isWaitingReply){
+		if(player->is_waiting_for_reply){
 			player->releaseLock(ServerPlayer::SEMA_COMMAND_INTERACTIVE);
 		}
 		setPlayerProperty(player, "state", "offline");
@@ -1662,7 +1661,7 @@ void Room::trustCommand(ServerPlayer *player, const QJsonValue &){
 	player->acquireLock(ServerPlayer::SEMA_MUTEX);
 	if(player->isOnline()){
 		player->setState("trust");
-		if(player->m_isWaitingReply){
+		if(player->is_waiting_for_reply){
 			player->releaseLock(ServerPlayer::SEMA_MUTEX);
 			player->releaseLock(ServerPlayer::SEMA_COMMAND_INTERACTIVE);
 		}
@@ -1681,7 +1680,7 @@ void Room::processRequestCheat(ServerPlayer *player, const QJsonValue &cheat){
 	if(arg.isEmpty() || !arg[0].isDouble()) return;
 
 	//@todo: synchronize this
-	player->m_cheatArgs = arg;
+	player->cheat_arguments = arg;
 	player->releaseLock(ServerPlayer::SEMA_COMMAND_INTERACTIVE);
 }
 
@@ -1699,7 +1698,7 @@ bool Room::makeSurrender(ServerPlayer *initiator)
 		else if(playerRole == "rebel" && player->isAlive()) rebelAlive++;
 		else if(playerRole == "renegade" && player->isAlive()) renegadeAlive++;
 		if(player != initiator && player->isAlive() && player->isOnline()){
-		player->m_commandArgs = initiator->getGeneral()->objectName();
+		player->command_arguments = initiator->getGeneral()->objectName();
 			playersAlive << player;
 		}
 	}
@@ -1708,7 +1707,7 @@ bool Room::makeSurrender(ServerPlayer *initiator)
 	// collect polls
 	foreach(ServerPlayer* player, playersAlive){
 		bool result = false;
-		if(!player->m_isClientResponseReady
+		if(!player->is_client_response_ready
 			|| !player->getClientReply().isBool())
 			result = !player->isOnline();
 		else
@@ -1756,7 +1755,7 @@ bool Room::makeSurrender(ServerPlayer *initiator)
 void Room::processRequestSurrender(ServerPlayer *player, const QJsonValue &){
 	//@todo: Strictly speaking, the client must be in the PLAY phase
 	//@todo: return false for 3v3 and 1v1!!!
-	if(player == NULL || !player->m_isWaitingReply)
+	if(player == NULL || !player->is_waiting_for_reply)
 		return;
 	if(!_m_isFirstSurrenderRequest
 		&& _m_timeSinceLastSurrenderRequest.elapsed() <= Config.S_SURRNDER_REQUEST_MIN_INTERVAL)
@@ -1785,7 +1784,6 @@ void Room::processClientPacket(const QString &request){
 	if(packet.parse(request.toUtf8().constData())){
 		if(packet.getPacketType() == BP::ClientReply){
 			if(player == NULL) return;
-			player->setClientReplyString(request);
 			processResponse(player, &packet);
 
 		//@todo: make sure that cheat is binded to Config.FreeChoose, better make a seperate variable called EnableCheat
@@ -2011,7 +2009,7 @@ void Room::chooseGenerals(){
 	foreach(ServerPlayer *player, to_assign){
 		if(player->getGeneral() != NULL) continue;
 		QJsonValue generalName = player->getClientReply();
-		if(!player->m_isClientResponseReady || !generalName.isString() || !_setPlayerGeneral(player, generalName.toString(), true))
+		if(!player->is_client_response_ready || !generalName.isString() || !_setPlayerGeneral(player, generalName.toString(), true))
 			_setPlayerGeneral(player, _chooseDefaultGeneral(player), true);
 	}
 
@@ -2025,7 +2023,7 @@ void Room::chooseGenerals(){
 		foreach(ServerPlayer *player, to_assign){
 			if(player->getGeneral2() != NULL) continue;
 			QJsonValue generalName = player->getClientReply();
-		if(!player->m_isClientResponseReady || !generalName.isString() || !_setPlayerGeneral(player, generalName.toString(), false))
+		if(!player->is_client_response_ready || !generalName.isString() || !_setPlayerGeneral(player, generalName.toString(), false))
 				_setPlayerGeneral(player, _chooseDefaultGeneral(player), false);
 		}
 	}
@@ -2277,16 +2275,16 @@ void Room::processResponse(ServerPlayer *player, const BP::Packet *packet){
 	if(player == NULL){
 		emit room_message(tr("Unable to parse player"));
 	}
-	else if(!player->m_isWaitingReply || player->m_isClientResponseReady){
+	else if(!player->is_waiting_for_reply || player->is_client_response_ready){
 		emit room_message(tr("Server is not waiting for reply from %1").arg(player->objectName()));
 	}
-	else if(packet->getCommandType() != player->m_expectedReplyCommand){
+	else if(packet->getCommandType() != player->expected_reply_command){
 		emit room_message(tr("Reply command should be %1 instead of %2")
-			.arg(player->m_expectedReplyCommand).arg(packet->getCommandType()));
+			.arg(player->expected_reply_command).arg(packet->getCommandType()));
 	}
-	else if(packet->local_serial != player->m_expectedReplySerial){
+	else if(packet->local_serial != player->expected_reply_serial){
 		emit room_message(tr("Reply serial should be %1 instead of %2")
-			.arg(player->m_expectedReplySerial).arg(packet->local_serial));
+			.arg(player->expected_reply_serial).arg(packet->local_serial));
 	}
 	else success = true;
 
@@ -2297,7 +2295,7 @@ void Room::processResponse(ServerPlayer *player, const BP::Packet *packet){
 		sem_room_mutex.acquire();
 		if(race_started){
 		player->setClientReply(packet->getMessageBody());
-			player->m_isClientResponseReady = true;
+			player->is_client_response_ready = true;
 			// Warning: the statement below must be the last one before releasing the lock!!!
 			// Any statement after this statement will totally compromise the synchronization
 			// because getRaceResult will then be able to acquire the lock, reading a non-null
@@ -2314,7 +2312,7 @@ void Room::processResponse(ServerPlayer *player, const BP::Packet *packet){
 		{
 			sem_room_mutex.release();
 			player->setClientReply(packet->getMessageBody());
-			player->m_isClientResponseReady = true;
+			player->is_client_response_ready = true;
 			player->releaseLock(ServerPlayer::SEMA_COMMAND_INTERACTIVE);
 		}
 
@@ -3566,7 +3564,7 @@ void Room::_setupChooseGeneralRequestArgs(ServerPlayer *player){
 		options.append(QString("%1(lord)").arg(getLord()->getGeneralName()));
 	else
 		options.append(QString("anjiang(lord)"));
-	player->m_commandArgs = options;
+	player->command_arguments = options;
 }
 
 QString Room::askForGeneral(ServerPlayer *player, const QStringList &generals, QString default_choice){
@@ -3608,7 +3606,7 @@ void Room::kickCommand(ServerPlayer *player, const QJsonValue &arg){
 }
 
 bool Room::makeCheat(ServerPlayer *player){
-	QJsonArray arg = player->m_cheatArgs.toArray();
+	QJsonArray arg = player->cheat_arguments.toArray();
 	if(arg.isEmpty() || !arg[0].isDouble()) return false;
 	QJsonArray arg1 = arg[1].toArray();
 	BP::Cheat::Code code = (BP::Cheat::Code) arg[0].toDouble();
@@ -3644,7 +3642,7 @@ bool Room::makeCheat(ServerPlayer *player){
 		QString generalName = arg[1].toString();
 		transfigure(player, generalName, false, true);
 	}
-	player->m_cheatArgs = QJsonValue();
+	player->cheat_arguments = QJsonValue();
 	return true;
 }
 

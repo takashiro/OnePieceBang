@@ -125,16 +125,14 @@ public:
 			drainLock((SemaphoreType)i);
 		}
 	}
-	inline QString getClientReplyString(){return m_clientResponseString;}
-	inline void setClientReplyString(const QString &val){m_clientResponseString = val;}
-	inline QJsonValue getClientReply(){return _m_clientResponse;}
-	inline void setClientReply(const QJsonValue &val){_m_clientResponse = val;}    
-	unsigned int m_expectedReplySerial; // Suggest the acceptable serial number of an expected response.
-	bool m_isClientResponseReady; //Suggest whether a valid player's reponse has been received.
-	bool m_isWaitingReply; // Suggest if the server player is waiting for client's response.
-	QJsonValue m_cheatArgs; // Store the cheat code received from client.
-	BP::CommandType m_expectedReplyCommand; // Store the command to be sent to the client.
-	QJsonValue m_commandArgs; // Store the command args to be sent to the client.
+	inline QJsonValue getClientReply(){return client_response_data;}
+	inline void setClientReply(const QJsonValue &val){client_response_data = val;}
+	unsigned int expected_reply_serial; // Suggest the acceptable serial number of an expected response.
+	bool is_client_response_ready; //Suggest whether a valid player's reponse has been received.
+	bool is_waiting_for_reply; // Suggest if the server player is waiting for client's response.
+	QJsonValue cheat_arguments; // Store the cheat code received from client.
+	BP::CommandType expected_reply_command; // Store the command to be sent to the client.
+	QJsonValue command_arguments; // Store the command args to be sent to the client.
 
 
 protected:    
@@ -154,8 +152,7 @@ private:
 	ServerPlayer *next;
 	QStringList selected; // 3v3 mode use only
 	QDateTime test_time;
-	QString m_clientResponseString;
-	QJsonValue _m_clientResponse;    
+	QJsonValue client_response_data;
 
 private slots:
 	void getMessage(char *message);
