@@ -38,7 +38,7 @@ class Card : public QObject
 
 public:
 	// enumeration type
-	enum Suit {Spade, Club, Heart, Diamond, NoSuit};
+	enum Suit{Spade, Club, Heart, Diamond, NoSuit};
 	enum Color{Red, Black, Colorless};
 
 	static const Suit AllSuits[4];

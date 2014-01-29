@@ -100,6 +100,7 @@ void GameRule::onPhaseChange(ServerPlayer *player) const{
 							dummy_card->addSubcard(card);
 						}
 						room->throwCard(dummy_card, player);
+						dummy_card->deleteLater();
 
 						return;
 					}
@@ -126,7 +127,6 @@ void GameRule::onPhaseChange(ServerPlayer *player) const{
 
 			player->clearFlags();
 			player->clearHistory();
-			room->broadcastNotification(BP::ClearPile);
 			room->getThread()->delay(Config.AIDelay);
 			return;
 		}
@@ -229,7 +229,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 	case CardFinished: {
 		CardUseStruct use = data.value<CardUseStruct>();
 		room->clearCardFlag(use.card);
-		if(use.card->willThrow()){
+		if(use.card->willThrow() && room->getCardPlace(use.card->getEffectiveId()) == Player::HandlingArea){
 			room->throwCard(use.card, use.card->isOwnerDiscarded() ? use.from : NULL);
 		}
 		break;

@@ -1083,36 +1083,6 @@ const Card *Room::askForCardShow(ServerPlayer *player, ServerPlayer *requestor, 
 
 const Card *Room::askForSingleWine(ServerPlayer *player, ServerPlayer *dying){
 	notifyMoveFocus(player, BP::AskForSingleWine);
-	//@todo: put this into AI!!!!!!!!!!!!!!!!!
-	/*if(player->isKongcheng()){
-		// jijiu special case
-		if(player->hasSkill("jijiu") && player->getPhase() == Player::NotActive){
-			bool has_red = false;
-			foreach(const Card *equip, player->getEquips()){
-				if(equip->isRed()){
-					has_red = true;
-					break;
-				}
-			}
-			if(!has_red)
-				return NULL;
-		}else if(player->hasSkill("jiushi")){
-			if(!player->faceUp())
-				return NULL;
-		}else if(player->hasSkill("longhun")){
-			bool has_heart = false;
-			foreach(const Card *equip, player->getEquips()){
-				if(equip->getSuit() == Card::Heart){
-					has_heart = true;
-					break;
-				}
-			}
-			if(!has_heart)
-				return NULL;
-		}else
-			return NULL;
-	}*/
-
 	const Card * card;
 	bool continuable = false;
 
@@ -2351,6 +2321,10 @@ void Room::useCard(const CardUseStruct &card_use, bool add_history){
 		new_use.card = card;
 		useCard(new_use);
 	}
+
+	if(card->isVirtualCard()){
+		delete card;
+	}
 }
 
 void Room::loseHp(ServerPlayer *victim, int lose){
@@ -2737,10 +2711,11 @@ void Room::throwCard(const Card *card, ServerPlayer *who){
 		return;
 
 	QList<int> to_discard;
-	if(card->isVirtualCard())
-			to_discard.append(card->getSubcards());
-		else
-			to_discard << card->getEffectiveId();
+	if(card->isVirtualCard()){
+		to_discard.append(card->getSubcards());
+	}else{
+		to_discard << card->getEffectiveId();
+	}
 
 	if(who){
 		LogMessage log;

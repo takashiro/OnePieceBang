@@ -121,8 +121,6 @@ void Wine::onUse(Room *room, const CardUseStruct &card_use) const{
 }
 
 void Wine::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
-	room->throwCard(this);
-
 	foreach(ServerPlayer *tmp, targets)
 		room->cardEffect(this, source, tmp);
 }
@@ -513,8 +511,6 @@ AmazingGrace::AmazingGrace(Suit suit, int number)
 }
 
 void AmazingGrace::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
-	room->throwCard(this);
-
 	QList<ServerPlayer *> players = targets.isEmpty() ? room->getAllPlayers() : targets;
 	QList<int> card_ids = room->getNCards(players.length());
 	room->fillAG(card_ids);
@@ -636,8 +632,6 @@ void SingleTargetTrick::onUse(Room *room, const CardUseStruct &card_use) const{
 }
 
 void SingleTargetTrick::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
-	room->throwCard(this);
-
 	CardEffectStruct effect;
 	effect.card = this;
 	effect.from = source;
@@ -759,7 +753,7 @@ Nullification::Nullification(Suit suit, int number)
 }
 
 void Nullification::use(Room *room, ServerPlayer *, const QList<ServerPlayer *> &) const{
-	room->throwCard(this);
+
 }
 
 bool Nullification::isAvailable(const Player *) const{
@@ -1482,8 +1476,6 @@ void TamaDragon::onUse(Room *room, const CardUseStruct &card_use) const{
 }
 
 void TamaDragon::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
-	room->throwCard(this);
-
 	source->playCardEffect("@tiesuo");
 	TrickCard::use(room, source, targets);
 }

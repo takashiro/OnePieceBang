@@ -439,10 +439,11 @@ public:
 			log.type = "$ChangedJudge";
 			log.from = player;
 			log.to << judge->who;
-			log.card_str = card->getEffectIdString();
+			log.card_str = QString::number(judge->card->getId());
 			room->sendLog(log);
 
 			room->sendJudgeResult(judge);
+			delete card;
 		}
 
 		return false;
@@ -741,6 +742,8 @@ public:
 		Room *room = player->getRoom();
 
 		Slash *slash = new Slash(Card::NoSuit, 0);
+		slash->setSkillName(objectName());
+
 		CardUseStruct use;
 		use.from = player;
 		use.card = slash;
