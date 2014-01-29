@@ -647,9 +647,8 @@ void Client::cardLock(const QJsonValue &card_str){
 void Client::judgeResult(const QJsonValue &result_str){
 	QJsonArray texts = result_str.toArray();
 	QString who = texts.at(0).toString();
-	QString result = texts.at(1).toString();
-
-	emit judge_result(who, result);
+	bool is_good = texts.at(1).toBool();
+	emit judge_result(who, is_good);
 }
 
 QString Client::getSkillLine() const{

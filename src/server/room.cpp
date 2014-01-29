@@ -340,9 +340,10 @@ void Room::judge(JudgeStruct &judge_struct){
 }
 
 void Room::sendJudgeResult(const JudgeStar judge){
-	QString who = judge->who->objectName();
-	QString result = judge->isGood() ? "good" : "bad";
-	broadcastNotification(BP::JudgeResult, BP::toJsonArray(who, result));
+	QJsonArray result;
+	result.append(judge->who->objectName());
+	result.append(judge->isGood());
+	broadcastNotification(BP::JudgeResult, result);
 }
 
 QList<int> Room::getNCards(int n, bool update_pile_number){

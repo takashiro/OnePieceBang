@@ -220,7 +220,7 @@ RoomScene::RoomScene(QMainWindow *main_window)
 	connect(ClientInstance, SIGNAL(skill_invoked(QString,QString)), this, SLOT(showSkillInvocation(QString,QString)));
 	connect(ClientInstance, SIGNAL(skill_acquired(const ClientPlayer*,QString)), this, SLOT(acquireSkill(const ClientPlayer*,QString)));
 	connect(ClientInstance, SIGNAL(animated(QString,QStringList)), this, SLOT(doAnimation(QString,QStringList)));
-	connect(ClientInstance, SIGNAL(judge_result(QString,QString)), this, SLOT(showJudgeResult(QString,QString)));
+	connect(ClientInstance, SIGNAL(judge_result(QString,bool)), this, SLOT(showJudgeResult(QString,bool)));
 	connect(ClientInstance, SIGNAL(role_state_changed(QString)),this, SLOT(updateRoles(QString)));
 
 	connect(ClientInstance, SIGNAL(game_started()), this, SLOT(onGameStart()));
@@ -3025,13 +3025,13 @@ void RoomScene::showOwnerButtons(bool owner){
 		control_panel->setVisible(owner);
 }
 
-void RoomScene::showJudgeResult(const QString &who, const QString &result){
+void RoomScene::showJudgeResult(const QString &who, bool is_good){
 	if(special_card){
 		const ClientPlayer *player = ClientInstance->getPlayer(who);
 		QString desc = QString(tr("%1's judge")).arg(Bang->translate(player->getGeneralName()));
 		special_card->writeCardDesc(desc);
 
-		special_card->setFrame(result);
+		special_card->setFrame(is_good ? "good" : "bad");
 	}
 }
 
