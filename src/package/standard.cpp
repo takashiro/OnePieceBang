@@ -173,6 +173,7 @@ bool SingleTargetTrick::targetFilter(const QList<const Player *> &targets, const
 DelayedTrick::DelayedTrick(Suit suit, int number, bool movable)
 	:TrickCard(suit, number, true), movable(movable)
 {
+	will_throw = false;
 }
 
 int DelayedTrick::targetNum(const Player *) const{
