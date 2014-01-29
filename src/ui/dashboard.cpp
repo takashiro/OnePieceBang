@@ -776,7 +776,7 @@ QList<CardItem*> Dashboard::removeCardItems(const QList<int> &card_ids, Player::
 				judging_area.removeAt(index);
 				delete delayed_tricks.takeAt(index);
 				for(int i=0; i<delayed_tricks.count(); i++){
-					delayed_tricks.at(i)->setPos(3 + i * 27, 0);
+					delayed_tricks.at(i)->setPos(3 + i * 27, -14);
 				}
 			}
 		}else if(place == Player::SpecialArea){
