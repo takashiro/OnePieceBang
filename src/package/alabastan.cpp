@@ -637,14 +637,14 @@ public:
 class WitheredFlower: public TriggerSkill{
 public:
 	WitheredFlower(): TriggerSkill("witheredflower"){
-		events << TargetConfirmed;
+		events << CardEffected;
 		frequency = Frequent;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-		CardUseStruct use = data.value<CardUseStruct>();
+		CardEffectStruct effect = data.value<CardEffectStruct>();
 
-		if(!use.card || use.card->getSuit() != Card::Club || !player->askForSkillInvoke(objectName())){
+		if(!effect.from || effect.from == player || !effect.card || effect.card->getSuit() != Card::Club || !player->askForSkillInvoke(objectName())){
 			return false;
 		}
 
@@ -652,11 +652,11 @@ public:
 
 		bool draw_card = false;
 
-		if(use.from->isKongcheng())
+		if(effect.from->isKongcheng())
 			draw_card = true;
 		else{
 			QString prompt = "witheredflower-discard:" + player->getGeneralName();
-			const Card *card = room->askForCard(use.from, ".", prompt, QVariant(), CardDiscarded);
+			const Card *card = room->askForCard(effect.from, ".", prompt, QVariant(), CardDiscarded);
 			if(card == NULL)
 				draw_card = true;
 		}

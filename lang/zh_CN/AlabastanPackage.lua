@@ -41,7 +41,7 @@ return {
 	["medicalexpertise"] = "名医",
 	[":medicalexpertise"] = "一名其他角色进入濒死状态时，你可以令其展示所有手牌，其中每有1张红色牌，其弃置之并回复1点体力，然后你获得其装备区或手牌区内的1张牌。",
 	["witheredflower"] = "黄花",
-	[":witheredflower"] = "你成为其他角色使用的梅花牌的目标后，可以令其选择一项：1.弃置1张手牌，2.令你摸1张牌。",
+	[":witheredflower"] = "其他角色使用的梅花牌对你生效时，你可以令其选择一项：1.弃置1张手牌，2.令你摸1张牌。",
 	["witheredflower-discard"] = "%src 发动了【黄花】，您必须弃置一张手牌或让 %src 摸一张牌",
 
 	["#bonkure"] = "Mr.2",
