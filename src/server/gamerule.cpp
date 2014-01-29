@@ -208,12 +208,14 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 			RoomThread *thread = room->getThread();
 			CardUseStruct card_use = data.value<CardUseStruct>();
 
-			if(thread->trigger(TargetSelect, card_use.from, data)){
-				break;
-			}
-
+			thread->trigger(TargetSelect, card_use.from, data);
 			foreach(ServerPlayer *target, card_use.to){
 				thread->trigger(TargetSelected, target, data);
+			}
+
+			thread->trigger(TargetConfirm, card_use.from, data);
+			foreach(ServerPlayer *target, card_use.to){
+				thread->trigger(TargetConfirmed, target, data);
 			}
 
 			card_use = data.value<CardUseStruct>();
@@ -227,7 +229,9 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 	case CardFinished: {
 		CardUseStruct use = data.value<CardUseStruct>();
 		room->clearCardFlag(use.card);
-
+		if(use.card->willThrow()){
+			room->throwCard(use.card, use.card->isOwnerDiscarded() ? use.from : NULL);
+		}
 		break;
 	}
 

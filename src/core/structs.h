@@ -248,9 +248,11 @@ enum TriggerEvent{
 	SlashMissed,
 
 	CardAsked,
+
 	CardUsed,
 	CardResponsed,
 	CardDiscarded,
+
 	OneCardLost,
 	CardLost,
 	OneCardGot,
@@ -260,6 +262,8 @@ enum TriggerEvent{
 
 	TargetSelect,
 	TargetSelected,
+	TargetConfirm,
+	TargetConfirmed,
 	CardEffect,
 	CardEffected,
 	CardFinished,

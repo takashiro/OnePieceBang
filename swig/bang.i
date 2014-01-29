@@ -438,79 +438,81 @@ struct PindianStruct{
 };
 
 struct PhaseChangeStruct{
-    PhaseChangeStruct();
-    Player::Phase from;
-    Player::Phase to;
+	PhaseChangeStruct();
+	Player::Phase from;
+	Player::Phase to;
 };
 
 typedef PindianStruct *PindianStar;
 
 enum TriggerEvent{
-    NonTrigger,
+	NonTrigger,
 
-    GameStart,
-    TurnStart,
-    PhaseChange,
-    DrawNCards,
-    
-    BeforeRecovering,
+	GameStart,
+	TurnStart,
+	PhaseChange,
+	DrawNCards,
+
+	BeforeRecovering,
 	BeforeRecovered,
 	Recovering,
 	Recovered,
 	AfterRecovering,
 	AfterRecovered,
-	
+
 	HpLost,
 	HpChanged,
 
-    StartJudge,
-    AskForRetrial,
-    FinishJudge,
+	StartJudge,
+	AskForRetrial,
+	FinishJudge,
 
-    Pindian,
-    TurnedOver,
+	Pindian,
+	TurnedOver,
 
-    Predamaging,
-    Predamaged,
-    Damaging,
-    Damaged,
-    DamageDone,
-    Postdamaging,
-    Postdamaged,
-    DamageComplete,
+	Predamaging,
+	Predamaged,
+	Damaging,
+	Damaged,
+	DamageDone,
+	Postdamaging,
+	Postdamaged,
+	DamageComplete,
 
-    Dying,
-    AskForWine,
-    AskForWineDone,
-    Death,
-    GameOverJudge,
+	Dying,
+	AskForWine,
+	AskForWineDone,
+	Death,
+	GameOverJudge,
 
-    SlashEffect,
-    SlashEffected,
-    SlashProceed,
-    SlashHit,
-    SlashMissed,
+	SlashEffect,
+	SlashEffected,
+	SlashProceed,
+	SlashHit,
+	SlashMissed,
 
-    CardAsked,
-    CardUsed,
-    CardResponsed,
-    CardDiscarded,
-    OneCardLost,
-    CardLost,
-    OneCardGot,
-    CardGot,
-    CardDrawing,
-    CardDrawnDone,
+	CardAsked,
+	CardUsed,
+	CardResponsed,
+	CardDiscarded,
+	OneCardLost,
+	CardLost,
+	OneCardGot,
+	CardGot,
+	CardDrawing,
+	CardDrawnDone,
 
-    TargetSelect,
-    TargetSelected,
-    CardEffect,
-    CardEffected,
-    CardFinished,
+	TargetSelect,
+	TargetSelected,
+	TargetConfirm,
+	TargetConfirmed,
+	CardEffect,
+	CardEffected,
+	CardFinished,
 
-    ChoiceMade,
+	ChoiceMade,
 
-    NumOfEvents,
+	NumOfEvents,
 };
 class Card: public QObject
 {

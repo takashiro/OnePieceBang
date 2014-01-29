@@ -489,8 +489,8 @@ void Card::onUse(Room *room, const CardUseStruct &card_use) const{
 }
 
 void Card::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
-	if(will_throw){
-		room->throwCard(this, owner_discarded ? source : NULL);
+	if(targets.isEmpty()){
+		return;
 	}
 
 	if(targets.length() == 1){

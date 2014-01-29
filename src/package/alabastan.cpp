@@ -637,7 +637,7 @@ public:
 class WitheredFlower: public TriggerSkill{
 public:
 	WitheredFlower(): TriggerSkill("witheredflower"){
-		events << TargetSelected;
+		events << TargetConfirmed;
 		frequency = Frequent;
 	}
 
@@ -657,9 +657,7 @@ public:
 		else{
 			QString prompt = "witheredflower-discard:" + player->getGeneralName();
 			const Card *card = room->askForCard(use.from, ".", prompt, QVariant(), CardDiscarded);
-			if(card){
-				room->throwCard(card);
-			}else
+			if(card == NULL)
 				draw_card = true;
 		}
 

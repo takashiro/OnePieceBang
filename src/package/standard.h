@@ -55,7 +55,7 @@ public:
 		OffensiveHorseLocation
 	};
 
-	EquipCard(Suit suit, int number):Card(suit, number, true), skill(NULL){}
+	EquipCard(Suit suit, int number):Card(suit, number, true), skill(NULL){will_throw = false;}
 	TriggerSkill *getSkill() const;
 
 	virtual QString getType() const;
