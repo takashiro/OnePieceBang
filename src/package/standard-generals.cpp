@@ -28,7 +28,6 @@ RubberPistolCard::RubberPistolCard(){
 }
 
 RubberPistolCard::~RubberPistolCard(){
-	delete slash;
 }
 
 bool RubberPistolCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
