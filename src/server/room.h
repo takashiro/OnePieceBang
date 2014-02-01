@@ -28,6 +28,7 @@ public:
 	typedef bool (Room::*ResponseVerifyFunction)(ServerPlayer*, const QJsonValue&, void*);
 
 	explicit Room(QObject *parent, const QString &mode);
+	~Room();
 	ServerPlayer *addSocket(ClientSocket *socket);
 	bool isFull() const;
 	bool isFinished() const;

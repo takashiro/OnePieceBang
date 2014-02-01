@@ -7,14 +7,10 @@
 
 #include <QTime>
 
-GameRule::GameRule(QObject *)
+GameRule::GameRule()
 	:TriggerSkill("game_rule")
 {
-	//@todo: this setParent is illegitimate in QT and is equivalent to calling
-	// setParent(NULL). So taking it off at the moment until we figure out
-	// a way to do it.
-	//setParent(parent);
-
+	//@to-do: GameRule objects must be deleted by parent destructor now. set it's parent if possible.
 	events << GameStart << TurnStart << PhaseChange << CardUsed << CardFinished
 			<< CardEffected << Recovered << HpLost << AskForWineDone
 			<< AskForWine << Death << Dying << GameOverJudge
@@ -699,9 +695,7 @@ QString GameRule::getWinner(ServerPlayer *victim) const{
 	return winner;
 }
 
-HulaoPassMode::HulaoPassMode(QObject *parent)
-	:GameRule(parent)
-{
+HulaoPassMode::HulaoPassMode(){
 	setObjectName("hulaopass_mode");
 
 	events << HpChanged << StageChange;
@@ -833,9 +827,7 @@ bool HulaoPassMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 	return GameRule::trigger(event, player, data);
 }
 
-BasaraMode::BasaraMode(QObject *parent)
-	:GameRule(parent)
-{
+BasaraMode::BasaraMode(){
 	setObjectName("basara_mode");
 
 	events << OneCardLost << Predamaged;

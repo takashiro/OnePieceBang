@@ -186,6 +186,16 @@ RoomThread::RoomThread(Room *room)
 {
 }
 
+RoomThread::~RoomThread(){
+	if(game_rule){
+		delete game_rule;
+	}
+
+	if(basara_mode){
+		delete basara_mode;
+	}
+}
+
 void RoomThread::addPlayerSkills(ServerPlayer *player, bool invoke_game_start){
 	QVariant void_data;
 
@@ -277,16 +287,19 @@ void RoomThread::action3v3(ServerPlayer *player){
 void RoomThread::run(){
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 	
-	GameRule *game_rule;
 	if(room->getMode() == "04_1v3")
-		game_rule = new HulaoPassMode(this);
+		game_rule = new HulaoPassMode;
 	else if(Config.EnableScene)	//changjing
-		game_rule = new SceneRule(this);	//changjing
+		game_rule = new SceneRule;	//changjing
 	else
-		game_rule = new GameRule(this);
+		game_rule = new GameRule;
 
 	addTriggerSkill(game_rule);
-	if(Config.EnableBasara) addTriggerSkill(new BasaraMode(this));
+
+	if(Config.EnableBasara){
+		basara_mode = new BasaraMode;
+		addTriggerSkill(basara_mode);
+	}
 
 	if(room->getScenario() != NULL){
 		const ScenarioRule *rule = room->getScenario()->getRule();

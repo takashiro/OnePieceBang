@@ -72,6 +72,21 @@ Room::Room(QObject *parent, const QString &mode)
 	DoLuaScripts(L, scripts);
 }
 
+//@to-do: the thread will be destroyed while running if the game is still going on.
+Room::~Room(){
+	if(thread){
+		delete thread;
+	}
+
+	if(thread_3v3){
+		delete thread_3v3;
+	}
+
+	if(thread_1v1){
+		delete thread_1v1;
+	}
+}
+
 ServerPlayer *Room::getCurrent() const{
 	return current;
 }
@@ -243,7 +258,6 @@ void Room::updateStateItem(){
 
 	broadcastNotification(BP::UpdateStateItem, roles);
 }
-
 void Room::killPlayer(ServerPlayer *victim, DamageStruct *reason){
 	ServerPlayer *killer = reason ? reason->from : NULL;
 	if(Config.ContestMode && killer){
