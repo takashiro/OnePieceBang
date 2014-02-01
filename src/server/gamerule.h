@@ -7,7 +7,7 @@ class GameRule : public TriggerSkill{
 	Q_OBJECT
 
 public:
-	GameRule();
+	GameRule(QObject *parent);
 	void setGameProcess(Room *room) const;
 
 	virtual bool triggerable(const ServerPlayer *target) const;
@@ -25,7 +25,7 @@ class HulaoPassMode: public GameRule{
 	Q_OBJECT
 
 public:
-	HulaoPassMode();
+	HulaoPassMode(QObject *parent);
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const;
 };
 
@@ -33,7 +33,7 @@ class BasaraMode: public GameRule{
 	Q_OBJECT
 
 public:
-	BasaraMode();
+	BasaraMode(QObject *parent);
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const;
 	virtual int getPriority() const;

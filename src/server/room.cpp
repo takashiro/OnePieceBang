@@ -28,7 +28,7 @@ Room::Room(QObject *parent, const QString &mode)
 	:QThread(parent), mode(mode), current(NULL), pile1(Bang->getRandomCards()),
 	draw_pile(&pile1), discard_pile(&pile2), handling_area(&pile3),
 	game_started(false), game_finished(false), L(NULL), thread(NULL),
-	thread_3v3(NULL), sem(new QSemaphore), sem_race_request(0), sem_room_mutex(1),
+	thread_3v3(NULL), thread_1v1(NULL), sem(new QSemaphore), sem_race_request(0), sem_room_mutex(1),
 	race_started(false), provided(NULL), has_provided(false),
 	surrender_request_received(false), _virtual(false)
 {

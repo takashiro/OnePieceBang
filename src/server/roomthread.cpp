@@ -1,11 +1,11 @@
 #include "roomthread.h"
 #include "room.h"
 #include "engine.h"
-#include "gamerule.h"
-#include "scenerule.h"
+#include "server.h"
 #include "scenario.h"
 #include "ai.h"
 #include "settings.h"
+#include "gamerule.h"
 
 #include <QTime>
 
@@ -186,16 +186,6 @@ RoomThread::RoomThread(Room *room)
 {
 }
 
-RoomThread::~RoomThread(){
-	if(game_rule){
-		delete game_rule;
-	}
-
-	if(basara_mode){
-		delete basara_mode;
-	}
-}
-
 void RoomThread::addPlayerSkills(ServerPlayer *player, bool invoke_game_start){
 	QVariant void_data;
 
@@ -287,18 +277,20 @@ void RoomThread::action3v3(ServerPlayer *player){
 void RoomThread::run(){
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 	
+	Server *server = qobject_cast<Server *>(room->parent());
+
+	const GameRule *game_rule;
 	if(room->getMode() == "04_1v3")
-		game_rule = new HulaoPassMode;
+		game_rule = server->getHulaoPassMode();
 	else if(Config.EnableScene)	//changjing
-		game_rule = new SceneRule;	//changjing
+		game_rule = server->getSceneRule();	//changjing
 	else
-		game_rule = new GameRule;
+		game_rule = server->getGameRule();
 
 	addTriggerSkill(game_rule);
 
 	if(Config.EnableBasara){
-		basara_mode = new BasaraMode;
-		addTriggerSkill(basara_mode);
+		addTriggerSkill(server->getBasaraMode());
 	}
 
 	if(room->getScenario() != NULL){

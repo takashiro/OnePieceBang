@@ -111,7 +111,9 @@ class Scene27Skill : public OneCardViewAsSkill {
 	}
 };
 
-SceneRule::SceneRule(){
+SceneRule::SceneRule(QObject *parent)
+	:GameRule(parent)
+{
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
 	events << CardEffect << Damaged << Postdamaged;

@@ -7,10 +7,11 @@
 
 #include <QTime>
 
-GameRule::GameRule()
+GameRule::GameRule(QObject *parent)
 	:TriggerSkill("game_rule")
 {
-	//@to-do: GameRule objects must be deleted by parent destructor now. set it's parent if possible.
+	setParent(parent);
+
 	events << GameStart << TurnStart << PhaseChange << CardUsed << CardFinished
 			<< CardEffected << Recovered << HpLost << AskForWineDone
 			<< AskForWine << Death << Dying << GameOverJudge
@@ -695,7 +696,9 @@ QString GameRule::getWinner(ServerPlayer *victim) const{
 	return winner;
 }
 
-HulaoPassMode::HulaoPassMode(){
+HulaoPassMode::HulaoPassMode(QObject *parent)
+	:GameRule(parent)
+{
 	setObjectName("hulaopass_mode");
 
 	events << HpChanged << StageChange;
@@ -827,7 +830,9 @@ bool HulaoPassMode::trigger(TriggerEvent event, ServerPlayer *player, QVariant &
 	return GameRule::trigger(event, player, data);
 }
 
-BasaraMode::BasaraMode(){
+BasaraMode::BasaraMode(QObject *parent)
+	:GameRule(parent)
+{
 	setObjectName("basara_mode");
 
 	events << OneCardLost << Predamaged;

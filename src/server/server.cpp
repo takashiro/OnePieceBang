@@ -8,6 +8,8 @@
 #include "contestdb.h"
 #include "choosegeneraldialog.h"
 #include "customassigndialog.h"
+#include "gamerule.h"
+#include "scenerule.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -961,6 +963,11 @@ Server::Server(QObject *parent)
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(deleteLater()));
 
 	current = NULL;
+
+	game_rule = new GameRule(this);
+	hulaopass_mode = new HulaoPassMode(this);
+	basara_mode = new BasaraMode(this);
+	scene_rule = new SceneRule(this);
 }
 
 void Server::broadcast(const QString &msg){
@@ -1098,4 +1105,20 @@ void Server::gamesOver(){
 	name2objname.clear();
 	players.clear();
 	rooms.clear();
+}
+
+GameRule *Server::getGameRule(){
+	return game_rule;
+}
+
+GameRule *Server::getSceneRule(){
+	return scene_rule;
+}
+
+GameRule *Server::getHulaoPassMode(){
+	return hulaopass_mode;
+}
+
+GameRule *Server::getBasaraMode(){
+	return basara_mode;
 }

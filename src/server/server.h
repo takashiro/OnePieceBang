@@ -23,6 +23,7 @@ class QRadioButton;
 #include <QMultiHash>
 
 class Package;
+class GameRule;
 
 class Select3v3GeneralDialog: public QDialog{
 	Q_OBJECT
@@ -147,6 +148,10 @@ public:
 	Room *createNewRoom();
 	void signupPlayer(ServerPlayer *player);
 	void gamesOver();
+	GameRule *getGameRule();
+	GameRule *getSceneRule();
+	GameRule *getHulaoPassMode();
+	GameRule *getBasaraMode();
 
 private:
 	ServerSocket *server;
@@ -155,6 +160,10 @@ private:
 	QHash<QString, ServerPlayer*> players;
 	QSet<QString> addresses;
 	QMultiHash<QString, QString> name2objname;
+	GameRule *game_rule;
+	GameRule *hulaopass_mode;
+	GameRule *basara_mode;
+	GameRule *scene_rule;
 
 private slots:
 	void processNewConnection(ClientSocket *socket);

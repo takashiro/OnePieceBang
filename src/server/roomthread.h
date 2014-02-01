@@ -38,7 +38,6 @@ class RoomThread : public QThread{
 
 public:
 	explicit RoomThread(Room *room);
-	~RoomThread();
 	void constructTriggerTable();
 	bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data);
 	bool trigger(TriggerEvent event, ServerPlayer *target);
@@ -58,8 +57,6 @@ protected:
 private:
 	Room *room;
 	QString order;
-	GameRule *game_rule;
-	GameRule *basara_mode;
 
 	QList<const TriggerSkill *> skill_table[NumOfEvents];
 	QSet<const TriggerSkill *> skillSet;
