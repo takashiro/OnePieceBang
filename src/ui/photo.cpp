@@ -254,11 +254,6 @@ void Photo::updateAvatar(){
 		kindom_color_mask_icon = QPixmap(20, S_NORMAL_PHOTO_HEIGHT);
 		kindom_color_mask_icon.fill(QColor(0, 0, 0, 0));
 
-		QPainter painter(&pixmap);
-		painter.setPen(Qt::white);
-		painter.setFont(Config.SmallFont);
-		painter.drawText(0, 0, kindom_color_mask_icon.width(), kindom_color_mask_icon.height(), Qt::AlignCenter, Bang->translate(player->getGeneralName()));
-
 		if(!success){
 			QPixmap pixmap(General::SmallIconSize);
 			pixmap.fill(Qt::black);
