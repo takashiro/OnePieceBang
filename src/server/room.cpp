@@ -32,6 +32,7 @@ Room::Room(Server *server, const QString &mode)
 	race_started(false), provided(NULL), has_provided(false),
 	surrender_request_received(false), _virtual(false)
 {
+	setParent(server);
 	last_movement_id = 0;
 	player_count = Bang->getPlayerCount(mode);
 	scenario = Bang->getScenario(mode);
