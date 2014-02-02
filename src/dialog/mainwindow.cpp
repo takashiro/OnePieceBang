@@ -166,7 +166,7 @@ void MainWindow::on_actionStart_Server_triggered()
 		return;
 
 	Server *server = new Server(this);
-	if(! server->listen()){
+	if(!server->listen()){
 		QMessageBox::warning(this, tr("Warning"), tr("Can not start server!"));
 
 		return;
@@ -611,8 +611,6 @@ void MainWindow::on_actionPC_Console_Start_triggered()
 
 		return;
 	}
-
-	server->createNewRoom();
 
 	Config.HostAddress = "127.0.0.1";
 	startConnection();
