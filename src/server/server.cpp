@@ -2,7 +2,7 @@
 #include "settings.h"
 #include "room.h"
 #include "engine.h"
-#include "nativesocket.h"
+#include "socket.h"
 #include "banpair.h"
 #include "scenario.h"
 #include "contestdb.h"
@@ -951,7 +951,7 @@ bool ServerDialog::config(){
 Server::Server(QObject *parent)
 	:QObject(parent)
 {
-	server = new NativeServerSocket;
+	server = new ServerSocket;
 	server->setParent(this);
 
 	//synchronize ServerInfo on the server side to avoid ambiguous usage of Config and ServerInfo
@@ -990,6 +990,7 @@ void Server::daemonize(){
 
 Room *Server::createNewRoom(){
 	Room *new_room = new Room(this, Config.GameMode);
+
 	current = new_room;
 	rooms.insert(current);
 
@@ -1017,13 +1018,18 @@ void Server::processNewConnection(ClientSocket *socket){
 
 	emit server_message(tr("%1 connected").arg(socket->peerName()));
 
-	connect(socket, SIGNAL(message_got(char*)), this, SLOT(processRequest(char*)));
+	connect(socket, SIGNAL(readyRead()), this, SLOT(processRequest()));
 }
 
-void Server::processRequest(char *request){
+void Server::processRequest(){
 	ClientSocket *socket = qobject_cast<ClientSocket *>(sender());
-	socket->disconnect(this, SLOT(processRequest(char*)));
+	if(socket->canReadLine()){
+		QByteArray message = socket->readLine();
+		processRequest(socket, message);
+	}
+}
 
+void Server::processRequest(ClientSocket *socket, const QByteArray &request){
 	BP::Packet packet;
 	if(!packet.parse(request)){
 		return;
@@ -1036,11 +1042,13 @@ void Server::processRequest(char *request){
 
 	QJsonArray signup = packet.getMessageBody().toArray();
 	if(signup.size() < 2 || signup.size() > 3){
-		emit server_message(tr("Invalid signup string: %1").arg(request));
+		emit server_message(tr("Invalid signup string: %1").arg(QString::fromUtf8(request)));
 		notify(socket, BP::Warn, QString("INVALID_FORMAT"));
 		socket->disconnectFromHost();
 		return;
 	}
+
+	disconnect(socket, SIGNAL(readyRead()), this, SLOT(processRequest()));
 
 	QString screen_name = signup.at(0).toString();
 	QString avatar = signup.at(1).toString();

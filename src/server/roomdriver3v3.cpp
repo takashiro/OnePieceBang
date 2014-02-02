@@ -1,4 +1,4 @@
-#include "roomthread3v3.h"
+#include "roomdriver3v3.h"
 #include "room.h"
 #include "engine.h"
 #include "ai.h"
@@ -10,11 +10,13 @@
 
 //@todo: setParent here is illegitimate in QT and is equivalent to calling
 // setParent(NULL). Find another way to do it if we really need a parent.
-RoomThread3v3::RoomThread3v3(Room *room)
+RoomDriver3v3::RoomDriver3v3(Room *room)
 	:room(room)
-{}
+{
+	//setParent(room);
+}
 
-QStringList RoomThread3v3::getGeneralsWithoutExtension() const{
+QStringList RoomDriver3v3::getGeneralsWithoutExtension() const{
 	QList<const General *> generals;
 
 	const Package *stdpack = Bang->findChild<const Package *>("Standard");
@@ -51,7 +53,7 @@ QStringList RoomThread3v3::getGeneralsWithoutExtension() const{
 	return general_names;
 }
 
-void RoomThread3v3::run()
+void RoomDriver3v3::run()
 {
 	// initialize the random seed for this thread
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -106,7 +108,7 @@ void RoomThread3v3::run()
 	room->sem->acquire(2);
 }
 
-void RoomThread3v3::askForTakeGeneral(ServerPlayer *player){
+void RoomDriver3v3::askForTakeGeneral(ServerPlayer *player){
 	QString name;
 	if(general_names.length() == 1 || player->getState() != "online")
 		name = GeneralSelector::GetInstance()->select3v3(player, general_names);
@@ -114,14 +116,14 @@ void RoomThread3v3::askForTakeGeneral(ServerPlayer *player){
 	if(name.isNull()){
 		player->notify(BP::AskForGeneral3v3);
 	}else{
-		msleep(1000);
+		QThread::currentThread()->msleep(1000);
 		takeGeneral(player, name);
 	}
 
 	room->sem->acquire();
 }
 
-void RoomThread3v3::takeGeneral(ServerPlayer *player, const QString &name){
+void RoomDriver3v3::takeGeneral(ServerPlayer *player, const QString &name){
 	general_names.removeOne(name);
 	player->addToSelected(name);
 
@@ -131,7 +133,7 @@ void RoomThread3v3::takeGeneral(ServerPlayer *player, const QString &name){
 	room->sem->release();
 }
 
-void RoomThread3v3::startArrange(ServerPlayer *player){
+void RoomDriver3v3::startArrange(ServerPlayer *player){
 	if(!player->isOnline()){
 		GeneralSelector *selector = GeneralSelector::GetInstance();
 		arrange(player, selector->arrange3v3(player));
@@ -140,7 +142,7 @@ void RoomThread3v3::startArrange(ServerPlayer *player){
 	}
 }
 
-void RoomThread3v3::arrange(ServerPlayer *player, const QStringList &arranged){
+void RoomDriver3v3::arrange(ServerPlayer *player, const QStringList &arranged){
 	Q_ASSERT(arranged.length() == 3);
 
 	if(player->isLord()){
@@ -162,7 +164,7 @@ void RoomThread3v3::arrange(ServerPlayer *player, const QStringList &arranged){
 	room->sem->release();
 }
 
-void RoomThread3v3::assignRoles(const QStringList &roles, const QString &scheme){
+void RoomDriver3v3::assignRoles(const QStringList &roles, const QString &scheme){
 	QStringList all_roles = roles;
 	QStringList roleChoices = all_roles;
 	roleChoices.removeDuplicates();
@@ -210,7 +212,7 @@ void RoomThread3v3::assignRoles(const QStringList &roles, const QString &scheme)
 // Normal: choose team1 or team2
 // Random: assign role randomly
 // AllRoles: select roles directly
-void RoomThread3v3::assignRoles(const QString &scheme){
+void RoomDriver3v3::assignRoles(const QString &scheme){
 	QStringList roles;
 	roles << "lord" << "loyalist" << "rebel"
 			<< "renegade"  << "rebel" << "loyalist";

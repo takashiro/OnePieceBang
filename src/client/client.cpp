@@ -3,7 +3,7 @@
 #include "engine.h"
 #include "standard.h"
 #include "choosegeneraldialog.h"
-#include "nativesocket.h"
+#include "socket.h"
 #include "recorder.h"
 
 #include <QApplication>
@@ -145,13 +145,14 @@ Client::Client(QObject *parent, const QString &filename)
 		replayer = new Replayer(this, filename);
 		connect(replayer, SIGNAL(command_parsed(QString)), this, SLOT(processServerPacket(QString)));
 	}else{
-		socket = new NativeClientSocket;
+		socket = new ClientSocket;
 		socket->setParent(this);
+		socket->listen();
 
 		recorder = new Recorder(this);
 
-		connect(socket, SIGNAL(message_got(char*)), recorder, SLOT(record(char*)));
-		connect(socket, SIGNAL(message_got(char*)), this, SLOT(processServerPacket(char*)));
+		connect(socket, SIGNAL(message_got(QByteArray)), recorder, SLOT(record(QByteArray)));
+		connect(socket, SIGNAL(message_got(QByteArray)), this, SLOT(processServerPacket(QByteArray)));
 		connect(socket, SIGNAL(error_message(QString)), this, SIGNAL(error_message(QString)));
 		socket->connectToHost();
 
@@ -257,10 +258,10 @@ void Client::disconnectFromHost(){
 typedef char buffer_t[1024];
 
 void Client::processServerPacket(const QString &cmd){
-	processServerPacket(cmd.toUtf8().data());
+	processServerPacket(cmd.toUtf8());
 }
 
-void Client::processServerPacket(char *cmd){
+void Client::processServerPacket(const QByteArray &cmd){
 	if(is_game_over) return;
 
 	BP::Packet packet;
@@ -276,7 +277,7 @@ void Client::processServerPacket(char *cmd){
 			processServerRequest(packet);
 		}
 	}else{
-		QMessageBox::warning(NULL, tr("Warning"), tr("Invalid packet received by client:%1").arg(cmd));
+		QMessageBox::warning(NULL, tr("Warning"), tr("Invalid packet received by client:%1").arg(QString::fromUtf8(cmd)));
 	}
 }
 

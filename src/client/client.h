@@ -248,7 +248,7 @@ private:
 
 private slots:
 	void processServerPacket(const QString &cmd);
-	void processServerPacket(char *cmd);
+	void processServerPacket(const QByteArray &cmd);
 	bool processServerRequest(const BP::Packet &packet);
 	void notifyRoleChange(const QString &new_role);
 	void onPlayerChooseSuit();

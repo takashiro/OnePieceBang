@@ -1,4 +1,4 @@
-#include "nativesocket.h"
+#include "socket.h"
 #include "settings.h"
 
 #include <QTcpSocket>
@@ -7,7 +7,7 @@
 #include <QUdpSocket>
 #include <QDebug>
 
-NativeServerSocket::NativeServerSocket()
+ServerSocket::ServerSocket()
 {
 	server = new QTcpServer(this);
 	daemon = NULL;
@@ -15,18 +15,18 @@ NativeServerSocket::NativeServerSocket()
 	connect(server, SIGNAL(newConnection()), this, SLOT(processNewConnection()));
 }
 
-bool NativeServerSocket::listen(){
+bool ServerSocket::listen(){
 	return server->listen(QHostAddress::Any, Config.ServerPort);
 }
 
-void NativeServerSocket::daemonize(){
+void ServerSocket::daemonize(){
 	daemon = new QUdpSocket(this);
 	daemon->bind(Config.ServerPort, QUdpSocket::ShareAddress);
 
 	connect(daemon, SIGNAL(readyRead()), this, SLOT(processNewDatagram()));
 }
 
-void NativeServerSocket::processNewDatagram(){
+void ServerSocket::processNewDatagram(){
 	while(daemon->hasPendingDatagrams()){
 		QHostAddress from;
 		char ask_str[256];
@@ -38,36 +38,35 @@ void NativeServerSocket::processNewDatagram(){
 	}
 }
 
-void NativeServerSocket::processNewConnection(){
+void ServerSocket::processNewConnection(){
 	QTcpSocket *socket = server->nextPendingConnection();
-	NativeClientSocket *connection = new NativeClientSocket(socket);
+	ClientSocket *connection = new ClientSocket(socket);
 	emit new_connection(connection);
 }
 
 // ---------------------------------
 
-NativeClientSocket::NativeClientSocket()
+ClientSocket::ClientSocket()
 	:socket(new QTcpSocket(this))
 {
 	init();
 }
 
-NativeClientSocket::NativeClientSocket(QTcpSocket *socket)
+ClientSocket::ClientSocket(QTcpSocket *socket)
 	:socket(socket)
 {
 	socket->setParent(this);
 	init();
 }
 
-void NativeClientSocket::init(){
+void ClientSocket::init(){
 	connect(socket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
-	connect(socket, SIGNAL(readyRead()), this, SLOT(getMessage()));
-	connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
-			this, SLOT(raiseError(QAbstractSocket::SocketError)));
+	connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(raiseError(QAbstractSocket::SocketError)));
+	connect(socket, SIGNAL(readyRead()), this, SIGNAL(readyRead()));
 	connect(socket, SIGNAL(connected()), this, SIGNAL(connected()));
 }
 
-void NativeClientSocket::connectToHost(){
+void ClientSocket::connectToHost(){
 	QString address = "127.0.0.1";
 	ushort port = 9527u;
 
@@ -84,35 +83,45 @@ void NativeClientSocket::connectToHost(){
 	socket->connectToHost(address, port);
 }
 
-void NativeClientSocket::getMessage(){
+void ClientSocket::getMessage(){
 	while(socket->canReadLine()){
-		buffer_t msg;
-		socket->readLine(msg, sizeof(msg));
+		QByteArray msg = socket->readLine();
+		if(msg.endsWith("\n")){
+			msg.chop(1);
+		}
 
+#ifndef QT_NO_DEBUG
+		if(!this->parent() || !this->parent()->inherits("Client")){
+			qDebug() << this << this->parent() << msg;
+		}
+#endif
 		emit message_got(msg);
 	}
 }
 
-void NativeClientSocket::disconnectFromHost(){
+void ClientSocket::disconnectFromHost(){
 	socket->disconnectFromHost();
 }
 
-void NativeClientSocket::send(const QByteArray &raw_message){
+void ClientSocket::listen(){
+	connect(socket, SIGNAL(readyRead()), this, SLOT(getMessage()));
+}
+
+void ClientSocket::send(const QByteArray &raw_message){
 	socket->write(raw_message);
 	socket->write("\n");
 }
 
-void NativeClientSocket::send(const BP::Packet &packet){
+void ClientSocket::send(const BP::Packet &packet){
 	socket->write(packet.toUtf8());
 	socket->write("\n");
 }
 
-bool NativeClientSocket::isConnected() const{
+bool ClientSocket::isConnected() const{
 	return socket->state() == QTcpSocket::ConnectedState;
 }
 
-
-QString NativeClientSocket::peerName() const{
+QString ClientSocket::peerName() const{
 	QString peer_name = socket->peerName();
 	if(peer_name.isEmpty())
 		peer_name = QString("%1:%2").arg(socket->peerAddress().toString()).arg(socket->peerPort());
@@ -120,11 +129,19 @@ QString NativeClientSocket::peerName() const{
 	return peer_name;
 }
 
-QString NativeClientSocket::peerAddress() const{
+QString ClientSocket::peerAddress() const{
 	return socket->peerAddress().toString();
 }
 
-void NativeClientSocket::raiseError(QAbstractSocket::SocketError socket_error){
+QByteArray ClientSocket::readLine(qint64 len){
+	return socket->readLine(len);
+}
+
+bool ClientSocket::canReadLine() const{
+	return socket->canReadLine();
+}
+
+void ClientSocket::raiseError(QAbstractSocket::SocketError socket_error){
 	// translate error message
 	QString reason;
 	switch(socket_error){

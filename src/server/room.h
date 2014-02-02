@@ -3,31 +3,33 @@
 
 class TriggerSkill;
 class Scenario;
-class RoomThread3v3;
-class RoomThread1v1;
+class RoomDriver3v3;
+class RoomDriver1v1;
 class TrickCard;
 
 struct lua_State;
 struct LogMessage;
 
 #include "serverplayer.h"
-#include "roomthread.h"
+#include "roomdriver.h"
 #include "protocol.h"
 #include <qmutex.h>
+
+class Server;
 
 class Room : public QThread{
 	Q_OBJECT
 
 public:
-	friend class RoomThread;
-	friend class RoomThread3v3;
-	friend class RoomThread1v1;
+	friend class RoomDriver;
+	friend class RoomDriver3v3;
+	friend class RoomDriver1v1;
 
 	typedef void (Room::*Callback)(ServerPlayer *, const QString &);
 	typedef void (Room::*CallBack)(ServerPlayer *, const QJsonValue &);
 	typedef bool (Room::*ResponseVerifyFunction)(ServerPlayer*, const QJsonValue&, void*);
 
-	explicit Room(QObject *parent, const QString &mode);
+	explicit Room(Server *server, const QString &mode);
 	~Room();
 	ServerPlayer *addSocket(ClientSocket *socket);
 	bool isFull() const;
@@ -35,7 +37,8 @@ public:
 	int getLack() const;
 	QString getMode() const;
 	const Scenario *getScenario() const;
-	RoomThread *getThread() const;
+	Server *getServer() const;
+	RoomDriver *getDriver() const;
 	void playSkillEffect(const QString &skill_name, int index = -1) const;
 	void broadcastSkillInvoked(ServerPlayer *player, const QString &skill_name) const;
 	ServerPlayer *getCurrent() const;
@@ -281,8 +284,8 @@ public:
 	void startTest(const QString &to_test);
 	void networkDelayTestCommand(ServerPlayer *player, const QJsonValue &);
 
-protected:
-	virtual void run();
+protected slots:
+	void run();
 
 private:
 	struct _MoveSourceClassifier
@@ -329,9 +332,10 @@ private:
 	lua_State *L;
 	QList<AI *> ais;
 
-	RoomThread *thread;
-	RoomThread3v3 *thread_3v3;
-	RoomThread1v1 *thread_1v1;
+	Server *server;
+	RoomDriver *driver;
+	RoomDriver3v3 *driver_3v3;
+	RoomDriver1v1 *driver_1v1;
 	QSemaphore *sem; // Legacy semaphore, expected to be reomved after new synchronization is fully deployed.
 	QSemaphore sem_race_request; // When race starts, server waits on his semaphore for the first replier
 	QSemaphore sem_room_mutex; // Provide per-room  (rather than per-player) level protection of any shared variables
@@ -394,8 +398,8 @@ private:
 	void _setupChooseGeneralRequestArgs(ServerPlayer *player);    
 
 private slots:
+	void processClientPacket(const QByteArray &packet);
 	void reportDisconnection();
-	void processClientPacket(const QString &packet);
 	void assignRoles();
 	void startGame();
 

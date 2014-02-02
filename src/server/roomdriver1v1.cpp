@@ -1,4 +1,4 @@
-#include "roomthread1v1.h"
+#include "roomdriver1v1.h"
 #include "room.h"
 #include "engine.h"
 #include "settings.h"
@@ -6,13 +6,13 @@
 
 #include <QDateTime>
 
-//@todo: setParent here is illegitimate in QT and is equivalent to calling
-// setParent(NULL). Find another way to do it if we really need a parent.
-RoomThread1v1::RoomThread1v1(Room *room)
+RoomDriver1v1::RoomDriver1v1(Room *room)
 	:room(room)
-{}
+{
+	//setParent(room);
+}
 
-void RoomThread1v1::run(){
+void RoomDriver1v1::run(){
 
 	// initialize the random seed for this thread
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -51,7 +51,7 @@ void RoomThread1v1::run(){
 	room->sem->acquire(2);
 }
 
-void RoomThread1v1::askForTakeGeneral(ServerPlayer *player){
+void RoomDriver1v1::askForTakeGeneral(ServerPlayer *player){
 	QString name;
 	if(general_names.length() == 1)
 		name = general_names.first();
@@ -63,14 +63,14 @@ void RoomThread1v1::askForTakeGeneral(ServerPlayer *player){
 	if(name.isNull()){
 		player->notify(BP::AskForGeneral1v1);
 	}else{
-		msleep(1000);
+		QThread::currentThread()->msleep(1000);
 		takeGeneral(player, name);
 	}
 
 	room->sem->acquire();
 }
 
-void RoomThread1v1::takeGeneral(ServerPlayer *player, const QString &name){
+void RoomDriver1v1::takeGeneral(ServerPlayer *player, const QString &name){
 	QString group = player->isLord() ? "warm" : "cool";
 	QJsonArray group_data = BP::toJsonArray(group, name);
 	room->broadcastNotification(BP::TakeGeneral, group_data, player);
@@ -95,7 +95,7 @@ void RoomThread1v1::takeGeneral(ServerPlayer *player, const QString &name){
 	room->sem->release();
 }
 
-void RoomThread1v1::startArrange(ServerPlayer *player){
+void RoomDriver1v1::startArrange(ServerPlayer *player){
 	if(player->getState() != "online"){
 		GeneralSelector *selector = GeneralSelector::GetInstance();
 		arrange(player, selector->arrange1v1(player));
@@ -104,7 +104,7 @@ void RoomThread1v1::startArrange(ServerPlayer *player){
 	}
 }
 
-void RoomThread1v1::arrange(ServerPlayer *player, const QStringList &arranged){
+void RoomDriver1v1::arrange(ServerPlayer *player, const QStringList &arranged){
 	Q_ASSERT(arranged.length() == 3);
 
 	QStringList left = arranged.mid(1, 2);

@@ -62,9 +62,6 @@ SOURCES += \
         src/server/gamerule.cpp \
         src/server/generalselector.cpp \
         src/server/room.cpp \
-        src/server/roomthread.cpp \
-        src/server/roomthread1v1.cpp \
-        src/server/roomthread3v3.cpp \
         src/server/server.cpp \
         src/server/serverplayer.cpp \
         src/ui/button.cpp \
@@ -84,7 +81,6 @@ SOURCES += \
         src/ui/startscene.cpp \
         src/ui/window.cpp \
         src/util/detector.cpp \
-        src/util/nativesocket.cpp \
         src/util/recorder.cpp \
         src/lua/print.c \
         src/lua/lzio.c \
@@ -127,7 +123,11 @@ SOURCES += \
     src/package/skypiea.cpp \
     src/ui/commonpiles.cpp \
     src/ui/generalcardcontainer.cpp \
-    src/ui/timedprogressbar.cpp
+    src/ui/timedprogressbar.cpp \
+    src/server/roomdriver.cpp \
+    src/server/roomdriver1v1.cpp \
+    src/server/roomdriver3v3.cpp \
+    src/util/socket.cpp
 HEADERS += \
         src/client/aux-skills.h \
         src/client/client.h \
@@ -175,9 +175,6 @@ HEADERS += \
         src/server/gamerule.h \
         src/server/generalselector.h \
         src/server/room.h \
-        src/server/roomthread.h \
-        src/server/roomthread1v1.h \
-        src/server/roomthread3v3.h \
         src/server/server.h \
         src/server/serverplayer.h \
         src/ui/button.h \
@@ -198,7 +195,6 @@ HEADERS += \
         src/ui/TimedProgressBar.h \
         src/ui/window.h \
         src/util/detector.h \
-        src/util/nativesocket.h \
         src/util/recorder.h \
         src/util/socket.h \
         src/lua/lzio.h \
@@ -234,7 +230,10 @@ HEADERS += \
     src/package/summitwar.h \
     src/package/skypiea.h \
     src/ui/generalcardcontainer.h \
-    src/ui/commonpiles.h
+    src/ui/commonpiles.h \
+    src/server/roomdriver.h \
+    src/server/roomdriver1v1.h \
+    src/server/roomdriver3v3.h
 
 FORMS += \
         src/dialog/cardoverview.ui \
@@ -253,7 +252,6 @@ INCLUDEPATH += src/server
 INCLUDEPATH += src/ui
 INCLUDEPATH += src/util
 INCLUDEPATH += src/lua
-INCLUDEPATH += src/jsoncpp/include
 
 win32{
         RC_FILE += resource/icon.rc

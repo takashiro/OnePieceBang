@@ -14,9 +14,9 @@ Recorder::Recorder(QObject *parent)
 	watch.start();
 }
 
-void Recorder::record(char *line)
+void Recorder::record(const QByteArray &line)
 {
-	recordLine(line);
+	recordLine(QString::fromUtf8(line));
 }
 
 void Recorder::recordLine(const QString &line){

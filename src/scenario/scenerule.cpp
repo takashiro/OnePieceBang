@@ -58,7 +58,7 @@ public:
 
 		if(player == room->getCurrent() && event == PhaseChange){
 			if(player->getPhase() == Player::Start){
-				room->getThread()->delay();
+				room->getDriver()->delay();
 				if(room->getTag("SceneTurnLeft").toInt() != 4) player->skip(Player::Judge);
 				if(room->getTag("SceneTurnLeft").toInt() != 3) player->skip(Player::Draw);
 				if(room->getTag("SceneTurnLeft").toInt() != 2) player->skip(Player::Play);
@@ -134,7 +134,7 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
 			room->setTag("SceneID", 0);
 			room->setTag("SceneTurnLeft", 0);
 			room->setTag("NextSceneID", 0);
-			room->getThread()->addTriggerSkill(new Scene26Effect("#scene_26_effect"));
+			room->getDriver()->addTriggerSkill(new Scene26Effect("#scene_26_effect"));
 		}
 		break;
 
@@ -166,7 +166,7 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
 					for(int i = 0; i < prevp.count(); i++){
 						if(cardToMove[i]){
 							room->moveCardTo(cardToMove[i], prevp[i], Player::HandArea, false);
-							room->getThread()->delay();
+							room->getDriver()->delay();
 						}
 					}
 
@@ -198,7 +198,7 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
 				logMsg.arg2 = QString("Scene%1Effect").arg(room->getTag("NextSceneID").toInt());
 				room->sendLog(logMsg);
 
-				room->getThread()->delay();
+				room->getDriver()->delay();
 
 				switch(room->getTag("SceneID").toInt()) {
 				case 1:
@@ -237,7 +237,7 @@ bool SceneRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data
 					for(int i = 0; i < prevp.count(); i++){
 						if(cardToMove[i]){
 							room->moveCardTo(cardToMove[i], prevp[i], Player::HandArea, false);
-							room->getThread()->delay();
+							room->getDriver()->delay();
 						}
 					}
 

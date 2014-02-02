@@ -1,5 +1,5 @@
-#ifndef ROOMTHREAD3V3_H
-#define ROOMTHREAD3V3_H
+#ifndef ROOMDRIVER3V3_H
+#define ROOMDRIVER3V3_H
 
 class Room;
 
@@ -8,18 +8,18 @@ class Room;
 
 #include "serverplayer.h"
 
-class RoomThread3v3 : public QThread
+class RoomDriver3v3 : public QThread
 {
 	Q_OBJECT
 
 public:
-	explicit RoomThread3v3(Room *room);
+	explicit RoomDriver3v3(Room *room);
 	void takeGeneral(ServerPlayer *player, const QString &name);
 	void arrange(ServerPlayer *player, const QStringList &arranged);
 	void assignRoles(const QString &scheme);
 
 protected:
-	virtual void run();
+	void run();
 
 private:
 	Room *room;

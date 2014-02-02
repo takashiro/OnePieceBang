@@ -155,13 +155,13 @@ private:
 	QJsonValue client_response_data;
 
 private slots:
-	void getMessage(char *message);
-	void castMessage(const QString &message);
+	void getMessage(QByteArray message);
 
 signals:
 	void disconnected();
-	void request_got(const QString &request);
-	void message_cast(const QString &message) const;
+	void request_got(const QByteArray &request);
+	void packet_cast(const BP::Packet &packet) const;
+	void message_cast(const QByteArray &raw_message) const;
 };
 
 #endif // SERVERPLAYER_H

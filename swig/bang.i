@@ -763,9 +763,9 @@ struct LogMessage{
 	QString arg2;
 };
 
-class RoomThread : public QThread{
+class RoomDriver : public QThread{
 public:
-	explicit RoomThread(Room *room);
+	explicit RoomDriver(Room *room);
 	void constructTriggerTable();
 	bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data);
 	bool trigger(TriggerEvent event, ServerPlayer *target);
@@ -780,14 +780,14 @@ public:
 
 class Room : public QThread{
 public:
-	explicit Room(QObject *parent, const char *mode);
+	explicit Room(Server *server, const char *mode);
 	ServerPlayer *addSocket(ClientSocket *socket);
 	bool isFull() const;
 	bool isFinished() const;
 	int getLack() const;
 	QString getMode() const;
 	const Scenario *getScenario() const;
-	RoomThread *getThread() const;
+	RoomDriver *getDriver() const;
 	void playSkillEffect(const char *skill_name, int index = -1);
 	ServerPlayer *getCurrent() const;
 	void setCurrent(ServerPlayer *current);

@@ -56,7 +56,7 @@ void GameRule::onPhaseChange(ServerPlayer *player) const{
 					num = 1;
 			}
 
-			room->getThread()->trigger(DrawNCards, player, num);
+			room->getDriver()->trigger(DrawNCards, player, num);
 			int n = num.toInt();
 			if(n > 0)
 				player->drawCards(n, false);
@@ -124,7 +124,7 @@ void GameRule::onPhaseChange(ServerPlayer *player) const{
 
 			player->clearFlags();
 			player->clearHistory();
-			room->getThread()->delay(Config.AIDelay);
+			room->getDriver()->delay(Config.AIDelay);
 			return;
 		}
 	}
@@ -202,17 +202,17 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 
 	case CardUsed:{
 		if(data.canConvert<CardUseStruct>()){
-			RoomThread *thread = room->getThread();
+			RoomDriver *driver = room->getDriver();
 			CardUseStruct card_use = data.value<CardUseStruct>();
 
-			thread->trigger(TargetSelect, card_use.from, data);
+			driver->trigger(TargetSelect, card_use.from, data);
 			foreach(ServerPlayer *target, card_use.to){
-				thread->trigger(TargetSelected, target, data);
+				driver->trigger(TargetSelected, target, data);
 			}
 
-			thread->trigger(TargetConfirm, card_use.from, data);
+			driver->trigger(TargetConfirm, card_use.from, data);
 			foreach(ServerPlayer *target, card_use.to){
-				thread->trigger(TargetConfirmed, target, data);
+				driver->trigger(TargetConfirmed, target, data);
 			}
 
 			card_use = data.value<CardUseStruct>();
@@ -287,7 +287,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 		log.arg = QString::number(1 - player->getHp());
 		room->sendLog(log);
 
-		RoomThread *thread = room->getThread();
+		RoomDriver *thread = room->getDriver();
 		foreach(ServerPlayer *saver, dying.savers){
 			if(player->getHp() > 0)
 				break;
@@ -422,7 +422,7 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 		SlashEffectStruct effect = data.value<SlashEffectStruct>();
 
 		QVariant data = QVariant::fromValue(effect);
-		room->getThread()->trigger(SlashProceed, effect.from, data);
+		room->getDriver()->trigger(SlashProceed, effect.from, data);
 
 		break;
 	}
@@ -882,7 +882,7 @@ void BasaraMode::askForGeneralRevealed(ServerPlayer *player) const{
 		QString general_name = room->askForGeneral(player,names);
 
 		showGeneral(player,general_name);
-		if(Config.EnableHegemony)room->getThread()->trigger(GameOverJudge, player);
+		if(Config.EnableHegemony)room->getDriver()->trigger(GameOverJudge, player);
 		askForGeneralRevealed(player);
 	}
 }

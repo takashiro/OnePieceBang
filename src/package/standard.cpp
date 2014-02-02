@@ -74,7 +74,7 @@ void EquipCard::onUse(Room *room, const CardUseStruct &card_use) const{
 		ServerPlayer *player = card_use.from;
 
 		QVariant data = QVariant::fromValue(card_use);
-		RoomThread *thread = room->getThread();
+		RoomDriver *thread = room->getDriver();
 		thread->trigger(CardUsed, player, data);
 
 		thread->trigger(CardFinished, player, data);
@@ -121,7 +121,7 @@ void EquipCard::onInstall(ServerPlayer *player) const{
 	Room *room = player->getRoom();
 
 	if(skill)
-		room->getThread()->addTriggerSkill(skill);
+		room->getDriver()->addTriggerSkill(skill);
 }
 
 void EquipCard::onUninstall(ServerPlayer *player) const{

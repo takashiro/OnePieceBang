@@ -1001,7 +1001,7 @@ void Tornado::takeEffect(ServerPlayer *target) const{
 	room->broadcastNotification(BP::Animate, BP::toJsonArray("tornado", target->objectName()));
 	room->broadcastNotification(BP::PlayAudio, QString("tornado"));
 
-	room->getThread()->delay();
+	room->getDriver()->delay();
 }
 
 // EX cards

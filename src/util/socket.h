@@ -6,38 +6,66 @@
 #include <QTcpServer>
 #include "protocol.h"
 
+class QUdpSocket;
 class ClientSocket;
 
 class ServerSocket: public QObject{
 	Q_OBJECT
 
 public:
-	virtual bool listen() = 0;
-	virtual void daemonize() = 0;
+	ServerSocket();
+
+	bool listen();
+	void daemonize();
+
+private slots:
+	void processNewConnection();
+	void processNewDatagram();
+
+private:
+	QTcpServer *server;
+	QUdpSocket *daemon;
 
 signals:
 	void new_connection(ClientSocket *connection);
 };
 
+
 class ClientSocket: public QObject{
 	Q_OBJECT
 
 public:
-	virtual void connectToHost() = 0;
-	virtual void disconnectFromHost() = 0;
-	virtual void send(const QByteArray &raw_message) = 0;
-	virtual void send(const BP::Packet &packet) = 0;
-	virtual bool isConnected() const = 0;
-	virtual QString peerName() const = 0;
-	virtual QString peerAddress() const = 0;
+	ClientSocket();
+	ClientSocket(QTcpSocket *socket);
+
+	void connectToHost();
+	void disconnectFromHost();
+	bool isConnected() const;
+	QString peerName() const;
+	QString peerAddress() const;
+	QByteArray readLine(qint64 len = 0);
+	bool canReadLine() const;
+
+public slots:
+	void send(const QByteArray &raw_message);
+	void send(const BP::Packet &packet);
+	void listen();
+
+private slots:
+	void getMessage();
+	void raiseError(QAbstractSocket::SocketError socket_error);
+
+private:
+	QTcpSocket * const socket;
+
+	void init();
 
 signals:
-	void message_got(char *msg);
+	void message_got(QByteArray msg);
 	void error_message(const QString &msg);
 	void disconnected();
 	void connected();
+	void readyRead();
 };
-
-typedef char buffer_t[1024];
 
 #endif // SOCKET_H

@@ -165,9 +165,11 @@ private:
 	GameRule *basara_mode;
 	GameRule *scene_rule;
 
+	void processRequest(ClientSocket *socket, const QByteArray &request);
+
 private slots:
 	void processNewConnection(ClientSocket *socket);
-	void processRequest(char *request);
+	void processRequest();
 	void cleanup();
 	void gameOver();
 

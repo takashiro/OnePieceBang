@@ -389,13 +389,13 @@
     <CustomBuild Include="..\..\src\server\room.h">
       <Filter>server</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\src\server\roomthread.h">
+    <CustomBuild Include="..\..\src\server\roomdriver.h">
       <Filter>server</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\src\server\roomthread1v1.h">
+    <CustomBuild Include="..\..\src\server\roomdriver1v1.h">
       <Filter>server</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\src\server\roomthread3v3.h">
+    <CustomBuild Include="..\..\src\server\roomdriver3v3.h">
       <Filter>server</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\src\server\server.h">

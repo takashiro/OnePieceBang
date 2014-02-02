@@ -1,4 +1,4 @@
-#include "roomthread.h"
+#include "roomdriver.h"
 #include "room.h"
 #include "engine.h"
 #include "server.h"
@@ -179,14 +179,13 @@ QString EventTriplet::toString() const{
 			.arg(data->toString()).arg(data->typeName());
 }
 
-//@todo: setParent here is illegitimate in QT and is equivalent to calling
-// setParent(NULL). Find another way to do it if we really need a parent.
-RoomThread::RoomThread(Room *room)
+RoomDriver::RoomDriver(Room *room)
 	:room(room)
 {
+	//setParent(room);
 }
 
-void RoomThread::addPlayerSkills(ServerPlayer *player, bool invoke_game_start){
+void RoomDriver::addPlayerSkills(ServerPlayer *player, bool invoke_game_start){
 	QVariant void_data;
 
 	foreach(const TriggerSkill *skill, player->getTriggerSkills()){
@@ -197,13 +196,13 @@ void RoomThread::addPlayerSkills(ServerPlayer *player, bool invoke_game_start){
 	}
 }
 
-void RoomThread::constructTriggerTable(){
+void RoomDriver::constructTriggerTable(){
 	foreach(ServerPlayer *player, room->getPlayers()){
 		addPlayerSkills(player, true);
 	}
 }
 
-void RoomThread::run3v3(){
+void RoomDriver::run3v3(){
 	QList<ServerPlayer *> warm, cool;
 	foreach(ServerPlayer *player, room->m_players){
 		switch(player->getRoleEnum()){
@@ -254,7 +253,7 @@ void RoomThread::run3v3(){
 	}
 }
 
-void RoomThread::action3v3(ServerPlayer *player){
+void RoomDriver::action3v3(ServerPlayer *player){
 	room->setCurrent(player);
 	trigger(TurnStart, room->getCurrent());
 	room->setPlayerFlag(player, "actioned");
@@ -274,10 +273,10 @@ void RoomThread::action3v3(ServerPlayer *player){
 	}
 }
 
-void RoomThread::run(){
+void RoomDriver::run(){
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 	
-	Server *server = qobject_cast<Server *>(room->parent());
+	Server *server = room->getServer();
 
 	const GameRule *game_rule;
 	if(room->getMode() == "04_1v3")
@@ -379,7 +378,7 @@ static bool CompareByPriority(const TriggerSkill *a, const TriggerSkill *b){
 	return a->getPriority() > b->getPriority();
 }
 
-bool RoomThread::trigger(TriggerEvent event, ServerPlayer *target, QVariant &data){
+bool RoomDriver::trigger(TriggerEvent event, ServerPlayer *target, QVariant &data){
 	// Q_ASSERT(QThread::currentThread() == this);
 
 	// push it to event stack
@@ -407,16 +406,16 @@ bool RoomThread::trigger(TriggerEvent event, ServerPlayer *target, QVariant &dat
 	return broken;
 }
 
-const QList<EventTriplet> *RoomThread::getEventStack() const{
+const QList<EventTriplet> *RoomDriver::getEventStack() const{
 	return &event_stack;
 }
 
-bool RoomThread::trigger(TriggerEvent event, ServerPlayer *target){
+bool RoomDriver::trigger(TriggerEvent event, ServerPlayer *target){
 	QVariant data;
 	return trigger(event, target, data);
 }
 
-void RoomThread::addTriggerSkill(const TriggerSkill *skill){
+void RoomDriver::addTriggerSkill(const TriggerSkill *skill){
 	if(skillSet.contains(skill))
 		return;
 
@@ -438,7 +437,7 @@ void RoomThread::addTriggerSkill(const TriggerSkill *skill){
 	}
 }
 
-void RoomThread::delay(unsigned long secs){
+void RoomDriver::delay(unsigned long secs){
 	if(room->property("to_test").toString().isEmpty()&& Config.AIDelay>0)
 		msleep(secs);
 }

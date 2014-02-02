@@ -1,5 +1,5 @@
-#ifndef ROOMTHREAD_H
-#define ROOMTHREAD_H
+#ifndef ROOMDRIVER_H
+#define ROOMDRIVER_H
 
 #include <QThread>
 #include <QSemaphore>
@@ -33,11 +33,11 @@ private:
 	QVariant *data;
 };
 
-class RoomThread : public QThread{
+class RoomDriver : public QThread{
 	Q_OBJECT
 
 public:
-	explicit RoomThread(Room *room);
+	explicit RoomDriver(Room *room);
 	void constructTriggerTable();
 	bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data);
 	bool trigger(TriggerEvent event, ServerPlayer *target);
@@ -52,7 +52,7 @@ public:
 	const QList<EventTriplet> *getEventStack() const;
 
 protected:
-	virtual void run();
+	void run();
 
 private:
 	Room *room;

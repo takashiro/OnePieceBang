@@ -18,7 +18,7 @@ public:
 		Room *room = player->getRoom();
 
 		room->setPlayerProperty(player, "general2", "zombie");
-		room->getThread()->addPlayerSkills(player, false);
+		room->getDriver()->addPlayerSkills(player, false);
 
 		int maxhp = killer ? (killer->getMaxHp() + 1)/2 : 5;
 		room->setPlayerProperty(player, "maxhp", maxhp);
@@ -141,7 +141,7 @@ public:
 					room->setPlayerProperty(player,"role","rebel");
 					room->revivePlayer(player);
 					player->drawCards(5);
-					room->getThread()->delay();
+					room->getDriver()->delay();
 				}
 			}
 

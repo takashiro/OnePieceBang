@@ -7,6 +7,7 @@
 #include "recorder.h"
 #include "banpair.h"
 #include "lua-wrapper.h"
+#include "server.h"
 
 const int ServerPlayer::S_NUM_SEMAPHORES = 6;
 
@@ -184,9 +185,10 @@ int ServerPlayer::getHandcardNum() const{
 void ServerPlayer::setSocket(ClientSocket *socket){
 	if(socket){
 		connect(socket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
-		connect(socket, SIGNAL(message_got(char*)), this, SLOT(getMessage(char*)));
-
-		connect(this, SIGNAL(message_cast(QString)), this, SLOT(castMessage(QString)));
+		connect(socket, SIGNAL(message_got(QByteArray)), this, SLOT(getMessage(QByteArray)));
+		connect(this, SIGNAL(message_cast(QByteArray)), socket, SLOT(send(QByteArray)));
+		connect(this, SIGNAL(packet_cast(BP::Packet)), socket, SLOT(send(BP::Packet)));
+		socket->listen();
 	}else{
 		if(this->socket){
 			this->disconnect(this->socket);
@@ -194,23 +196,20 @@ void ServerPlayer::setSocket(ClientSocket *socket){
 			this->socket->disconnectFromHost();
 			this->socket->deleteLater();
 		}
-
-		disconnect(this, SLOT(castMessage(QString)));
 	}
 
 	this->socket = socket;
 }
 
-void ServerPlayer::getMessage(char *message){
-	QString request = message;
-	if(request.endsWith("\n"))
-		request.chop(1);
+void ServerPlayer::getMessage(QByteArray message){
+	if(message.endsWith("\n"))
+		message.chop(1);
 
-	emit request_got(request);
+	emit request_got(message);
 }
 
 void ServerPlayer::unicast(const QString &message) const{
-	emit message_cast(message);
+	emit message_cast(message.toUtf8());
 
 	if(recorder)
 		recorder->recordLine(message);
@@ -291,16 +290,6 @@ QString ServerPlayer::findReasonable(const QStringList &generals, bool no_unreas
 
 void ServerPlayer::clearSelected(){
 	selected.clear();
-}
-
-void ServerPlayer::castMessage(const QString &message){
-	if(socket){
-		socket->send(message.toUtf8());
-
-#ifndef QT_NO_DEBUG
-		qDebug("%s: %s", qPrintable(objectName()), qPrintable(message));
-#endif
-	}
 }
 
 void ServerPlayer::notify(BP::CommandType command, const QJsonValue &arg) const{
@@ -541,7 +530,7 @@ bool ServerPlayer::pindian(ServerPlayer *target, const QString &reason, const Ca
 
 	PindianStar pindian_star = &pindian_struct;
 	QVariant data = QVariant::fromValue(pindian_star);
-	room->getThread()->trigger(Pindian, this, data);
+	room->getDriver()->trigger(Pindian, this, data);
 
 	bool success = pindian_star->from_card->getNumber() > pindian_star->to_card->getNumber();
 	log.type = success ? "#PindianSuccess" : "#PindianFailure";
@@ -569,7 +558,7 @@ void ServerPlayer::turnOver(){
 	log.arg = faceUp() ? "face_up" : "face_down";
 	room->sendLog(log);
 
-	room->getThread()->trigger(TurnedOver, this);
+	room->getDriver()->trigger(TurnedOver, this);
 }
 
 void ServerPlayer::play(QList<Player::Phase> set_phases){
@@ -593,7 +582,7 @@ void ServerPlayer::play(QList<Player::Phase> set_phases){
 		room->broadcastProperty(this, "phase");
 
 		QVariant data = QVariant::fromValue(phase_change);
-		room->getThread()->trigger(PhaseChange, this, data);
+		room->getDriver()->trigger(PhaseChange, this, data);
 
 		if(isDead() && phase != NotActive){
 			phases.clear();
@@ -924,7 +913,7 @@ void ServerPlayer::gainAnExtraTurn(ServerPlayer *clearflag){
 	room->removeTag("Zhichi");
 	if(clearflag)
 		clearflag->clearFlags();
-	room->getThread()->trigger(TurnStart, this);
+	room->getDriver()->trigger(TurnStart, this);
 	if(clearflag)
 		clearflag->clearHistory();
 	room->setCurrent(current);

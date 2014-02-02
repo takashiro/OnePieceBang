@@ -144,7 +144,7 @@ void Typhoon::takeEffect(ServerPlayer *target) const{
 				room->askForDiscard(player, objectName(), discard_num, discard_num);
 			}
 
-			room->getThread()->delay();
+			room->getDriver()->delay();
 		}
 	}
 }
@@ -175,7 +175,7 @@ void Earthquake::takeEffect(ServerPlayer *target) const{
 				player->throwAllEquips();
 			}
 
-			room->getThread()->delay();
+			room->getDriver()->delay();
 		}
 	}
 }
@@ -292,7 +292,7 @@ Monkey::Monkey(Card::Suit suit, int number)
 }
 
 void Monkey::onInstall(ServerPlayer *player) const{
-	player->getRoom()->getThread()->addTriggerSkill(grab_wine);
+	player->getRoom()->getDriver()->addTriggerSkill(grab_wine);
 }
 
 void Monkey::onUninstall(ServerPlayer *player) const{

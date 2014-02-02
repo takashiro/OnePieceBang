@@ -3,7 +3,7 @@
 
 #include "package.h"
 #include "card.h"
-#include "roomthread.h"
+#include "roomdriver.h"
 #include "skill.h"
 
 class StandardPackage:public Package{

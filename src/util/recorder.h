@@ -21,7 +21,7 @@ public:
 	void recordLine(const QString &line);
 
 public slots:
-	void record(char *line);
+	void record(const QByteArray &line);
 
 private:
 	QTime watch;

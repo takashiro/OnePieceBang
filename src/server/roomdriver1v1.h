@@ -1,5 +1,5 @@
-#ifndef ROOMTHREAD1V1_H
-#define ROOMTHREAD1V1_H
+#ifndef ROOMDRIVER1V1_H
+#define ROOMDRIVER1V1_H
 
 #include <QThread>
 #include <QStringList>
@@ -7,17 +7,17 @@
 class Room;
 class ServerPlayer;
 
-class RoomThread1v1 : public QThread
+class RoomDriver1v1 : public QThread
 {
 	Q_OBJECT
 
 public:
-	explicit RoomThread1v1(Room *room);
+	explicit RoomDriver1v1(Room *room);
 	void takeGeneral(ServerPlayer *player, const QString &name);
 	void arrange(ServerPlayer *player, const QStringList &arranged);
 
 protected:
-	virtual void run();
+	void run();
 
 private:
 	Room *room;
