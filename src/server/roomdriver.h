@@ -57,6 +57,9 @@ public:
 	const QList<EventTriplet> *getEventStack() const;
 	void start();
 
+private slots:
+	void quit();
+
 private:
 	Room *room;
 	QString order;
@@ -65,12 +68,13 @@ private:
 	RoomDriverController *controller;
 
 	QList<const TriggerSkill *> skill_table[NumOfEvents];
-	QSet<const TriggerSkill *> skillSet;
+	QSet<const TriggerSkill *> skill_set;
 
 	QList<EventTriplet> event_stack;
 
 signals:
 	void driver_start();
+	void driver_finished();
 };
 
 class RoomDriverController: public QObject{
@@ -85,6 +89,9 @@ public slots:
 private:
 	RoomDriver *driver;
 	Room *room;
+
+signals:
+	void game_finished();
 };
 
 #endif // ROOMTHREAD_H

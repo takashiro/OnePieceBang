@@ -116,6 +116,7 @@ private:
 	ConnectionDialog *connection_dialog;
 	ConfigDialog *config_dialog;
 	QSystemTrayIcon *systray;
+	Server *server;
 
 	void restoreFromConfig();
 
@@ -155,6 +156,9 @@ private slots:
 	void startGameInAnotherInstance();
 	void changeBackground();
 	void on_actionView_ban_list_triggered();
+
+signals:
+	void about_to_exit();
 };
 
 #endif // MAINWINDOW_H

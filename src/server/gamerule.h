@@ -3,7 +3,7 @@
 
 #include "skill.h"
 
-class GameRule : public TriggerSkill{
+class GameRule: public TriggerSkill{
 	Q_OBJECT
 
 public:
@@ -19,6 +19,17 @@ private:
 	void rewardAndPunish(ServerPlayer *killer, ServerPlayer *victim) const;
 	void changeGeneral1v1(ServerPlayer *player) const;
 	QString getWinner(ServerPlayer *victim) const;
+};
+
+class AbortGameRule: public TriggerSkill{
+	Q_OBJECT
+
+public:
+	AbortGameRule(QObject *parent);
+
+	int getPriority() const;
+	bool triggerable(const ServerPlayer *target) const;
+	bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &) const;
 };
 
 class HulaoPassMode: public GameRule{

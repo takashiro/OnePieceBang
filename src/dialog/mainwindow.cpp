@@ -104,6 +104,7 @@ MainWindow::MainWindow(QWidget *parent)
 	addAction(ui->actionMinimize_to_system_tray);
 
 	systray = NULL;
+	server = NULL;
 }
 
 void MainWindow::restoreFromConfig(){
@@ -127,16 +128,24 @@ void MainWindow::closeEvent(QCloseEvent *event){
 		systray->showMessage(windowTitle(), tr("Game is minimized"));
 		hide();
 		event->ignore();
+		return;
+	}
+
+	if(server){
+		if(!server->isReadyToClose()){
+			connect(server, SIGNAL(ready_to_close()), this, SLOT(close()));
+			emit about_to_exit();
+			event->ignore();
+			return;
+		}
 	}
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow(){
 	delete ui;
 }
 
-void MainWindow::gotoScene(QGraphicsScene *scene){
-	
+void MainWindow::gotoScene(QGraphicsScene *scene){	
 	if(this->scene)
 		this->scene->deleteLater();
 	this->scene = scene;
@@ -146,8 +155,7 @@ void MainWindow::gotoScene(QGraphicsScene *scene){
 	changeBackground();
 }
 
-void MainWindow::on_actionExit_triggered()
-{
+void MainWindow::on_actionExit_triggered(){
 	QMessageBox::StandardButton result;
 	result = QMessageBox::question(this,
 								   tr("OnePieceBang"),
@@ -168,9 +176,12 @@ void MainWindow::on_actionStart_Server_triggered()
 	Server *server = new Server(this);
 	if(!server->listen()){
 		QMessageBox::warning(this, tr("Warning"), tr("Can not start server!"));
-
+		delete server;
 		return;
 	}
+
+	this->server = server;
+	connect(this, SIGNAL(about_to_exit()), server, SIGNAL(about_to_stop()));
 
 	server->daemonize();
 
@@ -606,11 +617,14 @@ void MainWindow::on_actionPC_Console_Start_triggered()
 		return;
 
 	Server *server = new Server(this);
-	if(! server->listen()){
+	if(!server->listen()){
 		QMessageBox::warning(this, tr("Warning"), tr("Can not start server!"));
-
+		delete server;
 		return;
 	}
+
+	this->server = server;
+	connect(this, SIGNAL(about_to_exit()), server, SIGNAL(about_to_stop()));
 
 	Config.HostAddress = "127.0.0.1";
 	startConnection();
@@ -629,8 +643,8 @@ void MainWindow::on_actionScript_editor_triggered()
 MeleeDialog::MeleeDialog(QWidget *parent)
 	:QDialog(parent)
 {
-	server=NULL;
-	room_count=0;
+	server = NULL;
+	room_count = 0;
 
 	setWindowTitle(tr("AI Melee"));
 

@@ -57,15 +57,13 @@ int main(int argc, char *argv[])
 	}
 
 #ifdef AUDIO_SUPPORT
-
 	Audio::init();
-
 #endif
 
 	MainWindow main_window;
+	main_window.show();
 
 	Bang->setParent(&main_window);
-	main_window.show();
 
 	foreach(QString arg, qApp->arguments()){
 		if(arg.startsWith("-connect:")){

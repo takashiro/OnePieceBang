@@ -76,10 +76,6 @@ Engine::Engine()
 	modes["10p"] = tr("10 players (1 renegade)");
 	modes["10pz"] = tr("10 players (0 renegade)");
 
-	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(deleteLater()));
-
-
-
 	foreach(QString ban, getBanPackages()){
 		addBanPackage(ban);
 	}
@@ -102,9 +98,7 @@ Engine::~Engine(){
 	lua_close(lua);
 
 #ifdef AUDIO_SUPPORT
-
 	Audio::quit();
-
 #endif
 }
 

@@ -33,6 +33,8 @@ Room::Room(Server *server, const QString &mode)
 	surrender_request_received(false), _virtual(false)
 {
 	setParent(server);
+	connect(server, SIGNAL(about_to_stop()), this, SLOT(abortGame()));
+
 	last_movement_id = 0;
 	player_count = Bang->getPlayerCount(mode);
 	scenario = Bang->getScenario(mode);
@@ -74,18 +76,18 @@ Room::Room(Server *server, const QString &mode)
 
 	controller = new RoomController(this);
 	controller->moveToThread(&thread);
-	connect(&thread, SIGNAL(finished()), controller, SLOT(deleteLater()));
 	connect(this, SIGNAL(room_start()), controller, SLOT(run()));
 	thread.start();
 
 	driver = new RoomDriver(this);
 	connect(driver, SIGNAL(driver_start()), this, SIGNAL(game_start()));
+	connect(driver, SIGNAL(driver_finished()), &thread, SLOT(quit()));
+	connect(&thread, SIGNAL(finished()), this, SIGNAL(ready_to_close()));
 
 	driver_3v3 = NULL;
 	driver_1v1 = NULL;
 }
 
-//@to-do: the thread won't be aborted now and the destruction is blocked.
 Room::~Room(){
 	thread.wait();
 
@@ -1665,8 +1667,7 @@ void Room::trustCommand(ServerPlayer *player, const QJsonValue &){
 			player->releaseLock(ServerPlayer::SEMA_MUTEX);
 			player->releaseLock(ServerPlayer::SEMA_COMMAND_INTERACTIVE);
 		}
-	}else
-	{
+	}else{
 		player->setState("online");
 	}
 	player->releaseLock(ServerPlayer::SEMA_MUTEX);
@@ -2679,6 +2680,18 @@ void Room::startGame(){
 	if(!_virtual){
 		driver->start();
 	}
+}
+
+void Room::abortGame(){
+	foreach(ServerPlayer *player, m_players){
+		if(player->isOnline()){
+			trustCommand(player, QJsonValue());
+		}
+
+		player->setSocket(NULL);
+	}
+
+	tag["abort_game"] = true;
 }
 
 void Room::broadcastProperty(ServerPlayer *player, const char *property_name, const QString &value){

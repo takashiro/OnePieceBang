@@ -696,6 +696,34 @@ QString GameRule::getWinner(ServerPlayer *victim) const{
 	return winner;
 }
 
+AbortGameRule::AbortGameRule(QObject *parent)
+	:TriggerSkill("#gamerule_abort")
+{
+	setParent(parent);
+
+	for(int i = 0; i < NumOfEvents; i++){
+		events << TriggerEvent(i);
+	}
+}
+
+int AbortGameRule::getPriority() const{
+	return 10;
+}
+
+bool AbortGameRule::triggerable(const ServerPlayer *target) const{
+	return target != NULL && target->getRoom()->getTag("abort_game").toBool();
+}
+
+bool AbortGameRule::trigger(TriggerEvent, ServerPlayer *player, QVariant &) const{
+	Room *room = player->getRoom();
+	room->setTag("abort_game", false);
+	foreach(ServerPlayer *other, room->getOtherPlayers(player)){
+		room->killPlayer(other);
+	}
+	room->killPlayer(player);
+	return false;
+}
+
 HulaoPassMode::HulaoPassMode(QObject *parent)
 	:GameRule(parent)
 {

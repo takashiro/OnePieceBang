@@ -188,6 +188,8 @@ RoomDriver::RoomDriver(Room *room)
 	controller->moveToThread(&thread);
 	connect(&thread, SIGNAL(finished()), controller, SLOT(deleteLater()));
 	connect(this, SIGNAL(driver_start()), controller, SLOT(run()));
+	connect(controller, SIGNAL(game_finished()), this, SIGNAL(driver_finished()));
+	connect(controller, SIGNAL(game_finished()), this, SLOT(quit()));
 	thread.start();
 }
 
@@ -197,6 +199,10 @@ RoomDriver::~RoomDriver(){
 
 void RoomDriver::start(){
 	emit driver_start();
+}
+
+void RoomDriver::quit(){
+	thread.quit();
 }
 
 void RoomDriver::addPlayerSkills(ServerPlayer *player, bool invoke_game_start){
@@ -308,6 +314,8 @@ void RoomDriverController::run(){
 
 	driver->addTriggerSkill(game_rule);
 
+	driver->addTriggerSkill(server->getAbortGameRule());
+
 	if(Config.EnableBasara){
 		driver->addTriggerSkill(server->getBasaraMode());
 	}
@@ -386,9 +394,11 @@ void RoomDriverController::run(){
 				room->setCurrent(room->getCurrent()->getNextAlive());
 			}
 		}
-	} catch (TriggerEvent event) {
-		if(event == GameFinished)
+	}catch(TriggerEvent event){
+		if(event == GameFinished){
+			emit game_finished();
 			return;
+		}
 	}
 }
 
@@ -397,11 +407,8 @@ static bool CompareByPriority(const TriggerSkill *a, const TriggerSkill *b){
 }
 
 bool RoomDriver::trigger(TriggerEvent event, ServerPlayer *target, QVariant &data){
-	// Q_ASSERT(QThread::currentThread() == this);
-
 	// push it to event stack
-	EventTriplet triplet(event, target, &data);
-	event_stack.push_back(triplet);
+	event_stack.push_back(EventTriplet(event, target, &data));
 
 	bool broken = false;
 	foreach(const TriggerSkill *skill, skill_table[event]){
@@ -434,10 +441,10 @@ bool RoomDriver::trigger(TriggerEvent event, ServerPlayer *target){
 }
 
 void RoomDriver::addTriggerSkill(const TriggerSkill *skill){
-	if(skillSet.contains(skill))
+	if(skill_set.contains(skill))
 		return;
 
-	skillSet << skill;
+	skill_set << skill;
 
 	QList<TriggerEvent> events = skill->getTriggerEvents();
 	foreach(TriggerEvent event, events){
@@ -457,5 +464,5 @@ void RoomDriver::addTriggerSkill(const TriggerSkill *skill){
 
 void RoomDriver::delay(unsigned long secs){
 	if(room->property("to_test").toString().isEmpty()&& Config.AIDelay>0)
-		thread.msleep(secs);
+		QThread::msleep(secs);
 }

@@ -404,12 +404,14 @@ private slots:
 	void reportDisconnection();
 	void assignRoles();
 	void startGame();
+	void abortGame();
 
 signals:
 	void room_message(const QString &msg);
 	void game_start();
 	void game_over(const QString &winner);
 	void room_start();
+	void ready_to_close();
 };
 
 typedef Room *RoomStar;

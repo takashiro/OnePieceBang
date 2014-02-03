@@ -149,9 +149,11 @@ public:
 	void signupPlayer(ServerPlayer *player);
 	void gamesOver();
 	GameRule *getGameRule();
+	TriggerSkill *getAbortGameRule();
 	GameRule *getSceneRule();
 	GameRule *getHulaoPassMode();
 	GameRule *getBasaraMode();
+	bool isReadyToClose() const;
 
 private:
 	ServerSocket *server;
@@ -161,6 +163,7 @@ private:
 	QSet<QString> addresses;
 	QMultiHash<QString, QString> name2objname;
 	GameRule *game_rule;
+	TriggerSkill *abort_rule;
 	GameRule *hulaopass_mode;
 	GameRule *basara_mode;
 	GameRule *scene_rule;
@@ -172,9 +175,13 @@ private slots:
 	void processRequest();
 	void cleanup();
 	void gameOver();
+	void closeRoom();
 
 signals:
 	void server_message(const QString &);
+	void about_to_stop();
+	void ready_to_close();
+	void unready_to_close();
 };
 
 #endif // SERVER_H

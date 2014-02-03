@@ -957,17 +957,17 @@ Server::Server(QObject *parent)
 	//synchronize ServerInfo on the server side to avoid ambiguous usage of Config and ServerInfo
 	ServerInfo.parse(Bang->getSetupString());
 
+	current = NULL;
 	createNewRoom();
 
 	connect(server, SIGNAL(new_connection(ClientSocket*)), this, SLOT(processNewConnection(ClientSocket*)));
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(deleteLater()));
 
-	current = NULL;
-
 	game_rule = new GameRule(this);
 	hulaopass_mode = new HulaoPassMode(this);
 	basara_mode = new BasaraMode(this);
 	scene_rule = new SceneRule(this);
+	abort_rule = new AbortGameRule(this);
 }
 
 void Server::broadcast(const QString &msg){
@@ -996,6 +996,7 @@ Room *Server::createNewRoom(){
 
 	connect(current, SIGNAL(room_message(QString)), this, SIGNAL(server_message(QString)));
 	connect(current, SIGNAL(game_over(QString)), this, SLOT(gameOver()));
+	connect(current, SIGNAL(ready_to_close()), this, SLOT(closeRoom()));
 
 	return current;
 }
@@ -1101,12 +1102,24 @@ void Server::signupPlayer(ServerPlayer *player){
 
 void Server::gameOver(){
 	Room *room = qobject_cast<Room *>(sender());
-	rooms.remove(room);
 
 	foreach(ServerPlayer *player, room->findChildren<ServerPlayer *>()){
 		name2objname.remove(player->screenName(), player->objectName());
 		players.remove(player->objectName());
 	}
+}
+
+void Server::closeRoom(){
+	Room *room = qobject_cast<Room *>(sender());
+
+	rooms.remove(room);
+	if(rooms.isEmpty()){
+		emit ready_to_close();
+	}else{
+		emit unready_to_close();
+	}
+
+	room->deleteLater();
 }
 
 void Server::gamesOver(){
@@ -1119,6 +1132,10 @@ GameRule *Server::getGameRule(){
 	return game_rule;
 }
 
+TriggerSkill *Server::getAbortGameRule(){
+	return abort_rule;
+}
+
 GameRule *Server::getSceneRule(){
 	return scene_rule;
 }
@@ -1129,4 +1146,8 @@ GameRule *Server::getHulaoPassMode(){
 
 GameRule *Server::getBasaraMode(){
 	return basara_mode;
+}
+
+bool Server::isReadyToClose() const{
+	return rooms.isEmpty();
 }
