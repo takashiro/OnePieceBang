@@ -33,11 +33,16 @@ private:
 	QVariant *data;
 };
 
-class RoomDriver : public QThread{
+class RoomDriverController;
+
+class RoomDriver: public QObject{
 	Q_OBJECT
+
+	friend class RoomDriverController;
 
 public:
 	explicit RoomDriver(Room *room);
+	~RoomDriver();
 	void constructTriggerTable();
 	bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data);
 	bool trigger(TriggerEvent event, ServerPlayer *target);
@@ -50,18 +55,36 @@ public:
 	void action3v3(ServerPlayer *player);
 
 	const QList<EventTriplet> *getEventStack() const;
-
-protected:
-	void run();
+	void start();
 
 private:
 	Room *room;
 	QString order;
 
+	QThread thread;
+	RoomDriverController *controller;
+
 	QList<const TriggerSkill *> skill_table[NumOfEvents];
 	QSet<const TriggerSkill *> skillSet;
 
 	QList<EventTriplet> event_stack;
+
+signals:
+	void driver_start();
+};
+
+class RoomDriverController: public QObject{
+	Q_OBJECT
+
+public:
+	RoomDriverController(RoomDriver *driver);
+
+public slots:
+	void run();
+
+private:
+	RoomDriver *driver;
+	Room *room;
 };
 
 #endif // ROOMTHREAD_H

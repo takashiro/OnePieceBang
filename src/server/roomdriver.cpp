@@ -182,7 +182,21 @@ QString EventTriplet::toString() const{
 RoomDriver::RoomDriver(Room *room)
 	:room(room)
 {
-	//setParent(room);
+	setParent(room);
+
+	controller = new RoomDriverController(this);
+	controller->moveToThread(&thread);
+	connect(&thread, SIGNAL(finished()), controller, SLOT(deleteLater()));
+	connect(this, SIGNAL(driver_start()), controller, SLOT(run()));
+	thread.start();
+}
+
+RoomDriver::~RoomDriver(){
+	thread.wait();
+}
+
+void RoomDriver::start(){
+	emit driver_start();
 }
 
 void RoomDriver::addPlayerSkills(ServerPlayer *player, bool invoke_game_start){
@@ -273,7 +287,13 @@ void RoomDriver::action3v3(ServerPlayer *player){
 	}
 }
 
-void RoomDriver::run(){
+RoomDriverController::RoomDriverController(RoomDriver *driver)
+	:driver(driver)
+{
+	room = driver->room;
+}
+
+void RoomDriverController::run(){
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 	
 	Server *server = room->getServer();
@@ -286,26 +306,26 @@ void RoomDriver::run(){
 	else
 		game_rule = server->getGameRule();
 
-	addTriggerSkill(game_rule);
+	driver->addTriggerSkill(game_rule);
 
 	if(Config.EnableBasara){
-		addTriggerSkill(server->getBasaraMode());
+		driver->addTriggerSkill(server->getBasaraMode());
 	}
 
 	if(room->getScenario() != NULL){
 		const ScenarioRule *rule = room->getScenario()->getRule();
 		if(rule)
-			addTriggerSkill(rule);
+			driver->addTriggerSkill(rule);
 	}
 
 	// start game, draw initial 4 cards
 	try {
 		QVariant roomdata = QVariant::fromValue<RoomStar>(room);
-		trigger(GameStart, NULL, roomdata);
-		constructTriggerTable();
+		driver->trigger(GameStart, NULL, roomdata);
+		driver->constructTriggerTable();
 
-		if(room->mode == "06_3v3"){
-			run3v3();
+		if(room->getMode() == "06_3v3"){
+			driver->run3v3();
 		}else if(room->getMode() == "04_1v3"){
 			ServerPlayer *shenlvbu = room->getLord();
 			try {
@@ -320,21 +340,19 @@ void RoomDriver::run(){
 
 					foreach(ServerPlayer *player, league){
 						room->setCurrent(player);
-						trigger(TurnStart, room->getCurrent());
+						driver->trigger(TurnStart, room->getCurrent());
 
 						if(!player->hasFlag("actioned"))
 							room->setPlayerFlag(player, "actioned");
 
 						if(player->isAlive()){
 							room->setCurrent(shenlvbu);
-							trigger(TurnStart, room->getCurrent());
+							driver->trigger(TurnStart, room->getCurrent());
 						}
 					}
 				}
-			}
-			catch (TriggerEvent event)
-			{
-				trigger(event, NULL, roomdata);
+			}catch(TriggerEvent event){
+				driver->trigger(event, NULL, roomdata);
 				foreach(ServerPlayer *player, room->getPlayers()){
 					if(player != shenlvbu){
 						if(player->hasFlag("actioned"))
@@ -346,7 +364,7 @@ void RoomDriver::run(){
 							room->setPlayerProperty(player, "phase", "not_active");
 							phase.to = player->getPhase();
 							QVariant data = QVariant::fromValue(phase);
-							trigger(PhaseChange, player, data);
+							driver->trigger(PhaseChange, player, data);
 						}
 					}
 				}
@@ -354,7 +372,7 @@ void RoomDriver::run(){
 				room->setCurrent(shenlvbu);
 
 				forever{
-					trigger(TurnStart, room->getCurrent());
+					driver->trigger(TurnStart, room->getCurrent());
 					room->setCurrent(room->getCurrent()->getNext());
 				}
 			}
@@ -363,7 +381,7 @@ void RoomDriver::run(){
 				room->setCurrent(room->getPlayers().at(1));
 
 			forever{
-				trigger(TurnStart, room->getCurrent());
+				driver->trigger(TurnStart, room->getCurrent());
 				if(room->isFinished()) break;
 				room->setCurrent(room->getCurrent()->getNextAlive());
 			}
@@ -439,5 +457,5 @@ void RoomDriver::addTriggerSkill(const TriggerSkill *skill){
 
 void RoomDriver::delay(unsigned long secs){
 	if(room->property("to_test").toString().isEmpty()&& Config.AIDelay>0)
-		msleep(secs);
+		thread.msleep(secs);
 }

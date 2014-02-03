@@ -27,8 +27,8 @@
 Room::Room(Server *server, const QString &mode)
 	:server(server), mode(mode), current(NULL), pile1(Bang->getRandomCards()),
 	draw_pile(&pile1), discard_pile(&pile2), handling_area(&pile3),
-	game_started(false), game_finished(false), L(NULL), driver(NULL),
-	driver_3v3(NULL), driver_1v1(NULL), sem(new QSemaphore), sem_race_request(0), sem_room_mutex(1),
+	game_started(false), game_finished(false), L(NULL),
+	sem(new QSemaphore), sem_race_request(0), sem_room_mutex(1),
 	race_started(false), provided(NULL), has_provided(false),
 	surrender_request_received(false), _virtual(false)
 {
@@ -77,23 +77,24 @@ Room::Room(Server *server, const QString &mode)
 	connect(&thread, SIGNAL(finished()), controller, SLOT(deleteLater()));
 	connect(this, SIGNAL(room_start()), controller, SLOT(run()));
 	thread.start();
+
+	driver = new RoomDriver(this);
+	connect(driver, SIGNAL(driver_start()), this, SIGNAL(game_start()));
+
+	driver_3v3 = NULL;
+	driver_1v1 = NULL;
 }
 
-//@to-do: the thread will be destroyed while running if the game is still going on.
+//@to-do: the thread won't be aborted now and the destruction is blocked.
 Room::~Room(){
-	thread.quit();
 	thread.wait();
 
-	if(driver){
-		delete driver;
-	}
-
 	if(driver_3v3){
-		delete driver_3v3;
+		driver_3v3->deleteLater();
 	}
 
 	if(driver_1v1){
-		delete driver_1v1;
+		driver_1v1->deleteLater();
 	}
 }
 
@@ -2083,11 +2084,13 @@ void RoomController::run(){
 	else if(room->mode == "06_3v3"){
 		room->driver_3v3 = new RoomDriver3v3(room);
 		connect(room->driver_3v3, SIGNAL(finished()), room, SLOT(startGame()));
+
 		room->driver_3v3->start();
 
-	}else if(room->mode == "02_1v1"){
+	}else if(room->mode == "02_1v1"){		
 		room->driver_1v1 = new RoomDriver1v1(room);
 		connect(room->driver_1v1, SIGNAL(finished()), room, SLOT(startGame()));
+
 		room->driver_1v1->start();
 
 	}else if(room->mode == "04_1v3"){
@@ -2673,9 +2676,6 @@ void Room::startGame(){
 
 	broadcastNotification(BP::SetPileNumber, QJsonValue(draw_pile->length()));
 
-	driver = new RoomDriver(this);
-	connect(driver, SIGNAL(started()), this, SIGNAL(game_start()));
-	
 	if(!_virtual){
 		driver->start();
 	}
