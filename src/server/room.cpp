@@ -71,10 +71,19 @@ Room::Room(Server *server, const QString &mode)
 	QStringList scripts;
 	scripts << "lua/bang.lua" << "lua/ai/smart-ai.lua";
 	DoLuaScripts(L, scripts);
+
+	controller = new RoomController(this);
+	controller->moveToThread(&thread);
+	connect(&thread, SIGNAL(finished()), controller, SLOT(deleteLater()));
+	connect(this, SIGNAL(room_start()), controller, SLOT(run()));
+	thread.start();
 }
 
 //@to-do: the thread will be destroyed while running if the game is still going on.
 Room::~Room(){
+	thread.quit();
+	thread.wait();
+
 	if(driver){
 		delete driver;
 	}
@@ -2034,20 +2043,25 @@ void Room::chooseGenerals(){
 	}
 }
 
-void Room::run(){
+RoomController::RoomController(Room *room)
+	:room(room)
+{
+}
+
+void RoomController::run(){
 	// initialize random seed for later use
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
-	foreach(ServerPlayer *player, m_players){
+	foreach(ServerPlayer *player, room->m_players){
 		//Ensure that the game starts with all player's mutex locked
 		player->drainAllLocks();
 		player->releaseLock(ServerPlayer::SEMA_MUTEX);
 	}
 
-	prepareForStart();
+	room->prepareForStart();
 
 	bool using_countdown = true;
-	if(_virtual || !property("to_test").toString().isEmpty())
+	if(room->_virtual || !property("to_test").toString().isEmpty())
 		using_countdown = false;
 
 #ifndef QT_NO_DEBUG
@@ -2056,29 +2070,29 @@ void Room::run(){
 
 	if(using_countdown){
 		for(int i=Config.CountDownSeconds; i>=0; i--){
-			broadcastNotification(BP::StartInXSeconds, i);
-			sleep(1);
+			room->broadcastNotification(BP::StartInXSeconds, i);
+			QThread::sleep(1);
 		}
 	}else{
-		broadcastNotification(BP::StartInXSeconds, 0);
+		room->broadcastNotification(BP::StartInXSeconds, 0);
 	}
 
 
-	if(scenario && !scenario->generalSelection())
-		startGame();
-	else if(mode == "06_3v3"){
-		driver_3v3 = new RoomDriver3v3(this);
-		connect(driver_3v3, SIGNAL(finished()), this, SLOT(startGame()));
-		driver_3v3->start();
+	if(room->scenario && !room->scenario->generalSelection())
+		room->startGame();
+	else if(room->mode == "06_3v3"){
+		room->driver_3v3 = new RoomDriver3v3(room);
+		connect(room->driver_3v3, SIGNAL(finished()), room, SLOT(startGame()));
+		room->driver_3v3->start();
 
-	}else if(mode == "02_1v1"){
-		driver_1v1 = new RoomDriver1v1(this);
-		connect(driver_1v1, SIGNAL(finished()), this, SLOT(startGame()));
-		driver_1v1->start();
+	}else if(room->mode == "02_1v1"){
+		room->driver_1v1 = new RoomDriver1v1(room);
+		connect(room->driver_1v1, SIGNAL(finished()), room, SLOT(startGame()));
+		room->driver_1v1->start();
 
-	}else if(mode == "04_1v3"){
-		ServerPlayer *lord = m_players.first();
-		setPlayerProperty(lord, "general", "shenlvbu1");
+	}else if(room->mode == "04_1v3"){
+		ServerPlayer *lord = room->m_players.first();
+		room->setPlayerProperty(lord, "general", "shenlvbu1");
 
 		const Package *stdpack = Bang->findChild<const Package *>("standard");
 		const Package *windpack = Bang->findChild<const Package *>("wind");
@@ -2093,22 +2107,22 @@ void Room::run(){
 
 		names.removeOne("yuji");
 
-		foreach(ServerPlayer *player, m_players){
+		foreach(ServerPlayer *player, room->m_players){
 			if(player == lord)
 				continue;
 
 			qShuffle(names);
 			QStringList choices = names.mid(0, 3);
-			QString name = askForGeneral(player, choices);
+			QString name = room->askForGeneral(player, choices);
 
-			setPlayerProperty(player, "general", name);
+			room->setPlayerProperty(player, "general", name);
 			names.removeOne(name);
 		}
 
-		startGame();
+		room->startGame();
 	}else{
-		chooseGenerals();
-		startGame();
+		room->chooseGenerals();
+		room->startGame();
 	}
 }
 
@@ -3924,6 +3938,10 @@ void Room::networkDelayTestCommand(ServerPlayer *player, const QJsonValue &){
 	QString report_str = tr("<font color=#EEB422>The network delay of player <b>%1</b> is %2 milliseconds.</font>")
 		.arg(Config.ContestMode ? tr("Contestant") : player->screenName()).arg(QString::number(delay));
 	speakCommand(player, report_str);
+}
+
+void Room::start(){
+	emit room_start();
 }
 
 bool Room::isVirtual()

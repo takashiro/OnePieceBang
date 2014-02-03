@@ -16,14 +16,16 @@ struct LogMessage;
 #include <qmutex.h>
 
 class Server;
+class RoomController;
 
-class Room : public QThread{
+class Room : public QObject{
 	Q_OBJECT
 
 public:
 	friend class RoomDriver;
 	friend class RoomDriver3v3;
 	friend class RoomDriver1v1;
+	friend class RoomController;
 
 	typedef void (Room::*Callback)(ServerPlayer *, const QString &);
 	typedef void (Room::*CallBack)(ServerPlayer *, const QJsonValue &);
@@ -283,13 +285,13 @@ public:
 	void broadcastProperty(ServerPlayer *player, const char *property_name, const QString &value = QString());
 	void startTest(const QString &to_test);
 	void networkDelayTestCommand(ServerPlayer *player, const QJsonValue &);
-
-protected slots:
-	void run();
+	void start();
 
 private:
-	struct _MoveSourceClassifier
-	{
+	QThread thread;
+	RoomController *controller;
+
+	struct _MoveSourceClassifier{
 		inline _MoveSourceClassifier(const CardsMoveStruct &move)
 		{
 			m_from = move.from; m_from_place = move.from_place; 
@@ -407,9 +409,22 @@ signals:
 	void room_message(const QString &msg);
 	void game_start();
 	void game_over(const QString &winner);
+	void room_start();
 };
 
 typedef Room *RoomStar;
 Q_DECLARE_METATYPE(RoomStar)
+
+class RoomController: public QObject{
+	Q_OBJECT
+public:
+	RoomController(Room *room);
+
+public slots:
+	void run();
+
+private:
+	Room *room;
+};
 
 #endif // ROOM_H
