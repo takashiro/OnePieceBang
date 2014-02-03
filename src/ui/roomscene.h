@@ -336,6 +336,7 @@ private slots:
 	void updateRolesBox();
 	void updateRoles(const QString &roles);
 	void adjustPrompt();
+	void clearDiscardPile();
 
 	void resetPiles();
 	void removeLightBox();

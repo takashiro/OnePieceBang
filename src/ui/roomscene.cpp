@@ -3188,6 +3188,7 @@ void RoomScene::onGameStart(){
 	QList<const ClientPlayer *> players = ClientInstance->getPlayers();
 	foreach(const ClientPlayer *player, players){
 		connect(player, SIGNAL(phase_changed()), log_box, SLOT(appendSeparator()));
+		connect(player, SIGNAL(phase_changed()), this, SLOT(clearDiscardPile()));
 	}
 
 	trust_button->setEnabled(true);
@@ -3977,6 +3978,13 @@ void RoomScene::adjustPrompt()
 		prompt_box_widget->setFont(ft);
 	}
 	//else m_pileCardNumInfoTextBox->setFont(QFont("SimHei",10));
+}
+
+void RoomScene::clearDiscardPile(){
+	ClientPlayer *player = qobject_cast<ClientPlayer *>(sender());
+	if(player == NULL || player->getPhase() == Player::NotActive){
+		discard_pile->clearCards();
+	}
 }
 
 void RoomScene::appendChatEdit(QString txt){
