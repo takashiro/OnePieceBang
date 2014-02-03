@@ -57,9 +57,6 @@ public:
 	const QList<EventTriplet> *getEventStack() const;
 	void start();
 
-private slots:
-	void quit();
-
 private:
 	Room *room;
 	QString order;

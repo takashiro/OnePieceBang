@@ -189,7 +189,7 @@ RoomDriver::RoomDriver(Room *room)
 	connect(&thread, SIGNAL(finished()), controller, SLOT(deleteLater()));
 	connect(this, SIGNAL(driver_start()), controller, SLOT(run()));
 	connect(controller, SIGNAL(game_finished()), this, SIGNAL(driver_finished()));
-	connect(controller, SIGNAL(game_finished()), this, SLOT(quit()));
+	connect(controller, SIGNAL(game_finished()), &thread, SLOT(quit()));
 	thread.start();
 }
 
@@ -199,10 +199,6 @@ RoomDriver::~RoomDriver(){
 
 void RoomDriver::start(){
 	emit driver_start();
-}
-
-void RoomDriver::quit(){
-	thread.quit();
 }
 
 void RoomDriver::addPlayerSkills(ServerPlayer *player, bool invoke_game_start){
