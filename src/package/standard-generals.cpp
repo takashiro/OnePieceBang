@@ -252,7 +252,7 @@ void CannonBallCard::onEffect(const CardEffectStruct &effect) const{
 	judge.who = effect.to;
 	judge.reason = objectName();
 	judge.good = false;
-	judge.pattern = QRegExp("(.*):(heart):(.*)");
+	judge.pattern = QRegExp("(.*):(spade|heart):(.*)");
 
 	Room *room = effect.from->getRoom();
 	room->judge(judge);
@@ -573,13 +573,13 @@ public:
 
 		if(event == AfterRecovering){
 			if(recover.to->getGender() == General::Female){
-				if(player->askForSkillInvoke(objectName())){
+				if(player->askForSkillInvoke(objectName(), data)){
 					player->drawCards(recover.recover, true, objectName());
 				}
 			}
 		}else{
 			if(recover.from->getGender() == General::Female){
-				if(player->askForSkillInvoke(objectName())){
+				if(player->askForSkillInvoke(objectName(), data)){
 					recover.from->drawCards(recover.recover, true, objectName());
 				}
 			}
