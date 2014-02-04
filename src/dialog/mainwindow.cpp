@@ -38,6 +38,7 @@ public:
 
 	virtual void resizeEvent(QResizeEvent *event) {
 		QGraphicsView::resizeEvent(event);
+		setSceneRect(Config.Rect);
 		if(Config.FitInView)
 			fitInView(sceneRect(), Qt::KeepAspectRatio);
 		if(matrix().m11() > 1)
@@ -55,6 +56,7 @@ public:
 			main_window->setBackgroundBrush(false);
 			return;
 		}
+
 		if(main_window)
 			main_window->setBackgroundBrush(true);
 	}
@@ -461,11 +463,12 @@ void MainWindow::setBackgroundBrush(bool centerAsOrigin){
 }
 
 void MainWindow::changeBackground(){
-	setBackgroundBrush(false);
-
 	if(scene->inherits("StartScene")){
+		setBackgroundBrush(true);
 		StartScene *start_scene = qobject_cast<StartScene *>(scene);
 		start_scene->setServerLogBackground();
+	}else{
+		setBackgroundBrush(false);
 	}
 }
 

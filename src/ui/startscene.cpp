@@ -54,9 +54,7 @@ void StartScene::setServerLogBackground(){
 
 void StartScene::switchToServer(Server *server){
 #ifdef AUDIO_SUPPORT
-
 	Audio::quit();
-
 #endif
 
 	// performs leaving animation
