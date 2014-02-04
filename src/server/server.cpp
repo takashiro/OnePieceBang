@@ -1119,6 +1119,10 @@ void Server::closeRoom(){
 		emit unready_to_close();
 	}
 
+	if(room == current){
+		current = NULL;
+	}
+
 	room->deleteLater();
 }
 
@@ -1150,4 +1154,16 @@ GameRule *Server::getBasaraMode(){
 
 bool Server::isReadyToClose() const{
 	return rooms.isEmpty();
+}
+
+void Server::deleteOnReadyToClose(){
+	connect(this, SIGNAL(ready_to_close()), this, SLOT(deleteLater()));
+}
+
+void Server::stop(){
+	if(rooms.isEmpty()){
+		emit ready_to_close();
+	}else{
+		emit about_to_stop();
+	}
 }

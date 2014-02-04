@@ -46,6 +46,7 @@ or RoomDriver()::~RoomDriver(), which will block the main thread itself and room
 can't stop. That's a deadlock. That's why main window has to wait(not blocked) for a ready_to_close() signal from
 Server to call close() again.*/
 		QObject::connect(qApp, SIGNAL(aboutToQuit()), server, SIGNAL(about_to_stop()));
+		QObject::connect(server, SIGNAL(ready_to_close()), Bang, SLOT(deleteLater()));
 
 		printf("Server is starting on port %u\n", Config.ServerPort);
 		if(server->listen())

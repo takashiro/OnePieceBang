@@ -154,6 +154,10 @@ public:
 	GameRule *getHulaoPassMode();
 	GameRule *getBasaraMode();
 	bool isReadyToClose() const;
+	void deleteOnReadyToClose();
+
+public slots:
+	void stop();
 
 private:
 	ServerSocket *server;

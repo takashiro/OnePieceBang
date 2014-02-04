@@ -178,12 +178,13 @@ void MainWindow::on_actionStart_Server_triggered()
 	Server *server = new Server(this);
 	if(!server->listen()){
 		QMessageBox::warning(this, tr("Warning"), tr("Can not start server!"));
-		delete server;
+		server->deleteOnReadyToClose();
+		server->stop();
 		return;
 	}
 
 	this->server = server;
-	connect(this, SIGNAL(about_to_exit()), server, SIGNAL(about_to_stop()));
+	connect(this, SIGNAL(about_to_exit()), server, SLOT(stop()));
 
 	server->daemonize();
 
@@ -612,22 +613,24 @@ void MainWindow::on_actionAcknowledgement_triggered()
 	gotoScene(ack);
 }
 
-void MainWindow::on_actionPC_Console_Start_triggered()
-{
+void MainWindow::on_actionPC_Console_Start_triggered(){
 	ServerDialog *dialog = new ServerDialog(this);
 	dialog->ensureEnableAI();
 	if(!dialog->config())
 		return;
 
-	Server *server = new Server(this);
-	if(!server->listen()){
-		QMessageBox::warning(this, tr("Warning"), tr("Can not start server!"));
-		delete server;
-		return;
-	}
+	if(this->server == NULL){
+		Server *server = new Server(this);
+		if(!server->listen()){
+			QMessageBox::warning(this, tr("Warning"), tr("Can not start server!"));
+			server->deleteOnReadyToClose();
+			server->stop();
+			return;
+		}
 
-	this->server = server;
-	connect(this, SIGNAL(about_to_exit()), server, SIGNAL(about_to_stop()));
+		this->server = server;
+		connect(this, SIGNAL(about_to_exit()), server, SIGNAL(about_to_stop()));
+	}
 
 	Config.HostAddress = "127.0.0.1";
 	startConnection();
