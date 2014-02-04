@@ -40,8 +40,14 @@ int main(int argc, char *argv[])
 
 	if(qApp->arguments().contains("-server")){
 		Server *server = new Server(qApp);
-		printf("Server is starting on port %u\n", Config.ServerPort);
 
+		/*@to-do: the room thread & the room driver thread may not stop before the main thread runs into Room::~Room()
+or RoomDriver()::~RoomDriver(), which will block the main thread itself and room thread(living in the main thread)
+can't stop. That's a deadlock. That's why main window has to wait(not blocked) for a ready_to_close() signal from
+Server to call close() again.*/
+		QObject::connect(qApp, SIGNAL(aboutToQuit()), server, SIGNAL(about_to_stop()));
+
+		printf("Server is starting on port %u\n", Config.ServerPort);
 		if(server->listen())
 			printf("Starting successfully\n");
 		else
