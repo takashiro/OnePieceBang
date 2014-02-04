@@ -435,25 +435,20 @@ public:
 class Quack: public TriggerSkill{
 public:
 	Quack(): TriggerSkill("quack"){
-		 events << Recovered;
+		 events << AfterRecovering;
 		 frequency = Compulsory;
 	}
 
-	virtual bool triggerable(const ServerPlayer *target) const{
-		return true;
-	}
-
-	virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
+	virtual bool trigger(TriggerEvent, ServerPlayer *target, QVariant &data) const{
 		RecoverStruct recover = data.value<RecoverStruct>();
 		Room *room = target->getRoom();
 
-		if(recover.from != NULL && recover.from->hasSkill(objectName())){
+		for(int i = 0; i < recover.recover; i++){
 			room->sendLog("#TriggerSkill", recover.from, objectName());
-			for(int i = 0; i < recover.recover; i++){
-				target->turnOver();
-				target->drawCards(recover.from->getLostHp());
-			}
+			target->turnOver();
+			target->drawCards(recover.from->getLostHp());
 		}
+
 		return false;
 	}
 };
@@ -588,24 +583,18 @@ public:
 	}
 
 	virtual bool triggerable(const ServerPlayer *target) const{
-		if(target == NULL){
-			return false;
-		}
-
-		Room *room = target->getRoom();
-		foreach(ServerPlayer *player, room->getAlivePlayers()){
-			if(player->hasSkill(objectName()) && !player->isKongcheng()){
-				return true;
-			}
-		}
-
-		return false;
+		return target != NULL && target->getCardCount(true) <= 0;
 	}
 
 	virtual bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
 		Room *room = target->getRoom();
+		static RecoverStruct recover;
 
 		foreach(ServerPlayer *player, room->findPlayersBySkillName(objectName())){
+			if(player == target){
+				continue;
+			}
+
 			DyingStruct dying = data.value<DyingStruct>();
 			if(dying.who->isKongcheng() || !player->askForSkillInvoke(objectName(), data)){
 				return false;
@@ -613,20 +602,17 @@ public:
 
 			room->showAllCards(dying.who);
 
-			static RecoverStruct recover;
-			recover.from = player;
-			recover.recover = 1;
-			foreach(const Card *card, dying.who->getHandcards()){
-				if(card->isRed()){
-					room->throwCard(card, dying.who);
+			int card_id = room->askForCardChosen(player, dying.who, "he", objectName());
+			if(card_id > 0){
+				room->obtainCard(player, card_id, true);
+
+				const Card *card = Bang->getCard(card_id);
+				if(card && card->isRed()){
+					recover.from = player;
+					recover.recover = 1;
 					recover.to = dying.who;
 					room->recover(recover);
 				}
-			}
-
-			int card_id = room->askForCardChosen(player, dying.who, "he", objectName());
-			if(card_id > 0){
-				room->obtainCard(player, card_id);
 			}
 		}
 
