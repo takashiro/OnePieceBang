@@ -1244,17 +1244,16 @@ PlayerCardContainer *RoomScene::_getPlayerCardContainer(Player::Place place, Pla
 		return name2photo.value(player->objectName(), NULL);
 }
 
-void RoomScene::loseCards(int moveId, QList<CardsMoveStruct> card_moves)
-{
+void RoomScene::loseCards(int moveId, QList<CardsMoveStruct> card_moves){
 	for(int i = 0; i < card_moves.size(); i++){
-		CardsMoveStruct &movement = card_moves[i];
-		if((movement.from_place == Player::HandlingArea && movement.to_place == Player::DiscardPile) || (movement.from_place == Player::DiscardPile && movement.to_place == Player::HandlingArea)){
+		CardsMoveStruct &move = card_moves[i];
+		if((move.from_place == Player::HandlingArea && move.to_place == Player::DiscardPile) || (move.from_place == Player::DiscardPile && move.to_place == Player::HandlingArea)){
 			continue;
 		}
 
-		card_container->m_currentPlayer = (ClientPlayer*) movement.to;
-		PlayerCardContainer* from_container = _getPlayerCardContainer(movement.from_place, movement.from);
-		QList<CardItem*> cards = from_container->removeCardItems(movement.card_ids, movement.from_place);
+		card_container->m_currentPlayer = (ClientPlayer*) move.to;
+		PlayerCardContainer* from_container = _getPlayerCardContainer(move.from_place, move.from);
+		QList<CardItem*> cards = from_container->removeCardItems(move.card_ids, move.from_place);
 		foreach(CardItem* card, cards){
 			card->setHomePos(from_container->pos() + card->homePos());
 			card->setPos(from_container->pos() + card->pos());
@@ -1262,7 +1261,7 @@ void RoomScene::loseCards(int moveId, QList<CardsMoveStruct> card_moves)
 			card->setParentItem(NULL);
 		}
 		cards_move_stash[moveId].append(cards);
-		keepLoseCardLog(movement);
+		keepLoseCardLog(move);
 	}
 }
 
@@ -1283,8 +1282,9 @@ void RoomScene::getCards(int moveId, QList<CardsMoveStruct> card_moves){
 			if(!card_moves[i].card_ids.contains(card_id)){
 				cards.removeAt(j);
 				j--;
+			}else{
+				card->setEnabled(true);
 			}
-			else card->setEnabled(true);
 		}
 		bringToFront(to_container);
 		to_container->addCardItems(cards, movement.to_place);

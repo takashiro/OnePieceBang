@@ -13,14 +13,7 @@ ClientLogBox::ClientLogBox(QWidget *parent) :
 	setReadOnly(true);
 }
 
-void ClientLogBox::appendLog(
-		const QString &type,
-		const QString &from_general,
-		const QStringList &tos,
-		QString card_str,
-		QString arg,
-		QString arg2)
-{
+void ClientLogBox::appendLog(const QString &type, const QString &from_general, const QStringList &tos, QString card_str, QString arg, QString arg2){
 	QString from;
 	if(!from_general.isEmpty()){
 		from = ClientInstance->getPlayerName(from_general);

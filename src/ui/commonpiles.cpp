@@ -24,14 +24,14 @@ bool DiscardPile::_addCardItems(QList<CardItem*> &card_items, Player::Place plac
 {
 	pile_mutex.lock();
 	visible_cards.append(card_items);
-	int numAdded = card_items.size();
-	int numRemoved = visible_cards.size() - qMax(visible_card_num, numAdded + 1);
-	for(int i = 0; i < numRemoved; i++){
-		CardItem* toRemove = visible_cards.first();
-		toRemove->setZValue(0.0);
-		toRemove->setHomeOpacity(0.0);
-		connect(toRemove, SIGNAL(movement_animation_finished()), this, SLOT(_destroyCard()));
-		toRemove->goBack(true);
+	int added_num = card_items.size();
+	int removed_num = visible_cards.size() - qMax(visible_card_num, added_num + 1);
+	for(int i = 0; i < removed_num; i++){
+		CardItem* to_remove = visible_cards.first();
+		to_remove->setZValue(0.0);
+		to_remove->setHomeOpacity(0.0);
+		connect(to_remove, SIGNAL(movement_animation_finished()), this, SLOT(_destroyCard()));
+		to_remove->goBack(true);
 		visible_cards.removeFirst();
 	}
 	foreach(CardItem* card_item, visible_cards){
