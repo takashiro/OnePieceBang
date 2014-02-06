@@ -31,7 +31,11 @@ RubberPistolCard::~RubberPistolCard(){
 }
 
 bool RubberPistolCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *Self) const{
-	return slash->targetFilter(targets, to_select, Self);
+	if(targets.length() >= slash->targetNum(Self)){
+		return false;
+	}
+
+	return Self->canSlash(to_select, false, this);
 }
 
 bool RubberPistolCard::targetsFeasible(const QList<const Player *> &targets, const Player *Self) const{
