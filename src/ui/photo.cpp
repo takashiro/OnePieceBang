@@ -7,6 +7,8 @@
 #include "client.h"
 #include "playercarddialog.h"
 #include "rolecombobox.h"
+#include "roomscene.h"
+#include "pixmapanimation.h"
 
 #include <QPainter>
 #include <QDrag>
@@ -20,10 +22,7 @@
 #include <QMenu>
 #include <QGraphicsDropShadowEffect>
 #include <QBitmap>
-
-#include "pixmapanimation.h"
-
-using namespace BP;
+#include <qmath.h>
 
 const QRect Photo::S_CARD_MOVE_REGION(-50, Photo::S_NORMAL_PHOTO_HEIGHT / 2, 200, CardItem::S_NORMAL_CARD_HEIGHT);
 
@@ -82,7 +81,7 @@ Photo::Photo(): player(NULL),
 	}
 
 	ready_item = new QGraphicsPixmapItem(QPixmap("image/system/ready.png"), this);
-	ready_item->setPos(86, 132);
+	ready_item->setPos(86, 102);
 	ready_item->hide();
 
 	mark_item = new QGraphicsTextItem(this);
@@ -126,9 +125,9 @@ void Photo::createRoleCombobox(){
 	connect(player, SIGNAL(role_changed(QString)), role_combobox, SLOT(fix(QString)));
 }
 
-void Photo::showProgressBar(Countdown countdown){
+void Photo::showProgressBar(BP::Countdown countdown){
 	progress_bar->setCountdown(countdown);
-	if(countdown.max != 0 && countdown.type != Countdown::Unlimited)
+	if(countdown.max != 0 && countdown.type != BP::Countdown::Unlimited)
 		progress_bar->show();
 }
 
@@ -234,7 +233,10 @@ void Photo::showCard(int card_id){
 	CardItem *card_item = new CardItem(card);
 	scene()->addItem(card_item);
 
-	QPointF card_pos(pos() + QPointF(0, 20));
+	QPointF adjust = RoomSceneInstance->getTableCenter() - pos();
+	float len = qSqrt(adjust.x() * adjust.x() + adjust.y() * adjust.y());
+	QPointF card_pos = pos() + adjust * (20 / len);
+
 	card_item->setPos(card_pos);
 	card_item->setHomePos(card_pos);
 

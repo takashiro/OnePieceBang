@@ -764,6 +764,10 @@ void RoomScene::addPlayer(ClientPlayer *player){
 	}
 }
 
+QPointF RoomScene::getTableCenter() const{
+	return table_center_pos;
+}
+
 void RoomScene::removePlayer(const QString &player_name){
 	Photo *photo = name2photo[player_name];
 	if(photo){

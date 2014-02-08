@@ -146,6 +146,7 @@ public:
 	void showPromptBox();
 	static void FillPlayerNames(QComboBox *combobox, bool add_none);
 	void updateTable();
+	QPointF getTableCenter() const;
 
 public slots:
 	void addPlayer(ClientPlayer *player);
