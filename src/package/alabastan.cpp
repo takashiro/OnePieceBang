@@ -134,35 +134,29 @@ void FleurCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *
 	room->showCard(targets.at(1), card2->getId());
 
 	if(card1->getColor() == card2->getColor()){
-		int card_id;
-		LogMessage log;
-		log.type = "$Dismantlement";
-
-		card_id = room->askForCardChosen(source, targets.at(0), "he", "fleur");
-		room->throwCard(card_id);
-		log.from = targets.at(0);
-		log.card_str = QString::number(card_id);
-		room->sendLog(log);
-
-		card_id = room->askForCardChosen(source, targets.at(1), "he", "fleur");
-		room->throwCard(card_id);
-		log.from = targets.at(1);
-		log.card_str = QString::number(card_id);
-		room->sendLog(log);
-	}else{
 		Duel *duel = new Duel(Card::NoSuit, 0);
 		duel->setSkillName("fleur");
 		CardUseStruct use;
 		use.card = duel;
 
-		if(card1->isBlack()){
-			use.from = targets.at(0);
-			use.to.append(targets.at(1));
-		}else{
-			use.from = targets.at(1);
-			use.to.append(targets.at(0));
-		}
+		use.from = targets.at(0);
+		use.to << targets.at(1);
+
 		room->useCard(use, true);
+	}else{
+		ServerPlayer *target = targets.at(card1->isRed() ? 0 : 1);
+
+		int card_id;
+		LogMessage log;
+		log.type = "$Dismantlement";
+		log.from = target;
+
+		for(int i = 0; i < 2; i++){
+			card_id = room->askForCardChosen(source, target, "he", "fleur");
+			room->throwCard(card_id, source);
+			log.card_str = QString::number(card_id);
+			room->sendLog(log);
+		}
 	}
 }
 
