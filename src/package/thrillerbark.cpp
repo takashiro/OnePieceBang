@@ -156,6 +156,80 @@ public:
 	}
 };
 
+class ShadowAsgard: public TriggerSkill{
+public:
+	ShadowAsgard(): TriggerSkill("shadowasgard"){
+		events << CardDiscarded;
+	}
+
+	bool triggerable(const ServerPlayer *target) const{
+		return target != NULL;
+	}
+
+	bool trigger(TriggerEvent event, ServerPlayer *who, QVariant &data) const{
+		Room *room = who->getRoom();
+		const Card *discarded = data.value<CardStar>();
+		if(discarded == NULL){
+			return false;
+		}
+
+		if(discarded->isVirtualCard()){
+			foreach(int card_id, discarded->getSubcards()){
+				const Card *card = Bang->getCard(card_id);
+				if(!card || !card->getSuit() == Card::Spade){
+					continue;
+				}
+
+				foreach(ServerPlayer *player, room->getOtherPlayers(who)){
+					if(player != who && player->hasSkill(objectName())){
+						room->broadcastSkillInvoked(player, objectName());
+						room->sendLog("#TriggerSkill", player, objectName());
+
+						player->obtainCard(card);
+					}
+				}
+			}
+		}else if(discarded->getSuit() == Card::Spade){
+			foreach(ServerPlayer *player, room->getOtherPlayers(who)){
+				if(player != who && player->hasSkill(objectName())){
+					room->broadcastSkillInvoked(player, objectName());
+					room->sendLog("#TriggerSkill", player, objectName());
+
+					player->obtainCard(discarded);
+				}
+			}
+		}
+
+		return false;
+	}
+};
+
+class Nightmare: public PhaseChangeSkill{
+public:
+	Nightmare(): PhaseChangeSkill("nightmare"){
+	}
+
+	bool onPhaseChange(ServerPlayer *target) const{
+		Room *room = target->getRoom();
+		if(target->getPhase() == Player::Start){
+			if(target->getHandcardNum() >= target->getHp() * 2){
+				room->sendLog("#TriggerSkill", target, objectName());
+
+				target->throwAllHandCards();
+				DamageStruct damage;
+				damage.from = target;
+				foreach(ServerPlayer *victim, room->getOtherPlayers(target)){
+					damage.damage = 1;
+					damage.to = victim;
+					room->damage(damage);
+				}
+			}
+		}
+
+		return false;
+	}
+};
+
 ThrillerBarkPackage::ThrillerBarkPackage():Package("ThrillerBark")
 {
 	General *brook = new General(this, "brook", "pirate", 3);
@@ -165,6 +239,10 @@ ThrillerBarkPackage::ThrillerBarkPackage():Package("ThrillerBark")
 	General *perona = new General(this, "perona", "pirate", 3, false);
 	perona->addSkill(new NegativeHorror);
 	perona->addSkill(new GhostRap);
+
+	General *moriah = new General(this, "moriah", "pirate", 3);
+	moriah->addSkill(new ShadowAsgard);
+	moriah->addSkill(new Nightmare);
 }
 
 ADD_PACKAGE(ThrillerBark)
