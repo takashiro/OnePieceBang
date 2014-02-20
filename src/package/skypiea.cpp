@@ -206,7 +206,7 @@ public:
 	bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
 		if(event == CardEffect){
 			CardEffectStruct effect = data.value<CardEffectStruct>();
-			if(effect.card && effect.card->isNDTrick()){
+			if(effect.card && effect.card->inherits("Jink") && effect.card->getSuit() == Card::Diamond){
 				Room *room = target->getRoom();
 				ServerPlayer *player = room->findPlayerBySkillName(objectName());
 				if(player){
