@@ -615,23 +615,23 @@ void Dashboard::drawEquip(QPainter *painter, const CardItem *equip, int order){
 	painter->setPen(Qt::black);
 
 	// draw image or name
-	QString path = QString("image/equips/%1.png").arg(card->objectName());
+	QString path("image/system/equip-back.png");
 	QPixmap label;
 	if(!QPixmapCache::find(path, &label)){
 		label.load(path);
 		QPixmapCache::insert(path, label);
 	}
 
-	if(label.isNull()){
-		painter->setPen(Qt::black);
-		QString text = card->label();
-		QFont font(Config.SmallFont.family(), 10);
-		font.setBold(true);
-		painter->setFont(font);
-		painter->drawText(20, y + 20, text);
-	}else{
-		painter->drawPixmap(8, y + 2, label.width(), label.height(), label);
+	if(!label.isNull()){
+		painter->drawPixmap(8, y, label.width(), label.height(), label);
 	}
+
+	painter->setPen(Qt::black);
+	QString text = card->label();
+	QFont font(Config.SmallFont.family(), 10);
+	font.setBold(true);
+	painter->setFont(font);
+	painter->drawText(20, y + 20, text);
 
 	// draw the suit of equip
 	QRect suit_rect(width - 35, y + 10, 13, 13);

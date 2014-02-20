@@ -653,15 +653,23 @@ void Photo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 void Photo::drawEquip(QPainter *painter, CardItem *equip, int order){
 	if(!equip) return;
 
-	QRect suit_rect(3, 92 + order * 14, 13, 13);
+	// draw image or name
+	static QPixmap background = QPixmap("image/system/equip-back.png").scaled(110, 18);
+	if(!background.isNull()){
+		painter->drawPixmap(1, 88 + order * 16, background.width(), background.height(), background);
+	}
+
+	QRect suit_rect(4, 92 + order * 16, 13, 13);
 	painter->drawPixmap(suit_rect, equip->getSuitPixmap());
-	QFont hpFont;
-	hpFont.setBold(true);
-	painter->setFont(hpFont);
-	const EquipCard *card = qobject_cast<const EquipCard *>(equip->getCard());
+
+	QFont font;
+	font.setBold(true);
+	painter->setFont(font);
 	painter->setPen(Qt::black);
-	painter->drawText(20, 102 + order * 14, card->getNumberString());
-	painter->drawText(35, 102 + order * 14, card->label());
+
+	const EquipCard *card = qobject_cast<const EquipCard *>(equip->getCard());
+	painter->drawText(17, 102 + order * 16, card->getNumberString());
+	painter->drawText(29, 102 + order * 16, card->label());
 }
 
 QVariant Photo::itemChange(GraphicsItemChange change, const QVariant &value){
