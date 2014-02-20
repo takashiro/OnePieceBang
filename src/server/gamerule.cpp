@@ -32,101 +32,78 @@ void GameRule::onPhaseChange(ServerPlayer *player) const{
 	Room *room = player->getRoom();
 	switch(player->getPhase()){
 	case Player::RoundStart:{
-			break;
-		}
+		break;
+	}
 	case Player::Start: {
-			player->setMark("SlashCount", 0);
-			break;
-		}
+		player->setMark("SlashCount", 0);
+		break;
+	}
 	case Player::Judge: {
-			QList<const DelayedTrick *> tricks = player->delayedTricks();
-			while(!tricks.isEmpty() && player->isAlive()){
-				const DelayedTrick *trick = tricks.takeLast();
-				bool on_effect = room->cardEffect(trick, NULL, player);
-				if(!on_effect)
-					trick->onNullified(player);
-			}
-			break;
+		QList<const DelayedTrick *> tricks = player->delayedTricks();
+		while(!tricks.isEmpty() && player->isAlive()){
+			const DelayedTrick *trick = tricks.takeLast();
+			bool on_effect = room->cardEffect(trick, NULL, player);
+			if(!on_effect)
+				trick->onNullified(player);
 		}
+		break;
+	}
 	case Player::Draw: {
-			QVariant num = 2;
-			if(room->getTag("FirstRound").toBool()){
-				room->setTag("FirstRound", false);
-				if(room->getMode() == "02_1v1")
-					num = 1;
-			}
-
-			room->getDriver()->trigger(DrawNCards, player, num);
-			int n = num.toInt();
-			if(n > 0)
-				player->drawCards(n, false);
-			break;
+		QVariant num = 2;
+		if(room->getTag("FirstRound").toBool()){
+			room->setTag("FirstRound", false);
+			if(room->getMode() == "02_1v1")
+				num = 1;
 		}
+
+		room->getDriver()->trigger(DrawNCards, player, num);
+		int n = num.toInt();
+		if(n > 0)
+			player->drawCards(n, false);
+		break;
+	}
 
 	case Player::Play: {
-			player->clearHistory();
+		player->clearHistory();
 
-			while(player->isAlive()){
-				CardUseStruct card_use;
-				room->activate(player, card_use);
-				if(card_use.isValid()){
-					room->useCard(card_use);
-				}else
-					break;
-			}
-			break;
+		while(player->isAlive()){
+			CardUseStruct card_use;
+			room->activate(player, card_use);
+			if(card_use.isValid()){
+				room->useCard(card_use);
+			}else
+				break;
 		}
+		break;
+	}
 
 	case Player::Discard:{
-			while(player->getHandcardNum() > player->getMaxCards()){
-				int discard_num = player->getHandcardNum() - player->getMaxCards();
-				if(player->hasFlag("jilei")){
-					QSet<const Card *> jilei_cards;
-					QList<const Card *> handcards = player->getHandcards();
-					foreach(const Card *card, handcards){
-						if(player->isJilei(card))
-							jilei_cards << card;
-					}
-
-					if(jilei_cards.size() > player->getMaxCards()){
-						// show all his cards
-						room->showAllCards(player);
-
-						DummyCard *dummy_card = new DummyCard;
-						foreach(const Card *card, handcards.toSet() - jilei_cards){
-							dummy_card->addSubcard(card);
-						}
-						room->throwCard(dummy_card, player);
-						dummy_card->deleteLater();
-
-						return;
-					}
-				}
-				if(discard_num > 0){
-					room->askForDiscard(player, "gamerule", discard_num, 1);
-				}
-			}
-			break;
+		int discard_num = player->getHandcardNum() - player->getMaxCards();
+		while(discard_num > 0){
+			room->askForDiscard(player, "gamerule", discard_num, 1);
+			discard_num = player->getHandcardNum() - player->getMaxCards();
 		}
+		break;
+	}
 	case Player::Finish: {
-			break;
-		}
+		break;
+	}
 
 	case Player::NotActive:{
-			if(player->hasFlag("drank")){
-				LogMessage log;
-				log.type = "#UnsetDrankEndOfTurn";
-				log.from = player;
-				room->sendLog(log);
+		if(player->hasFlag("drank")){
+			LogMessage log;
+			log.type = "#UnsetDrankEndOfTurn";
+			log.from = player;
+			room->sendLog(log);
 
-				room->setPlayerFlag(player, "-drank");
-			}
-
-			player->clearFlags();
-			player->clearHistory();
-			room->getDriver()->delay(Config.AIDelay);
-			return;
+			room->setPlayerFlag(player, "-drank");
 		}
+
+		player->clearFlags();
+		player->clearHistory();
+		room->getDriver()->delay(Config.AIDelay);
+		return;
+	}
 	}
 }
 
