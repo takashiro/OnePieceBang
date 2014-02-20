@@ -3,7 +3,7 @@
 #include "engine.h"
 #include "client.h"
 
-class MusicSoul: public TriggerSkill{
+/*class MusicSoul: public TriggerSkill{
 public:
 	MusicSoul(): TriggerSkill("musicsoul"){
 		events << CardResponsed;
@@ -41,49 +41,83 @@ public:
 			}
 		}
 	}
+};*/
+
+AcheronCard::AcheronCard(){
+
+}
+
+bool AcheronCard::targetFilter(const QList<const Player *> &targets, const Player *, const Player *) const{
+	return targets.isEmpty();
+}
+
+bool AcheronCard::targetsFeasible(const QList<const Player *> &targets, const Player *) const{
+	return targets.length() == 1;
+}
+
+void AcheronCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
+	ServerPlayer *target = targets.first();
+	target->tag["acheron_player"] = source->objectName();
+	room->acquireSkill(target, "#acheron_revive");
+}
+
+class AcheronViewAsSkill: public ZeroCardViewAsSkill{
+public:
+	AcheronViewAsSkill(): ZeroCardViewAsSkill("acheron"){
+
+	}
+
+	bool isEnabledAtPlay(const Player *) const{
+		return false;
+	}
+
+	bool isEnabledAtResponse(const Player *, const QString &pattern) const{
+		return pattern == "@@acheron";
+	}
+
+	const Card *viewAs() const{
+		return new AcheronCard;
+	}
 };
 
 class Acheron: public TriggerSkill{
 public:
 	Acheron(): TriggerSkill("acheron"){
-		events << Dying;
+		events << Death;
+		frequency = Limited;
+		view_as_skill = new AcheronViewAsSkill;
 	}
 
-	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-		if(!player->askForSkillInvoke(objectName())){
-			return false;
-		}
+	bool triggerable(const ServerPlayer *target) const{
+		return target->hasSkill(objectName()) && target->getMark("@acheron") > 0;
+	}
 
+	bool trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
 		Room *room = player->getRoom();
+		room->askForUseCard(player, "@@acheron", objectName());
+		return false;
+	}
+};
 
-		QList<int> souls = player->getPile("soul");
-		QString soul_pattern;
-		if(souls.isEmpty()){
-			soul_pattern = "n";
-		}else{
-			const Card *soul = Bang->getCard(souls.at(0));
-			soul_pattern.append(QString::number(soul->getNumber()));
-			for(int i = 1; i < souls.length(); i++){
-				soul_pattern.append('|');
-				soul = Bang->getCard(souls.at(i));
-				soul_pattern.append(QString::number(soul->getNumber()));
+class AcheronRevive: public PhaseChangeSkill{
+public:
+	AcheronRevive(): PhaseChangeSkill("#acheron_revive"){
+
+	}
+
+	bool onPhaseChange(ServerPlayer *target) const{
+		if(target->getPhase() == Player::Finish){
+			Room *room = target->getRoom();
+
+			ServerPlayer *player = room->findChild<ServerPlayer *>(target->tag.value("acheron_player").toString());
+			if(player){
+				room->setPlayerProperty(player, "hp", player->getMaxHp());
+				room->revivePlayer(player);
+				player->drawCards(3, "acheron");
 			}
-		}
 
-		JudgeStruct judge;
-		judge.good = false;
-		judge.pattern = QRegExp(QString("(.*):(.*):(%1)").arg(soul_pattern));
-		judge.who = player;
-		judge.reason = objectName();
-		room->judge(judge);
-
-		if(judge.isGood()){
-			RecoverStruct recover;
-			recover.from = recover.to = player;
-			recover.recover = 1 - player->getHp();
-			room->recover(recover);
-
-			player->addToPile("soul", judge.card);
+			room->detachSkillFromPlayer(target, objectName());
+			target->tag.remove("acheron_player");
 		}
 
 		return false;
@@ -233,8 +267,11 @@ public:
 ThrillerBarkPackage::ThrillerBarkPackage():Package("ThrillerBark")
 {
 	General *brook = new General(this, "brook", "pirate", 3);
+	//brook->addSkill(new MusicSoul);
 	brook->addSkill(new Acheron);
-	brook->addSkill(new MusicSoul);
+	brook->addSkill(new MarkAssignSkill("@acheron"));
+	addMetaObject<AcheronCard>();
+	skills << new AcheronRevive;
 
 	General *perona = new General(this, "perona", "pirate", 3, false);
 	perona->addSkill(new NegativeHorror);
