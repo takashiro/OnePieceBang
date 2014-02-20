@@ -262,48 +262,79 @@ public:
 	}
 };
 
+ImitateCard::ImitateCard(){
+
+}
+
+bool ImitateCard::targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *) const{
+	return targets.isEmpty() && !to_select->getVisibleSkillList().isEmpty();
+}
+
+bool ImitateCard::targetsFeasible(const QList<const Player *> &targets, const Player *) const{
+	return targets.length() == 1;
+}
+
+void ImitateCard::use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const{
+	QStringList skills;
+	foreach(ServerPlayer *target, targets){
+		foreach(const ::Skill *skill, target->getVisibleSkillList()){
+			skills.append(skill->objectName());
+		}
+	}
+
+	if(skills.isEmpty()){
+		return;
+	}
+
+	if(source->tag.contains("imitated_skill_name")){
+		room->detachSkillFromPlayer(source, source->tag.value("imitated_skill_name").toString());
+	}
+
+	QString skill;
+	if(skills.length() > 1){
+		skill = room->askForChoice(source, "imitate", skills.join("+"));
+	}else{
+		skill = skills.at(0);
+	}
+	room->acquireSkill(source, skill);
+	source->tag["imitated_skill_name"] = skill;
+
+	room->setPlayerProperty(source, "kingdom", source->getKingdom());
+}
+
+class ImitateViewAsSkill: public ZeroCardViewAsSkill{
+public:
+	ImitateViewAsSkill(): ZeroCardViewAsSkill("imitate"){
+
+	}
+
+	bool isEnabledAtPlay(const Player *) const{
+		return false;
+	}
+
+	bool isEnabledAtResponse(const Player *, const QString &pattern) const{
+		return pattern == "@@imitate";
+	}
+
+	const Card *viewAs() const{
+		return new ImitateCard;
+	}
+};
+
 class Imitate: public TriggerSkill{
 public:
 	Imitate(): TriggerSkill("imitate"){
 		events << PhaseChange;
+		view_as_skill = new ImitateViewAsSkill;
 	}
 
 	virtual bool triggerable(const ServerPlayer *target) const{
 		return TriggerSkill::triggerable(target) && target->getPhase() == Player::Start;
 	}
 
-	virtual bool trigger(TriggerEvent event, ServerPlayer *player, QVariant &data) const{
-		if(!player->askForSkillInvoke(objectName())){
-			return false;
-		}
-
+	virtual bool trigger(TriggerEvent, ServerPlayer *player, QVariant &) const{
 		Room *room = player->getRoom();
-
-		if(player->tag.contains("imitated_skill_name")){
-			room->detachSkillFromPlayer(player, player->tag.value("imitated_skill_name").toString());
-		}
-
-		ServerPlayer *target = room->askForPlayerChosen(player, room->getOtherPlayers(player), objectName());
-		if(target != NULL){
-			QStringList skills;
-			foreach(const Skill *skill, target->getVisibleSkillList()){
-				skills.append(skill->objectName());
-			}
-
-			if(!skills.isEmpty()){
-				QString skill;
-				if(skills.length() > 1){
-					skill = room->askForChoice(player, objectName(), skills.join("+"));
-				}else{
-					skill = skills.at(0);
-				}
-				room->acquireSkill(player, skill);
-				player->tag["imitated_skill_name"] = skill;
-
-				room->setPlayerProperty(player, "kingdom", target->getKingdom());
-			}
-		}
-
+		room->askForUseCard(player, "@@imitate", objectName());
 		return false;
 	}
 };
@@ -670,6 +701,7 @@ AlabastanPackage::AlabastanPackage():Package("Alabastan")
 
 	General *bonkure = new General(this, "bonkure", "pirate", 3, true);
 	bonkure->addSkill(new Imitate);
+	addMetaObject<ImitateCard>();
 	bonkure->addSkill(new Memoir);
 	bonkure->setGender(General::Neuter);
 

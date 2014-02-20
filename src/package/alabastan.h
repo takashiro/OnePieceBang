@@ -32,4 +32,15 @@ public:
 	virtual void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const;
 };
 
+class ImitateCard: public SkillCard{
+	Q_OBJECT
+
+public:
+	Q_INVOKABLE ImitateCard();
+
+	bool targetFilter(const QList<const Player *> &targets, const Player *to_select, const Player *) const;
+	bool targetsFeasible(const QList<const Player *> &targets, const Player *Self) const;
+	void use(Room *room, ServerPlayer *source, const QList<ServerPlayer *> &targets) const;
+};
+
 #endif // ALABASTAN_H

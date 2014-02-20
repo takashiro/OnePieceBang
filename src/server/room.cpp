@@ -785,8 +785,7 @@ QString Room::askForChoice(ServerPlayer *player, const QString &skill_name, cons
 	if(ai){
 		answer = ai->askForChoice(skill_name, choices);
 		driver->delay(Config.AIDelay);
-	}
-	else{
+	}else{
 		bool success = requestPlayer(player, BP::AskForChoice, BP::toJsonArray(skill_name, choices), true);
 		QJsonValue clientReply = player->getClientReply();
 		if(!success || !clientReply.isString()){
