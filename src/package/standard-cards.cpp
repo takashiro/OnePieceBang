@@ -1481,7 +1481,7 @@ void TamaDragon::use(Room *room, ServerPlayer *source, const QList<ServerPlayer 
 }
 
 void TamaDragon::onEffect(const CardEffectStruct &effect) const{
-	bool chained = ! effect.to->isChained();
+	bool chained = !effect.to->isChained();
 	effect.to->setChained(chained);
 
 	effect.to->getRoom()->broadcastProperty(effect.to, "chained");
