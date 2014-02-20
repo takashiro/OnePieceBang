@@ -567,8 +567,7 @@ void ServerPlayer::play(QList<Player::Phase> set_phases){
 			set_phases << NotActive;
 	}
 	else
-		set_phases << RoundStart << Start << Judge << Draw << Play
-				<< Discard << Finish << NotActive;
+		set_phases << Start << Judge << Draw << Play << Discard << Finish << NotActive;
 
 	phases = set_phases;
 	while(!phases.isEmpty()){
