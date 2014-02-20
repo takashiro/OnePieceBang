@@ -206,9 +206,12 @@ bool GameRule::trigger(TriggerEvent event, ServerPlayer *player, QVariant &data)
 			CardUseStruct card_use = data.value<CardUseStruct>();
 
 			driver->trigger(TargetSelect, card_use.from, data);
+			card_use = data.value<CardUseStruct>();
+
 			foreach(ServerPlayer *target, card_use.to){
 				driver->trigger(TargetSelected, target, data);
 			}
+			card_use = data.value<CardUseStruct>();
 
 			driver->trigger(TargetConfirm, card_use.from, data);
 			foreach(ServerPlayer *target, card_use.to){

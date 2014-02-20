@@ -2472,48 +2472,53 @@ bool Room::cardEffect(const CardEffectStruct &effect){
 	return !driver->trigger(CardEffected, effect.to, data);
 }
 
-void Room::damage(const DamageStruct &damage_data){
-	if(damage_data.to == NULL)
+void Room::damage(DamageStruct damage){
+	if(damage.to == NULL)
 		return;
 
-	if(damage_data.to->isDead())
+	if(damage.to->isDead())
 		return;
 
-	QVariant data = QVariant::fromValue(damage_data);
+	QVariant data = QVariant::fromValue(damage);
 
-	if(!damage_data.chain && damage_data.from){
-		if(driver->trigger(Predamaging, damage_data.from, data))
+	if(!damage.chain && damage.from){
+		if(driver->trigger(Predamaging, damage.from, data)){
 			return;
+		}
+		damage = data.value<DamageStruct>();
 	}
 
-	bool prevent = driver->trigger(Predamaged, damage_data.to, data);
-	if(prevent)
+	if(driver->trigger(Predamaged, damage.to, data)){
 		return;
+	}
+	damage = data.value<DamageStruct>();
 
-	if(damage_data.from){
-		if(driver->trigger(Damaging, damage_data.from, data))
+	if(damage.from){
+		if(driver->trigger(Damaging, damage.from, data)){
 			return;
+		}
+		damage = data.value<DamageStruct>();
 	}
 
-
-	bool broken = driver->trigger(Damaged, damage_data.to, data);
-	if(broken)
+	if(driver->trigger(Damaged, damage.to, data)){
 		return;
+	}
+	damage = data.value<DamageStruct>();
 
 	// damage done, should not cause damage process broken
-	driver->trigger(DamageDone, damage_data.to, data);
+	driver->trigger(DamageDone, damage.to, data);
 
-	if(damage_data.from){
-		bool broken = driver->trigger(Postdamaging, damage_data.from, data);
+	if(damage.from){
+		bool broken = driver->trigger(Postdamaging, damage.from, data);
 		if(broken)
 			return;
 	}
 
-	broken = driver->trigger(Postdamaged, damage_data.to, data);
-	if(broken)
+	if(driver->trigger(Postdamaged, damage.to, data)){
 		return;
+	}
 
-	driver->trigger(DamageComplete, damage_data.to, data);
+	driver->trigger(DamageComplete, damage.to, data);
 }
 
 void Room::sendDamageLog(const DamageStruct &data){
