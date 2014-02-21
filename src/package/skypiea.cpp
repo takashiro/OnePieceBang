@@ -196,7 +196,7 @@ public:
 class SurpriseBall: public TriggerSkill{
 public:
 	SurpriseBall(): TriggerSkill("surpriseball"){
-		events << CardEffect << Damaged;
+		events << Damaged;
 	}
 
 	bool triggerable(const ServerPlayer *target) const{
@@ -204,29 +204,16 @@ public:
 	}
 
 	bool trigger(TriggerEvent event, ServerPlayer *target, QVariant &data) const{
-		if(event == CardEffect){
-			CardEffectStruct effect = data.value<CardEffectStruct>();
-			if(effect.card && effect.card->inherits("Jink") && effect.card->getSuit() == Card::Diamond){
-				Room *room = target->getRoom();
-				ServerPlayer *player = room->findPlayerBySkillName(objectName());
-				if(player){
-					room->broadcastSkillInvoked(player, objectName());
-					room->sendLog("#TriggerSkill", player, objectName());
-					return true;
-				}
-			}
-		}else{
-			DamageStruct damage = data.value<DamageStruct>();
-			if(damage.nature == DamageStruct::Normal){
-				Room *room = target->getRoom();
-				ServerPlayer *player = room->findPlayerBySkillName(objectName());
-				if(player){
-					room->broadcastSkillInvoked(player, objectName());
-					room->sendLog("#TriggerSkill", player, objectName());
+		DamageStruct damage = data.value<DamageStruct>();
+		if(damage.nature == DamageStruct::Normal){
+			Room *room = target->getRoom();
+			ServerPlayer *player = room->findPlayerBySkillName(objectName());
+			if(player){
+				room->broadcastSkillInvoked(player, objectName());
+				room->sendLog("#TriggerSkill", player, objectName());
 
-					damage.nature = DamageStruct::Fire;
-					data = QVariant::fromValue(damage);
-				}
+				damage.nature = DamageStruct::Fire;
+				data = QVariant::fromValue(damage);
 			}
 		}
 
