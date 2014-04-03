@@ -267,7 +267,14 @@ LIBS += -L.
 CONFIG(audio){
         DEFINES += AUDIO_SUPPORT
         INCLUDEPATH += include/fmod
-		LIBS += -L"$$_PRO_FILE_PWD_/lib/" -lfmodex
+		win32{
+			!contains(QMAKE_HOST.arch, x86_64) {
+				LIBS += -L"$$_PRO_FILE_PWD_/lib/win32"
+			} else {
+				LIBS += -L"$$_PRO_FILE_PWD_/lib/win64"
+			}
+		}
+		LIBS += -lfmodex
         SOURCES += src/core/audio.cpp
 }
 
