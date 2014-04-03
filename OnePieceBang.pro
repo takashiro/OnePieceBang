@@ -267,7 +267,7 @@ LIBS += -L.
 CONFIG(audio){
         DEFINES += AUDIO_SUPPORT
         INCLUDEPATH += include/fmod
-        LIBS += -lfmodex
+		LIBS += -L"$$_PRO_FILE_PWD_/lib/" -lfmodex
         SOURCES += src/core/audio.cpp
 }
 
