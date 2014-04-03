@@ -1232,7 +1232,7 @@ void Client::askForCardChosen(const QJsonValue &ask_str_raw){
 
 void Client::askForOrder(const QJsonValue &arg){
 	if(!arg.isDouble()) return;
-	BP::Game3v3ChooseOrderCommand reason = (BP::Game3v3ChooseOrderCommand) arg.toDouble();
+	BP::Game3v3ChooseOrderCommand reason = (BP::Game3v3ChooseOrderCommand) (int) arg.toDouble();
 	emit orders_got(reason);
 	setStatus(ExecDialog);
 }
@@ -1621,7 +1621,7 @@ void Client::moveFocus(const QJsonValue &focus){
 		bool success = countdown.tryParse(focusarr[1]);
 		if(!success){
 			Q_ASSERT(focusarr[1].isDouble());
-			BP::CommandType command = (BP::CommandType) focusarr[1].toDouble();
+			BP::CommandType command = (BP::CommandType) (int) focusarr[1].toDouble();
 			countdown.max = ServerInfo.getCommandTimeout(command, BP::ClientInstance);
 			countdown.type = BP::Countdown::UseDefault;
 		}

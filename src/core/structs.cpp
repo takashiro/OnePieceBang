@@ -13,8 +13,8 @@ bool CardMoveStruct::tryParse(const QJsonValue &data){
 
 	if(!arg[0].isDouble() || !BP::isIntArray(arg, 1, 2) || !BP::isStringArray(arg, 3, 6)) return false;
 	card_id = arg[0].toDouble();
-	from_place = (Player::Place)arg[1].toDouble();
-	to_place = (Player::Place)arg[2].toDouble();
+	from_place = (Player::Place) (int) arg[1].toDouble();
+	to_place = (Player::Place) (int) arg[2].toDouble();
 	from_player_name = arg[3].toString();
 	to_player_name = arg[4].toString();
 	from_pile_name = arg[5].toString();
@@ -52,8 +52,8 @@ bool CardsMoveStruct::tryParse(const QJsonValue &data){
 	}
 	else if(!BP::tryParse(arg[0], card_ids))
 		return false;
-	from_place = (Player::Place)arg[1].toDouble();
-	to_place = (Player::Place)arg[2].toDouble();
+	from_place = (Player::Place) (int) arg[1].toDouble();
+	to_place = (Player::Place) (int) arg[2].toDouble();
 	from_player_name = arg[3].toString();
 	to_player_name = arg[4].toString();
 	from_pile_name = arg[5].toString();

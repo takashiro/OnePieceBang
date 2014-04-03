@@ -3645,7 +3645,7 @@ bool Room::makeCheat(ServerPlayer *player){
 	QJsonArray arg = player->cheat_arguments.toArray();
 	if(arg.isEmpty() || !arg[0].isDouble()) return false;
 	QJsonArray arg1 = arg[1].toArray();
-	BP::Cheat::Code code = (BP::Cheat::Code) arg[0].toDouble();
+	BP::Cheat::Code code = (BP::Cheat::Code) (int) arg[0].toDouble();
 	if(code == BP::Cheat::KillPlayer){
 		if(!BP::isStringArray(arg[1], 0, 1)) return false;
 		makeKilling(arg1[0].toString(), arg1[1].toString());
@@ -3653,7 +3653,7 @@ bool Room::makeCheat(ServerPlayer *player){
 		if(arg1.size() != 4 || !BP::isStringArray(arg[1], 0, 1)
 		|| !arg1[2].isDouble() || !arg1[3].isDouble())
 			return false;
-		makeDamage(arg1[0].toString(), arg1[1].toString(), (BP::Cheat::Category)arg1[2].toDouble(), arg1[3].toDouble());
+		makeDamage(arg1[0].toString(), arg1[1].toString(), (BP::Cheat::Category) (int) arg1[2].toDouble(), arg1[3].toDouble());
 	}else if(code == BP::Cheat::RevivePlayer){
 		if(!arg[1].isString()) return false;
 		makeReviving(arg[1].toString());
@@ -3929,7 +3929,7 @@ QString Room::askForOrder(ServerPlayer *player){
 	BP::Game3v3Camp result = qrand() % 2 == 0 ? BP::WarmCamp : BP::CoolCamp;
 	QJsonValue clientReply = player->getClientReply();
 	if(success && clientReply.isDouble()){
-		result = (BP::Game3v3Camp) clientReply.toDouble();
+		result = (BP::Game3v3Camp) (int) clientReply.toDouble();
 	}
 	if(result == BP::WarmCamp) return "warm";
 	else return "cool";

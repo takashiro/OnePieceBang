@@ -21,7 +21,7 @@ bool BP::Countdown::tryParse(QJsonValue valdata){
 		return true;
 
 	}else if(val.size() == 2){
-		CountdownType type = (CountdownType) val[1].toDouble();
+		CountdownType type = (CountdownType) (int) val[1].toDouble();
 
 		if(type != Unlimited && type != UseDefault){
 			return false;
@@ -76,8 +76,8 @@ bool BP::Packet::parse(const QByteArray &s){
 
 	global_serial = (unsigned int)result[0].toDouble();
 	local_serial = (unsigned int)result[1].toDouble();
-	packet_type = (PacketType)result[2].toDouble();
-	command = (CommandType)result[3].toDouble();
+	packet_type = (PacketType) (int) result[2].toDouble();
+	command = (CommandType) (int) result[3].toDouble();
 
 	if(result.size() == 5)
 		parseBody(result[4]);
