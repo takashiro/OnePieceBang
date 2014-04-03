@@ -221,6 +221,26 @@ public:
 	}
 };
 
+class Violent: public TriggerSkill{
+public:
+	Violent(): TriggerSkill("violent"){
+		events << Damaging;
+	}
+
+	bool trigger(TriggerEvent, ServerPlayer *player, QVariant &data) const{
+		if(player->askForSkillInvoke(objectName(), data)){
+			DamageStruct damage = data.value<DamageStruct>();
+			damage.damage++;
+			data = QVariant::fromValue(damage);
+
+			Room *room = player->getRoom();
+			room->loseHp(player, 1);
+		}
+
+		return false;
+	}
+};
+
 SkypieaPackage::SkypieaPackage()
 	:Package("Skypiea")
 {
@@ -235,6 +255,9 @@ SkypieaPackage::SkypieaPackage()
 	satori->addSkill(new BallDragon);
 	addMetaObject<BallDragonCard>();
 	satori->addSkill(new SurpriseBall);
+
+	General *wiper = new General(this, "wiper", "citizen", 4);
+	wiper->addSkill(new Violent);
 }
 
 ADD_PACKAGE(Skypiea)
