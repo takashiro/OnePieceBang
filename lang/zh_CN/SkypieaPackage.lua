@@ -20,17 +20,26 @@ return {
 
 	["#satori"] = "森之大悟",
 	["satori"] = "莎德利",
-	["balldragon"] = "髻龙",
-	[":balldragon"] = "你使用效果牌时，可以横置一名角色。",
-	["surpriseball"] = "惊髻",
+	["balldragon"] = "球龙",
+	[":balldragon"] = "你使用诡计牌时，可以横置一名角色。",
+	["surpriseball"] = "惊奇云",
 	[":surpriseball"] = "处于连环状态的角色受到的普通伤害改为火焰伤害。",
 
 	["#shura"] = "苍天骑士",
 	["shura"] = "修拉",
+	["heatjavelin"] = "火矛",
+	[":heatjavelin"] = "",
 
 	["#ohm"] = "空畜牧家",
 	["ohm"] = "欧姆",
 
 	["#gedatsu"] = "空护卫长",
 	["gedatsu"] = "盖达兹",
+	["swampcloud"] = "沼云",
+	[":swampcloud"] = "",
+
+	["#wiper"] = "战鬼",
+	["wiper"] = "韦伯",
+	["violent"] = "狂暴",
+	[":violent"] = "你造成伤害时，可以失去1点体力，令此伤害+1。",
 }
